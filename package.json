@@ -1,0 +1,21 @@
+{
+  "name": "m-cafe-app",
+  "productName": "Dubai cafe app",
+  "version": "1.0.0",
+  "description": "cafe app",
+  "main": ".webpack/main",
+  "repository": "https://github.com/VasiliyTemniy/m-cafe-app.git",
+  "author": "VasiliyTemniy <flash_er@mail.ru>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"yarn --cwd client start\" \"yarn --cwd server start\"",
+    "build": "yarn --cwd client build && yarn --cwd server build"
+  },
+  "dependencies": {
+    "concurrently": "^8.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}

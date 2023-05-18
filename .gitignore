@@ -1,0 +1,11 @@
+/node_modules
+
+client/node_modules
+server/node_modules
+
+server/build
+yarn-error.log*
+
+/client/.webpack
+
+/*/.env
