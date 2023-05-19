@@ -7,13 +7,16 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare username: string;
   declare name: string;
   declare passwordHash: string;
+  declare phonenumber: string;
+  declare email: CreationOptional<string>;
+  declare birthdate: CreationOptional<Date>;
   declare disabled: CreationOptional<boolean>;
   declare admin: CreationOptional<boolean>;
 }
 
 User.init({
   id: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
@@ -22,16 +25,46 @@ User.init({
     unique: true,
     allowNull: false,
     validate: {
-      isEmail: true // funny :)
+      is: /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/i,
+      len: [3, 25]
     }
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true,
+    validate: {
+      is: /^[A-Za-zА-Яа-я0-9]+(?:[ _-][A-Za-zА-Яа-я0-9]+)*$/i,
+      len: [3, 50]
+    }
   },
   passwordHash: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  phonenumber: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+    validate: {
+      is: /^((8|\+374|\+994|\+995|\+375|\+7|\+380|\+38|\+996|\+998|\+993)[- ]?)?\(?\d{3,5}\)?[- ]?\d{1}[- ]?\d{1}[- ]?\d{1}[- ]?\d{1}[- ]?\d{1}(([- ]?\d{1})?[- ]?\d{1})?$/i,
+      len: [5, 25]
+    }
+  },
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: true,
+    validate: {
+      isEmail: true,
+      len: [3, 50]
+    }
+  },
+  birthdate: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    validate: {
+      isDate: true
+    }
   },
   disabled: {
     type: DataTypes.BOOLEAN,

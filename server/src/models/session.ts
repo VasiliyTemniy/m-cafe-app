@@ -11,7 +11,7 @@ class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Se
 
 Session.init({
   id: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
