@@ -45,4 +45,4 @@ adminRouter.put(
   }
 )
 
-module.exports = adminRouter
+export default adminRouter

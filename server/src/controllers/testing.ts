@@ -28,4 +28,4 @@ testingRouter.put('/admin/:id', async (req, res) => {
 
 })
 
-module.exports = testingRouter
+export default testingRouter

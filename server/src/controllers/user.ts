@@ -105,4 +105,4 @@ usersRouter.get('/:id', async (request, response) => {
   }
 })
 
-module.exports = usersRouter
+export default usersRouter

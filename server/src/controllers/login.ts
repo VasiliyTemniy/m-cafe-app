@@ -64,4 +64,4 @@ loginRouter.get(
   }
 )
 
-module.exports = loginRouter
+export default loginRouter
