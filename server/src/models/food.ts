@@ -7,6 +7,7 @@ class Food extends Model<InferAttributes<Food>, InferCreationAttributes<Food>> {
   declare name: string;
   declare type: string;
   declare description: string;
+  declare price: Number;
 }
 
 Food.init({
@@ -25,6 +26,10 @@ Food.init({
   },
   description: {
     type: DataTypes.STRING,
+    allowNull: false
+  },
+  price: {
+    type: DataTypes.INTEGER,
     allowNull: false
   },
 }, {

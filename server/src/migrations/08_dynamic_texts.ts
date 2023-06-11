@@ -2,27 +2,39 @@ import { DataTypes } from 'sequelize'
 
 export default {
   up: async ({ context: queryInterface }: any) => {
-    await queryInterface.createTable('foods', {
+    await queryInterface.createTable('dynamic_texts', {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      name: {
+      ru_text: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      en_text: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      ar_text: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      page: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      type: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      description: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      price: {
+      placement: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      inline_css: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      image_src: {
+        type: DataTypes.STRING,
+        allowNull: true
       },
       created_at: {
         type: DataTypes.DATE,
@@ -35,6 +47,6 @@ export default {
     })
   },
   down: async ({ context: queryInterface }: any) => {
-    await queryInterface.dropTable('foods')
+    await queryInterface.dropTable('dynamic_texts')
   },
 }

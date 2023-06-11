@@ -9,6 +9,7 @@ class OrderFood extends Model<InferAttributes<OrderFood>, InferCreationAttribute
   declare orderId: ForeignKey<Order['id']>;
   declare foodId: ForeignKey<Food['id']>;
   declare amount: Number;
+  declare archivePrice: Number;
 }
 
 OrderFood.init({
@@ -28,6 +29,10 @@ OrderFood.init({
     references: { model: 'foods', key: 'id' }
   },
   amount: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  archivePrice: {
     type: DataTypes.INTEGER,
     allowNull: false
   }

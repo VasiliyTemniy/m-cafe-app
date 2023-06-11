@@ -21,6 +21,10 @@ export default {
       amount: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      archive_price: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       }
     })
   },
