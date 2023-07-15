@@ -3,14 +3,19 @@
   "productName": "Dubai cafe app",
   "version": "1.0.0",
   "description": "cafe app",
-  "main": ".webpack/main",
+  "main": "frontend/.webpack/main",
   "repository": "https://github.com/VasiliyTemniy/m-cafe-app.git",
   "author": "VasiliyTemniy <flash_er@mail.ru>",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "concurrently \"yarn --cwd client start\" \"yarn --cwd server start\"",
-    "build": "yarn --cwd client build && yarn --cwd server build"
+    "start": "concurrently \"yarn --cwd frontend start\" \"yarn --cwd backend start\"",
+    "dev": "concurrently \"yarn --cwd frontend run dev\" \"yarn --cwd backend run dev\"",
+    "dev:docker": "docker compose -f docker-compose.dev.yml -p m_cafe_dev up --detach",
+    "dev:docker-stop": "docker compose -f docker-compose.dev.yml -p m_cafe_dev down",
+    "start:prod-docker": "docker compose -f docker-compose.yml -p m_cafe up --detach",
+    "stop:prod-docker": "docker compose -f docker-compose.yml -p m_cafe down",
+    "build": "yarn --cwd frontend build && yarn --cwd backend build"
   },
   "dependencies": {
     "concurrently": "^8.0.1"

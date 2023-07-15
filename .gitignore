@@ -1,11 +1,14 @@
 /node_modules
 
-client/node_modules
-server/node_modules
+backend/node_modules
+frontend/node_modules
 
-server/build
+backend/build
+frontend/build
 yarn-error.log*
 
-/client/.webpack
+/frontend/.webpack
+/frontend/.webpack-dev
 
-/*/.env
+**/*/.env
+*.env
