@@ -12,13 +12,25 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    stock: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
     stock_measure: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    proteins: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    fats: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    carbohydrates: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    calories: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,

@@ -12,9 +12,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    type: {
+    food_type_id: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      references: { model: 'food_types', key: 'id' }
     },
     description: {
       type: DataTypes.STRING,

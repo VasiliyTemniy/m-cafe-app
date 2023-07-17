@@ -1,11 +1,9 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import User from './user.js';
+import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
 
 class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {
   declare id: CreationOptional<number>;
-  declare userId: ForeignKey<User['id']>;
   declare region: CreationOptional<string>;
   declare district: CreationOptional<string>;
   declare city: string;
@@ -22,12 +20,7 @@ Address.init({
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'users', key: 'id' }
-  },      
+  },    
   region: {
     type: DataTypes.STRING,
     allowNull: true,

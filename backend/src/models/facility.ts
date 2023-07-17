@@ -1,44 +1,39 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import FoodType from './foodType.js';
+import Address from './address.js';
 
 import { sequelize } from '../utils/db.js';
 
-class Food extends Model<InferAttributes<Food>, InferCreationAttributes<Food>> {
+class Facility extends Model<InferAttributes<Facility>, InferCreationAttributes<Facility>> {
   declare id: CreationOptional<number>;
+  declare addressId: CreationOptional<ForeignKey<Address['id']>>;
   declare name: string;
-  declare foodTypeId: ForeignKey<FoodType['id']>;
-  declare description: string;
-  declare price: number;
+  declare description: CreationOptional<string>;
 }
 
-Food.init({
+Facility.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
+  addressId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: { model: 'addresses', key: 'id' }
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  foodTypeId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'food_types', key: 'id' }
-  },
   description: {
     type: DataTypes.STRING,
-    allowNull: false
-  },
-  price: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
+    allowNull: true
+  }
 }, {
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'food'
+  modelName: 'facility'
 });
 
-export default Food;
+export default Facility;

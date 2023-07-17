@@ -1,12 +1,12 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import Food from './food.js';
+import SimpleFood from './food.js';
 import Ingredient from './ingredient.js';
 
 import { sequelize } from '../utils/db.js';
 
 class FoodIngredient extends Model<InferAttributes<FoodIngredient>, InferCreationAttributes<FoodIngredient>> {
   declare id: CreationOptional<number>;
-  declare foodId: ForeignKey<Food['id']>;
+  declare foodId: ForeignKey<SimpleFood['id']>;
   declare ingredientId: ForeignKey<Ingredient['id']>;  
   declare amount: number;
 }
