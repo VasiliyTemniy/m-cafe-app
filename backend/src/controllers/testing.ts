@@ -3,11 +3,22 @@ import { runMigrations, sequelize } from '../utils/db.js';
 
 const testingRouter = Router();
 
-testingRouter.post(
+testingRouter.get(
   '/reset',
   (async (req, res) => {
     await sequelize.drop();
     await runMigrations();
+
+    res.status(204).end();
+  }) as RequestHandler
+);
+
+testingRouter.get(
+  '/sync',
+  (async (req, res) => {
+    await sequelize.sync({
+      force: true
+    });
 
     res.status(204).end();
   }) as RequestHandler
