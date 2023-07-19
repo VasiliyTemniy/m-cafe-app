@@ -12,30 +12,21 @@ import LocString from './locString.js';
 import Facility from './facility.js';
 import FacilityManager from './facilityManager.js';
 import Stock from './stock.js';
-import DynamicText from './dynamicText.js';
+import DynamicModule from './dynamicModule.js';
 
 /*****
 * User + Session table associations BEGIN
 ******/
 
 User.hasMany(Session, {
-  sourceKey: 'id',
   foreignKey: 'userId',
   as: 'sessions'
 });
-Session.belongsTo(User, { targetKey: 'id' });
+Session.belongsTo(User);
 
 /*****
 * User + Session table associations END
 ******/
-
-
-// User.hasMany(Address, {
-//   sourceKey: 'id',
-//   foreignKey: 'userId',
-//   as: 'addresses'
-// });
-// Address.belongsTo(User, { targetKey: 'id' });
 
 
 /*****
@@ -45,13 +36,11 @@ Session.belongsTo(User, { targetKey: 'id' });
 User.belongsToMany(Address, { through: UserAddress });
 Address.belongsToMany(User, { through: UserAddress });
 User.hasMany(UserAddress, {
-  sourceKey: 'id',
   foreignKey: 'userId',
   as: 'user_addresses'
 });
 UserAddress.belongsTo(User, { targetKey: 'id' });
 Address.hasOne(UserAddress, {
-  sourceKey: 'id',
   foreignKey: 'addressId',
   as: 'address_user'
 });
@@ -67,63 +56,78 @@ UserAddress.belongsTo(Address, { targetKey: 'id' });
 ******/
 
 LocString.hasOne(FoodType, {
-  sourceKey: 'id',
   foreignKey: 'nameLocId',
-  as: 'nameLoc'
+  as: 'foodTypeNameLoc'
 });
 LocString.hasOne(FoodType, {
-  sourceKey: 'id',
   foreignKey: 'descriptionLocId',
-  as: 'descriptionLoc'
+  as: 'foodTypeDescriptionLoc'
 });
-FoodType.belongsTo(LocString, { targetKey: 'id' });
-// FoodType.hasOne(LocString, {   // ??? this would be more logical way, but it does not correspond to docs
-//   sourceKey: 'id',
-//   foreignKey: ''
-// });
-
-LocString.hasOne(Food, {
-  sourceKey: 'id',
+FoodType.belongsTo(LocString, {
   foreignKey: 'nameLocId',
   as: 'nameLoc'
 });
-LocString.hasOne(Food, {
-  sourceKey: 'id',
+FoodType.belongsTo(LocString, {
   foreignKey: 'descriptionLocId',
   as: 'descriptionLoc'
 });
-Food.belongsTo(LocString, { targetKey: 'id' });
 
-LocString.hasOne(Ingredient, {
-  sourceKey: 'id',
+LocString.hasOne(Food, {
+  foreignKey: 'nameLocId',
+  as: 'foodNameLoc'
+});
+LocString.hasOne(Food, {
+  foreignKey: 'descriptionLocId',
+  as: 'foodDescriptionLoc'
+});
+Food.belongsTo(LocString, {
   foreignKey: 'nameLocId',
   as: 'nameLoc'
 });
+Food.belongsTo(LocString, {
+  foreignKey: 'descriptionLocId',
+  as: 'descriptionLoc'
+});
+
 LocString.hasOne(Ingredient, {
-  sourceKey: 'id',
+  foreignKey: 'nameLocId',
+  as: 'ingredientNameLoc'
+});
+LocString.hasOne(Ingredient, {
   foreignKey: 'stockMeasureLocId',
   as: 'stockMeasureLoc'
 });
-Ingredient.belongsTo(LocString, { targetKey: 'id' });
-
-LocString.hasOne(Facility, {
-  sourceKey: 'id',
+Ingredient.belongsTo(LocString, {
   foreignKey: 'nameLocId',
   as: 'nameLoc'
 });
+Ingredient.belongsTo(LocString, {
+  foreignKey: 'stockMeasureLocId',
+  as: 'stockMeasureLoc'
+});
+
 LocString.hasOne(Facility, {
-  sourceKey: 'id',
+  foreignKey: 'nameLocId',
+  as: 'facilityNameLoc'
+});
+LocString.hasOne(Facility, {
+  foreignKey: 'descriptionLocId',
+  as: 'facilityDescriptionLoc'
+});
+Facility.belongsTo(LocString, {
+  foreignKey: 'nameLocId',
+  as: 'nameLoc'
+});
+Facility.belongsTo(LocString, {
   foreignKey: 'descriptionLocId',
   as: 'descriptionLoc'
 });
-Facility.belongsTo(LocString, { targetKey: 'id' });
 
-LocString.hasOne(DynamicText, {
-  sourceKey: 'id',
+LocString.hasOne(DynamicModule, {
   foreignKey: 'locStringId',
   as: 'locString'
 });
-DynamicText.belongsTo(LocString, { targetKey: 'id' });
+DynamicModule.belongsTo(LocString);
 
 /*****
 * Localization table associations END
@@ -135,11 +139,10 @@ DynamicText.belongsTo(LocString, { targetKey: 'id' });
 ******/
 
 FoodType.hasMany(Food, {
-  sourceKey: 'id',
   foreignKey: 'foodTypeId',
   as: 'foodType'
 });
-Food.belongsTo(FoodType, { targetKey: 'id' });
+Food.belongsTo(FoodType);
 
 /*****
 * Food + FoodType table associations END
@@ -147,70 +150,75 @@ Food.belongsTo(FoodType, { targetKey: 'id' });
 
 
 /*****
-* Food + Ingredient table associations BEGIN
+* Food + Ingredient + Food table associations BEGIN
 ******/
 
-Food.belongsToMany(Ingredient, {
-  through: FoodComponent,
-  scope: {
-    compositeFood: false
-  }
-});
 Ingredient.belongsToMany(Food, {
-  through: FoodComponent,
-  scope: {
-    compositeFood: false
-  }
-});
-Food.hasMany(FoodComponent, {
-  sourceKey: 'id',
-  foreignKey: 'foodId',
-  as: 'food_components',
-  constraints: false,
-  scope: {
-    compositeFood: false
-  }
-});
-FoodComponent.belongsTo(Food, { targetKey: 'id' });
-Ingredient.hasMany(FoodComponent, {
-  sourceKey: 'id',
+  through: {
+    model: FoodComponent,
+    unique: false,
+    scope: {
+      compositeFood: false
+    }
+  },
   foreignKey: 'componentId',
-  as: 'ingredient_foods',
+  constraints: false,
+  as: 'components'
+});
+Food.belongsToMany(Ingredient, {
+  through: {
+    model: FoodComponent,
+    unique: false,
+    scope: {
+      compositeFood: false
+    }
+  },
+  foreignKey: 'foodId',
+  constraints: false,
+  as: 'ingredientFoods'
+});
+
+Food.hasMany(FoodComponent, {
+  foreignKey: 'foodId',
+  as: 'foodComponents',
+  constraints: false,
+});
+FoodComponent.belongsTo(Food);
+Ingredient.hasMany(FoodComponent, {
+  foreignKey: 'componentId',
+  as: 'ingredientFoods',
   constraints: false,
   scope: {
     compositeFood: false
   }
 });
-FoodComponent.belongsTo(Ingredient, { targetKey: 'id' });
 
-/*****
-* Food + Ingredient table associations END
-******/
 
-/*****
-* Food + Food table associations BEGIN
-******/
+/*
+* THIS below makes food_components table to have excessive field ingredient_id,
+* Checked via sequelize.sync()
+* It is a pity that belongsTo does not have 'sourceKey' option
+*
+// FoodComponent.belongsTo(Ingredient, { targetKey: 'id' });
+*/
+
 
 Food.belongsToMany(Food, {
-  through: FoodComponent,
-  scope: {
-    compositeFood: true
-  }
-});
-Food.hasMany(FoodComponent, {
-  sourceKey: 'id',
-  foreignKey: 'foodId',
-  as: 'food_components',
+  through: {
+    model: FoodComponent,
+    unique: false,
+    scope: {
+      compositeFood: true
+    }
+  },
+  foreignKey: 'componentId',
   constraints: false,
-  scope: {
-    compositeFood: true
-  }
+  as: 'components'
 });
 
 Food.hasMany(FoodComponent, {
-  sourceKey: 'id',
   foreignKey: 'componentId',
-  as: 'complex_foods_components',
+  as: 'compositeComponents',
   constraints: false,
   scope: {
     compositeFood: true
@@ -218,7 +226,7 @@ Food.hasMany(FoodComponent, {
 });
 
 /*****
-* Food + Food table associations END
+* Food + Ingredient + Food table associations END
 ******/
 
 
@@ -227,54 +235,51 @@ Food.hasMany(FoodComponent, {
 ******/
 
 Address.hasOne(Facility, {
-  sourceKey: 'id',
   foreignKey: 'addressId',
   as: 'facility_address'
 });
-Facility.belongsTo(Address, { targetKey: 'id' });
+Facility.belongsTo(Address);
 
 
 Facility.belongsToMany(User, { through: FacilityManager });
 User.belongsToMany(Facility, { through: FacilityManager });
 Facility.hasMany(FacilityManager, {
-  sourceKey: 'id',
   foreignKey: 'facilityId',
   as: 'facility_managers'
 });
-FacilityManager.belongsTo(Facility, { targetKey: 'id' });
+FacilityManager.belongsTo(Facility);
 User.hasOne(FacilityManager, {
-  sourceKey: 'id',
   foreignKey: 'userId',
   as: 'manager_facility'
 });
-FacilityManager.belongsTo(User, { targetKey: 'id' });
+FacilityManager.belongsTo(User);
 
 /*****
 * Facility + Address + Managers table associations END
 ******/
+
 
 /*****
 * Stock + Facility + Ingredient table associations BEGIN
 ******/
 
 Ingredient.hasMany(Stock, {
-  sourceKey: 'id',
   foreignKey: 'ingredientId',
   as: 'ingredient'
 });
-Stock.belongsTo(Ingredient, { targetKey: 'id' });
+Stock.belongsTo(Ingredient);
 
 
 Facility.hasMany(Stock, {
-  sourceKey: 'id',
   foreignKey: 'facilityId',
   as: 'facility'
 });
-Stock.belongsTo(Facility, { targetKey: 'id' });
+Stock.belongsTo(Facility);
 
 /*****
 * Stock + Facility + Ingredient table associations END
 ******/
+
 
 /*****
 * Order + Food table associations BEGIN
@@ -283,17 +288,15 @@ Stock.belongsTo(Facility, { targetKey: 'id' });
 Order.belongsToMany(Food, { through: OrderFood });
 Food.belongsToMany(Order, { through: OrderFood });
 Order.hasMany(OrderFood, {
-  sourceKey: 'id',
   foreignKey: 'orderId',
   as: 'order_foods'
 });
-OrderFood.belongsTo(Order, { targetKey: 'id' });
+OrderFood.belongsTo(Order);
 Food.hasMany(OrderFood, {
-  sourceKey: 'id',
   foreignKey: 'orderId',
   as: 'food_orders'
 });
-OrderFood.belongsTo(Food, { targetKey: 'id' });
+OrderFood.belongsTo(Food);
 
 /*****
 * Order + Food table associations END
@@ -301,5 +304,19 @@ OrderFood.belongsTo(Food, { targetKey: 'id' });
 
 
 export default {
-  User, Session, Address, Food, Ingredient, Order, FoodComponent, OrderFood
+  User,
+  Session,
+  Address,
+  Food,
+  Ingredient,
+  Order,
+  FoodComponent,
+  OrderFood,
+  UserAddress,
+  FoodType,
+  LocString,
+  Facility,
+  FacilityManager,
+  Stock,
+  DynamicModule
 };

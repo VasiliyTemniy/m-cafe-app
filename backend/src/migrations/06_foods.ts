@@ -11,17 +11,23 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     name_loc_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'loc_strings', key: 'id' }
+      references: { model: 'loc_strings', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     food_type_id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'food_types', key: 'id' }
+      references: { model: 'food_types', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     description_loc_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'loc_strings', key: 'id' }
+      references: { model: 'loc_strings', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     price: {
       type: DataTypes.INTEGER,

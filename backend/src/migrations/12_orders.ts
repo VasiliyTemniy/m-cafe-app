@@ -11,12 +11,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'users', key: 'id' }
+      references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     address_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'addresses', key: 'id' }
+      references: { model: 'addresses', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     deliver_at: {
       type: DataTypes.DATE,

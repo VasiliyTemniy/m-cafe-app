@@ -11,7 +11,9 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     food_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'foods', key: 'id' }
+      references: { model: 'foods', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     component_id: {
       type: DataTypes.INTEGER,

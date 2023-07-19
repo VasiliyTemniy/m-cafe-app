@@ -11,12 +11,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     ingredient_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'ingredients', key: 'id' }
+      references: { model: 'ingredients', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     facility_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'facilities', key: 'id' }
+      references: { model: 'facilities', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     amount: {
       type: DataTypes.INTEGER,

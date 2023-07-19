@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, QueryTypes } from 'sequelize';
 import { MigrationContext } from '../types/umzugContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -11,12 +11,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     order_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'orders', key: 'id' }
+      references: { model: 'orders', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     food_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'foods', key: 'id' }
+      references: { model: 'foods', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     amount: {
       type: DataTypes.INTEGER,
@@ -27,6 +31,21 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false
     }
   });
+
+  const constraintCheck = await queryInterface.sequelize.query(
+    "SELECT * FROM pg_constraint WHERE conname = 'order_foods_order_id_food_id_key'",
+    { type: QueryTypes.SELECT }
+  );
+
+  if (!constraintCheck[0]) {
+    await queryInterface.addConstraint('order_foods', {
+      fields: [
+        'order_id', 'food_id'
+      ],
+      type: 'unique',
+      name: 'order_foods_order_id_food_id_key'
+    });
+  }
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {

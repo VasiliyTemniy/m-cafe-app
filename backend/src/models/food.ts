@@ -41,7 +41,7 @@ Food.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'food'
+  modelName: 'foods'
 });
 
 export default Food;

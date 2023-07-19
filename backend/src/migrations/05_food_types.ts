@@ -11,12 +11,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     name_loc_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'loc_strings', key: 'id' }
+      references: { model: 'loc_strings', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     description_loc_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'loc_strings', key: 'id' }
+      references: { model: 'loc_strings', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     created_at: {
       type: DataTypes.DATE,

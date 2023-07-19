@@ -70,7 +70,7 @@ Address.init({
     }
   },
   floor: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     allowNull: true,
     validate: {
       isNumeric: true,

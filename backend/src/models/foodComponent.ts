@@ -20,7 +20,9 @@ FoodComponent.init({
   foodId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: 'foods', key: 'id' }
+    references: { model: 'foods', key: 'id' },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
   },
   componentId: {
     type: DataTypes.INTEGER,

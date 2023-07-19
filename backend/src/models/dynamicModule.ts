@@ -3,25 +3,32 @@ import LocString from './locString.js';
 
 import { sequelize } from '../utils/db.js';
 
-class DynamicText extends Model<InferAttributes<DynamicText>, InferCreationAttributes<DynamicText>> {
+class DynamicModule extends Model<InferAttributes<DynamicModule>, InferCreationAttributes<DynamicModule>> {
   declare id: CreationOptional<number>;
+  declare moduleType: string;
   declare locStringId: CreationOptional<ForeignKey<LocString['id']>>;
   declare page: string;
   declare placement: number;
-  declare inlineCSS: CreationOptional<string>;
+  declare inlineCss: CreationOptional<string>;
   declare imageSrc: CreationOptional<string>;
 }
 
-DynamicText.init({
+DynamicModule.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
+  moduleType: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   locStringId: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: { model: 'loc_strings', key: 'id' }
+    references: { model: 'loc_strings', key: 'id' },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
   },
   page: {
     type: DataTypes.STRING,
@@ -31,7 +38,7 @@ DynamicText.init({
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  inlineCSS: {
+  inlineCss: {
     type: DataTypes.STRING,
     allowNull: true
   },
@@ -43,7 +50,7 @@ DynamicText.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'dynamic_text'
+  modelName: 'dynamic_module'
 });
 
-export default DynamicText;
+export default DynamicModule;

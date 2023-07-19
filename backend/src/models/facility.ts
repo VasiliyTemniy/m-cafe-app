@@ -20,7 +20,7 @@ Facility.init({
   addressId: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: { model: 'addresses', key: 'id' }
+    references: { model: 'addresses', key: 'id' },
   },
   nameLocId: {
     type: DataTypes.INTEGER,

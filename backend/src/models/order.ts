@@ -21,12 +21,16 @@ Order.init({
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: 'users', key: 'id' }
+    references: { model: 'users', key: 'id' },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
   },
   addressId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: 'addresses', key: 'id' }
+    references: { model: 'addresses', key: 'id' },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
   },
   deliverAt: {
     type: DataTypes.DATE,
