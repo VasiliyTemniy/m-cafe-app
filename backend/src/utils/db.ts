@@ -4,7 +4,7 @@ import { Sequelize } from 'sequelize';
 import { Umzug, SequelizeStorage } from 'umzug';
 import { loadMigrations } from '../migrations/index.js';
 
-const disablePgDbSSL = (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') && process.env.DOCKERIZED_DEV === 'true';
+const disablePgDbSSL = !(process.env.PG_DB_USE_SSL === 'true');
 
 export const sequelize = new Sequelize(config.DATABASE_URL, {
   dialect: 'postgres',
