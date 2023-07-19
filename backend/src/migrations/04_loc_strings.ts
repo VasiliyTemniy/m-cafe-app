@@ -2,28 +2,23 @@ import { DataTypes } from 'sequelize';
 import { MigrationContext } from '../types/umzugContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('foods', {
+  await queryInterface.createTable('loc_strings', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    name: {
+    ru_string: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    food_type_id: {
+    en_string: {
       type: DataTypes.STRING,
-      allowNull: false,
-      references: { model: 'food_types', key: 'id' }
+      allowNull: true
     },
-    description: {
+    alt_string: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    price: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,
@@ -37,5 +32,5 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('foods');
+  await queryInterface.dropTable('loc_strings');
 };

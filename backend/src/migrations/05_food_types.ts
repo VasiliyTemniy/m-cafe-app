@@ -8,13 +8,15 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       primaryKey: true,
       autoIncrement: true
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
+    name_loc_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'loc_strings', key: 'id' }
     },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false
+    description_loc_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'loc_strings', key: 'id' }
     },
     created_at: {
       type: DataTypes.DATE,

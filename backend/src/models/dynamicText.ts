@@ -1,12 +1,11 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
+import LocString from './locString.js';
 
 import { sequelize } from '../utils/db.js';
 
 class DynamicText extends Model<InferAttributes<DynamicText>, InferCreationAttributes<DynamicText>> {
   declare id: CreationOptional<number>;
-  declare ruText: CreationOptional<string>;
-  declare enText: CreationOptional<string>;
-  declare arText: CreationOptional<string>;
+  declare locStringId: CreationOptional<ForeignKey<LocString['id']>>;
   declare page: string;
   declare placement: number;
   declare inlineCSS: CreationOptional<string>;
@@ -19,17 +18,10 @@ DynamicText.init({
     primaryKey: true,
     autoIncrement: true
   },
-  ruText: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  enText: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  arText: {
-    type: DataTypes.STRING,
-    allowNull: true
+  locStringId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: { model: 'loc_strings', key: 'id' }
   },
   page: {
     type: DataTypes.STRING,

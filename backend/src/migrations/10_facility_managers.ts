@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { MigrationContext } from '../types/umzugContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('user_addresses', {
+  await queryInterface.createTable('facility_managers', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -13,10 +13,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false,
       references: { model: 'users', key: 'id' }
     },
-    address_id: {
+    facility_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'addresses', key: 'id' }
+      references: { model: 'facilities', key: 'id' }
     },
     created_at: {
       type: DataTypes.DATE,
@@ -30,5 +30,5 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('user_addresses');
+  await queryInterface.dropTable('facility_managers');
 };

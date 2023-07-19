@@ -1,13 +1,14 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
 import FoodType from './foodType.js';
+import LocString from './locString.js';
 
 import { sequelize } from '../utils/db.js';
 
 class Food extends Model<InferAttributes<Food>, InferCreationAttributes<Food>> {
   declare id: CreationOptional<number>;
-  declare name: string;
+  declare nameLocId: ForeignKey<LocString['id']>;
   declare foodTypeId: ForeignKey<FoodType['id']>;
-  declare description: string;
+  declare descriptionLocId: ForeignKey<LocString['id']>;
   declare price: number;
 }
 
@@ -17,18 +18,20 @@ Food.init({
     primaryKey: true,
     autoIncrement: true
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
+  nameLocId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: 'loc_strings', key: 'id' }
   },
   foodTypeId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: 'food_types', key: 'id' }
   },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: false
+  descriptionLocId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: 'loc_strings', key: 'id' }
   },
   price: {
     type: DataTypes.INTEGER,

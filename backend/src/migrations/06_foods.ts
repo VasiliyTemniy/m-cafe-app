@@ -2,39 +2,30 @@ import { DataTypes } from 'sequelize';
 import { MigrationContext } from '../types/umzugContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('dynamic_texts', {
+  await queryInterface.createTable('foods', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    ru_text: {
-      type: DataTypes.STRING,
-      allowNull: true
+    name_loc_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'loc_strings', key: 'id' }
     },
-    en_text: {
+    food_type_id: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false,
+      references: { model: 'food_types', key: 'id' }
     },
-    ar_text: {
-      type: DataTypes.STRING,
-      allowNull: true
+    description_loc_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'loc_strings', key: 'id' }
     },
-    page: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    placement: {
+    price: {
       type: DataTypes.INTEGER,
       allowNull: false
-    },
-    inline_css: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    image_src: {
-      type: DataTypes.STRING,
-      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,
@@ -48,5 +39,5 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('dynamic_texts');
+  await queryInterface.dropTable('foods');
 };

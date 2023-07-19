@@ -1,11 +1,12 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
+import LocString from './locString.js';
 
 import { sequelize } from '../utils/db.js';
 
 class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
   declare id: CreationOptional<number>;
-  declare name: string;
-  declare stockMeasure: string;
+  declare nameLocId: ForeignKey<LocString['id']>;
+  declare stockMeasureLocId: ForeignKey<LocString['id']>;
   declare proteins: CreationOptional<number>;
   declare fats: CreationOptional<number>;
   declare carbohydrates: CreationOptional<number>;
@@ -18,13 +19,15 @@ Ingredient.init({
     primaryKey: true,
     autoIncrement: true
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
+  nameLocId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: 'loc_strings', key: 'id' }
   },
-  stockMeasure: {
-    type: DataTypes.STRING,
-    allowNull: false
+  stockMeasureLocId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: 'loc_strings', key: 'id' }
   },
   proteins: {
     type: DataTypes.INTEGER,

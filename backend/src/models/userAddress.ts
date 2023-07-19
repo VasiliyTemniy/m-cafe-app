@@ -6,8 +6,8 @@ import { sequelize } from '../utils/db.js';
 
 class UserAddress extends Model<InferAttributes<UserAddress>, InferCreationAttributes<UserAddress>> {
   declare id: CreationOptional<number>;
-  declare userId: CreationOptional<ForeignKey<User['id']>>;
-  declare addressId: CreationOptional<ForeignKey<Address['id']>>;
+  declare userId: ForeignKey<User['id']>;
+  declare addressId: ForeignKey<Address['id']>;
 }
 
 UserAddress.init({
@@ -18,12 +18,12 @@ UserAddress.init({
   },
   userId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     references: { model: 'users', key: 'id' }
   },
   addressId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     references: { model: 'addresses', key: 'id' }
   }
 }, {

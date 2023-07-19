@@ -6,8 +6,8 @@ import { sequelize } from '../utils/db.js';
 
 class FacilityManager extends Model<InferAttributes<FacilityManager>, InferCreationAttributes<FacilityManager>> {
   declare id: CreationOptional<number>;
-  declare userId: CreationOptional<ForeignKey<User['id']>>;
-  declare facilityId: CreationOptional<ForeignKey<Facility['id']>>;
+  declare userId: ForeignKey<User['id']>;
+  declare facilityId: ForeignKey<Facility['id']>;
 }
 
 FacilityManager.init({
@@ -18,12 +18,12 @@ FacilityManager.init({
   },
   userId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     references: { model: 'users', key: 'id' }
   },
   facilityId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     references: { model: 'facilities', key: 'id' }
   }
 }, {
