@@ -4,6 +4,7 @@
 
 import { glob } from 'glob';
 import { MigrationContext } from '../types/umzugContext.js';
+import logger from '../utils/logger.js';
 
 type MigrationFn = ({ context }: MigrationContext) => Promise<void>;
 
@@ -20,7 +21,7 @@ export const loadMigrations = async () => {
       ? await glob('build/migrations/*.js', { ignore: 'build/migrations/index.js' })
       : await glob('src/migrations/*.ts', { ignore: 'src/migrations/index.ts' });
 
-    console.log(res);
+    logger.info(res);
 
     const migrationsPromise = res.map( async (file) => {
 
