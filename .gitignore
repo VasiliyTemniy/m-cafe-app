@@ -1,14 +1,13 @@
-/node_modules
+node_modules
 
-backend/node_modules
-frontend/node_modules
+build
 
-backend/build
-frontend/build
+dist
+
 yarn-error.log*
 
-/frontend/.webpack
-/frontend/.webpack-dev
+.webpack
+.webpack-dev
 
 **/*/.env
 *.env
