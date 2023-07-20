@@ -5,7 +5,7 @@ import { sequelize } from '../utils/db.js';
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
   declare username: string;
-  declare name: string;
+  declare name: CreationOptional<string>;
   declare passwordHash: string;
   declare phonenumber: string;
   declare email: CreationOptional<string>;
