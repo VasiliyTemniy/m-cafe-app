@@ -25,20 +25,19 @@ app.use(express.json());
 
 app.use(middleware.requestLogger);
 
-app.use('/api/session', sessionRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/admin', adminRouter);
+app.use('/session', sessionRouter);
+app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
 
-( async () => {
+
+const importTestingRouter = async () => {
   if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     const testingRouter = await import('./controllers/testing.js');
-    app.use('/api/testing', testingRouter.default);
+    app.use('/testing', testingRouter.default);
   }
-});
+};
 
-app.get('/ping', (req, res) => {
-  res.status(200).json({ "message": "Pong" });
-});
+await importTestingRouter();
 
 app.use(middleware.errorHandler);
 app.use(middleware.unknownEndpoint);

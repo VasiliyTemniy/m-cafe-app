@@ -5,7 +5,7 @@ const pingApi = async () => {
 
   const config = { headers: {'Content-Type': 'application/json'} };
   const { data: res } = await axios.get<JSON>(
-    `${apiBaseUrl}/ping`,
+    `${apiBaseUrl}/testing/ping`,
     config
   );
 

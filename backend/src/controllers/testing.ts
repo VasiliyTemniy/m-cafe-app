@@ -4,6 +4,12 @@ import { runMigrations, sequelize } from '../utils/db.js';
 const testingRouter = Router();
 
 testingRouter.get(
+  '/ping',
+  (req, res) => {
+    res.status(200).json({ "message": "Pong" });
+});
+
+testingRouter.get(
   '/reset',
   (async (req, res) => {
     await sequelize.drop();
