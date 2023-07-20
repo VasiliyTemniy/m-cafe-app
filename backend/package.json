@@ -49,5 +49,6 @@
     "ts-node": "^10.9.1",
     "tsc-watch": "^6.0.4",
     "typescript": "^5.0.4"
-  }
+  },
+  "packageManager": "yarn@3.6.1"
 }
