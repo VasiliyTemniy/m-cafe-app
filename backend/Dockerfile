@@ -23,6 +23,9 @@ WORKDIR /usr/src/app
 ENV NODE_ENV production
 
 # RUN CI=true yarn run test
+
+RUN rm -rf backend/tests
+
 RUN yarn run build
 
 
