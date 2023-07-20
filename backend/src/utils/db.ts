@@ -16,6 +16,7 @@ export const sequelize = new Sequelize(config.DATABASE_URL, {
       rejectUnauthorized: false
     }
   },
+  logging: !(process.env.NODE_ENV === 'test')
 });
 logger.info('connecting to ' + config.DATABASE_URL);
 
