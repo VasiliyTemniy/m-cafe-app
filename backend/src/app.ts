@@ -16,10 +16,6 @@ app.use(cors({
   origin: config.ALLOWED_ORIGIN
 }));
 
-// app.use((_req, _res, next) => {
-//   next();
-// }, cors({ maxAge: 84600 }));
-
 app.use(express.json());
 
 
