@@ -85,7 +85,7 @@ const errorHandler: ErrorRequestHandler = (async (error, req, res, next) => {
   } else if (error.name === 'ValidationError') {
     return res.status(400).json({ error: error.message as string });
   } else if (error.name === 'RequestBodyError') {
-    return res.status(400).json(error);
+    return res.status(400).json({ error: error.message as string });
   } else if (error.name === 'JsonWebTokenError') {
     return res.status(401).json({ error: 'Invalid token' });
   } else if (error.name === 'TokenExpiredError') {
