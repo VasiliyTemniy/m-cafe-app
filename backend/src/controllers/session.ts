@@ -1,15 +1,14 @@
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import { RequestHandler, Router } from 'express';
-import models from '../models/index.js';
 import middleware from '../utils/middleware.js';
 import config from '../utils/config.js';
 import { isCustomRequest } from '../types/route.js';
 import { RequestBodyError } from '../types/errors.js';
 import { isLoginBody } from '../types/requestBodies.js';
+import { User, Session } from '../models/index.js';
 
 const sessionRouter = Router();
-const { User, Session } = models;
 
 sessionRouter.post(
   '/',

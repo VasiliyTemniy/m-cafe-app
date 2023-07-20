@@ -1,14 +1,12 @@
 import logger from './logger.js';
 import jwt from 'jsonwebtoken';
 import config from './config.js';
-import models from '../models/index.js';
 import { Route, isCustomRequest } from '../types/route.js';
 import type { ErrorRequestHandler } from "express";
 import { Request, Response } from 'express';
 import { isCustomPayload } from '../types/token.js';
 import { SessionError } from '../types/errors.js';
-
-const { User, Session } = models;
+import { User, Session } from '../models/index.js';
 
 const requestLogger : Route = (req, res, next) => {
   logger.info('Method:' + req.method);

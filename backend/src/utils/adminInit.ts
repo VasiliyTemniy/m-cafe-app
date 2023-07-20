@@ -1,8 +1,6 @@
-import models from '../models/index.js';
 import bcryptjs from 'bcryptjs';
 import logger from './logger.js';
-
-const User = models.User;
+import { User } from '../models/index.js';
 
 export const initSuperAdmin = async () => {
 

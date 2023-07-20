@@ -1,11 +1,9 @@
 import { Router, RequestHandler } from 'express';
-import models from '../models/index.js';
 import { RequestBodyError } from '../types/errors.js';
 import { isDisableUserBody } from '../types/requestBodies.js';
 import { isCustomRequest } from '../types/route.js';
 import middleware from '../utils/middleware.js';
-
-const { User, Session } = models;
+import { User, Session } from '../models/index.js';
 
 const adminRouter = Router();
 

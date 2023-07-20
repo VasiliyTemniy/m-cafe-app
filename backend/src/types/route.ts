@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/user.js';
+import { User } from '../models/index.js';
 
 export interface RequestCustom extends Request {
   userId?: string;

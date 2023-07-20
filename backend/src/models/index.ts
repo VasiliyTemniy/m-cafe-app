@@ -303,7 +303,7 @@ OrderFood.belongsTo(Food);
 ******/
 
 
-export default {
+export {
   User,
   Session,
   Address,

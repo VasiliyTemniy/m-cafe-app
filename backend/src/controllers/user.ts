@@ -1,12 +1,10 @@
 import bcryptjs from 'bcryptjs';
 import { RequestHandler, Router } from 'express';
-import models from '../models/index.js';
 import { RequestBodyError } from '../types/errors.js';
 import { isEditPasswordBody, isEditUserBody, isNewUserBody } from '../types/requestBodies.js';
 import { isCustomRequest } from '../types/route.js';
 import middleware from '../utils/middleware.js';
-
-const User = models.User;
+import { User } from '../models/index.js';
 
 const usersRouter = Router();
 
@@ -78,7 +76,7 @@ usersRouter.put(
 );
 
 usersRouter.put(
-  '/:id?passchange',
+  '/passchange/:id',
   middleware.verifyToken,
   middleware.userExtractor,
   middleware.sessionCheck,
