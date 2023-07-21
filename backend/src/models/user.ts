@@ -4,7 +4,7 @@ import { sequelize } from '../utils/db.js';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
-  declare username: string;
+  declare username: CreationOptional<string>;
   declare name: CreationOptional<string>;
   declare passwordHash: string;
   declare phonenumber: string;
@@ -23,7 +23,7 @@ User.init({
   username: {
     type: DataTypes.STRING,
     unique: true,
-    allowNull: false,
+    allowNull: true,
     validate: {
       is: /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/i,
       len: [3, 25]

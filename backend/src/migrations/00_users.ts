@@ -11,7 +11,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     username: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false,
+      allowNull: true,
       validate: {
         is: /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/i,
         len: [3, 25]
