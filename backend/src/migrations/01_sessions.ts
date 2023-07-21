@@ -18,6 +18,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     token: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    user_agent: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'unknown'
     }
   });
 };

@@ -7,6 +7,7 @@ class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Se
   declare id: CreationOptional<number>;
   declare userId: ForeignKey<User['id']>;
   declare token: string;
+  declare userAgent: string;
 }
 
 Session.init({
@@ -23,6 +24,11 @@ Session.init({
   token: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  userAgent: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'unknown'
   }
 }, {
   sequelize,
