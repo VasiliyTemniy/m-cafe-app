@@ -1,25 +1,25 @@
-const info = (params: string | string[]) => {
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const info = (message?: any, ...optionalParams: any[]) => {
   if (process.env.NODE_ENV !== 'test') {
-    console.log(params);
+    console.log(message, ...optionalParams);
   }
 };
 
-const error = (params: string | string[]) => {
+const error = (message?: any, ...optionalParams: any[]) => {
   if (process.env.NODE_ENV !== 'test') {
-    console.error(params);
+    console.error(message, ...optionalParams);
   }
 };
 
-const shout = (params: string | string[]) => {
-  if (process.env.NODE_ENV !== 'test') {
-    console.log('SHOUT HEEEEREEEE!');
-    console.log('SHOUT HEEEEREEEE!');
-    console.log('SHOUT HEEEEREEEE!');
-    console.log(params);
-    console.log('END OF SHOUT');
-    console.log('END OF SHOUT');
-    console.log('END OF SHOUT');
-  }
+const shout = (message?: any, ...optionalParams: any[]) => {
+  console.log('SHOUT HEEEEREEEE!');
+  console.log('SHOUT HEEEEREEEE!');
+  console.log('SHOUT HEEEEREEEE!');
+  console.log(message, ...optionalParams);
+  console.log('END OF SHOUT');
+  console.log('END OF SHOUT');
+  console.log('END OF SHOUT');
 };
 
 export default { info, error, shout };

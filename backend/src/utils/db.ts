@@ -46,7 +46,7 @@ const migrationConf = {
 export const runMigrations = async () => {
   const migrator = new Umzug(migrationConf);
   const migrationsDone = await migrator.up();
-  console.log('Migrations up to date', {
+  logger.info('Migrations up to date', {
     files: migrationsDone.map((mig) => mig.name),
   });
 };
