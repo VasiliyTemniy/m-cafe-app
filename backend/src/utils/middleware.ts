@@ -1,11 +1,11 @@
 import logger from './logger.js';
 import jwt from 'jsonwebtoken';
 import config from './config.js';
-import { RequestMiddle } from '../types/route.js';
+import { RequestMiddle } from '../types/RequestCustom.js';
 import type { RequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
-import { isCustomPayload } from '../types/token.js';
-import { AuthorizationError, DatabaseError, SessionError } from '../types/errors.js';
+import { isCustomPayload } from '../types/JWTPayloadCustom.js';
+import { AuthorizationError, DatabaseError, SessionError } from '../types/Errors.js';
 import { User, Session } from '../models/index.js';
 
 const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
@@ -32,7 +32,7 @@ const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: Ne
   if (typeof payload === "string" || payload instanceof String || !isCustomPayload(payload))
     return next(new AuthorizationError('Malformed token'));
     
-  req.userId = payload.id;
+  req.userId = Number(payload.id);
   req.token = token;
   
   next();
