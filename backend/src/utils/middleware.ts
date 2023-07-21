@@ -1,14 +1,14 @@
 import logger from './logger.js';
 import jwt from 'jsonwebtoken';
 import config from './config.js';
-import { Route, isCustomRequest } from '../types/route.js';
-import type { ErrorRequestHandler } from "express";
-import { Request, Response } from 'express';
+import { isCustomRequest, RequestMiddle } from '../types/route.js';
+import type { ErrorRequestHandler, RequestHandler } from "express";
+import { Request, Response, NextFunction } from 'express';
 import { isCustomPayload } from '../types/token.js';
-import { SessionError } from '../types/errors.js';
+import { AuthorizationError, DatabaseError, SessionError } from '../types/errors.js';
 import { User, Session } from '../models/index.js';
 
-const requestLogger : Route = (req, res, next) => {
+const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   logger.info('Method:' + req.method);
   logger.info('Path:  ' + req.path);
   logger.info('Body:  ' + req.body);
@@ -16,67 +16,62 @@ const requestLogger : Route = (req, res, next) => {
   next();
 };
 
-const verifyToken : Route = (req, res, next) => {
+
+const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: NextFunction) => {
+
   const authorization = req.get('authorization');
   const token =
     authorization && authorization.toLowerCase().startsWith('bearer ')
       ? authorization.substring(7)
       : null;
 
-  if (!req.headers.authorization) {
-    return res.status(401).json({ error: 'Authorization required' });
-  }
+  if (!req.headers.authorization || !token) return next(new AuthorizationError('Authorization required'));
 
-  if (token) {
+  const payload = jwt.verify(token, config.SECRET);
 
-    const payload = jwt.verify(token, config.SECRET);
+  if (typeof payload === "string" || payload instanceof String || !isCustomPayload(payload))
+    return next(new AuthorizationError('Malformed token'));
     
-    if (typeof payload === "object" && isCustomPayload(payload)) {
-      req.userId = payload.id;
-    } else {
-      return res.status(401).json({ error: 'token invalid' });
-    }
-    req.token = token;
-
-  } else {
-    return res.status(401).json({ error: 'token missing' });
-  }
+  req.userId = payload.id;
+  req.token = token;
   
   next();
 };
 
-// const userExtractor : Route = async (req, res, next) => {
-//   const user = await User.findByPk(req.userId);
-//   if (user) req.user = user;
-//   next();
-// };
 
-const userExtractor : Route = (req, res, next) => {
-  (async () => {
-    const user = await User.findByPk(req.userId);
-    if (user) req.user = user;
-    next();
-  });
-};
+const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-const sessionCheck : Route = (req, res, next) => {
-  (async () => {
-    const session = await Session.findOne({
-      where: {
-        userId: req.userId,
-        token: req.token
-      }
-    });
+  const user = await User.findByPk(req.userId);
+
+  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
+
+  req.user = user;
   
-    if (!session) {
-      next(new SessionError('Inactive session. Please, login'));
+  next();
+
+}) as RequestHandler;
+
+
+const sessionCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
+
+  const session = await Session.findOne({
+    where: {
+      userId: req.userId,
+      token: req.token
     }
-  
-    next();
   });
-};
 
-const errorHandler: ErrorRequestHandler = (async (error, req, res, next) => {
+  if (!session) return next(new SessionError('Inactive session. Please, login'));
+
+  next();
+
+}) as RequestHandler;
+
+
+// REWRITE MEEEEEEEE
+// REWRITE MEEEEEEEE
+// REWRITE MEEEEEEEE
+const errorHandler = (async (error, req: Request, res: Response, next: NextFunction) => {
 
   logger.error(error.message as string);
 
@@ -117,8 +112,14 @@ const errorHandler: ErrorRequestHandler = (async (error, req, res, next) => {
   next(error);
 }) as ErrorRequestHandler;
 
-const unknownEndpoint = (req: Request, res: Response) => {
-  res.status(404).send({ error: 'unknown endpoint' });
+
+const unknownEndpoint: RequestHandler = (req: Request, res: Response) => {
+  res.status(404).json({
+    error: {
+      name: 'UnknownEndpoint',
+      message: 'UnknownEndpoint'
+    }
+  });
 };
 
 export default {
