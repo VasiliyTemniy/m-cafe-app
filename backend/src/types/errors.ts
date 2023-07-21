@@ -67,3 +67,13 @@ export class AuthorizationError extends Error {
     this.name = "AuthorizationError";
   }
 }
+
+interface CustomError {
+  name: string;
+  message: string;
+}
+
+export const isCustomError = (error: unknown): error is CustomError =>
+  Object.prototype.hasOwnProperty.call(error, "name")
+  &&
+  Object.prototype.hasOwnProperty.call(error, "message");

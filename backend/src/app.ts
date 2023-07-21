@@ -7,6 +7,7 @@ import usersRouter from './controllers/user.js';
 import sessionRouter from './controllers/session.js';
 import adminRouter from './controllers/admin.js';
 import middleware from './utils/middleware.js';
+import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
 
 
@@ -35,7 +36,7 @@ const importTestingRouter = async () => {
 
 await importTestingRouter();
 
-app.use(middleware.errorHandler);
+app.use(errorHandler);
 app.use(middleware.unknownEndpoint);
 
 export default app;
