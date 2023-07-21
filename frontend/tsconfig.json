@@ -17,6 +17,7 @@
     "useUnknownInCatchVariables": false,
     "noEmit": false,
     "outDir": "./dist",
+    "rootDirs": [".", "../shared/src"],
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["dom", "ES2020", "ScriptHost"]

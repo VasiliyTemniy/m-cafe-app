@@ -6,7 +6,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "outDir": "./build",
-    "rootDir": "./src",
+    "rootDirs": ["./src", "../shared"],
     "skipLibCheck": true,
     "strict": true,
     "target": "es2019"
@@ -15,7 +15,7 @@
     "esm": true
   },
   "exclude": ["node_modules/*"],
-  "include": ["src"],
+  "include": ["src", "../shared"],
   "references": [
     {
       "path": "../shared"
