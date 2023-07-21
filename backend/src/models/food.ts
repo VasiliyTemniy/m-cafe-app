@@ -1,6 +1,6 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import FoodType from './foodType.js';
-import LocString from './locString.js';
+import FoodType from './FoodType.js';
+import LocString from './LocString.js';
 
 import { sequelize } from '../utils/db.js';
 

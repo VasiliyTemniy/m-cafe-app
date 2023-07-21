@@ -1,5 +1,5 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import Food from './food.js';
+import Food from './Food.js';
 
 import { sequelize } from '../utils/db.js';
 

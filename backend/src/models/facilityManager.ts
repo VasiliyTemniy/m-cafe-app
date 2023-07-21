@@ -1,6 +1,6 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import User from './user.js';
-import Facility from './facility.js';
+import User from './User.js';
+import Facility from './Facility.js';
 
 import { sequelize } from '../utils/db.js';
 

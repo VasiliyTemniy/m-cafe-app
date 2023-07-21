@@ -1,22 +1,22 @@
-import User from './user.js';
-import Session from './session.js';
-import Address from './address.js';
-import Food from './food.js';
-import Ingredient from './ingredient.js';
-import Order from './order.js';
-import FoodComponent from './foodComponent.js';
-import OrderFood from './orderFood.js';
-import UserAddress from './userAddress.js';
-import FoodType from './foodType.js';
-import LocString from './locString.js';
-import Facility from './facility.js';
-import FacilityManager from './facilityManager.js';
-import Stock from './stock.js';
-import DynamicModule from './dynamicModule.js';
+import User from './User.js';
+import Session from './Session.js';
+import Address from './Address.js';
+import Food from './Food.js';
+import Ingredient from './Ingredient.js';
+import Order from './Order.js';
+import FoodComponent from './FoodComponent.js';
+import OrderFood from './OrderFood.js';
+import UserAddress from './UserAddress.js';
+import FoodType from './FoodType.js';
+import LocString from './LocString.js';
+import Facility from './Facility.js';
+import FacilityManager from './FacilityManager.js';
+import Stock from './Stock.js';
+import DynamicModule from './DynamicModule.js';
 
 /*****
-* User + Session table associations BEGIN
-******/
+ * User + Session table associations BEGIN
+ ******/
 
 User.hasMany(Session, {
   foreignKey: 'userId',
@@ -25,13 +25,13 @@ User.hasMany(Session, {
 Session.belongsTo(User);
 
 /*****
-* User + Session table associations END
-******/
+ * User + Session table associations END
+ ******/
 
 
 /*****
-* User + Address table associations BEGIN
-******/
+ * User + Address table associations BEGIN
+ ******/
 
 User.belongsToMany(Address, { through: UserAddress });
 Address.belongsToMany(User, { through: UserAddress });
@@ -47,13 +47,13 @@ Address.hasOne(UserAddress, {
 UserAddress.belongsTo(Address, { targetKey: 'id' });
 
 /*****
-* User + Address table associations END
-******/
+ * User + Address table associations END
+ ******/
 
 
 /*****
-* Localization table associations BEGIN
-******/
+ * Localization table associations BEGIN
+ ******/
 
 LocString.hasOne(FoodType, {
   foreignKey: 'nameLocId',
@@ -130,13 +130,13 @@ LocString.hasOne(DynamicModule, {
 DynamicModule.belongsTo(LocString);
 
 /*****
-* Localization table associations END
-******/
+ * Localization table associations END
+ ******/
 
 
 /*****
-* Food + FoodType table associations BEGIN
-******/
+ * Food + FoodType table associations BEGIN
+ ******/
 
 FoodType.hasMany(Food, {
   foreignKey: 'foodTypeId',
@@ -145,13 +145,13 @@ FoodType.hasMany(Food, {
 Food.belongsTo(FoodType);
 
 /*****
-* Food + FoodType table associations END
-******/
+ * Food + FoodType table associations END
+ ******/
 
 
 /*****
-* Food + Ingredient + Food table associations BEGIN
-******/
+ * Food + Ingredient + Food table associations BEGIN
+ ******/
 
 Ingredient.belongsToMany(Food, {
   through: {
@@ -195,12 +195,12 @@ Ingredient.hasMany(FoodComponent, {
 
 
 /*
-* THIS below makes food_components table to have excessive field ingredient_id,
-* Checked via sequelize.sync()
-* It is a pity that belongsTo does not have 'sourceKey' option
-*
-// FoodComponent.belongsTo(Ingredient, { targetKey: 'id' });
-*/
+ * THIS below makes food_components table to have excessive field ingredient_id,
+ * Checked via sequelize.sync()
+ * It is a pity that belongsTo does not have 'sourceKey' option
+ *
+ // FoodComponent.belongsTo(Ingredient, { targetKey: 'id' });
+ */
 
 
 Food.belongsToMany(Food, {
@@ -226,13 +226,13 @@ Food.hasMany(FoodComponent, {
 });
 
 /*****
-* Food + Ingredient + Food table associations END
-******/
+ * Food + Ingredient + Food table associations END
+ ******/
 
 
 /*****
-* Facility + Address + Managers table associations BEGIN
-******/
+ * Facility + Address + Managers table associations BEGIN
+ ******/
 
 Address.hasOne(Facility, {
   foreignKey: 'addressId',
@@ -255,13 +255,13 @@ User.hasOne(FacilityManager, {
 FacilityManager.belongsTo(User);
 
 /*****
-* Facility + Address + Managers table associations END
-******/
+ * Facility + Address + Managers table associations END
+ ******/
 
 
 /*****
-* Stock + Facility + Ingredient table associations BEGIN
-******/
+ * Stock + Facility + Ingredient table associations BEGIN
+ ******/
 
 Ingredient.hasMany(Stock, {
   foreignKey: 'ingredientId',
@@ -277,13 +277,13 @@ Facility.hasMany(Stock, {
 Stock.belongsTo(Facility);
 
 /*****
-* Stock + Facility + Ingredient table associations END
-******/
+ * Stock + Facility + Ingredient table associations END
+ ******/
 
 
 /*****
-* Order + Food table associations BEGIN
-******/
+ * Order + Food table associations BEGIN
+ ******/
 
 Order.belongsToMany(Food, { through: OrderFood });
 Food.belongsToMany(Order, { through: OrderFood });
@@ -299,8 +299,8 @@ Food.hasMany(OrderFood, {
 OrderFood.belongsTo(Food);
 
 /*****
-* Order + Food table associations END
-******/
+ * Order + Food table associations END
+ ******/
 
 
 export {
