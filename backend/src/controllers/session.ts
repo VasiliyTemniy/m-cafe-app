@@ -4,7 +4,7 @@ import { RequestHandler, Router } from 'express';
 import middleware from '../utils/middleware.js';
 import config from '../utils/config.js';
 import { isCustomRequest } from '../types/route.js';
-import { RequestBodyError } from '../types/errors.js';
+import { RequestBodyError, CredentialsError, BannedError, UnknownError } from '../types/errors.js';
 import { isLoginBody } from '../types/requestBodies.js';
 import { User, Session } from '../models/index.js';
 
@@ -16,23 +16,32 @@ sessionRouter.post(
 
     if (!isLoginBody(req.body)) throw new RequestBodyError('Invalid login request body');
 
-    const { username, password } = req.body;
+    const { username, phonenumber, password } = req.body;
+    const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
-    const user = await User.scope('all').findOne({
-      where: {username: username}
-    });
+    const user = username 
+      ? await User.scope('all').findOne({
+        where: {username: username}
+      })
+      : await User.scope('all').findOne({
+        where: {phonenumber: phonenumber}
+      });
+
     const passwordCorrect =
       user === null ? false : await bcryptjs.compare(password, user.passwordHash);
 
-    if (!(user && passwordCorrect)) {
-      return res.status(401).json({
-        error: 'invalid username or password',
-      });
+    if (!(user && passwordCorrect)) { 
+      throw new CredentialsError('Invalid username or password');
     } else if (user.disabled) {
-      return res.status(401).json({
-        error: 'Your account have been banned. Contact admin to unblock account',
-      });
+      throw new BannedError('Your account have been banned. Contact admin to unblock account');
     }
+
+    const activeSession = await Session.findOne({
+      where: {
+        userId: user.id,
+        userAgent
+      }
+    });
 
     const userForToken = {
       username: user.username,
@@ -41,14 +50,25 @@ sessionRouter.post(
 
     const token = jwt.sign(userForToken, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
-    const session = {
-      userId: user.id,
-      token
-    };
+    if (!activeSession) {
 
-    await Session.create(session);
+      const session = {
+        userId: user.id,
+        token,
+        userAgent
+      };
 
-    res.status(200).send({ token, username: user.username, name: user.name, id: userForToken.id });
+      await Session.create(session);
+
+    }
+
+    res.status(200).send({
+      token,
+      username: user.username,
+      name: user.name,
+      id: userForToken.id
+    });
+    
   }) as RequestHandler
 );
 
@@ -58,16 +78,17 @@ sessionRouter.delete(
   middleware.userExtractor,
   (async (req, res) => {
 
-    if (isCustomRequest(req) && req.userId && req.token) {
-      await Session.destroy({
-        where: {
-          userId: req.userId,
-          token: req.token
-        }
-      });
-    }
+    if (!isCustomRequest(req)) throw new UnknownError('This code should never be reached');
+
+    await Session.destroy({
+      where: {
+        userId: req.userId,
+        token: req.token
+      }
+    });
 
     res.status(204).end();
+
   }) as RequestHandler
 );
 

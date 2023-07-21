@@ -1,5 +1,5 @@
 import { Router, RequestHandler } from 'express';
-import { RequestBodyError } from '../types/errors.js';
+import { DatabaseError, ProhibitedError, RequestBodyError, UnknownError } from '../types/errors.js';
 import { isDisableUserBody } from '../types/requestBodies.js';
 import { isCustomRequest } from '../types/route.js';
 import middleware from '../utils/middleware.js';
@@ -9,40 +9,52 @@ const adminRouter = Router();
 
 adminRouter.get(
   '/users/',
+  middleware.verifyToken,
+  middleware.userExtractor,
+  middleware.sessionCheck,
   (async (req, res) => {
 
-    const users = await User.findAll({
+    if (!isCustomRequest(req)) throw new UnknownError('This code should never be reached');
+
+    const userAdmin = req.user;
+
+    if (!userAdmin.admin) throw new ProhibitedError('You have no admin permissions');
+
+    const userSubjects = await User.findAll({
       attributes: { exclude: ['createdAt', 'updatedAt', 'passwordHash', 'disabled', 'admin'] },
       include: [
         {
-          // model: Blog,
           attributes: { exclude: ['userId', 'createdAt', 'updatedAt'] }
         }
       ],
     });
 
-    res.json(users);
+    res.status(200).json(userSubjects);
+
   }) as RequestHandler
 );
 
 adminRouter.get(
   '/users/:id',
+  middleware.verifyToken,
+  middleware.userExtractor,
+  middleware.sessionCheck,
   (async (req, res) => {
 
-    // let where = {};
-    // if (req.query.read) {
-    //   where = { read: req.query.read === 'true' };
-    // }
+    if (!isCustomRequest(req)) throw new UnknownError('This code should never be reached');
 
-    const user = await User.findByPk(req.params.id, {
+    const userAdmin = req.user;
+
+    if (!userAdmin.admin) throw new ProhibitedError('You have no admin permissions');
+
+    const userSubject = await User.findByPk(req.params.id, {
       attributes: { exclude: ['createdAt', 'updatedAt', 'passwordHash', 'disabled', 'admin'] }
     });
 
-    if (user) {
-      res.json(user);
-    } else {
-      throw new Error('No user entry');
-    }
+    if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
+
+    res.status(200).json(userSubject);
+
   }) as RequestHandler
 );
 
@@ -53,35 +65,30 @@ adminRouter.put(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    if (isCustomRequest(req) && req.user && isDisableUserBody(req.body)) {
-      const userAdmin = req.user;
+    if (!isCustomRequest(req)) throw new UnknownError('This code should never be reached');
+    if (!isDisableUserBody(req.body)) throw new RequestBodyError('Invalid disable user request body');
 
-      if (!userAdmin.admin) {
-        res.status(403).json({ error: 'You have no admin permissions' });
-      }
+    const userAdmin = req.user;
 
-      const userSubject = await User.scope('all').findByPk(req.params.id);
+    if (!userAdmin.admin) throw new ProhibitedError('You have no admin permissions');
 
-      if (!userSubject) {
-        res.status(403).json({ error: `No user entry with this id ${req.params.id}` });
-      } else {
-        userSubject.disabled = req.body.disable;
+    const userSubject = await User.scope('all').findByPk(req.params.id);
 
-        if (userSubject.disabled) {
-          await Session.destroy({
-            where: {
-              userId: userSubject.id,
-            }
-          });
+    if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
+
+    userSubject.disabled = req.body.disable;
+
+    if (userSubject.disabled) {
+      await Session.destroy({
+        where: {
+          userId: userSubject.id,
         }
-
-        await userSubject.save();
-        res.json(userSubject);
-      }
-
-    } else {
-      throw new RequestBodyError('Invalid disable user request body');
+      });
     }
+
+    await userSubject.save();
+
+    res.status(200).json(userSubject);
     
   }) as RequestHandler
 );
