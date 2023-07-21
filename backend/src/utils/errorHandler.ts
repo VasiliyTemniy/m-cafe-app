@@ -1,39 +1,50 @@
 import logger from './logger.js';
-import { isCustomRequest } from '../types/route.js';
+import { isCustomRequest } from '../types/RequestCustom.js';
 import type { ErrorRequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { Session } from '../models/index.js';
-import { isCustomError } from '../types/errors.js';
+import { isCustomError, isNamedError } from '../types/Errors.js';
 
 export const errorHandler = (async (error, req: Request, res: Response, next: NextFunction) => {
 
-  if (!isCustomError(error)) {
-    logger.shout('This error has either no name or no message, take measures!');
-    logger.info(error as string);
+  if (!isNamedError(error)) {
+    logger.shout('This error has no name, take measures!', error);
+    res.status(500).json({
+      error: {
+        name: 'UnhandledError',
+        message: 'UNHANDLED error!'
+      }
+    });
     return next(error);
   }
 
-  logger.error([error.name, error.message]);
+  logger.error(error);
+
+  /**
+   * SEQUELIZE ERRORS START
+   */
+
+  if (error.name.startsWith('Sequelize')) {
+    const status = error.name === 'SequelizeUniqueConstraintError' ? 409 : 400;
+    res.status(status).json({
+      error: {
+        name: error.name,
+        message: 'Some internal constraints error',
+        originalError: { ...error }
+      }
+    });
+    return next(error);
+  }
+
+  /**
+   * SEQUELIZE ERRORS END
+   */
+
+  /**
+   * OTHER LIBS ERRORS
+   */
 
   switch (error.name) {
-
-    case 'CastError':
-      res.status(400).json({
-        error: {
-          name: 'CastError',
-          message: 'Malformatted id'
-        }
-      });
-      break;
-
-    case 'ValidationError':
-      res.status(400).json({
-        error: {
-          name: 'ValidationError',
-          message: error.message
-        }
-      });
-      break;
 
     case 'JsonWebTokenError':
       res.status(400).json({
@@ -42,7 +53,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
           message: 'Invalid token'
         }
       });
-      break;
+      return next(error);
 
     case 'TokenExpiredError':
       if (isCustomRequest(req))
@@ -52,43 +63,57 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
           token: req.token
         }
       });
-      res.status(400).json({
+      res.status(401).json({
         error: {
           name: 'TokenExpiredError',
           message: 'Token expired'
         }
       });
-      break;
+      return next(error);
 
-    case 'SequelizeValidationError':
-      res.status(400).json({
+  }
+
+  /**
+   * OTHER LIBS ERRORS END
+   */
+
+  /**
+   * CUSTOM ERRORS
+   */
+
+  if (!isCustomError(error)) {
+    logger.shout('This error has no message, take measures!', error);
+    res.status(500).json({
+      error: {
+        name: 'UnhandledError',
+        message: 'UNHANDLED error!'
+      }
+    });
+    return next(error);
+  }
+
+  switch (error.name) {
+
+    case 'SessionError':
+      res.status(401).json({
         error: {
-          name: 'SequelizeValidationError',
+          name: 'SessionError',
           message: error.message
         }
       });
       break;
 
-    case 'SessionError':
-        res.status(400).json({
-          error: {
-            name: 'SessionError',
-            message: error.message
-          }
-        });
-        break;
-
     case 'RequestBodyError':
-        res.status(400).json({
-          error: {
-            name: 'RequestBodyError',
-            message: error.message
-          }
-        });
-        break;
+      res.status(400).json({
+        error: {
+          name: 'RequestBodyError',
+          message: error.message
+        }
+      });
+      break;
 
     case 'CredentialsError':
-      res.status(400).json({
+      res.status(401).json({
         error: {
           name: 'CredentialsError',
           message: error.message
@@ -97,7 +122,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       break;
 
     case 'BannedError':
-      res.status(400).json({
+      res.status(403).json({
         error: {
           name: 'BannedError',
           message: error.message
@@ -106,7 +131,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       break;
 
     case 'HackError':
-      res.status(400).json({
+      res.status(418).json({
         error: {
           name: 'HackError',
           message: error.message
@@ -124,7 +149,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       break;
 
     case 'UnknownError':
-      res.status(400).json({
+      res.status(520).json({
         error: {
           name: 'UnknownError',
           message: error.message
@@ -133,7 +158,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       break;
 
     case 'DatabaseError':
-      res.status(400).json({
+      res.status(404).json({
         error: {
           name: 'DatabaseError',
           message: error.message
@@ -142,7 +167,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       break;
 
     case 'ProhibitedError':
-      res.status(400).json({
+      res.status(403).json({
         error: {
           name: 'ProhibitedError',
           message: error.message
@@ -151,7 +176,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       break;
 
     case 'AuthorizationError':
-      res.status(400).json({
+      res.status(401).json({
         error: {
           name: 'AuthorizationError',
           message: error.message
@@ -159,7 +184,21 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       });
       break;
 
+    default:
+      logger.shout('This should not be reached');
+      res.status(500).json({
+        error: {
+          name: 'UnhandledError',
+          message: 'UNHANDLED error!'
+        }
+      });
+      return next(error);
+
   }
+
+  /**
+   * CUSTOM ERRORS END
+   */
 
   next(error);
 }) as ErrorRequestHandler;
