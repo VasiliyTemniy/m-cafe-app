@@ -1,7 +1,7 @@
 import { Router, RequestHandler } from 'express';
-import { DatabaseError, ProhibitedError, RequestBodyError, UnknownError } from '../types/errors.js';
-import { isDisableUserBody } from '../types/requestBodies.js';
-import { isCustomRequest } from '../types/route.js';
+import { DatabaseError, ProhibitedError, RequestBodyError, UnknownError } from '../types/Errors.js';
+import { isDisableUserBody } from '../types/RequestBodies.js';
+import { isCustomRequest } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
 import { User, Session } from '../models/index.js';
 

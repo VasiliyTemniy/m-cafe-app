@@ -1,8 +1,8 @@
 import bcryptjs from 'bcryptjs';
 import { RequestHandler, Router } from 'express';
-import { CredentialsError, DatabaseError, HackError, PasswordLengthError, RequestBodyError, UnknownError } from '../types/errors.js';
-import { isEditUserBody, isNewUserBody } from '../types/requestBodies.js';
-import { isCustomRequest } from '../types/route.js';
+import { CredentialsError, DatabaseError, HackError, PasswordLengthError, RequestBodyError, UnknownError } from '../types/Errors.js';
+import { isEditUserBody, isNewUserBody } from '../types/RequestBodies.js';
+import { isCustomRequest } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
 import { User } from '../models/index.js';
 
@@ -46,7 +46,7 @@ usersRouter.put(
 
     if (!isCustomRequest(req)) throw new UnknownError('This code should never be reached');
     if (!isEditUserBody(req.body)) throw new RequestBodyError('Invalid edit user request body');
-    if (req.userId !== req.params.id) throw new HackError('User attempts to change another users data or invalid user id');
+    if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
 
     const { username, name, password, phonenumber, email, birthdate, newPassword } = req.body;
 

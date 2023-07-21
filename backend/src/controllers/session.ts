@@ -3,9 +3,9 @@ import bcryptjs from 'bcryptjs';
 import { RequestHandler, Router } from 'express';
 import middleware from '../utils/middleware.js';
 import config from '../utils/config.js';
-import { isCustomRequest } from '../types/route.js';
-import { RequestBodyError, CredentialsError, BannedError, UnknownError } from '../types/errors.js';
-import { isLoginBody } from '../types/requestBodies.js';
+import { isCustomRequest } from '../types/RequestCustom.js';
+import { RequestBodyError, CredentialsError, BannedError, UnknownError } from '../types/Errors.js';
+import { isLoginBody } from '../types/RequestBodies.js';
 import { User, Session } from '../models/index.js';
 
 const sessionRouter = Router();
