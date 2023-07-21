@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { MigrationContext } from '../types/umzugContext.js';
+import { MigrationContext } from '../types/MigrationContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('foods', {
