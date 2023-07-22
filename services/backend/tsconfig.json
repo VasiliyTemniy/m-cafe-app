@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "outDir": "./build",
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "newLine": "LF"
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "exclude": ["node_modules/*"],
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../../packages/utils"
+    }
+  ]
+}

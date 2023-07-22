@@ -9,18 +9,42 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "concurrently \"yarn --cwd frontend start\" \"yarn --cwd backend start\"",
-    "dev": "concurrently \"yarn --cwd frontend run dev\" \"yarn --cwd backend run dev\"",
+    "start": "yarn run prepare && concurrently \"yarn start:backend\" \"yarn start:frontend\"",
+    "start:backend": "yarn workspace m-cafe-backend start",
+    "start:frontend": "yarn workspace m-cafe-frontend start",
+    "dev": "yarn run prepare && concurrently \"yarn run dev:backend\" \"yarn run dev:frontend\"",
+    "dev:backend": "yarn workspace m-cafe-backend run dev",
+    "dev:frontend": "yarn workspace m-cafe-frontend run dev",
+    "prepare": "yarn run prepare:utils && yarn install",
+    "prepare:utils": "yarn run build:utils",
+    "prepare:backend": "yarn run prepare:utils && yarn workspaces focus m-cafe-backend",
+    "prepare:frontend": "yarn run prepare:utils && yarn workspaces focus m-cafe-frontend",
     "dev:docker": "docker compose -f docker-compose.dev.yml -p m_cafe_dev up --detach",
     "dev:docker-stop": "docker compose -f docker-compose.dev.yml -p m_cafe_dev down",
     "start:prod-docker": "docker compose -f docker-compose.yml -p m_cafe up --detach",
     "stop:prod-docker": "docker compose -f docker-compose.yml -p m_cafe down",
-    "build": "yarn --cwd frontend build && yarn --cwd backend build"
+    "build": "yarn run build:utils && yarn workspace m-cafe-frontend build && yarn workspace m-cafe-backend build",
+    "build:utils": "yarn workspace @m-cafe-app/utils run build",
+    "build:backend": "yarn workspace m-cafe-backend run build",
+    "build:frontend": "yarn workspace m-cafe-frontend run build",
+    "eslint": "yarn run eslint:utils && yarn run eslint:backend && yarn run eslint:frontend",
+    "eslint:utils": "yarn workspace @m-cafe-app/utils run eslint",
+    "eslint:backend": "yarn workspace m-cafe-backend run eslint",
+    "eslint:frontend": "yarn workspace m-cafe-frontend run eslint"
   },
   "dependencies": {
     "concurrently": "^8.0.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.40.0",
+    "eslint-plugin-react": "^7.32.2",
     "typescript": "^5.0.4"
-  }
+  },
+  "workspaces": [
+    "packages/*",
+    "services/*"
+  ],
+  "packageManager": "yarn@3.6.1"
 }

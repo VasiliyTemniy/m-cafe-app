@@ -5,16 +5,14 @@ services:
   frontend:
     image: m-cafe-frontend-dev
     build:
-      context: ./frontend
-      dockerfile: dev.Dockerfile
+      context: ./
+      dockerfile: ./services/frontend/dev.Dockerfile
     volumes:
-      - ./frontend:/usr/src/app
-      - ./shared:/usr/src/shared
+      - ./services/frontend:/usr/src/app/services/frontend
+      - ./packages/utils:/usr/src/app/packages/utils
     container_name: m-cafe-frontend-dev
     env_file:
       - .dev.docker-front.env
-    depends_on:
-      - nginx
 
   postgres_db:
     image: postgres:15.3-alpine3.18
@@ -39,17 +37,16 @@ services:
   backend:
     image: m-cafe-backend-dev
     build:
-      context: ./backend
-      dockerfile: dev.Dockerfile
+      context: ./
+      dockerfile: ./services/backend/dev.Dockerfile
     volumes:
-      - ./backend:/usr/src/app
-      - ./shared:/usr/src/shared
+      - ./services/backend:/usr/src/app/services/backend
+      - ./packages/utils:/usr/src/app/packages/utils
     container_name: m-cafe-backend-dev
     env_file:
       - .dev.docker-back.env
     depends_on:
       - postgres_db
-      - nginx
 
   nginx:
     image: nginx:1.25.1

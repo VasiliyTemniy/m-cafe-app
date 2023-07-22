@@ -1,0 +1,14 @@
+{
+  "name": "@m-cafe-app/utils",
+  "version": "1.0.0",
+  "description": "This package contains common and transit for frontend and backend: types, type guards, validators, errors",
+  "main": "build/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --build",
+    "eslint": "eslint ./src/**/*.{ts,tsx}"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}

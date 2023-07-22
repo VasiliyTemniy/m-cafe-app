@@ -6,7 +6,7 @@ services:
     image: m-cafe-frontend
     build:
       context: ./
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./services/frontend/Dockerfile
     container_name: m-cafe-frontend
     env_file:
       - .docker-front.env
@@ -37,7 +37,7 @@ services:
     image: m-cafe-backend
     build:
       context: ./
-      dockerfile: ./backend/Dockerfile
+      dockerfile: ./services/backend/Dockerfile
     container_name: m-cafe-backend
     env_file:
       - .docker-back.env
