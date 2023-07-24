@@ -30,7 +30,11 @@
     "eslint": "yarn run eslint:utils && yarn run eslint:backend && yarn run eslint:frontend",
     "eslint:utils": "yarn workspace @m-cafe-app/utils run eslint",
     "eslint:backend": "yarn workspace m-cafe-backend run eslint",
-    "eslint:frontend": "yarn workspace m-cafe-frontend run eslint"
+    "eslint:frontend": "yarn workspace m-cafe-frontend run eslint",
+    "test": "yarn run test:utils && yarn run test:backend && yarn run test:frontend",
+    "test:utils": "yarn workspace @m-cafe-app/utils run test",
+    "test:backend": "yarn workspace m-cafe-backend run test",
+    "test:frontend": "yarn workspace m-cafe-frontend run test"
   },
   "dependencies": {
     "concurrently": "^8.0.1"
