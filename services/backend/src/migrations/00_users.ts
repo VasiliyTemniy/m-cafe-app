@@ -1,5 +1,20 @@
 import { DataTypes } from 'sequelize';
 import { MigrationContext } from '../types/MigrationContext.js';
+import {
+  dateRegExp,
+  emailRegExp,
+  maxEmailLen,
+  maxNameLen,
+  maxPhonenumberLen,
+  maxUsernameLen,
+  minEmailLen,
+  minNameLen,
+  minPhonenumberLen,
+  minUsernameLen,
+  nameRegExp,
+  phonenumberRegExp,
+  usernameRegExp
+} from '../utils/constants.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('users', {
@@ -13,16 +28,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       unique: true,
       allowNull: true,
       validate: {
-        is: /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/i,
-        len: [3, 25]
+        is: [usernameRegExp, 'i'],
+        len: [minUsernameLen, maxUsernameLen]
       }
     },
     name: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[A-Za-zА-Яа-я0-9]+(?:[ _-][A-Za-zА-Яа-я0-9]+)*$/i,
-        len: [3, 50]
+        is: [nameRegExp, 'i'],
+        len: [minNameLen, maxNameLen]
       }
     },
     password_hash: {
@@ -34,8 +49,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       unique: true,
       allowNull: false,
       validate: {
-        is: /^((8|\+374|\+994|\+995|\+375|\+7|\+380|\+38|\+996|\+998|\+993)[- ]?)?\(?\d{3,5}\)?[- ]?\d{1}[- ]?\d{1}[- ]?\d{1}[- ]?\d{1}[- ]?\d{1}(([- ]?\d{1})?[- ]?\d{1})?$/i,
-        len: [5, 25]
+        is: [phonenumberRegExp, 'i'],
+        len: [minPhonenumberLen, maxPhonenumberLen]
       }
     },
     email: {
@@ -43,15 +58,15 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       unique: true,
       allowNull: true,
       validate: {
-        isEmail: true,
-        len: [3, 50]
+        is: [emailRegExp, 'i'],
+        len: [minEmailLen, maxEmailLen]
       }
     },
     birthdate: {
       type: DataTypes.DATE,
       allowNull: true,
       validate: {
-        isDate: true
+        is: [dateRegExp, 'i']
       }
     },
     disabled: {
