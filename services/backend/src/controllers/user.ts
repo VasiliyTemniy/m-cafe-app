@@ -1,7 +1,15 @@
 import bcryptjs from 'bcryptjs';
 import { RequestHandler, Router } from 'express';
-import { CredentialsError, DatabaseError, HackError, PasswordLengthError, RequestBodyError, UnknownError } from '@m-cafe-app/utils';
-import { isEditUserBody, isNewUserBody } from '@m-cafe-app/utils';
+import {
+  CredentialsError,
+  DatabaseError,
+  HackError,
+  PasswordLengthError,
+  RequestBodyError,
+  UnknownError,
+  isEditUserBody,
+  isNewUserBody
+} from '@m-cafe-app/utils';
 import { isCustomRequest } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
 import { User } from '../models/index.js';
@@ -13,10 +21,11 @@ usersRouter.post(
   (async (req, res) => {
 
     if (!isNewUserBody(req.body)) throw new RequestBodyError('Invalid new user request body');
+    if (Object.prototype.hasOwnProperty.call(req.body, "admin")) throw new HackError('Please do not try this');
 
     const { username, name, password, phonenumber, email, birthdate } = req.body;
 
-    if (password === undefined || password.length <= 3) throw new PasswordLengthError('Password must be longer than 3 symbols');
+    if (password === undefined || password.length <= 5) throw new PasswordLengthError('Password must be longer than 5 symbols');
 
     const saltRounds = 10;
     const passwordHash = await bcryptjs.hash(password, saltRounds);
