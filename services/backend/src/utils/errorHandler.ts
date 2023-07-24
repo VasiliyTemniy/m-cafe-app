@@ -29,7 +29,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
     res.status(status).json({
       error: {
         name: error.name,
-        message: 'Some internal constraints error',
+        message: 'Some internal DB constraints error or Sequelize error',
         originalError: { ...error }
       }
     });
