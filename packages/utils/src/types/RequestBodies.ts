@@ -1,6 +1,6 @@
 import { isBoolean, isString } from "./typeParsers.js";
 
-interface DisableUserBody {
+export interface DisableUserBody {
   disable: boolean;
 }
 
@@ -14,7 +14,7 @@ export const isDisableUserBody = (body: unknown): body is DisableUserBody => {
   return false;
 };
 
-interface LoginUserBody {
+export interface LoginUserBody {
   username?: string;
   phonenumber?: string;
   password: string;
@@ -35,19 +35,19 @@ export const isLoginBody = (body: unknown): body is LoginUserBody =>
   ||
   (hasPhonenumberPassword(body) && isString(body.phonenumber) && isString(body.password));
 
-interface NewUserBody {
+export interface NewUserBody {
   username?: string;
   name?: string;
   password: string;
   phonenumber: string;
   email?: string;
-  birthdate?: Date;
+  birthdate?: string;
 }
 
 export const isNewUserBody = (body: unknown): body is NewUserBody =>
   hasPhonenumberPassword(body) && isString(body.phonenumber) && isString(body.password);
 
-interface EditUserBody extends NewUserBody {
+export interface EditUserBody extends NewUserBody {
   newPassword?: string;
 }
 
