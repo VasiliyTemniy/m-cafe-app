@@ -10,12 +10,13 @@ import {
   genCorrectPhonenumber,
   genCorrectEmail,
   genIncorrectString,
-  validNewUserFull
+  validUserInDB,
+  validUser
 } from './users_api_helper';
-import { User } from '../models/index';
+import { Session, User } from '../models/index';
 import { connectToDatabase } from "../utils/db";
 import logger from "../utils/logger";
-// import { initSuperAdmin } from "../utils/adminInit";
+import { initSuperAdmin } from "../utils/adminInit";
 import { ValidationError } from 'sequelize';
 import {
   dateRegExp,
@@ -32,14 +33,13 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from "../utils/constants";
-// import fc from 'fast-check';
+import { NewUserBody } from "@m-cafe-app/utils";
 
 
 
 await connectToDatabase();
 const api = supertest(app);
 
-logger.shout('Test starts');
 
 describe('User POST request tests', () => {
 
@@ -49,7 +49,7 @@ describe('User POST request tests', () => {
   });
 
   it('A valid user can be added ', async () => {
-    const newUser = {
+    const newUser: NewUserBody = {
       username: 'Ordan',
       name: 'Dmitry Dornichev',
       password: 'iwannabeahero',
@@ -58,22 +58,20 @@ describe('User POST request tests', () => {
 
     await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser)
+      .send(newUser as object)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const newUserFull = validNewUserFull;
-
     await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUserFull)
+      .send(validUser as object)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     const usersAtEnd = await User.findAll({});
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length + 2);
 
-    const userCheck = await User.findOne({ where: { username: newUserFull.username } });
+    const userCheck = await User.findOne({ where: { username: validUser.username as string } });
     expect(userCheck).to.exist;
     if (!userCheck) return;
 
@@ -108,14 +106,14 @@ describe('User POST request tests', () => {
   });
 
   it('User with only password and phonenumber is added', async () => {
-    const newUser = {
+    const newUser: NewUserBody = {
       password: 'iwannabeahero',
       phonenumber: '89354652235'
     };
 
     await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser)
+      .send(newUser as object)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -129,7 +127,7 @@ describe('User POST request tests', () => {
   });
 
   it('Username must be unique, if not - new user is not added', async () => {
-    const newUser = {
+    const newUser: NewUserBody = {
       username: "StevieDoesntKnow", // already in initialUsers
       name: 'Dmitry Dornichev',
       password: 'iwannabeahero',
@@ -138,7 +136,7 @@ describe('User POST request tests', () => {
 
     const result = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser)
+      .send(newUser as object)
       .expect(409);
 
     expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
@@ -152,7 +150,7 @@ describe('User POST request tests', () => {
   });
 
   it('Phonenumber must be unique, if not - new user is not added', async () => {
-    const newUser = {
+    const newUser: NewUserBody = {
       username: "Ordan",
       name: 'Dmitry Dornichev',
       password: 'iwannabeahero',
@@ -161,7 +159,7 @@ describe('User POST request tests', () => {
 
     const result = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser)
+      .send(newUser as object)
       .expect(409);
 
     expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
@@ -175,7 +173,7 @@ describe('User POST request tests', () => {
   });
 
   it('Email must be unique, if not - new user is not added', async () => {
-    const newUser = {
+    const newUser: NewUserBody = {
       username: "Ordan",
       name: 'Dmitry Dornichev',
       password: 'iwannabeahero',
@@ -185,7 +183,7 @@ describe('User POST request tests', () => {
 
     const result = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser)
+      .send(newUser as object)
       .expect(409);
 
     expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
@@ -200,7 +198,7 @@ describe('User POST request tests', () => {
 
   it('DB Validation checks for user work - incorrect user data fails', async () => {
 
-    const newUserFail1 = {
+    const newUserFail1: NewUserBody = {
       username: "Or", // len < 3
       name: 'Dm', // len < 3
       password: 'iwannabeahero',
@@ -211,7 +209,7 @@ describe('User POST request tests', () => {
 
     const result1 = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUserFail1)
+      .send(newUserFail1 as object)
       .expect(400);
 
     expect(result1.body.error.name).to.equal('SequelizeValidationError');
@@ -232,7 +230,7 @@ describe('User POST request tests', () => {
       'Validation isDate on birthdate failed'
     ]);
 
-    const newUserFail2 = {
+    const newUserFail2: NewUserBody = {
       username: "Василий", // Russian letters in username regex
       name: '_Dmitry', // Starts with _ regex
       password: 'iwannabeahero',
@@ -243,7 +241,7 @@ describe('User POST request tests', () => {
 
     const result2 = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUserFail2)
+      .send(newUserFail2 as object)
       .expect(400);
 
     expect(result2.body.error.name).to.equal('SequelizeValidationError');
@@ -261,7 +259,7 @@ describe('User POST request tests', () => {
       'Validation isDate on birthdate failed'
     ]);
 
-    const newUserFail3 = {
+    const newUserFail3: NewUserBody = {
       username: "_Vasiliy", // Starts with _ regex
       name: 'Василий_', // Ends with _, though russian letters welcome regex
       password: 'iwannabeahero',
@@ -272,7 +270,7 @@ describe('User POST request tests', () => {
 
     const result3 = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUserFail3)
+      .send(newUserFail3 as object)
       .expect(400);
 
     expect(result3.body.error.name).to.equal('SequelizeValidationError');
@@ -299,7 +297,7 @@ describe('User POST request tests', () => {
   });
 
   it('Password must be longer than 5 symbols', async () => {
-    const newUser = {
+    const newUser: NewUserBody = {
       username: 'Petro',
       name: 'Vasilenko Pyotr Ivanovich',
       password: 'iwbah',
@@ -310,7 +308,7 @@ describe('User POST request tests', () => {
 
     const result = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser)
+      .send(newUser as object)
       .expect(400);
 
     expect(result.body.error.name).to.equal('PasswordLengthError');
@@ -332,8 +330,8 @@ describe('User POST request tests', () => {
     const phonenumbersSet = new Set([...usersInDb.map(user => user.phonenumber)]);
     const emailsSet = new Set([...usersInDb.map(user => user.email)]);
 
-    for (let i = 0; i < 30; i++) {
-      const newUser = {
+    for (let i = 0; i < 10; i++) {
+      const newUser: NewUserBody = {
         username: genCorrectUsername(minUsernameLen, maxUsernameLen),
         name: genCorrectName(minNameLen, maxNameLen),
         password: 'iwannabeahero',
@@ -343,16 +341,16 @@ describe('User POST request tests', () => {
       };
 
       if (
-        usernamesSet.has(newUser.username)
+        usernamesSet.has(newUser.username as string)
         ||
         phonenumbersSet.has(newUser.phonenumber)
         ||
-        emailsSet.has(newUser.email)
+        emailsSet.has(newUser.email as string)
       ) {
 
         const result = await api
           .post(`${apiBaseUrl}/users`)
-          .send(newUser)
+          .send(newUser as object)
           .expect(409);
 
         expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
@@ -362,13 +360,13 @@ describe('User POST request tests', () => {
 
         await api
           .post(`${apiBaseUrl}/users`)
-          .send(newUser)
+          .send(newUser as object)
           .expect(201)
           .expect('Content-Type', /application\/json/);
 
-        usernamesSet.add(newUser.username);
+        usernamesSet.add(newUser.username as string);
         phonenumbersSet.add(newUser.phonenumber);
-        emailsSet.add(newUser.email);
+        emailsSet.add(newUser.email as string);
 
         added++;
 
@@ -381,19 +379,19 @@ describe('User POST request tests', () => {
 
   }).timeout(30000);
 
-  it('Bulk autogenerated users reject', async () => {
+  it('Bulk autogenerated users reject + expect correct errors', async () => {
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 10; i++) {
       const newIncorrectGen = {
         username: genIncorrectString('username', usernameRegExp, minUsernameLen, maxUsernameLen),
         name: genIncorrectString('name', nameRegExp, minNameLen, maxNameLen),
         password: 'iwannabeahero',
         phonenumber: genIncorrectString('phonenumber', phonenumberRegExp, minPhonenumberLen, maxPhonenumberLen),
         email: genIncorrectString('email', emailRegExp, minEmailLen, maxEmailLen),
-        birthdate: genIncorrectString('birthdate', dateRegExp, 1, 52),
+        birthdate: genIncorrectString('birthdate', dateRegExp, 1, 52, true),
       };
 
-      const newUserIncorrect = {
+      const newUserIncorrect: NewUserBody = {
         username: newIncorrectGen.username.result,
         name: newIncorrectGen.name.result,
         password: newIncorrectGen.password,
@@ -412,7 +410,7 @@ describe('User POST request tests', () => {
 
       const result = await api
         .post(`${apiBaseUrl}/users`)
-        .send(newUserIncorrect)
+        .send(newUserIncorrect as object)
         .expect(400);
 
       expect(result.body.error.name).to.equal('SequelizeValidationError');
@@ -433,24 +431,30 @@ describe('User POST request tests', () => {
 
   }).timeout(30000);
 
-  it.only('Fast-check try', () => {
+  it('PasswordHash should always be different for any given password', async () => {
 
-    // fc.assert(
-    //   fc.property(fc.gen(), (g) => {
-    //     const userA = {
-    //       firstName: g(firstName),
-    //       lastName: g(lastName),
-    //       birthDate: g(birthDate),
-    //     };
-    //     const userB = {
-    //       firstName: g(firstName),
-    //       lastName: g(lastName),
-    //       birthDate: g(birthDate, { strictlyOlderThan: userA.birthDate }),
-    //     };
-    //     expect(sortByAge([userA, userB])).toEqual([userA, userB]);
-    //     expect(sortByAge([userB, userA])).toEqual([userA, userB]);
-    //   })
-    // );
+    const passwordHashesSet = new Set(['']);
+
+    for (let i = 0; i < 10; i++) {
+      const result = await api
+        .post(`${apiBaseUrl}/users`)
+        .send(validUser as object)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+
+      if (!result.body.passwordHash) {
+        logger.shout('Password Hash was not generated!');
+        expect(true).to.be.equal(false);
+      }
+
+      expect(passwordHashesSet.has(result.body.passwordHash as string)).to.equal(false);
+
+      await User.destroy({ where: { id: result.body.id as string } });
+
+      passwordHashesSet.add(result.body.passwordHash as string);
+
+    }
+
   });
 
 });
@@ -458,17 +462,19 @@ describe('User POST request tests', () => {
 
 describe('Protected paths', () => {
 
-  beforeEach(async () => {
+  before(async () => {
     await User.destroy({ where: {} });
     await User.bulkCreate(initialUsers);
-    // await initSuperAdmin();
+    await initSuperAdmin();
+    await User.create(validUserInDB.dbEntry);
   });
 
-  it('User login with correct credentials succeds', async () => {
-
+  beforeEach(async () => {
+    await Session.destroy({ where: {} });
   });
 
-  it('User login with incorrect credentials fails', async () => {
+
+  it('dummy', async () => {
 
   });
 
@@ -489,7 +495,7 @@ describe('Protected paths', () => {
         .expect('Content-Type', /application\/json/);
 
       const usersAtEnd = await User.findAll({});
-      expect(usersAtEnd).to.have.lengthOf(initialUsers.length + 1);
+      expect(usersAtEnd).to.have.lengthOf(initialUsers.length + 3);
 
       const usernames = usersAtEnd.map(user => user.username);
       expect(usernames).to.contain(

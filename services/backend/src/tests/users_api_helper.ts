@@ -1,3 +1,4 @@
+import { NewUserBody } from '@m-cafe-app/utils';
 import {
   alphabetAll,
   alphabetEn,
@@ -8,25 +9,28 @@ import {
   usernameChars
 } from './test_helper';
 
-export const initialUsers = [
+interface UserInDB extends Omit<NewUserBody, 'password' | 'birthdate'> {
+  passwordHash: string;
+  birthdate?: Date;
+  id?: number;
+}
+
+export const initialUsers: UserInDB[] = [
   {
     username: "Vasisualiy",
     name: "Mikhail Dyachenko",
-    //password: "IputThisEverywhere",
     passwordHash: "$2a$10$ofK5pjq4S7.Df5H4LXkVfuNpRWXG51oF4mNXI8heuthC0vTFlRbSe",
     phonenumber: "88003561256"
   },
   {
     username: "flash_us",
     name: "Ilja Dyachenko",
-    //password: "3654theRealData2412",
     passwordHash: "$2a$10$kO1TOacajXmBd463xhyd6uxTqBayJOeOdOwRtkfzms7l2mtf6yCT.",
     phonenumber: "88003561277"
   },
   {
     username: "StevieDoesntKnow",
     name: "Steve Miller",
-    //password: "AbraAbra_cadabra",
     passwordHash: "$2a$10$exzJXbj/hbO6jS.2rzkz8.Gq6.VSq6X8w7vl7C1jkTgcFOnB/7beW",
     phonenumber: "88003561288",
     birthdate: new Date('2001-07-23T07:31:03.242Z')
@@ -34,7 +38,6 @@ export const initialUsers = [
   {
     username: "Poperdopeler",
     name: "Vasisualiy Edipstein",
-    //password: "IputThisEverywhere",
     passwordHash: "$2a$10$ofK5pjq4S7.Df5H4LXkVfuNpRWXG51oF4mNXI8heuthC0vTFlRbSe",
     phonenumber: "88003561294",
     email: 'my-emah@jjjjppp.com'
@@ -42,45 +45,56 @@ export const initialUsers = [
   {
     username: "FanstasmagoR",
     name: "Hren Petrovich",
-    //password: "3654theRealData2412",
     passwordHash: "$2a$10$kO1TOacajXmBd463xhyd6uxTqBayJOeOdOwRtkfzms7l2mtf6yCT.",
     phonenumber: "88003561227"
   },
   {
     username: "utopia_Forever",
-    //password: "AbraAbra_cadabra",
     passwordHash: "$2a$10$exzJXbj/hbO6jS.2rzkz8.Gq6.VSq6X8w7vl7C1jkTgcFOnB/7beW",
     phonenumber: "88003561211"
   },
   {
     username: "gollum",
-    //password: "IputThisEverywhere",
     passwordHash: "$2a$10$ofK5pjq4S7.Df5H4LXkVfuNpRWXG51oF4mNXI8heuthC0vTFlRbSe",
     phonenumber: "88003561226",
     birthdate: new Date('2001-07-23T07:31:03.242Z')
   },
   {
     username: "OW_YEAH",
-    //password: "3654theRealData2412",
     passwordHash: "$2a$10$kO1TOacajXmBd463xhyd6uxTqBayJOeOdOwRtkfzms7l2mtf6yCT.",
     phonenumber: "88003561236",
     email: 'my-email@jjjjppp.com',
   },
   {
     username: "fantasy",
-    //password: "AbraAbra_cadabra",
     passwordHash: "$2a$10$exzJXbj/hbO6jS.2rzkz8.Gq6.VSq6X8w7vl7C1jkTgcFOnB/7beW",
     phonenumber: "88003561293"
   }
 ];
 
-export const validNewUserFull = {
+export const validUser: NewUserBody = {
   username: 'Petro',
   name: 'Vasilenko Pyotr Ivanovich',
   password: 'iwannabeahero',
   phonenumber: '89354652288',
   email: 'my-email.vah@jjjjppp.com',
   birthdate: '2001-07-23T07:31:03.242Z',
+};
+
+export const validUserInDB: {
+  password: string;
+  dbEntry: UserInDB;
+} = {
+  password: 'iwannabeahero',
+  dbEntry: {
+    id: 5000,
+    username: 'Petro',
+    name: 'Vasilenko Pyotr Ivanovich',
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    phonenumber: '89354652288',
+    email: 'my-email.vah@jjjjppp.com',
+    birthdate: new Date('2001-07-23T07:31:03.242Z'),
+  }
 };
 
 
@@ -196,21 +210,33 @@ export const genIncorrectString = (
   field: string,
   regExp: RegExp,
   minLen: number,
-  maxLen: number
+  maxLen: number,
+  checkDate: boolean = false
 ): IncorrectString => {
 
   let errors: string[] = [];
   const len = Math.round(Math.random() * 50 + 1);
-  if (!(minLen <= len && len <= maxLen)) errors = [...errors, `Validation len on ${field} failed`];
+  if (!(minLen <= len && len <= maxLen) && !checkDate) errors = [...errors, `Validation len on ${field} failed`];
 
+  let generated: string = '';
   let result: string = '';
 
   for (let i = 0; i < len; i++) {
-    result += getRandomElement(possibleChars);
+    generated += getRandomElement(possibleChars);
   }
 
-  // if (!(regExp.test(result))) errors = [...errors, `Validation is${checkDate ? 'Date' : ''} on ${field} failed`];
-  if (!(regExp.test(result))) errors = [...errors, `Validation is on ${field} failed`];
+  if (checkDate) {
+    const date = new Date(generated);
+    if (date.toString() === 'Invalid Date') {
+      errors = [...errors, `Validation isDate on ${field} failed`];
+      result = 'Invalid Date';
+    } else result = date.toISOString();
+  }
+  else {
+    result = generated;
+    if (!(regExp.test(result))) errors = [...errors, `Validation is on ${field} failed`];
+  }
+
 
   return {
     result,
