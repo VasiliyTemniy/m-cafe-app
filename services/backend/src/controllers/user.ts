@@ -36,7 +36,7 @@ usersRouter.post(
       passwordHash,
       phonenumber,
       email,
-      birthdate
+      birthdate: birthdate ? new Date(birthdate) : undefined
     };
 
     const savedUser = await User.create(user);
@@ -71,7 +71,7 @@ usersRouter.put(
     if (name) user.name = name;
     if (phonenumber) user.phonenumber = phonenumber;
     if (email) user.email = email;
-    if (birthdate) user.birthdate = birthdate;
+    if (birthdate) user.birthdate = new Date(birthdate);
     if (newPassword) {
       if (newPassword.length <= 3) throw new PasswordLengthError('Password must be longer than 3 symbols');
       const saltRounds = 10;
