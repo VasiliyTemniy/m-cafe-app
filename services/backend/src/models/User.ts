@@ -3,7 +3,6 @@ import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOpt
 import { sequelize } from '../utils/db.js';
 
 import {
-  dateRegExp,
   emailRegExp,
   maxEmailLen,
   maxNameLen,
@@ -79,7 +78,7 @@ User.init({
     type: DataTypes.DATE,
     allowNull: true,
     validate: {
-      is: [dateRegExp, 'i']
+      isDate: true
     }
   },
   disabled: {

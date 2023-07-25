@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { MigrationContext } from '../types/MigrationContext.js';
 import {
-  dateRegExp,
   emailRegExp,
   maxEmailLen,
   maxNameLen,
@@ -66,7 +65,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.DATE,
       allowNull: true,
       validate: {
-        is: [dateRegExp, 'i']
+        isDate: true
       }
     },
     disabled: {

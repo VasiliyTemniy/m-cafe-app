@@ -45,6 +45,7 @@ export const maxEmailLen = process.env.EMAIL_MAXLEN
   : 50;
 
 
+// Used only for tests
 export const dateRegExp = process.env.DATE_REGEXP
   ? new RegExp(process.env.DATE_REGEXP)
   : /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/;
