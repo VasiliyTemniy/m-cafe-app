@@ -31,7 +31,7 @@ sessionRouter.post(
       user === null ? false : await bcryptjs.compare(password, user.passwordHash);
 
     if (!(user && passwordCorrect)) {
-      throw new CredentialsError('Invalid username or password');
+      throw new CredentialsError('Invalid login or password');
     } else if (user.disabled) {
       throw new BannedError('Your account have been banned. Contact admin to unblock account');
     }
@@ -43,13 +43,17 @@ sessionRouter.post(
       }
     });
 
-    const userForToken = {
-      username: user.username,
+
+    // Rand property is used to make sure that no similar tokens are created while no time passed
+    // Crucial for session tests
+    const token = jwt.sign({
       id: user.id,
-    };
+      rand: Math.round(Math.random() * 10000)
+    }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
-    const token = jwt.sign(userForToken, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
+    // If there is no active session in this agent, create new one
+    // If there is one - update token
     if (!activeSession) {
 
       const session = {
@@ -60,13 +64,17 @@ sessionRouter.post(
 
       await Session.create(session);
 
+    } else {
+
+      activeSession.token = token;
+
+      await activeSession.save();
+
     }
 
     res.status(200).send({
       token,
-      username: user.username,
-      name: user.name,
-      id: userForToken.id
+      id: user.id
     });
 
   }) as RequestHandler
