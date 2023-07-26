@@ -30,7 +30,7 @@ adminRouter.get(
 adminRouter.get(
   '/users/:id',
   middleware.verifyToken,
-  middleware.userExtractor,
+  middleware.adminCheck,
   middleware.sessionCheck,
   (async (req, res) => {
 
@@ -48,7 +48,7 @@ adminRouter.get(
 adminRouter.put(
   '/users/:id',
   middleware.verifyToken,
-  middleware.userExtractor,
+  middleware.adminCheck,
   middleware.sessionCheck,
   (async (req, res) => {
 
