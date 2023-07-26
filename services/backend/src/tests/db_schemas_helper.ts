@@ -11,33 +11,20 @@ interface DBSchemaInfo {
   schemas: object[];
 }
 
-const getDBInfo = async (db_uri1: string, db_uri2: string) => {
-  const client1 = new pg.Client(db_uri1);
-  await client1.connect();
-
-  const client2 = new pg.Client(db_uri2);
-  await client2.connect();
+const getDBInfo = async (db_uri: string) => {
+  const client = new pg.Client(db_uri);
+  await client.connect();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const info1 = await pgInfo({
-    client: client1,
+  const info = await pgInfo({
+    client,
     schemas: [
       'public'
     ]
   }) as DBSchemaInfo;
 
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const info2 = await pgInfo({
-    client: client2,
-    schemas: [
-      'public'
-    ]
-  }) as DBSchemaInfo;
-
-
-
-  return { info1, info2 };
+  return info.schemas;
 };
 
 export { getDBInfo };
