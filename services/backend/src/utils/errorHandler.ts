@@ -72,11 +72,13 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
 
       const token = req.token as string;
       const payload = jwt.decode(token) as JwtPayloadCustom;
+      const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
       await Session.destroy({
         where: {
           userId: payload.id,
-          token
+          token,
+          userAgent
         }
       });
 
