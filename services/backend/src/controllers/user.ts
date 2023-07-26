@@ -13,6 +13,7 @@ import {
 import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
 import { User } from '../models/index.js';
+import { maxPasswordLen, minPasswordLen } from '../utils/constants.js';
 
 const usersRouter = Router();
 
@@ -25,7 +26,8 @@ usersRouter.post(
 
     const { username, name, password, phonenumber, email, birthdate } = req.body;
 
-    if (password === undefined || password.length <= 5) throw new PasswordLengthError('Password must be longer than 5 symbols');
+    if (password === undefined || !(minPasswordLen < password.length && password.length < maxPasswordLen))
+      throw new PasswordLengthError(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
 
     const saltRounds = 10;
     const passwordHash = await bcryptjs.hash(password, saltRounds);
@@ -78,7 +80,8 @@ usersRouter.put(
     if (email) req.user.email = email;
     if (birthdate) req.user.birthdate = new Date(birthdate);
     if (newPassword) {
-      if (newPassword.length <= 3) throw new PasswordLengthError('Password must be longer than 3 symbols');
+      if (!(minPasswordLen < newPassword.length && newPassword.length < maxPasswordLen))
+        throw new PasswordLengthError(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
       const saltRounds = 10;
       req.user.passwordHash = await bcryptjs.hash(newPassword, saltRounds);
     }
