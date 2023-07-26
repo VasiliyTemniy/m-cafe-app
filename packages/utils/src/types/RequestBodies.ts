@@ -47,8 +47,9 @@ export interface NewUserBody {
 export const isNewUserBody = (body: unknown): body is NewUserBody =>
   hasPhonenumberPassword(body) && isString(body.phonenumber) && isString(body.password);
 
-export interface EditUserBody extends NewUserBody {
+export interface EditUserBody extends Omit<NewUserBody, 'phonenumber'> {
   newPassword?: string;
+  phonenumber?: string;
 }
 
 export const isEditUserBody = (body: unknown): body is EditUserBody =>
