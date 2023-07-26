@@ -440,11 +440,12 @@ describe('User PUT request tests', () => {
   before(async () => {
     await User.destroy({ where: {} });
     await User.bulkCreate(initialUsers);
-    await User.create(validUserInDB.dbEntry);
   });
 
   beforeEach(async () => {
     await Session.destroy({ where: {} });
+    await User.destroy({ where: { id: validUserInDB.dbEntry.id } });
+    await User.create(validUserInDB.dbEntry);
   });
 
   it('A valid request to change user credentials succeds, needs original password', async () => {
@@ -485,9 +486,65 @@ describe('User PUT request tests', () => {
 
   it('Request to change another user`s data fails', async () => {
 
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    const updateUserData: EditUserBody = {
+      username: 'Ordan',
+      name: 'Dmitry Dornichev',
+      password: validUserInDB.password,
+      newPassword: 'iwannabeaREALhero',
+      phonenumber: '89351111356',
+      email: 'my-new-email@mail.mail',
+      birthdate: '1956-07-23T07:31:03.242Z'
+    };
+
+    const responseNonExisting = await api
+      .put(`${apiBaseUrl}/users/100500`) // not existing user
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .send(updateUserData)
+      .expect(418)
+      .expect('Content-Type', /application\/json/);
+
+    expect(responseNonExisting.body.error.name).to.equal('HackError');
+    expect(responseNonExisting.body.error.message).to.equal('User attempts to change another users data or invalid user id');
+
+    const responseAnotherUser = await api
+      .put(`${apiBaseUrl}/users/1`) // InitialUsers[0] ? should be
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .send(updateUserData)
+      .expect(418)
+      .expect('Content-Type', /application\/json/);
+
+    expect(responseAnotherUser.body.error.name).to.equal('HackError');
+    expect(responseAnotherUser.body.error.message).to.equal('User attempts to change another users data or invalid user id');
+
   });
 
-  it('Request to change another user`s data fails', async () => {
+  it('Request without password fails', async () => {
+
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    const updateUserData = {
+      username: 'Ordan',
+      name: 'Dmitry Dornichev',
+      newPassword: 'iwannabeaREALhero',
+      phonenumber: '89351111356',
+      email: 'my-new-email@mail.mail',
+      birthdate: '1956-07-23T07:31:03.242Z'
+    };
+
+    const response = await api
+      .put(`${apiBaseUrl}/users/${validUserInDB.dbEntry.id}`)
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .send(updateUserData)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.error.name).to.equal('RequestBodyError');
+    expect(response.body.error.message).to.equal('Invalid edit user request body');
 
   });
 
