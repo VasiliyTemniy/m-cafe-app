@@ -9,7 +9,7 @@ import {
   usernameChars
 } from './test_helper';
 
-interface UserInDB extends Omit<NewUserBody, 'password' | 'birthdate'> {
+export interface UserInDB extends Omit<NewUserBody, 'password' | 'birthdate'> {
   passwordHash: string;
   birthdate?: Date;
   id?: number;
