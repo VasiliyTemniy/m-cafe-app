@@ -31,7 +31,7 @@ export class BannedError extends Error {
 export class HackError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "Please, do not do this";
+    this.name = "HackError";
   }
 }
 
