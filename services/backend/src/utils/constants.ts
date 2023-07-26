@@ -49,8 +49,6 @@ export const maxEmailLen = process.env.EMAIL_MAXLEN
 export const dateRegExp = process.env.DATE_REGEXP
   ? new RegExp(process.env.DATE_REGEXP)
   : /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/;
-// ??
-//^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$
 
 
 export const minPasswordLen = process.env.PASSWORD_MINLEN
@@ -59,3 +57,99 @@ export const minPasswordLen = process.env.PASSWORD_MINLEN
 export const maxPasswordLen = process.env.PASSWORD_MAXLEN
   ? Number(process.env.PASSWORD_MAXLEN)
   : 100;
+
+
+export const regionRegExp = process.env.REGION_REGEXP
+  ? new RegExp(process.env.REGION_REGEXP)
+  : /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/;
+export const minRegionLen = process.env.REGION_MINLEN
+  ? Number(process.env.REGION_MINLEN)
+  : 3;
+export const maxRegionLen = process.env.REGION_MAXLEN
+  ? Number(process.env.REGION_MAXLEN)
+  : 50;
+
+
+export const districtRegExp = process.env.DISTRICT_REGEXP
+  ? new RegExp(process.env.DISTRICT_REGEXP)
+  : /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/;
+export const minDistrictLen = process.env.DISTRICT_MINLEN
+  ? Number(process.env.DISTRICT_MINLEN)
+  : 3;
+export const maxDistrictLen = process.env.DISTRICT_MAXLEN
+  ? Number(process.env.DISTRICT_MAXLEN)
+  : 50;
+
+
+export const cityRegExp = process.env.CITY_REGEXP
+  ? new RegExp(process.env.CITY_REGEXP)
+  : /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/;
+export const minCityLen = process.env.CITY_MINLEN
+  ? Number(process.env.CITY_MINLEN)
+  : 3;
+export const maxCityLen = process.env.CITY_MAXLEN
+  ? Number(process.env.CITY_MAXLEN)
+  : 50;
+
+
+export const streetRegExp = process.env.STREET_REGEXP
+  ? new RegExp(process.env.STREET_REGEXP)
+  : /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/;
+export const minStreetLen = process.env.STREET_MINLEN
+  ? Number(process.env.STREET_MINLEN)
+  : 3;
+export const maxStreetLen = process.env.STREET_MAXLEN
+  ? Number(process.env.STREET_MAXLEN)
+  : 50;
+
+
+export const houseRegExp = process.env.HOUSE_REGEXP
+  ? new RegExp(process.env.HOUSE_REGEXP)
+  : /^[А-Яа-я0-9]+(?:[ _\/\\-][А-Яа-я0-9]+)*$/;
+export const minHouseLen = process.env.HOUSE_MINLEN
+  ? Number(process.env.HOUSE_MINLEN)
+  : 1;
+export const maxHouseLen = process.env.HOUSE_MAXLEN
+  ? Number(process.env.HOUSE_MAXLEN)
+  : 20;
+
+
+export const entranceRegExp = process.env.ENTRANCE_REGEXP
+  ? new RegExp(process.env.ENTRANCE_REGEXP)
+  : /^[А-Яа-я0-9]+(?:[ _\/\\-][А-Яа-я0-9]+)*$/;
+export const minEntranceLen = process.env.ENTRANCE_MINLEN
+  ? Number(process.env.ENTRANCE_MINLEN)
+  : 3;
+export const maxEntranceLen = process.env.ENTRANCE_MAXLEN
+  ? Number(process.env.ENTRANCE_MAXLEN)
+  : 20;
+
+
+export const minFloorLen = process.env.FLOOR_MINLEN
+  ? Number(process.env.FLOOR_MINLEN)
+  : 1;
+export const maxFloorLen = process.env.FLOOR_MAXLEN
+  ? Number(process.env.FLOOR_MAXLEN)
+  : 3;
+
+
+export const flatRegExp = process.env.FLAT_REGEXP
+  ? new RegExp(process.env.FLAT_REGEXP)
+  : /^[А-Яа-я0-9]+(?:[ _\/\\-][А-Яа-я0-9]+)*$/;
+export const minFlatLen = process.env.FLAT_MINLEN
+  ? Number(process.env.FLAT_MINLEN)
+  : 1;
+export const maxFlatLen = process.env.FLAT_MAXLEN
+  ? Number(process.env.FLAT_MAXLEN)
+  : 20;
+
+
+export const entranceKeyRegExp = process.env.ENTRANCE_KEY_REGEXP
+  ? new RegExp(process.env.ENTRANCE_KEY_REGEXP)
+  : /^[А-Яа-я0-9]+(?:[ _\/\\-][А-Яа-я0-9]+)*$/;
+export const minEntranceKeyLen = process.env.ENTRANCE_KEY_MINLEN
+  ? Number(process.env.ENTRANCE_KEY_MINLEN)
+  : 1;
+export const maxEntranceKeyLen = process.env.ENTRANCE_KEY_MAXLEN
+  ? Number(process.env.ENTRANCE_KEY_MAXLEN)
+  : 20;

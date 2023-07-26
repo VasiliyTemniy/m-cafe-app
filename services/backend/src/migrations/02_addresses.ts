@@ -1,5 +1,33 @@
 import { DataTypes } from 'sequelize';
 import { MigrationContext } from '../types/MigrationContext.js';
+import {
+  cityRegExp,
+  districtRegExp,
+  entranceKeyRegExp,
+  entranceRegExp,
+  flatRegExp,
+  houseRegExp,
+  maxCityLen,
+  maxDistrictLen,
+  maxEntranceKeyLen,
+  maxEntranceLen,
+  maxFlatLen,
+  maxFloorLen,
+  maxHouseLen,
+  maxRegionLen,
+  maxStreetLen,
+  minCityLen,
+  minDistrictLen,
+  minEntranceKeyLen,
+  minEntranceLen,
+  minFlatLen,
+  minFloorLen,
+  minHouseLen,
+  minRegionLen,
+  minStreetLen,
+  regionRegExp,
+  streetRegExp
+} from '../utils/constants.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('addresses', {
@@ -12,48 +40,48 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/i,
-        len: [3, 50]
+        is: [regionRegExp, 'i'],
+        len: [minRegionLen, maxRegionLen]
       }
     },
     district: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/i,
-        len: [3, 50]
+        is: [districtRegExp, 'i'],
+        len: [minDistrictLen, maxDistrictLen]
       }
     },
     city: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/i,
-        len: [3, 50]
+        is: [cityRegExp, 'i'],
+        len: [minCityLen, maxCityLen]
       }
     },
     street: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/i,
-        len: [3, 50]
+        is: [streetRegExp, 'i'],
+        len: [minStreetLen, maxStreetLen]
       }
     },
     house: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[А-Яа-я0-9]+(?:[ _\/\\-][А-Яа-я0-9]+)*$/i,
-        len: [3, 20]
+        is: [houseRegExp, 'i'],
+        len: [minHouseLen, maxHouseLen]
       }
     },
     entrance: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[А-Яа-я0-9]+(?:[ _\/\\-][А-Яа-я0-9]+)*$/i,
-        len: [3, 20]
+        is: [entranceRegExp, 'i'],
+        len: [minEntranceLen, maxEntranceLen]
       }
     },
     floor: {
@@ -61,23 +89,23 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
       validate: {
         isNumeric: true,
-        len: [1, 3]
+        len: [minFloorLen, maxFloorLen]
       }
     },
     flat: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[А-Яа-я0-9]+(?:[ _\/\\-][А-Яа-я0-9]+)*$/i,
-        len: [3, 20]
+        is: [flatRegExp, 'i'],
+        len: [minFlatLen, maxFlatLen]
       }
     },
     entrance_key: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[А-Яа-я0-9]+(?:[ _\/\\#*-А-Яа-я0-9]+)*$/i,
-        len: [3, 20]
+        is: [entranceKeyRegExp, 'i'],
+        len: [minEntranceKeyLen, maxEntranceKeyLen]
       }
     },
     created_at: {

@@ -1,6 +1,34 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
+import {
+  cityRegExp,
+  districtRegExp,
+  entranceKeyRegExp,
+  entranceRegExp,
+  flatRegExp,
+  houseRegExp,
+  maxCityLen,
+  maxDistrictLen,
+  maxEntranceKeyLen,
+  maxEntranceLen,
+  maxFlatLen,
+  maxFloorLen,
+  maxHouseLen,
+  maxRegionLen,
+  maxStreetLen,
+  minCityLen,
+  minDistrictLen,
+  minEntranceKeyLen,
+  minEntranceLen,
+  minFlatLen,
+  minFloorLen,
+  minHouseLen,
+  minRegionLen,
+  minStreetLen,
+  regionRegExp,
+  streetRegExp
+} from '../utils/constants.js';
 
 class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {
   declare id: CreationOptional<number>;
@@ -8,11 +36,11 @@ class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Ad
   declare district: CreationOptional<string>;
   declare city: string;
   declare street: string;
-  declare house: string;
-  declare entrance: string;
-  declare floor: number;
-  declare flat: string;
-  declare entranceKey: string;
+  declare house: CreationOptional<string>;
+  declare entrance: CreationOptional<string>;
+  declare floor: CreationOptional<number>;
+  declare flat: CreationOptional<string>;
+  declare entranceKey: CreationOptional<string>;
 }
 
 Address.init({
@@ -25,48 +53,48 @@ Address.init({
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      is: /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/i,
-      len: [3, 50]
+      is: [regionRegExp, 'i'],
+      len: [minRegionLen, maxRegionLen]
     }
   },
   district: {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      is: /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/i,
-      len: [3, 50]
+      is: [districtRegExp, 'i'],
+      len: [minDistrictLen, maxDistrictLen]
     }
   },
   city: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      is: /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/i,
-      len: [3, 50]
+      is: [cityRegExp, 'i'],
+      len: [minCityLen, maxCityLen]
     }
   },
   street: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      is: /^[А-Яа-я0-9]+(?:[ _-][А-Яа-я0-9]+)*$/i,
-      len: [3, 50]
+      is: [streetRegExp, 'i'],
+      len: [minStreetLen, maxStreetLen]
     }
   },
   house: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
     validate: {
-      is: /^[А-Яа-я0-9]+(?:[ _\\-][А-Яа-я0-9]+)*$/i,
-      len: [3, 20]
+      is: [houseRegExp, 'i'],
+      len: [minHouseLen, maxHouseLen]
     }
   },
   entrance: {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      is: /^[А-Яа-я0-9]+(?:[ _\\-][А-Яа-я0-9]+)*$/i,
-      len: [3, 20]
+      is: [entranceRegExp, 'i'],
+      len: [minEntranceLen, maxEntranceLen]
     }
   },
   floor: {
@@ -74,23 +102,23 @@ Address.init({
     allowNull: true,
     validate: {
       isNumeric: true,
-      len: [1, 3]
+      len: [minFloorLen, maxFloorLen]
     }
   },
   flat: {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      is: /^[А-Яа-я0-9]+(?:[ _\\-][А-Яа-я0-9]+)*$/i,
-      len: [3, 20]
+      is: [flatRegExp, 'i'],
+      len: [minFlatLen, maxFlatLen]
     }
   },
   entranceKey: {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      is: /^[А-Яа-я0-9]+(?:[ _\\#*-А-Яа-я0-9]+)*$/i,
-      len: [3, 20]
+      is: [entranceKeyRegExp, 'i'],
+      len: [minEntranceKeyLen, maxEntranceKeyLen]
     }
   },
 }, {
