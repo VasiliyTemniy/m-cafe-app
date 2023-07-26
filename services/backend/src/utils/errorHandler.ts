@@ -49,7 +49,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
   switch (error.name) {
 
     case 'JsonWebTokenError':
-      res.status(400).json({
+      res.status(401).json({
         error: {
           name: 'JsonWebTokenError',
           message: 'Invalid token'
