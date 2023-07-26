@@ -5,7 +5,7 @@ import { RequestMiddle } from '../types/RequestCustom.js';
 import type { RequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';
-import { AuthorizationError, DatabaseError, SessionError } from '@m-cafe-app/utils';
+import { AuthorizationError, BannedError, DatabaseError, HackError, SessionError } from '@m-cafe-app/utils';
 import { User, Session } from '../models/index.js';
 
 const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
@@ -45,6 +45,8 @@ const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunct
   const user = await User.findByPk(req.userId);
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
+  if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
+  if (user.id !== req.userId) return next(new HackError('Please, do not do this'));
 
   req.user = user;
 
