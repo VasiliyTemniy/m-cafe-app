@@ -1,5 +1,4 @@
 import logger from './logger.js';
-// import { isCustomRequest } from '../types/RequestCustom.js';
 import type { ErrorRequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { Session } from '../models/index.js';
