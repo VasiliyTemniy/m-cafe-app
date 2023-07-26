@@ -10,6 +10,7 @@ const adminRouter = Router();
 adminRouter.get(
   '/users/',
   middleware.verifyToken,
+  middleware.userExtractor,
   middleware.sessionCheck,
   (async (req, res) => {
 
@@ -36,6 +37,7 @@ adminRouter.get(
 adminRouter.get(
   '/users/:id',
   middleware.verifyToken,
+  middleware.userExtractor,
   middleware.sessionCheck,
   (async (req, res) => {
 
@@ -59,6 +61,7 @@ adminRouter.get(
 adminRouter.put(
   '/users/:id',
   middleware.verifyToken,
+  middleware.userExtractor,
   middleware.sessionCheck,
   (async (req, res) => {
 

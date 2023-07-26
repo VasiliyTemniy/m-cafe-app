@@ -49,6 +49,7 @@ usersRouter.post(
 usersRouter.put(
   '/:id',
   middleware.verifyToken,
+  middleware.userExtractor,
   middleware.sessionCheck,
   (async (req, res) => {
 
@@ -87,6 +88,7 @@ usersRouter.put(
 usersRouter.get(
   '/me',
   middleware.verifyToken,
+  middleware.userExtractor,
   middleware.sessionCheck,
   (async (req, res) => {
 

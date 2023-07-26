@@ -40,6 +40,19 @@ const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: Ne
 };
 
 
+const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
+
+  const user = await User.findByPk(req.userId);
+
+  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
+
+  req.user = user;
+
+  next();
+
+}) as RequestHandler;
+
+
 const sessionCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
   const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
@@ -71,6 +84,7 @@ const unknownEndpoint: RequestHandler = (req: Request, res: Response) => {
 export default {
   requestLogger,
   verifyToken,
+  userExtractor,
   sessionCheck,
   unknownEndpoint
 };
