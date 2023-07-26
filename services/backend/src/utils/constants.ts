@@ -51,3 +51,11 @@ export const dateRegExp = process.env.DATE_REGEXP
   : /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/;
 // ??
 //^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$
+
+
+export const minPasswordLen = process.env.PASSWORD_MINLEN
+  ? Number(process.env.PASSWORD_MINLEN)
+  : 5;
+export const maxPasswordLen = process.env.PASSWORD_MAXLEN
+  ? Number(process.env.PASSWORD_MAXLEN)
+  : 100;
