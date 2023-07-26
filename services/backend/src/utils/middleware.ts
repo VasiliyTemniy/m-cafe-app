@@ -27,13 +27,14 @@ const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: Ne
 
   if (!req.headers.authorization || !token) return next(new AuthorizationError('Authorization required'));
 
+  req.token = token;
+
   const payload = jwt.verify(token, config.SECRET);
 
   if (typeof payload === "string" || payload instanceof String || !isCustomPayload(payload))
     return next(new AuthorizationError('Malformed token'));
 
   req.userId = Number(payload.id);
-  req.token = token;
 
   next();
 };
