@@ -548,5 +548,52 @@ describe('User PUT request tests', () => {
 
   });
 
+});
+
+
+describe('User GET request tests', () => {
+
+  before(async () => {
+    await User.destroy({ where: {} });
+    await User.bulkCreate(initialUsers);
+    await User.create(validUserInDB.dbEntry);
+  });
+
+  beforeEach(async () => {
+    await Session.destroy({ where: {} });
+  });
+
+  it('A users/me path gives correct user info to frontend', async () => {
+
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    const response = await api
+      .get(`${apiBaseUrl}/users/me`)
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.id).to.equal(validUserInDB.dbEntry.id);
+    expect(response.body.username).to.equal(validUserInDB.dbEntry.username);
+    expect(response.body.name).to.equal(validUserInDB.dbEntry.name);
+    expect(response.body.phonenumber).to.equal(validUserInDB.dbEntry.phonenumber);
+    expect(response.body.email).to.equal(validUserInDB.dbEntry.email);
+    expect(response.body.birthdate).to.equal(validUserInDB.dbEntry.birthdate?.toISOString());
+
+  });
+
+  it('A users/me path requires authorization', async () => {
+
+    const response = await api
+      .get(`${apiBaseUrl}/users/me`)
+      .set('User-Agent', userAgent)
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.error.name).to.equal('AuthorizationError');
+    expect(response.body.error.message).to.equal('Authorization required');
+
+  });
 
 });
