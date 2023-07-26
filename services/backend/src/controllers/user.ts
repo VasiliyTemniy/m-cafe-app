@@ -2,15 +2,15 @@ import bcryptjs from 'bcryptjs';
 import { RequestHandler, Router } from 'express';
 import {
   CredentialsError,
-  DatabaseError,
   HackError,
   PasswordLengthError,
   RequestBodyError,
   UnknownError,
   isEditUserBody,
-  isNewUserBody
+  isNewUserBody,
+  UserTransit
 } from '@m-cafe-app/utils';
-import { isCustomRequest } from '../types/RequestCustom.js';
+import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
 import { User } from '../models/index.js';
 
@@ -41,7 +41,16 @@ usersRouter.post(
 
     const savedUser = await User.create(user);
 
-    res.status(201).json(savedUser);
+    const resBody: UserTransit = {
+      id: savedUser.id,
+      username: savedUser.username,
+      name: savedUser.name,
+      phonenumber: savedUser.phonenumber,
+      email: savedUser.email,
+      birthdate: savedUser.birthdate
+    };
+
+    res.status(201).json(resBody);
 
   }) as RequestHandler
 );
@@ -53,34 +62,39 @@ usersRouter.put(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    if (!isCustomRequest(req)) throw new UnknownError('This code should never be reached');
+    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
     if (!isEditUserBody(req.body)) throw new RequestBodyError('Invalid edit user request body');
     if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
 
     const { username, name, password, phonenumber, email, birthdate, newPassword } = req.body;
 
-    const user = await User.findByPk(req.params.id);
-
-    if (!user) throw new UnknownError('This should never be reached');
-
-    const passwordCorrect = await bcryptjs.compare(password, user.passwordHash);
+    const passwordCorrect = await bcryptjs.compare(password, req.user.passwordHash);
 
     if (!passwordCorrect) throw new CredentialsError('Password incorrect');
 
-    if (username) user.username = username;
-    if (name) user.name = name;
-    if (phonenumber) user.phonenumber = phonenumber;
-    if (email) user.email = email;
-    if (birthdate) user.birthdate = new Date(birthdate);
+    if (username) req.user.username = username;
+    if (name) req.user.name = name;
+    if (phonenumber) req.user.phonenumber = phonenumber;
+    if (email) req.user.email = email;
+    if (birthdate) req.user.birthdate = new Date(birthdate);
     if (newPassword) {
       if (newPassword.length <= 3) throw new PasswordLengthError('Password must be longer than 3 symbols');
       const saltRounds = 10;
-      user.passwordHash = await bcryptjs.hash(newPassword, saltRounds);
+      req.user.passwordHash = await bcryptjs.hash(newPassword, saltRounds);
     }
 
-    await user.save();
+    await req.user.save();
 
-    res.status(200).json(user);
+    const resBody: UserTransit = {
+      id: req.user.id,
+      username: req.user.username,
+      name: req.user.name,
+      phonenumber: req.user.phonenumber,
+      email: req.user.email,
+      birthdate: req.user.birthdate
+    };
+
+    res.status(200).json(resBody);
 
   }) as RequestHandler
 );
@@ -90,15 +104,20 @@ usersRouter.get(
   middleware.verifyToken,
   middleware.userExtractor,
   middleware.sessionCheck,
-  (async (req, res) => {
+  ((req, res) => {
 
-    const user = await User.findByPk(req.params.id, {
-      attributes: { exclude: ['createdAt', 'updatedAt', 'passwordHash', 'disabled', 'admin'] }
-    });
+    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
 
-    if (!user) throw new DatabaseError('No user entry');
+    const resBody: UserTransit = {
+      id: req.user.id,
+      username: req.user.username,
+      name: req.user.name,
+      phonenumber: req.user.phonenumber,
+      email: req.user.email,
+      birthdate: req.user.birthdate
+    };
 
-    res.status(200).json(user);
+    res.status(200).json(resBody);
 
   }) as RequestHandler
 );
