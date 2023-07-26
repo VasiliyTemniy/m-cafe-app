@@ -86,7 +86,7 @@ sessionRouter.get(
   middleware.userCheck,
   (async (req, res) => {
 
-    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached');
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
 
     const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
@@ -123,7 +123,7 @@ sessionRouter.delete(
   middleware.userCheck,
   (async (req, res) => {
 
-    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached');
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
 
     const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
