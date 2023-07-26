@@ -5,7 +5,14 @@ import { RequestMiddle } from '../types/RequestCustom.js';
 import type { RequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';
-import { AuthorizationError, BannedError, DatabaseError, HackError, SessionError } from '@m-cafe-app/utils';
+import {
+  AuthorizationError,
+  BannedError,
+  DatabaseError,
+  HackError,
+  ProhibitedError,
+  SessionError
+} from '@m-cafe-app/utils';
 import { User, Session } from '../models/index.js';
 
 const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
@@ -55,6 +62,33 @@ const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunct
 }) as RequestHandler;
 
 
+const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
+
+  const user = await User.findByPk(req.userId);
+
+  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
+  if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
+  if (user.id !== req.userId) return next(new HackError('Please, do not do this'));
+
+  next();
+
+}) as RequestHandler;
+
+
+const adminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
+
+  const user = await User.findByPk(req.userId);
+
+  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
+  if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
+  if (user.id !== req.userId) return next(new HackError('Please, do not do this'));
+  if (!user.admin) return next(new ProhibitedError('You have no admin permissions'));
+
+  next();
+
+}) as RequestHandler;
+
+
 const sessionCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
   const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
@@ -87,6 +121,8 @@ export default {
   requestLogger,
   verifyToken,
   userExtractor,
+  userCheck,
+  adminCheck,
   sessionCheck,
   unknownEndpoint
 };
