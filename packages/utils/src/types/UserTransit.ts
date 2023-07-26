@@ -1,4 +1,4 @@
-import { isBoolean, isNumber, isString } from "./typeParsers.js";
+import { isNumber, isString } from "./typeParsers.js";
 
 interface UserTransitFields {
   id: unknown;
@@ -7,8 +7,8 @@ interface UserTransitFields {
   phonenumber: unknown;
   email?: unknown;
   birthdate?: unknown;
-  disabled: unknown;
-  admin: unknown;
+  disabled?: unknown;
+  admin?: unknown;
 }
 
 export interface UserTransit {
@@ -18,22 +18,18 @@ export interface UserTransit {
   phonenumber: string;
   email?: string;
   birthdate?: Date;
-  disabled: boolean;
-  admin: boolean;
+  disabled?: boolean;
+  admin?: boolean;
 }
 
 const hasUserTransitFields = (user: unknown): user is UserTransitFields =>
   Object.prototype.hasOwnProperty.call(user, "id")
   &&
-  Object.prototype.hasOwnProperty.call(user, "phonenumber")
-  &&
-  Object.prototype.hasOwnProperty.call(user, "disabled")
-  &&
-  Object.prototype.hasOwnProperty.call(user, "admin");
+  Object.prototype.hasOwnProperty.call(user, "phonenumber");
 
 export const isUserTransit = (user: unknown): user is UserTransit => {
   if (hasUserTransitFields(user)) {
-    if (isNumber(user.id) && isString(user.phonenumber) && isBoolean(user.disabled) && isBoolean(user.admin)) return true;
+    if (isNumber(user.id) && isString(user.phonenumber)) return true;
   }
   return false;
 };
