@@ -12,7 +12,7 @@ import { diffString } from 'json-diff';
 const api = supertest(app);
 
 
-describe.only('Database migrations code is synchronized with models code', () => {
+describe('Database migrations code is synchronized with models code', () => {
 
   it('Schema comparison diff should be null', async () => {
 
