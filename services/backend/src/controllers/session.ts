@@ -48,7 +48,7 @@ sessionRouter.post(
     // Crucial for session tests
     const token = jwt.sign({
       id: user.id,
-      rand: Math.round(Math.random() * 10000)
+      rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
 
