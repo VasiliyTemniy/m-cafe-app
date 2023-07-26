@@ -9,7 +9,6 @@ import {
   AuthorizationError,
   BannedError,
   DatabaseError,
-  HackError,
   ProhibitedError,
   SessionError
 } from '@m-cafe-app/utils';
@@ -53,7 +52,6 @@ const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunct
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
   if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
-  if (user.id !== req.userId) return next(new HackError('Please, do not do this'));
 
   req.user = user;
 
@@ -68,7 +66,6 @@ const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction)
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
   if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
-  if (user.id !== req.userId) return next(new HackError('Please, do not do this'));
 
   next();
 
@@ -81,7 +78,6 @@ const adminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
   if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
-  if (user.id !== req.userId) return next(new HackError('Please, do not do this'));
   if (!user.admin) return next(new ProhibitedError('You have no admin permissions'));
 
   next();
