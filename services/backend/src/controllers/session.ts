@@ -3,8 +3,8 @@ import bcryptjs from 'bcryptjs';
 import { RequestHandler, Router } from 'express';
 import middleware from '../utils/middleware.js';
 import config from '../utils/config.js';
-import { isCustomRequest } from '../types/RequestCustom.js';
-import { RequestBodyError, CredentialsError, BannedError, UnknownError } from '@m-cafe-app/utils';
+import { isRequestCustom } from '../types/RequestCustom.js';
+import { RequestBodyError, CredentialsError, BannedError, UnknownError, SessionError } from '@m-cafe-app/utils';
 import { isLoginBody } from '@m-cafe-app/utils';
 import { User, Session } from '../models/index.js';
 
@@ -72,9 +72,46 @@ sessionRouter.post(
 
     }
 
-    res.status(200).send({
+    res.status(201).send({
       token,
       id: user.id
+    });
+
+  }) as RequestHandler
+);
+
+sessionRouter.get(
+  '/refresh',
+  middleware.verifyToken,
+  middleware.userCheck,
+  (async (req, res) => {
+
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached');
+
+    const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
+
+    const activeSession = await Session.findOne({
+      where: {
+        userId: req.userId,
+        token: req.token,
+        userAgent
+      }
+    });
+
+    if (!activeSession) throw new SessionError('Invalid login request body');
+
+    const token = jwt.sign({
+      id: req.userId,
+      rand: Math.random() * 10000
+    }, config.SECRET, { expiresIn: config.TOKEN_TTL });
+
+    activeSession.token = token;
+
+    await activeSession.save();
+
+    res.status(200).send({
+      token,
+      id: req.userId
     });
 
   }) as RequestHandler
@@ -83,15 +120,18 @@ sessionRouter.post(
 sessionRouter.delete(
   '/',
   middleware.verifyToken,
-  middleware.userExtractor,
+  middleware.userCheck,
   (async (req, res) => {
 
-    if (!isCustomRequest(req)) throw new UnknownError('This code should never be reached');
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached');
+
+    const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
     await Session.destroy({
       where: {
         userId: req.userId,
-        token: req.token
+        token: req.token,
+        userAgent
       }
     });
 
