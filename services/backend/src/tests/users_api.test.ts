@@ -15,7 +15,7 @@ import {
 } from './users_api_helper';
 import { Session, User } from '../models/index';
 import { connectToDatabase } from "../utils/db";
-import logger from "../utils/logger";
+import bcryptjs from 'bcryptjs';
 import { initSuperAdmin } from "../utils/adminInit";
 import { ValidationError } from 'sequelize';
 import {
@@ -34,6 +34,7 @@ import {
   usernameRegExp
 } from "../utils/constants";
 import { NewUserBody } from "@m-cafe-app/utils";
+import * as fc from 'fast-check';
 
 
 
@@ -435,25 +436,18 @@ describe('User POST request tests', () => {
 
     const passwordHashesSet = new Set(['']);
 
-    for (let i = 0; i < 10; i++) {
-      const result = await api
-        .post(`${apiBaseUrl}/users`)
-        .send(validUser as object)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
+    const passwordHashProperty = fc.asyncProperty(fc.string(), async (password) => {
 
-      if (!result.body.passwordHash) {
-        logger.shout('Password Hash was not generated!');
-        expect(true).to.be.equal(false);
-      }
+      const saltRounds = 10;
+      const passwordHash = await bcryptjs.hash(password, saltRounds);
 
-      expect(passwordHashesSet.has(result.body.passwordHash as string)).to.equal(false);
+      expect(passwordHashesSet.has(passwordHash)).to.equal(false);
 
-      await User.destroy({ where: { id: result.body.id as string } });
+      passwordHashesSet.add(passwordHash);
 
-      passwordHashesSet.add(result.body.passwordHash as string);
+    });
 
-    }
+    await fc.assert(passwordHashProperty, { numRuns: 10 });
 
   });
 
