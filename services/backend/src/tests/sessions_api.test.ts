@@ -15,6 +15,7 @@ import { LoginUserBody } from "@m-cafe-app/utils";
 import { isTokenBody } from "@m-cafe-app/utils";
 import * as fc from 'fast-check';
 import config from "../utils/config";
+import { initLogin, userAgent } from "./sessions_api_helper";
 
 
 
@@ -69,67 +70,31 @@ succeds and gives token + id (userId) as response', async () => {
   it('User login leads to creation of a session with user id and token. Sequential login attempt from the \
 same browser(userAgent) without logout leads to session token refresh', async () => {
 
-    const loginBody: LoginUserBody = {
-      phonenumber: validUserInDB.dbEntry.phonenumber,
-      password: validUserInDB.password
-    };
+    const tokenFirst = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'SUPERTEST');
 
-    const responseFirst = await api
-      .post(`${apiBaseUrl}/session`)
-      .set('User-Agent', 'SUPERTEST')
-      .send(loginBody as object)
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
+    const sessionsFirst = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
 
-    if (!responseFirst.body.token) expect(true).to.equal(false);
-    const tokenFirst = responseFirst.body.token as string;
+    expect(sessionsFirst).to.be.lengthOf(1);
+    expect(sessionsFirst[0].token).to.equal(tokenFirst);
 
-    const sessionFirst = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
+    const tokenSecond = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'SUPERTEST');
 
-    expect(sessionFirst).to.be.lengthOf(1);
-    expect(sessionFirst[0].token).to.equal(tokenFirst);
+    const sessionsSecond = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
 
-    const responseSecond = await api
-      .post(`${apiBaseUrl}/session`)
-      .set('User-Agent', 'SUPERTEST')
-      .send(loginBody as object)
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
+    expect(sessionsSecond).to.be.lengthOf(1);
+    expect(sessionsSecond[0].token).to.equal(tokenSecond);
 
-    if (!responseSecond.body.token) expect(true).to.equal(false);
-    const tokenSecond = responseSecond.body.token as string;
-
-    const sessionSecond = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
-
-    expect(sessionSecond).to.be.lengthOf(1);
-    expect(sessionSecond[0].token).to.equal(tokenSecond);
-
-    expect(sessionFirst[0].id).to.equal(sessionSecond[0].id);
+    expect(sessionsFirst[0].id).to.equal(sessionsSecond[0].id);
 
   });
 
   it('User login from different browsers create different sessions', async () => {
 
-    const loginBody: LoginUserBody = {
-      phonenumber: validUserInDB.dbEntry.phonenumber,
-      password: validUserInDB.password
-    };
-
     const userAgents = ['SUPERTEST', 'MEGAUBERTEST'];
 
-    await api
-      .post(`${apiBaseUrl}/session`)
-      .set('User-Agent', userAgents[0])
-      .send(loginBody as object)
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
+    await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgents[0]);
 
-    await api
-      .post(`${apiBaseUrl}/session`)
-      .set('User-Agent', userAgents[1])
-      .send(loginBody as object)
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
+    await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgents[1]);
 
     const sessions = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
 
@@ -285,23 +250,12 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
   it('Token refresh route works (route without a password, checks only for a valid token; must have a Session record)', async () => {
 
-    const loginBody: LoginUserBody = {
-      phonenumber: validUserInDB.dbEntry.phonenumber,
-      password: validUserInDB.password
-    };
-
-    const response = await api
-      .post(`${apiBaseUrl}/session`)
-      .send(loginBody as object)
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
-
-    if (!response.body.token) expect(true).to.equal(false);
-    const token = response.body.token as string;
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
 
     const responseRefreshed = await api
       .get(`${apiBaseUrl}/session/refresh`)
       .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -314,23 +268,12 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
   it('Logout route deletes Session', async () => {
 
-    const loginBody: LoginUserBody = {
-      phonenumber: validUserInDB.dbEntry.phonenumber,
-      password: validUserInDB.password
-    };
-
-    const response = await api
-      .post(`${apiBaseUrl}/session`)
-      .send(loginBody as object)
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
-
-    if (!response.body.token) expect(true).to.equal(false);
-    const token = response.body.token as string;
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
 
     await api
       .delete(`${apiBaseUrl}/session`)
       .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
       .expect(204);
 
     const sessionsAfterLogout = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
