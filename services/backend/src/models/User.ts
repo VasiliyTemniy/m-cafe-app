@@ -16,6 +16,7 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from '../utils/constants.js';
+import { isUserTransit } from '@m-cafe-app/utils';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
@@ -115,5 +116,15 @@ User.init({
     all: {}
   }
 });
+
+const hasDataValuesAsUserFields = (user: unknown): user is { dataValues: unknown; } =>
+  Object.prototype.hasOwnProperty.call(user, "dataValues");
+
+export const isUser = (user: unknown): user is User => {
+  if (hasDataValuesAsUserFields(user)) {
+    if (isUserTransit(user.dataValues)) return true;
+  }
+  return false;
+};
 
 export default User;
