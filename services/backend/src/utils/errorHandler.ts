@@ -1,9 +1,11 @@
 import logger from './logger.js';
-import { isCustomRequest } from '../types/RequestCustom.js';
+// import { isCustomRequest } from '../types/RequestCustom.js';
 import type { ErrorRequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { Session } from '../models/index.js';
 import { isCustomError, isNamedError } from '@m-cafe-app/utils';
+import jwt from 'jsonwebtoken';
+import { JwtPayloadCustom } from '../types/JWTPayloadCustom.js';
 
 export const errorHandler = (async (error, req: Request, res: Response, next: NextFunction) => {
 
@@ -56,17 +58,32 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       return next(error);
 
     case 'TokenExpiredError':
-      if (isCustomRequest(req))
-        await Session.destroy({
-          where: {
-            userId: req.userId,
-            token: req.token
+
+      const hasToken = (req: unknown): req is { token: unknown; } => Object.prototype.hasOwnProperty.call(req, "token");
+      if (!hasToken(req)) {
+        res.status(401).json({
+          error: {
+            name: 'UnknownError',
+            message: 'Token was not found in auth header, but TokenExpiredError called = this should not be reached'
           }
         });
+        return next(error);
+      }
+
+      const token = req.token as string;
+      const payload = jwt.decode(token) as JwtPayloadCustom;
+
+      await Session.destroy({
+        where: {
+          userId: payload.id,
+          token
+        }
+      });
+
       res.status(401).json({
         error: {
           name: 'TokenExpiredError',
-          message: 'Token expired'
+          message: 'Token expired. Please, relogin'
         }
       });
       return next(error);
