@@ -55,10 +55,13 @@ const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunct
 
 const sessionCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
+  const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
+
   const session = await Session.findOne({
     where: {
       userId: req.userId,
-      token: req.token
+      token: req.token,
+      userAgent
     }
   });
 
