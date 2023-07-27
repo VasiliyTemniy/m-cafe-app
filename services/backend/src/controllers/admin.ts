@@ -14,12 +14,7 @@ adminRouter.get(
   (async (req, res) => {
 
     const userSubjects = await User.findAll({
-      attributes: { exclude: ['createdAt', 'updatedAt', 'passwordHash', 'disabled', 'admin'] },
-      include: [
-        {
-          attributes: { exclude: ['userId', 'createdAt', 'updatedAt'] }
-        }
-      ],
+      attributes: { exclude: ['createdAt', 'updatedAt', 'passwordHash', 'disabled', 'admin'] }
     });
 
     res.status(200).json(userSubjects);
