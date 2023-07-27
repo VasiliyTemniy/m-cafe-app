@@ -12,7 +12,7 @@ testingRouter.get(
 testingRouter.get(
   '/reset',
   (async (req, res) => {
-    await sequelize.drop();
+    await sequelize.drop({ cascade: true });
     await runMigrations();
 
     res.status(204).end();
