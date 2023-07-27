@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, QueryTypes } from 'sequelize';
 import { MigrationContext } from '../types/MigrationContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -31,6 +31,21 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false
     }
   });
+
+  const constraintCheck = await queryInterface.sequelize.query(
+    "SELECT * FROM pg_constraint WHERE conname = 'food_images_food_id_image_id_key'",
+    { type: QueryTypes.SELECT }
+  );
+
+  if (!constraintCheck[0]) {
+    await queryInterface.addConstraint('food_images', {
+      fields: [
+        'food_id', 'image_id'
+      ],
+      type: 'unique',
+      name: 'food_images_food_id_image_id_key'
+    });
+  }
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
