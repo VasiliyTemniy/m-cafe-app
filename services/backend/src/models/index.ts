@@ -13,6 +13,8 @@ import Facility from './Facility.js';
 import FacilityManager from './FacilityManager.js';
 import Stock from './Stock.js';
 import DynamicModule from './DynamicModule.js';
+import Picture from './Picture.js';
+import FoodPicture from './FoodPicture.js';
 
 /*****
  * User + Session table associations BEGIN
@@ -128,6 +130,15 @@ LocString.hasOne(DynamicModule, {
   as: 'locString'
 });
 DynamicModule.belongsTo(LocString);
+
+LocString.hasOne(Picture, {
+  foreignKey: 'altTextLocId',
+  as: 'pictureAltTextLoc'
+});
+Picture.belongsTo(LocString, {
+  foreignKey: 'altTextLocId',
+  as: 'altTextLoc'
+});
 
 /*****
  * Localization table associations END
@@ -306,6 +317,43 @@ OrderFood.belongsTo(Food);
 
 /*****
  * Order + Food + Address table associations END
+ ******/
+
+
+/*****
+ * DynamicModule + Picture table associations START
+ ******/
+
+Picture.hasOne(DynamicModule, {
+  foreignKey: 'pictureId',
+  as: 'picture_dynamic_module'
+});
+DynamicModule.belongsTo(Picture);
+
+/*****
+ * DynamicModule + Picture table associations END
+ ******/
+
+
+/*****
+ * Food + Picture table associations START
+ ******/
+
+Picture.belongsToMany(Food, { through: FoodPicture });
+Food.belongsToMany(Picture, { through: FoodPicture });
+Picture.hasMany(FoodPicture, {
+  foreignKey: 'pictureId',
+  as: 'picture_foods'
+});
+FoodPicture.belongsTo(Picture);
+Food.hasMany(FoodPicture, {
+  foreignKey: 'foodId',
+  as: 'food_pictures'
+});
+FoodPicture.belongsTo(Food);
+
+/*****
+ * Food + Picture table associations END
  ******/
 
 
