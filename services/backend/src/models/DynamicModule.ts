@@ -1,5 +1,6 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
 import LocString from './LocString.js';
+import Image from './Image.js';
 
 import { sequelize } from '../utils/db.js';
 
@@ -9,8 +10,10 @@ class DynamicModule extends Model<InferAttributes<DynamicModule>, InferCreationA
   declare locStringId: CreationOptional<ForeignKey<LocString['id']>>;
   declare page: string;
   declare placement: number;
+  declare className: CreationOptional<string>;
   declare inlineCss: CreationOptional<string>;
-  declare imageSrc: CreationOptional<string>;
+  declare imageId: CreationOptional<ForeignKey<Image['id']>>;
+  declare url: CreationOptional<string>;
 }
 
 DynamicModule.init({
@@ -38,11 +41,22 @@ DynamicModule.init({
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  className: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   inlineCss: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  imageSrc: {
+  imageId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: { model: 'images', key: 'id' },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  },
+  url: {
     type: DataTypes.STRING,
     allowNull: true
   },

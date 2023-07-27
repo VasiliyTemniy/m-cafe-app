@@ -27,11 +27,22 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    class_name: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     inline_css: {
       type: DataTypes.STRING,
       allowNull: true
     },
-    image_src: {
+    image_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'images', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
+    },
+    url: {
       type: DataTypes.STRING,
       allowNull: true
     },
