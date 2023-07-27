@@ -35,10 +35,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.STRING,
       allowNull: true
     },
-    image_id: {
+    picture_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: { model: 'images', key: 'id' },
+      references: { model: 'pictures', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL'
     },

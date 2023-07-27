@@ -1,16 +1,16 @@
 import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
 import Food from './Food.js';
-import Image from './Image.js';
+import Picture from './Picture.js';
 
 import { sequelize } from '../utils/db.js';
 
-class FoodImage extends Model<InferAttributes<FoodImage>, InferCreationAttributes<FoodImage>> {
+class FoodPicture extends Model<InferAttributes<FoodPicture>, InferCreationAttributes<FoodPicture>> {
   declare id: CreationOptional<number>;
   declare foodId: ForeignKey<Food['id']>;
-  declare imageId: ForeignKey<Image['id']>;
+  declare pictureId: ForeignKey<Picture['id']>;
 }
 
-FoodImage.init({
+FoodPicture.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -23,10 +23,10 @@ FoodImage.init({
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   },
-  imageId: {
+  pictureId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: 'images', key: 'id' },
+    references: { model: 'pictures', key: 'id' },
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   },
@@ -34,7 +34,7 @@ FoodImage.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'food_image'
+  modelName: 'food_pictures'
 });
 
-export default FoodImage;
+export default FoodPicture;

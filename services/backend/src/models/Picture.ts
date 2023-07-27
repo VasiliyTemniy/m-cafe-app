@@ -3,19 +3,19 @@ import LocString from './LocString.js';
 
 import { sequelize } from '../utils/db.js';
 
-class Image extends Model<InferAttributes<Image>, InferCreationAttributes<Image>> {
+class Picture extends Model<InferAttributes<Picture>, InferCreationAttributes<Picture>> {
   declare id: CreationOptional<number>;
-  declare imageSrc: string;
+  declare src: string;
   declare altTextLocId: ForeignKey<LocString['id']>;
 }
 
-Image.init({
+Picture.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  imageSrc: {
+  src: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -30,7 +30,7 @@ Image.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'images'
+  modelName: 'pictures'
 });
 
-export default Image;
+export default Picture;

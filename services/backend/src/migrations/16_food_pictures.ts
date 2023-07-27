@@ -2,7 +2,7 @@ import { DataTypes, QueryTypes } from 'sequelize';
 import { MigrationContext } from '../types/MigrationContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('food_images', {
+  await queryInterface.createTable('food_pictures', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -15,10 +15,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    image_id: {
+    picture_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'images', key: 'id' },
+      references: { model: 'pictures', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
@@ -33,21 +33,21 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
   });
 
   const constraintCheck = await queryInterface.sequelize.query(
-    "SELECT * FROM pg_constraint WHERE conname = 'food_images_food_id_image_id_key'",
+    "SELECT * FROM pg_constraint WHERE conname = 'food_pictures_food_id_picture_id_key'",
     { type: QueryTypes.SELECT }
   );
 
   if (!constraintCheck[0]) {
-    await queryInterface.addConstraint('food_images', {
+    await queryInterface.addConstraint('food_pictures', {
       fields: [
-        'food_id', 'image_id'
+        'food_id', 'picture_id'
       ],
       type: 'unique',
-      name: 'food_images_food_id_image_id_key'
+      name: 'food_pictures_food_id_picture_id_key'
     });
   }
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('food_images');
+  await queryInterface.dropTable('food_pictures');
 };

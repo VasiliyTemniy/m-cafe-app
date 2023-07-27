@@ -2,13 +2,13 @@ import { DataTypes } from 'sequelize';
 import { MigrationContext } from '../types/MigrationContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('images', {
+  await queryInterface.createTable('pictures', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    image_src: {
+    src: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -31,5 +31,5 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('images');
+  await queryInterface.dropTable('pictures');
 };
