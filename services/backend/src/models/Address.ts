@@ -83,7 +83,7 @@ Address.init({
   },
   house: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     validate: {
       is: [houseRegExp, 'i'],
       len: [minHouseLen, maxHouseLen]
