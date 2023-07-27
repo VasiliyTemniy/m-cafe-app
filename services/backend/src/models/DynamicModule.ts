@@ -42,7 +42,7 @@ DynamicModule.init({
     allowNull: false
   },
   className: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true
   },
   inlineCss: {
