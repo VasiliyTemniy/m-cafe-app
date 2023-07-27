@@ -282,8 +282,14 @@ Stock.belongsTo(Facility);
 
 
 /*****
- * Order + Food table associations BEGIN
+ * Order + Food + Address table associations BEGIN
  ******/
+
+Address.hasOne(Order, {
+  foreignKey: 'addressId',
+  as: 'order_address'
+});
+Order.belongsTo(Address);
 
 Order.belongsToMany(Food, { through: OrderFood });
 Food.belongsToMany(Order, { through: OrderFood });
@@ -299,7 +305,7 @@ Food.hasMany(OrderFood, {
 OrderFood.belongsTo(Food);
 
 /*****
- * Order + Food table associations END
+ * Order + Food + Address table associations END
  ******/
 
 
