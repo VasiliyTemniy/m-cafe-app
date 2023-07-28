@@ -2,7 +2,7 @@
   "name": "m-cafe-app",
   "productName": "Custom cafe DIY-app",
   "version": "0.1.0",
-  "description": "Cafe app - template-based DIY framework to build custom cafe website",
+  "description": "Quickly deployable cafe app template with slight customization via admin ui",
   "main": "services/frontend/.webpack/main",
   "repository": "https://github.com/VasiliyTemniy/m-cafe-app.git",
   "author": "VasiliyTemniy <flash_er@mail.ru>",
