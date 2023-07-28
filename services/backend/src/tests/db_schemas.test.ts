@@ -43,7 +43,6 @@ describe('Database migrations code is synchronized with models code', () => {
 
     const state = deepEqual(dbInfo1, dbInfo2);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (!state) console.log(diffString(dbInfo1, dbInfo2));
 
     expect(state).to.equal(true);
