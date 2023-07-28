@@ -1,13 +1,13 @@
 import { LoginUserBody } from "@m-cafe-app/utils";
 import supertest from 'supertest';
 import { apiBaseUrl } from './test_helper';
-import { UserInDB } from "./users_api_helper";
+import { UserData } from "@m-cafe-app/utils";
 import { expect } from "chai";
 
 export const userAgent = 'SUPERTEST';
 
 export const initLogin = async (
-  user: UserInDB,
+  user: UserData,
   password: string,
   api: supertest.SuperTest<supertest.Test>,
   expectedStatus: number,
