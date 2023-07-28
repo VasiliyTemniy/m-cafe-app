@@ -8,9 +8,9 @@ import {
   UnknownError,
   isEditUserBody,
   isNewUserBody,
-  UserTransit
+  UserDataTransit
 } from '@m-cafe-app/utils';
-import { isRequestWithUser } from '../types/RequestCustom.js';
+import { isRequestCustom, isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
 import { User } from '../models/index.js';
 import { maxPasswordLen, minPasswordLen } from '../utils/constants.js';
@@ -43,13 +43,13 @@ usersRouter.post(
 
     const savedUser = await User.create(user);
 
-    const resBody: UserTransit = {
+    const resBody: UserDataTransit = {
       id: savedUser.id,
       username: savedUser.username,
       name: savedUser.name,
       phonenumber: savedUser.phonenumber,
       email: savedUser.email,
-      birthdate: savedUser.birthdate
+      birthdate: savedUser.birthdate?.toISOString()
     };
 
     res.status(201).json(resBody);
@@ -88,13 +88,41 @@ usersRouter.put(
 
     await req.user.save();
 
-    const resBody: UserTransit = {
+    const resBody: UserDataTransit = {
       id: req.user.id,
       username: req.user.username,
       name: req.user.name,
       phonenumber: req.user.phonenumber,
       email: req.user.email,
-      birthdate: req.user.birthdate
+      birthdate: req.user.birthdate?.toISOString()
+    };
+
+    res.status(200).json(resBody);
+
+  }) as RequestHandler
+);
+
+usersRouter.post(
+  '/address/:id',
+  middleware.verifyToken,
+  middleware.userCheck,
+  middleware.sessionCheck,
+  // (async (req, res) => {
+  ((req, res) => {
+
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    if (!isEditUserBody(req.body)) throw new RequestBodyError('Invalid edit user request body');
+    if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
+
+
+
+    const resBody = {
+      // id: req.user.id,
+      // username: req.user.username,
+      // name: req.user.name,
+      // phonenumber: req.user.phonenumber,
+      // email: req.user.email,
+      // birthdate: req.user.birthdate
     };
 
     res.status(200).json(resBody);
@@ -111,13 +139,13 @@ usersRouter.get(
 
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
 
-    const resBody: UserTransit = {
+    const resBody: UserDataTransit = {
       id: req.user.id,
       username: req.user.username,
       name: req.user.name,
       phonenumber: req.user.phonenumber,
       email: req.user.email,
-      birthdate: req.user.birthdate
+      birthdate: req.user.birthdate?.toISOString()
     };
 
     res.status(200).json(resBody);
