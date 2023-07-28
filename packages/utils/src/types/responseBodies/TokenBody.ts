@@ -1,4 +1,4 @@
-import { isNumber, isString } from "./typeParsers";
+import { isNumber, isString } from "../typeParsers";
 
 export interface TokenBody {
   token: string;
