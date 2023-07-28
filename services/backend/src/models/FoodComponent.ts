@@ -1,15 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import Food from './Food.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class FoodComponent extends Model<InferAttributes<FoodComponent>, InferCreationAttributes<FoodComponent>> {
-  declare id: CreationOptional<number>;
-  declare foodId: ForeignKey<Food['id']>;
-  declare componentId: number;
-  declare amount: number;
-  declare compositeFood: boolean;
-}
+import { FoodComponent } from '@m-cafe-app/utils';
 
 FoodComponent.init({
   id: {
@@ -36,6 +28,14 @@ FoodComponent.init({
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
 }, {
   sequelize,

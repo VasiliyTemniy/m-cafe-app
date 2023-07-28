@@ -1,15 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import Facility from './Facility.js';
-import Ingredient from './Ingredient.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class Stock extends Model<InferAttributes<Stock>, InferCreationAttributes<Stock>> {
-  declare id: CreationOptional<number>;
-  declare ingredientId: ForeignKey<Ingredient['id']>;
-  declare facilityId: ForeignKey<Facility['id']>;
-  declare amount: number;
-}
+import { Stock } from '@m-cafe-app/utils';
 
 Stock.init({
   id: {
@@ -30,7 +22,15 @@ Stock.init({
   amount: {
     type: DataTypes.INTEGER,
     allowNull: false
-  }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
 }, {
   sequelize,
   underscored: true,

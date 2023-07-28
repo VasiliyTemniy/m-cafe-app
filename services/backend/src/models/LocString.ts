@@ -1,13 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class LocString extends Model<InferAttributes<LocString>, InferCreationAttributes<LocString>> {
-  declare id: CreationOptional<number>;
-  declare ruString: string;
-  declare enString: CreationOptional<string>;
-  declare altString: CreationOptional<string>;
-}
+import { LocString } from '@m-cafe-app/utils';
 
 LocString.init({
   id: {
@@ -26,6 +20,14 @@ LocString.init({
   altString: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
 }, {
   sequelize,

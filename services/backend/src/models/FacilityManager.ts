@@ -1,14 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import User from './User.js';
-import Facility from './Facility.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class FacilityManager extends Model<InferAttributes<FacilityManager>, InferCreationAttributes<FacilityManager>> {
-  declare id: CreationOptional<number>;
-  declare userId: ForeignKey<User['id']>;
-  declare facilityId: ForeignKey<Facility['id']>;
-}
+import { FacilityManager } from '@m-cafe-app/utils';
 
 FacilityManager.init({
   id: {
@@ -25,7 +18,15 @@ FacilityManager.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: 'facilities', key: 'id' }
-  }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
 }, {
   sequelize,
   underscored: true,

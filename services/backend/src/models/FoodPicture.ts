@@ -1,14 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import Food from './Food.js';
-import Picture from './Picture.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class FoodPicture extends Model<InferAttributes<FoodPicture>, InferCreationAttributes<FoodPicture>> {
-  declare id: CreationOptional<number>;
-  declare foodId: ForeignKey<Food['id']>;
-  declare pictureId: ForeignKey<Picture['id']>;
-}
+import { FoodPicture } from '@m-cafe-app/utils';
 
 FoodPicture.init({
   id: {
@@ -29,6 +22,14 @@ FoodPicture.init({
     references: { model: 'pictures', key: 'id' },
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
 }, {
   sequelize,

@@ -1,4 +1,4 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
 import {
@@ -29,19 +29,7 @@ import {
   regionRegExp,
   streetRegExp
 } from '../utils/constants.js';
-
-class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {
-  declare id: CreationOptional<number>;
-  declare region: CreationOptional<string>;
-  declare district: CreationOptional<string>;
-  declare city: string;
-  declare street: string;
-  declare house: CreationOptional<string>;
-  declare entrance: CreationOptional<string>;
-  declare floor: CreationOptional<number>;
-  declare flat: CreationOptional<string>;
-  declare entranceKey: CreationOptional<string>;
-}
+import { Address } from '@m-cafe-app/utils';
 
 Address.init({
   id: {
@@ -120,6 +108,14 @@ Address.init({
       is: [entranceKeyRegExp, 'i'],
       len: [minEntranceKeyLen, maxEntranceKeyLen]
     }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
 }, {
   sequelize,

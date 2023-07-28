@@ -1,13 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import LocString from './LocString.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class Picture extends Model<InferAttributes<Picture>, InferCreationAttributes<Picture>> {
-  declare id: CreationOptional<number>;
-  declare src: string;
-  declare altTextLocId: ForeignKey<LocString['id']>;
-}
+import { Picture } from '@m-cafe-app/utils';
 
 Picture.init({
   id: {
@@ -25,6 +19,14 @@ Picture.init({
     references: { model: 'loc_strings', key: 'id' },
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
 }, {
   sequelize,

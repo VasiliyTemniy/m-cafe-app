@@ -1,16 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import FoodType from './FoodType.js';
-import LocString from './LocString.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class Food extends Model<InferAttributes<Food>, InferCreationAttributes<Food>> {
-  declare id: CreationOptional<number>;
-  declare nameLocId: ForeignKey<LocString['id']>;
-  declare foodTypeId: ForeignKey<FoodType['id']>;
-  declare descriptionLocId: ForeignKey<LocString['id']>;
-  declare price: number;
-}
+import { Food } from '@m-cafe-app/utils';
 
 Food.init({
   id: {
@@ -35,6 +26,14 @@ Food.init({
   },
   price: {
     type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
     allowNull: false
   },
 }, {

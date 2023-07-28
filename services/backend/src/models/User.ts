@@ -1,7 +1,6 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
 import {
   emailRegExp,
   maxEmailLen,
@@ -16,19 +15,8 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from '../utils/constants.js';
-import { isUserTransit } from '@m-cafe-app/utils';
+import { User, isUserData } from '@m-cafe-app/utils';
 
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: CreationOptional<number>;
-  declare username: CreationOptional<string>;
-  declare name: CreationOptional<string>;
-  declare passwordHash: string;
-  declare phonenumber: string;
-  declare email: CreationOptional<string>;
-  declare birthdate: CreationOptional<Date>;
-  declare disabled: CreationOptional<boolean>;
-  declare admin: CreationOptional<boolean>;
-}
 
 User.init({
   id: {
@@ -92,6 +80,14 @@ User.init({
     allowNull: false,
     defaultValue: false,
   },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
 }, {
   sequelize,
   underscored: true,
@@ -122,7 +118,7 @@ const hasDataValuesAsUserFields = (user: unknown): user is { dataValues: unknown
 
 export const isUser = (user: unknown): user is User => {
   if (hasDataValuesAsUserFields(user)) {
-    if (isUserTransit(user.dataValues)) return true;
+    if (isUserData(user.dataValues)) return true;
   }
   return false;
 };

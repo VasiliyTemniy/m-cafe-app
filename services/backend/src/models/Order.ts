@@ -1,16 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import User from './User.js';
-import Address from './Address.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
-  declare id: CreationOptional<number>;
-  declare userId: ForeignKey<User['id']>;
-  declare addressId: ForeignKey<Address['id']>;
-  declare deliverAt: Date;
-  declare status: string;
-}
+import { Order } from '@m-cafe-app/utils';
 
 Order.init({
   id: {
@@ -42,7 +33,15 @@ Order.init({
   status: {
     type: DataTypes.STRING,
     allowNull: false
-  }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
 }, {
   sequelize,
   underscored: true,

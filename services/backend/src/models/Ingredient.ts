@@ -1,17 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import LocString from './LocString.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
-  declare id: CreationOptional<number>;
-  declare nameLocId: ForeignKey<LocString['id']>;
-  declare stockMeasureLocId: ForeignKey<LocString['id']>;
-  declare proteins: CreationOptional<number>;
-  declare fats: CreationOptional<number>;
-  declare carbohydrates: CreationOptional<number>;
-  declare calories: CreationOptional<number>;
-}
+import { Ingredient } from '@m-cafe-app/utils';
 
 Ingredient.init({
   id: {
@@ -44,7 +34,15 @@ Ingredient.init({
   calories: {
     type: DataTypes.INTEGER,
     allowNull: true
-  }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
 }, {
   sequelize,
   underscored: true,

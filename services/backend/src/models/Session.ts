@@ -1,14 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import User from './User.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Session>> {
-  declare id: CreationOptional<number>;
-  declare userId: ForeignKey<User['id']>;
-  declare token: string;
-  declare userAgent: string;
-}
+import { Session } from '@m-cafe-app/utils';
 
 Session.init({
   id: {

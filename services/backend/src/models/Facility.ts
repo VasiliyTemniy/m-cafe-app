@@ -1,15 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import Address from './Address.js';
-import LocString from './LocString.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class Facility extends Model<InferAttributes<Facility>, InferCreationAttributes<Facility>> {
-  declare id: CreationOptional<number>;
-  declare addressId: CreationOptional<ForeignKey<Address['id']>>;
-  declare nameLocId: ForeignKey<LocString['id']>;
-  declare descriptionLocId: ForeignKey<LocString['id']>;
-}
+import { Facility } from '@m-cafe-app/utils';
 
 Facility.init({
   id: {
@@ -31,6 +23,14 @@ Facility.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: 'loc_strings', key: 'id' }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
 }, {
   sequelize,

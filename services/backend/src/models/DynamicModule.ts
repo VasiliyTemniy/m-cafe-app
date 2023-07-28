@@ -1,20 +1,7 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import LocString from './LocString.js';
-import Picture from './Picture.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-
-class DynamicModule extends Model<InferAttributes<DynamicModule>, InferCreationAttributes<DynamicModule>> {
-  declare id: CreationOptional<number>;
-  declare moduleType: string;
-  declare locStringId: CreationOptional<ForeignKey<LocString['id']>>;
-  declare page: string;
-  declare placement: number;
-  declare className: CreationOptional<string>;
-  declare inlineCss: CreationOptional<string>;
-  declare pictureId: CreationOptional<ForeignKey<Picture['id']>>;
-  declare url: CreationOptional<string>;
-}
+import { DynamicModule } from '@m-cafe-app/utils';
 
 DynamicModule.init({
   id: {
@@ -59,6 +46,14 @@ DynamicModule.init({
   url: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
 }, {
   sequelize,
