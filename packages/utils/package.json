@@ -1,5 +1,6 @@
 {
   "name": "@m-cafe-app/utils",
+  "productName": "Custom cafe DIY-app",
   "version": "1.0.0",
   "description": "This package contains common and transit for frontend and backend: types, type guards, validators, errors",
   "main": "build/index.js",
@@ -8,6 +9,9 @@
   "scripts": {
     "build": "tsc --build",
     "eslint": "eslint ./src/**/*.{ts,tsx}"
+  },
+  "dependencies": {
+    "sequelize": "^6.31.1"
   },
   "devDependencies": {
     "typescript": "^5.0.4"
