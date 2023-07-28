@@ -66,7 +66,7 @@ export const initialUsers: Omit<UserData, 'id'>[] = [
   }
 ];
 
-export const validUser: NewUserBody = {
+export const validNewUser: NewUserBody = {
   username: 'Petro',
   name: 'Vasilenko Pyotr Ivanovich',
   password: 'iwannabeahero',
