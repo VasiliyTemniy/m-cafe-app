@@ -59,13 +59,13 @@ describe('User POST request tests', () => {
 
     await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser as object)
+      .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     await api
       .post(`${apiBaseUrl}/users`)
-      .send(validUser as object)
+      .send(validUser)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -80,7 +80,7 @@ describe('User POST request tests', () => {
     expect(userCheck.name).to.equal('Vasilenko Pyotr Ivanovich');
     expect(userCheck.phonenumber).to.equal('89354652288');
     expect(userCheck.email).to.equal('my-email.vah@jjjjppp.com');
-    expect(userCheck.birthdate.toISOString()).to.equal('2001-07-23T07:31:03.242Z');
+    expect(userCheck.birthdate?.toISOString()).to.equal('2001-07-23T07:31:03.242Z');
 
     const usernames = usersAtEnd.map(user => user.username);
     expect(usernames).to.contain('Ordan');
@@ -114,7 +114,7 @@ describe('User POST request tests', () => {
 
     await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser as object)
+      .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -137,7 +137,7 @@ describe('User POST request tests', () => {
 
     const result = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser as object)
+      .send(newUser)
       .expect(409);
 
     expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
@@ -160,7 +160,7 @@ describe('User POST request tests', () => {
 
     const result = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser as object)
+      .send(newUser)
       .expect(409);
 
     expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
@@ -184,7 +184,7 @@ describe('User POST request tests', () => {
 
     const result = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser as object)
+      .send(newUser)
       .expect(409);
 
     expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
@@ -210,7 +210,7 @@ describe('User POST request tests', () => {
 
     const result1 = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUserFail1 as object)
+      .send(newUserFail1)
       .expect(400);
 
     expect(result1.body.error.name).to.equal('SequelizeValidationError');
@@ -242,7 +242,7 @@ describe('User POST request tests', () => {
 
     const result2 = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUserFail2 as object)
+      .send(newUserFail2)
       .expect(400);
 
     expect(result2.body.error.name).to.equal('SequelizeValidationError');
@@ -271,7 +271,7 @@ describe('User POST request tests', () => {
 
     const result3 = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUserFail3 as object)
+      .send(newUserFail3)
       .expect(400);
 
     expect(result3.body.error.name).to.equal('SequelizeValidationError');
@@ -309,7 +309,7 @@ describe('User POST request tests', () => {
 
     const result = await api
       .post(`${apiBaseUrl}/users`)
-      .send(newUser as object)
+      .send(newUser)
       .expect(400);
 
     expect(result.body.error.name).to.equal('PasswordLengthError');
@@ -351,7 +351,7 @@ describe('User POST request tests', () => {
 
         const result = await api
           .post(`${apiBaseUrl}/users`)
-          .send(newUser as object)
+          .send(newUser)
           .expect(409);
 
         expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
@@ -361,7 +361,7 @@ describe('User POST request tests', () => {
 
         await api
           .post(`${apiBaseUrl}/users`)
-          .send(newUser as object)
+          .send(newUser)
           .expect(201)
           .expect('Content-Type', /application\/json/);
 
@@ -411,7 +411,7 @@ describe('User POST request tests', () => {
 
       const result = await api
         .post(`${apiBaseUrl}/users`)
-        .send(newUserIncorrect as object)
+        .send(newUserIncorrect)
         .expect(400);
 
       expect(result.body.error.name).to.equal('SequelizeValidationError');
@@ -478,7 +478,7 @@ describe('User PUT request tests', () => {
     expect(updatedUserInDB.name).to.equal(updateUserData.name);
     expect(updatedUserInDB.phonenumber).to.equal(updateUserData.phonenumber);
     expect(updatedUserInDB.email).to.equal(updateUserData.email);
-    expect(updatedUserInDB.birthdate.toISOString()).to.equal(updateUserData.birthdate);
+    expect(updatedUserInDB.birthdate?.toISOString()).to.equal(updateUserData.birthdate);
 
     expect(updatedUserInDB.passwordHash).not.to.equal(validUserInDB.dbEntry.passwordHash);
 

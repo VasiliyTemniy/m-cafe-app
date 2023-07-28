@@ -46,7 +46,7 @@ succeds and gives token + id (userId) as response', async () => {
 
     const responseUsername = await api
       .post(`${apiBaseUrl}/session`)
-      .send(loginBodyUsername as object)
+      .send(loginBodyUsername)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -59,7 +59,7 @@ succeds and gives token + id (userId) as response', async () => {
 
     const responsePhonenumber = await api
       .post(`${apiBaseUrl}/session`)
-      .send(loginBodyPhonenumber as object)
+      .send(loginBodyPhonenumber)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -121,7 +121,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const response = await api
       .post(`${apiBaseUrl}/session`)
-      .send(loginBody as object)
+      .send(loginBody)
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
