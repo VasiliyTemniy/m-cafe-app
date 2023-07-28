@@ -1,4 +1,4 @@
-import { NewUserBody } from '@m-cafe-app/utils';
+import { NewUserBody, UserData } from '@m-cafe-app/utils';
 import {
   alphabetAll,
   alphabetEn,
@@ -9,13 +9,7 @@ import {
   usernameChars
 } from './test_helper';
 
-export interface UserInDB extends Omit<NewUserBody, 'password' | 'birthdate'> {
-  passwordHash: string;
-  birthdate?: Date;
-  id?: number;
-}
-
-export const initialUsers: UserInDB[] = [
+export const initialUsers: Omit<UserData, 'id'>[] = [
   {
     username: "Vasisualiy",
     name: "Mikhail Dyachenko",
@@ -83,7 +77,7 @@ export const validUser: NewUserBody = {
 
 export const validUserInDB: {
   password: string;
-  dbEntry: UserInDB;
+  dbEntry: UserData;
 } = {
   password: 'iwannabeahero',
   dbEntry: {
