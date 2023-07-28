@@ -1,9 +1,9 @@
 {
   "name": "m-cafe-app",
-  "productName": "VasiliyTemniy cafe app",
-  "version": "1.0.0",
-  "description": "Cafe app with user authentication, online food ordering, admin ui",
-  "main": "frontend/.webpack/main",
+  "productName": "Custom cafe DIY-app",
+  "version": "0.1.0",
+  "description": "Cafe app - template-based DIY framework to build custom cafe website",
+  "main": "services/frontend/.webpack/main",
   "repository": "https://github.com/VasiliyTemniy/m-cafe-app.git",
   "author": "VasiliyTemniy <flash_er@mail.ru>",
   "license": "MIT",

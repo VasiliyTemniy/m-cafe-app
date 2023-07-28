@@ -1,8 +1,8 @@
 {
   "name": "m-cafe-frontend",
-  "productName": "VasiliyTemniy cafe app",
-  "version": "1.0.0",
-  "description": "cafe app frontend",
+  "productName": "Custom cafe DIY-app",
+  "version": "0.1.0",
+  "description": "DIY cafe app frontend",
   "main": ".webpack/main",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --config webpack_config/webpack.config.ts",
