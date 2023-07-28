@@ -23,7 +23,7 @@
     "dev:docker-stop": "docker compose -f docker-compose.dev.yml -p m_cafe_dev down",
     "start:prod-docker": "docker compose -f docker-compose.yml -p m_cafe up --detach",
     "stop:prod-docker": "docker compose -f docker-compose.yml -p m_cafe down",
-    "build": "yarn run build:utils && yarn workspace m-cafe-frontend build && yarn workspace m-cafe-backend build",
+    "build": "yarn run build:utils && yarn run build:backend && yarn run build:frontend",
     "build:utils": "yarn workspace @m-cafe-app/utils run build",
     "build:backend": "yarn workspace m-cafe-backend run build",
     "build:frontend": "yarn workspace m-cafe-frontend run build",
