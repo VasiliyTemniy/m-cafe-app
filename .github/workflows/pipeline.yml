@@ -1,0 +1,92 @@
+name: App testing pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+jobs:
+  testing_pipeline:
+    runs-on: ubuntu-20.04
+    environment: testing_env
+
+    container: node:18.16-alpine3.18
+    services:
+      postgres:
+        image: postgres:15.3-alpine3.18
+        env:
+          POSTGRES_DB: postgres_db
+          POSTGRES_PASSWORD: postgres_password
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres_user
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: yarn install
+        run: yarn install
+      - name: prepare utils package
+        run: yarn prepare
+      - name: lint
+        run: yarn run eslint
+      - name: build
+        run: yarn run build
+        env:
+          FRONTEND_PORT: ${{ vars.FRONTEND_PORT }}
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
+      - name: test
+        # run: yarn run test
+        run: yarn run test:backend
+        env:
+          BACKEND_PORT: ${{ vars.BACKEND_PORT }}
+          DATABASE_URL: postgres://postgres_user:postgres_password@postgres:5432/postgres_db
+          TEST_DATABASE_URL: postgres://postgres_user:postgres_password@postgres:5432/postgres_db
+          SECRET: ${{ secrets.SECRET }}
+          RUN_COMPARISON_TEST: ${{ vars.RUN_COMPARISON_TEST }}
+          ALLOWED_ORIGIN: ${{ vars.ALLOWED_ORIGIN }}
+          TOKEN_TTL: ${{ vars.TOKEN_TTL }}
+          PG_DB_USE_SSL: ${{ vars.PG_DB_USE_SSL }}
+          SUPERADMIN_USERNAME: ${{ secrets.SUPERADMIN_USERNAME }}
+          SUPERADMIN_PHONENUMBER: ${{ secrets.SUPERADMIN_PHONENUMBER }}
+          SUPERADMIN_PASSWORD: ${{ secrets.SUPERADMIN_PASSWORD }}
+
+
+      # - name: e2e tests
+      #   uses: cypress-io/github-action@v2
+      #   with:
+      #     command: npm run test:e2e
+      #     start: npm run start-prod
+      #     wait-on: http://localhost:5000
+
+
+
+  # tag_release:
+  #   needs: [simple_deployment_pipeline]
+  #   runs-on: ubuntu-20.04
+  #   if: ${{ github.event_name == 'push' && !(contains(github.event.head_commit.message, '#skip')) }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: '0'
+  #     - name: Bump version and push tag
+  #       uses: anothrNick/github-tag-action@1.61.0
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         REPO_OWNER: VasiliyTemniy
+  #         DEFAULT_BUMP: patch
+  #         RELEASE_BRANCHES: master
+  #         PRERELEASE_SUFFIX: dev
+  #         PRERELEASE: true
+  #         INITIAL_VERSION: 0.1.0
