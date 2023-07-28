@@ -11,7 +11,7 @@ import {
   genCorrectEmail,
   genIncorrectString,
   validUserInDB,
-  validUser
+  validNewUser
 } from './users_api_helper';
 import { Session, User } from '../models/index';
 import { connectToDatabase } from "../utils/db";
@@ -65,22 +65,22 @@ describe('User POST request tests', () => {
 
     await api
       .post(`${apiBaseUrl}/users`)
-      .send(validUser)
+      .send(validNewUser)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     const usersAtEnd = await User.findAll({});
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length + 2);
 
-    const userCheck = await User.findOne({ where: { username: validUser.username as string } });
+    const userCheck = await User.findOne({ where: { username: validNewUser.username as string } });
     expect(userCheck).to.exist;
     if (!userCheck) return;
 
-    expect(userCheck.username).to.equal('Petro');
-    expect(userCheck.name).to.equal('Vasilenko Pyotr Ivanovich');
-    expect(userCheck.phonenumber).to.equal('89354652288');
-    expect(userCheck.email).to.equal('my-email.vah@jjjjppp.com');
-    expect(userCheck.birthdate?.toISOString()).to.equal('2001-07-23T07:31:03.242Z');
+    expect(userCheck.username).to.equal(validNewUser.username);
+    expect(userCheck.name).to.equal(validNewUser.name);
+    expect(userCheck.phonenumber).to.equal(validNewUser.phonenumber);
+    expect(userCheck.email).to.equal(validNewUser.email);
+    expect(userCheck.birthdate?.toISOString()).to.equal(validNewUser.birthdate);
 
     const usernames = usersAtEnd.map(user => user.username);
     expect(usernames).to.contain('Ordan');
