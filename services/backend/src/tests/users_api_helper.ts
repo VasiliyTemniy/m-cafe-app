@@ -1,4 +1,4 @@
-import { NewUserBody, UserData } from '@m-cafe-app/utils';
+import { NewAddressBody, NewUserBody, UserData } from '@m-cafe-app/utils';
 import {
   alphabetAll,
   alphabetEn,
@@ -90,6 +90,24 @@ export const validUserInDB: {
     birthdate: new Date('2001-07-23T07:31:03.242Z'),
   }
 };
+
+export const validAddresses: NewAddressBody[] = [
+  {
+    city: 'Горький-17',
+    street: 'Ленина'
+  },
+  {
+    city: 'Северно-Метеоритинск',
+    street: 'Ленина',
+    region: 'Красноармейский край',
+    district: 'Метеоритинский район',
+    house: '15/6А литера Б',
+    entrance: 'третий подъезд снизу',
+    entranceKey: 'Постучать хорошенько',
+    floor: 805,
+    flat: '313АБВ'
+  }
+];
 
 
 // CHECK REGEX BEFORE USE!

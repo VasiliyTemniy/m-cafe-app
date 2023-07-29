@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import supertest from 'supertest';
+import supertest, { Response } from 'supertest';
 import app from "../app";
 import { apiBaseUrl } from './test_helper';
 import {
@@ -11,7 +11,8 @@ import {
   genCorrectEmail,
   genIncorrectString,
   validUserInDB,
-  validNewUser
+  validNewUser,
+  validAddresses
 } from './users_api_helper';
 import { Session, User } from '../models/index';
 import { connectToDatabase } from "../utils/db";
@@ -33,7 +34,13 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from "../utils/constants";
-import { EditUserBody, NewUserBody } from "@m-cafe-app/utils";
+import {
+  Address,
+  AddressData,
+  EditUserBody,
+  NewUserBody,
+  UserAddress
+} from "@m-cafe-app/utils";
 import { initLogin, userAgent } from "./sessions_api_helper";
 
 
@@ -593,6 +600,61 @@ describe('User GET request tests', () => {
 
     expect(response.body.error.name).to.equal('AuthorizationError');
     expect(response.body.error.message).to.equal('Authorization required');
+
+  });
+
+});
+
+
+describe('User addresses requests tests', () => {
+
+  before(async () => {
+    await User.destroy({ where: {} });
+    await User.bulkCreate(initialUsers);
+  });
+
+  beforeEach(async () => {
+    await Session.destroy({ where: {} });
+    await User.destroy({ where: { id: validUserInDB.dbEntry.id } });
+    await User.create(validUserInDB.dbEntry);
+    await UserAddress.destroy({ where: {} });
+    await Address.destroy({ where: {} });
+  });
+
+  it('A valid request to add user address succeeds, user address gets added to junction table', async () => {
+
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    const responses: Response[] = [];
+
+    for (const address of validAddresses) {
+      const response = await api
+        .post(`${apiBaseUrl}/users/address`)
+        .set({ Authorization: `bearer ${token}` })
+        .set('User-Agent', userAgent)
+        .send(address)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+      responses.push(response);
+    }
+
+    const addressesInDB = await Address.findAll({});
+
+    const junctions = await UserAddress.findAll({});
+
+    expect(addressesInDB).to.be.lengthOf(validAddresses.length);
+    expect(junctions).to.be.lengthOf(validAddresses.length);
+
+    for (const response of responses) {
+      const addressInDB = await Address.findByPk(response.body.id as number);
+      expect(addressInDB).to.exist;
+      for (const key in response.body) {
+        if ((key !== 'createdAt') && (key !== 'updatedAt'))
+          expect(response.body[key]).to.equal(addressInDB?.dataValues[key as keyof AddressData]);
+      }
+      const junction = await UserAddress.findOne({ where: { addressId: addressInDB?.id } });
+      expect(junction?.userId).to.equal(validUserInDB.dbEntry.id);
+    }
 
   });
 
