@@ -8,11 +8,13 @@ import {
   UnknownError,
   isEditUserBody,
   isNewUserBody,
-  UserDT
+  UserDT,
+  isNewAddressBody,
+  AddressDT
 } from '@m-cafe-app/utils';
-import { isRequestCustom, isRequestWithUser } from '../types/RequestCustom.js';
+import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
-import { User } from '../models/index.js';
+import { User, Address } from '../models/index.js';
 import { maxPasswordLen, minPasswordLen } from '../utils/constants.js';
 
 const usersRouter = Router();
@@ -105,24 +107,22 @@ usersRouter.put(
 usersRouter.post(
   '/address/:id',
   middleware.verifyToken,
-  middleware.userCheck,
+  middleware.userExtractor,
   middleware.sessionCheck,
-  // (async (req, res) => {
-  ((req, res) => {
+  (async (req, res) => {
 
-    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
-    if (!isEditUserBody(req.body)) throw new RequestBodyError('Invalid edit user request body');
+    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    if (!isNewAddressBody(req.body)) throw new RequestBodyError('Invalid add user address request body');
     if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
 
+    const address = req.body;
 
+    const savedAddress = await Address.create(address);
 
-    const resBody = {
-      // id: req.user.id,
-      // username: req.user.username,
-      // name: req.user.name,
-      // phonenumber: req.user.phonenumber,
-      // email: req.user.email,
-      // birthdate: req.user.birthdate
+    await req.user.addAddress(savedAddress);
+
+    const resBody: AddressDT = {
+      ...savedAddress.dataValues
     };
 
     res.status(200).json(resBody);
