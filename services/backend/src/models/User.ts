@@ -15,7 +15,7 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from '../utils/constants.js';
-import { User, isUserData } from '@m-cafe-app/utils';
+import { User } from '@m-cafe-app/utils';
 
 
 User.init({
@@ -112,15 +112,5 @@ User.init({
     all: {}
   }
 });
-
-const hasDataValuesAsUserFields = (user: unknown): user is { dataValues: unknown; } =>
-  Object.prototype.hasOwnProperty.call(user, "dataValues");
-
-export const isUser = (user: unknown): user is User => {
-  if (hasDataValuesAsUserFields(user)) {
-    if (isUserData(user.dataValues)) return true;
-  }
-  return false;
-};
 
 export default User;

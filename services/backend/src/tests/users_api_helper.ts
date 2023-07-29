@@ -1,4 +1,4 @@
-import { NewUserBody, UserData } from '@m-cafe-app/utils';
+import { NewAddressBody, NewUserBody, UserData } from '@m-cafe-app/utils';
 import {
   alphabetAll,
   alphabetEn,
@@ -9,11 +9,13 @@ import {
   usernameChars
 } from './test_helper';
 
+export const initialUsersPassword = 'iwannabeahero';
+
 export const initialUsers: Omit<UserData, 'id'>[] = [
   {
     username: "Vasisualiy",
     name: "Mikhail Dyachenko",
-    passwordHash: "$2a$10$ofK5pjq4S7.Df5H4LXkVfuNpRWXG51oF4mNXI8heuthC0vTFlRbSe",
+    passwordHash: "$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm",
     phonenumber: "88003561256"
   },
   {
@@ -90,6 +92,24 @@ export const validUserInDB: {
     birthdate: new Date('2001-07-23T07:31:03.242Z'),
   }
 };
+
+export const validAddresses: NewAddressBody[] = [
+  {
+    city: 'Горький-17',
+    street: 'Ленина'
+  },
+  {
+    city: 'Северно-Метеоритинск',
+    street: 'Ленина',
+    region: 'Красноармейский край',
+    district: 'Метеоритинский район',
+    house: '15/6А литера Б',
+    entrance: 'третий подъезд снизу',
+    entranceKey: 'Постучать хорошенько',
+    floor: 805,
+    flat: '313АБВ'
+  }
+];
 
 
 // CHECK REGEX BEFORE USE!

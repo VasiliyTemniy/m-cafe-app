@@ -5,8 +5,30 @@ import { Session } from '../models/index.js';
 import { isCustomError, isNamedError } from '@m-cafe-app/utils';
 import jwt from 'jsonwebtoken';
 import { JwtPayloadCustom } from '../types/JWTPayloadCustom.js';
+import { AggregateError as SequelizeAggregateError } from 'sequelize';
 
 export const errorHandler = (async (error, req: Request, res: Response, next: NextFunction) => {
+
+  /**
+   * SEQUELIZE AGGREGATE ERROR START
+   */
+
+  if (error instanceof SequelizeAggregateError) {
+    res.status(400).json({
+      error: {
+        name: 'SequelizeAggregateError',
+        message: error.message,
+        errors: error.errors
+      }
+    });
+    return next(error);
+  }
+
+  /**
+   * SEQUELIZE AGGREGATE ERROR END
+   */
+
+
 
   if (!isNamedError(error)) {
     logger.shout('This error has no name, take measures!', error);

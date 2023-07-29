@@ -47,8 +47,8 @@ export const isNumber = (num: unknown): num is number => {
   return typeof num === 'number' || num instanceof Number;
 };
 
-export const isDate = (date: string): boolean => {
-  return Boolean(Date.parse(date));
+export const isDate = (date: unknown): boolean => {
+  return Boolean(Date.parse(date as string));
 };
 
 export const isJSON = (json: unknown): json is JSON => {

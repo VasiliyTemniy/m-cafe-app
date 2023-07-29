@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import supertest from 'supertest';
+import supertest, { Response } from 'supertest';
 import app from "../app";
 import { apiBaseUrl } from './test_helper';
 import {
@@ -11,7 +11,9 @@ import {
   genCorrectEmail,
   genIncorrectString,
   validUserInDB,
-  validNewUser
+  validNewUser,
+  validAddresses,
+  initialUsersPassword
 } from './users_api_helper';
 import { Session, User } from '../models/index';
 import { connectToDatabase } from "../utils/db";
@@ -33,7 +35,14 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from "../utils/constants";
-import { EditUserBody, NewUserBody } from "@m-cafe-app/utils";
+import {
+  Address,
+  AddressData,
+  EditUserBody,
+  NewAddressBody,
+  NewUserBody,
+  UserAddress
+} from "@m-cafe-app/utils";
 import { initLogin, userAgent } from "./sessions_api_helper";
 
 
@@ -593,6 +602,177 @@ describe('User GET request tests', () => {
 
     expect(response.body.error.name).to.equal('AuthorizationError');
     expect(response.body.error.message).to.equal('Authorization required');
+
+  });
+
+});
+
+
+describe('User addresses requests tests', () => {
+
+  before(async () => {
+    await User.destroy({ where: {} });
+    await User.bulkCreate(initialUsers);
+  });
+
+  beforeEach(async () => {
+    await Session.destroy({ where: {} });
+    await User.destroy({ where: { id: validUserInDB.dbEntry.id } });
+    await User.create(validUserInDB.dbEntry);
+    await UserAddress.destroy({ where: {} });
+    await Address.destroy({ where: {} });
+  });
+
+  it('A valid request to add user address succeeds, user address gets added to junction table', async () => {
+
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    const responses: Response[] = [];
+
+    for (const address of validAddresses) {
+      const response = await api
+        .post(`${apiBaseUrl}/users/address`)
+        .set({ Authorization: `bearer ${token}` })
+        .set('User-Agent', userAgent)
+        .send(address)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+      responses.push(response);
+    }
+
+    const addressesInDB = await Address.findAll({});
+
+    const junctions = await UserAddress.findAll({});
+
+    expect(addressesInDB).to.be.lengthOf(validAddresses.length);
+    expect(junctions).to.be.lengthOf(validAddresses.length);
+
+    for (const response of responses) {
+      const addressInDB = await Address.findByPk(response.body.id as number);
+      expect(addressInDB).to.exist;
+      for (const key in response.body) {
+        if ((key !== 'createdAt') && (key !== 'updatedAt'))
+          expect(response.body[key]).to.equal(addressInDB?.dataValues[key as keyof AddressData]);
+      }
+      const junction = await UserAddress.findOne({ where: { addressId: addressInDB?.id } });
+      expect(junction?.userId).to.equal(validUserInDB.dbEntry.id);
+    }
+
+  });
+
+  it('The same address cannot be added twice to the same user. \
+If another user adds the same address, the address does not get created, instead a new association is added', async () => {
+
+    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token1}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token1}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])
+      .expect(409)
+      .expect('Content-Type', /application\/json/);
+
+    const token2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent);
+
+    await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+
+    const addressesInDB = await Address.findAll({});
+
+    const junctions = await UserAddress.findAll({});
+
+    expect(addressesInDB).to.be.lengthOf(1);
+    expect(junctions).to.be.lengthOf(2);
+
+  });
+
+  it('User address update works correctly, deletes address if no other user uses it, \
+does not delete address if somebody or a facility uses it, adds a new address if it did not exist, \
+adds only a new junction if it was existing', async () => {
+
+    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const token2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent);
+
+    const response1 = await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token1}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const response2 = await api
+      .put(`${apiBaseUrl}/users/address/${response1.body.id}`)
+      .set({ Authorization: `bearer ${token1}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[1])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    // To check that response data is valid and updated
+    for (const key in response2.body) {
+      if ((key !== 'createdAt') && (key !== 'updatedAt') && (key !== 'id'))
+        expect(response2.body[key]).to.equal(validAddresses[1][key as keyof NewAddressBody]);
+    }
+
+    // To make sure old address is deleted if not used by anybody
+    const addressesInDB1 = await Address.findAll({});
+    expect(addressesInDB1).to.be.lengthOf(1);
+
+    // To make sure that old junction does not exist
+    const junctions1 = await UserAddress.findAll({});
+    expect(junctions1[0].userId).to.equal(validUserInDB.dbEntry.id);
+    expect(junctions1).to.be.lengthOf(1);
+
+    await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[1])    // The same address as the one that first user changed to 
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const response4 = await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])    // The previously deleted by first user address
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    // Below is strange attempt to edit address data of a new (for this user) address to data of a previous one
+    // He should have just deleted the address validAdresses[0], but he is kind of dumb
+    // So, this attempt gives 409 and does nothing
+    await api
+      .put(`${apiBaseUrl}/users/address/${response4.body.id}`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[1])
+      .expect(409)
+      .expect('Content-Type', /application\/json/);
+
+    // To make sure that first address is added back
+    const addressesInDB2 = await Address.findAll({});
+    expect(addressesInDB2).to.be.lengthOf(2);
+
+    // To make sure that first user has one junction, and second user has two of them
+    const junctions2 = await UserAddress.findAll({});
+    expect(junctions2).to.be.lengthOf(3);
 
   });
 

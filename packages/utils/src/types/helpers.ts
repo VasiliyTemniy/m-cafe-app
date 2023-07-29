@@ -2,7 +2,7 @@ export type MapToUnknown<T> = {
   [Property in keyof T]: unknown
 };
 
-export type MapToFrontendData<T> = {
+export type MapToDT<T> = {
   [Property in keyof T]:
   T[Property] extends Date | undefined ? string
   : T[Property] extends Date ? string

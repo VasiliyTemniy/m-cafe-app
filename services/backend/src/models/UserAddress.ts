@@ -4,11 +4,6 @@ import { sequelize } from '../utils/db.js';
 import { UserAddress } from '@m-cafe-app/utils';
 
 UserAddress.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -18,19 +13,11 @@ UserAddress.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: { model: 'addresses', key: 'id' }
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
+  }
 }, {
   sequelize,
   underscored: true,
-  timestamps: true,
+  timestamps: false,
   modelName: 'user_address'
 });
 
