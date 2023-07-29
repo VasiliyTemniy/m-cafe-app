@@ -633,7 +633,7 @@ describe('User addresses requests tests', () => {
         .set({ Authorization: `bearer ${token}` })
         .set('User-Agent', userAgent)
         .send(address)
-        .expect(200)
+        .expect(201)
         .expect('Content-Type', /application\/json/);
       responses.push(response);
     }
