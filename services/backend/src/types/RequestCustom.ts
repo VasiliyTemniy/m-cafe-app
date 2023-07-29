@@ -1,7 +1,7 @@
 import { isNumber, isString } from '@m-cafe-app/utils';
 import { Request } from 'express';
 import { User } from '../models/index.js';
-import { isUser } from '../models/User.js';
+import { isUser } from '@m-cafe-app/utils';
 
 export interface RequestMiddle extends Request {
   userId?: number;
@@ -46,9 +46,5 @@ export const hasRequestWithUserFields = (req: Request): req is RequestWithUserFi
   &&
   Object.prototype.hasOwnProperty.call(req, "user");
 
-export const isRequestWithUser = (req: Request): req is RequestWithUser => {
-  if (hasRequestWithUserFields(req)) {
-    if (isNumber(req.userId) && isString(req.token) && isUser(req.user)) return true;
-  }
-  return false;
-};
+export const isRequestWithUser = (req: Request): req is RequestWithUser =>
+  hasRequestWithUserFields(req) && isNumber(req.userId) && isString(req.token) && isUser(req.user);
