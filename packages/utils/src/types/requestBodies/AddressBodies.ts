@@ -1,5 +1,5 @@
 import { InferAttributes } from "sequelize";
-import { Address, AddressDT, isAddressDT } from "../../models";
+import { Address } from "../../models";
 import { MapToDT, MapToUnknown, PropertiesCreationOptional } from "../helpers";
 import { isString, isNumber } from "../typeParsers.js";
 
@@ -34,7 +34,7 @@ export const isNewAddressBody = (body: unknown): body is NewAddressBody => {
   return isString(body.city) && isString(body.street);
 };
 
-export type EditAddressBody = AddressDT;
+export type EditAddressBody = NewAddressBody;
 
 export const isEditAddressBody = (body: unknown): body is EditAddressBody =>
-  isAddressDT(body);
+  isNewAddressBody(body);
