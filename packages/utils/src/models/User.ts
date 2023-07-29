@@ -1,7 +1,7 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, HasManyGetAssociationsMixin } from 'sequelize';
 import { Session } from './Session';
 import { isBoolean, isNumber, isString } from "../types/typeParsers";
-import { MapToFrontendData, MapToUnknown, PropertiesCreationOptional } from "../types/helpers.js";
+import { MapToDT, MapToUnknown, PropertiesCreationOptional } from "../types/helpers.js";
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
@@ -22,17 +22,17 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
 export type UserData = Omit<InferAttributes<User>, PropertiesCreationOptional>
   & { id: number; };
 
-export type UserDataTransit = Omit<MapToFrontendData<UserData>, 'passwordHash'>;
+export type UserDT = Omit<MapToDT<UserData>, 'passwordHash'>;
 
-type UserDataTransitFields = MapToUnknown<UserDataTransit>;
+type UserDTFields = MapToUnknown<UserDT>;
 
-const hasUserDataTransitFields = (user: unknown): user is UserDataTransitFields =>
+const hasUserDTFields = (user: unknown): user is UserDTFields =>
   Object.prototype.hasOwnProperty.call(user, "id")
   &&
   Object.prototype.hasOwnProperty.call(user, "phonenumber");
 
-export const isUserDataTransit = (user: unknown): user is UserDataTransit => {
-  if (!hasUserDataTransitFields(user)) return false;
+export const isUserDT = (user: unknown): user is UserDT => {
+  if (!hasUserDTFields(user)) return false;
 
   if (
     (Object.prototype.hasOwnProperty.call(user, "username") && !isString(user.username))

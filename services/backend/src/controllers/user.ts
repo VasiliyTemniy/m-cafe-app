@@ -8,7 +8,7 @@ import {
   UnknownError,
   isEditUserBody,
   isNewUserBody,
-  UserDataTransit
+  UserDT
 } from '@m-cafe-app/utils';
 import { isRequestCustom, isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
@@ -43,7 +43,7 @@ usersRouter.post(
 
     const savedUser = await User.create(user);
 
-    const resBody: UserDataTransit = {
+    const resBody: UserDT = {
       id: savedUser.id,
       username: savedUser.username,
       name: savedUser.name,
@@ -88,7 +88,7 @@ usersRouter.put(
 
     await req.user.save();
 
-    const resBody: UserDataTransit = {
+    const resBody: UserDT = {
       id: req.user.id,
       username: req.user.username,
       name: req.user.name,
@@ -139,7 +139,7 @@ usersRouter.get(
 
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
 
-    const resBody: UserDataTransit = {
+    const resBody: UserDT = {
       id: req.user.id,
       username: req.user.username,
       name: req.user.name,

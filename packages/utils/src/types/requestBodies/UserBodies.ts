@@ -1,10 +1,10 @@
 import { InferAttributes } from "sequelize";
 import { User } from "../../models/User.js";
-import { MapToFrontendData, MapToUnknown, PropertiesCreationOptional } from "../helpers.js";
+import { MapToDT, MapToUnknown, PropertiesCreationOptional } from "../helpers.js";
 import { isString } from "../typeParsers.js";
 
 
-export type NewUserBody = MapToFrontendData<
+export type NewUserBody = MapToDT<
   Omit<InferAttributes<User>, PropertiesCreationOptional | 'admin' | 'disabled' | 'passwordHash'>
 > & {
   password: string;
