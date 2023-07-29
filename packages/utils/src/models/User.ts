@@ -1,6 +1,6 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, HasManyGetAssociationsMixin } from 'sequelize';
 import { Session } from './Session';
-import { isBoolean, isDate, isNumber, isString } from "../types/typeParsers";
+import { isBoolean, isNumber, isString } from "../types/typeParsers";
 import { MapToFrontendData, MapToUnknown, PropertiesCreationOptional } from "../types/helpers.js";
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
@@ -22,15 +22,17 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
 export type UserData = Omit<InferAttributes<User>, PropertiesCreationOptional>
   & { id: number; };
 
-type UserDataFields = MapToUnknown<UserData>;
+export type UserDataTransit = Omit<MapToFrontendData<UserData>, 'passwordHash'>;
 
-const hasUserDataFields = (user: unknown): user is UserDataFields =>
+type UserDataTransitFields = MapToUnknown<UserDataTransit>;
+
+const hasUserDataTransitFields = (user: unknown): user is UserDataTransitFields =>
   Object.prototype.hasOwnProperty.call(user, "id")
   &&
   Object.prototype.hasOwnProperty.call(user, "phonenumber");
 
-export const isUserData = (user: unknown): user is UserData => {
-  if (!hasUserDataFields(user)) return false;
+export const isUserDataTransit = (user: unknown): user is UserDataTransit => {
+  if (!hasUserDataTransitFields(user)) return false;
 
   if (
     (Object.prototype.hasOwnProperty.call(user, "username") && !isString(user.username))
@@ -39,24 +41,12 @@ export const isUserData = (user: unknown): user is UserData => {
     ||
     (Object.prototype.hasOwnProperty.call(user, "email") && !isString(user.email))
     ||
-    (Object.prototype.hasOwnProperty.call(user, "birthdate") && !isDate(user.birthdate))
+    (Object.prototype.hasOwnProperty.call(user, "birthdate") && !isString(user.birthdate))
     ||
     (Object.prototype.hasOwnProperty.call(user, "disabled") && !isBoolean(user.disabled))
     ||
     (Object.prototype.hasOwnProperty.call(user, "admin") && !isBoolean(user.admin))
   ) return false;
 
-  return isNumber(user.id) && isString(user.phonenumber) && isString(user.passwordHash);
+  return isNumber(user.id) && isString(user.phonenumber);
 };
-
-const hasDataValuesAsUserFields = (user: unknown): user is { dataValues: unknown; } =>
-  Object.prototype.hasOwnProperty.call(user, "dataValues");
-
-export const isUser = (user: unknown): user is User => {
-  if (hasDataValuesAsUserFields(user)) {
-    if (isUserData(user.dataValues)) return true;
-  }
-  return false;
-};
-
-export type UserDataTransit = Omit<MapToFrontendData<UserData>, 'passwordHash'>;
