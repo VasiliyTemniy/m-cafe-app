@@ -1,4 +1,4 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, HasManyGetAssociationsMixin, HasManyAddAssociationMixin } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyRemoveAssociationMixin } from 'sequelize';
 import { isBoolean, isNumber, isString } from "../types/typeParsers";
 import { MapToDT, MapToUnknown, PropertiesCreationOptional } from "../types/helpers.js";
 import { Address } from './Address';
@@ -19,6 +19,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare getSessions: HasManyGetAssociationsMixin<Session>;
   declare addAddress: HasManyAddAssociationMixin<Address, number>;
   declare getAddresses: HasManyGetAssociationsMixin<Address>;
+  declare removeAddress: HasManyRemoveAssociationMixin<Address, number>;
 }
 
 
