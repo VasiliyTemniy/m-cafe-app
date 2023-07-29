@@ -7,7 +7,7 @@ import { expect } from "chai";
 export const userAgent = 'SUPERTEST';
 
 export const initLogin = async (
-  user: UserData,
+  user: UserData | Omit<UserData, 'id'>,
   password: string,
   api: supertest.SuperTest<supertest.Test>,
   expectedStatus: number,
