@@ -26,27 +26,27 @@ export type UserDT = Omit<MapToDT<UserData>, 'passwordHash'>;
 
 type UserDTFields = MapToUnknown<UserDT>;
 
-const hasUserDTFields = (user: unknown): user is UserDTFields =>
-  Object.prototype.hasOwnProperty.call(user, "id")
+const hasUserDTFields = (obj: unknown): obj is UserDTFields =>
+  Object.prototype.hasOwnProperty.call(obj, "id")
   &&
-  Object.prototype.hasOwnProperty.call(user, "phonenumber");
+  Object.prototype.hasOwnProperty.call(obj, "phonenumber");
 
-export const isUserDT = (user: unknown): user is UserDT => {
-  if (!hasUserDTFields(user)) return false;
+export const isUserDT = (obj: unknown): obj is UserDT => {
+  if (!hasUserDTFields(obj)) return false;
 
   if (
-    (Object.prototype.hasOwnProperty.call(user, "username") && !isString(user.username))
+    (Object.prototype.hasOwnProperty.call(obj, "username") && !isString(obj.username))
     ||
-    (Object.prototype.hasOwnProperty.call(user, "name") && !isString(user.name))
+    (Object.prototype.hasOwnProperty.call(obj, "name") && !isString(obj.name))
     ||
-    (Object.prototype.hasOwnProperty.call(user, "email") && !isString(user.email))
+    (Object.prototype.hasOwnProperty.call(obj, "email") && !isString(obj.email))
     ||
-    (Object.prototype.hasOwnProperty.call(user, "birthdate") && !isString(user.birthdate))
+    (Object.prototype.hasOwnProperty.call(obj, "birthdate") && !isString(obj.birthdate))
     ||
-    (Object.prototype.hasOwnProperty.call(user, "disabled") && !isBoolean(user.disabled))
+    (Object.prototype.hasOwnProperty.call(obj, "disabled") && !isBoolean(obj.disabled))
     ||
-    (Object.prototype.hasOwnProperty.call(user, "admin") && !isBoolean(user.admin))
+    (Object.prototype.hasOwnProperty.call(obj, "admin") && !isBoolean(obj.admin))
   ) return false;
 
-  return isNumber(user.id) && isString(user.phonenumber);
+  return isNumber(obj.id) && isString(obj.phonenumber);
 };
