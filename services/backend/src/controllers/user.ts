@@ -10,7 +10,14 @@ import {
   isNewUserBody,
   UserDT,
   isNewAddressBody,
-  AddressDT
+  AddressDT,
+  isEditAddressBody,
+  UserAddress,
+  DatabaseError,
+  Facility,
+  isNumber,
+  NewAddressBody,
+  EditAddressBody
 } from '@m-cafe-app/utils';
 import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
@@ -105,7 +112,7 @@ usersRouter.put(
 );
 
 usersRouter.post(
-  '/address/:id',
+  '/address',
   middleware.verifyToken,
   middleware.userExtractor,
   middleware.sessionCheck,
@@ -113,19 +120,122 @@ usersRouter.post(
 
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
     if (!isNewAddressBody(req.body)) throw new RequestBodyError('Invalid add user address request body');
-    if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
 
-    const address = req.body;
+    // If I do just const address = req.body, some other malformed keys can happen to go through
+    const { city, street, region, district, house, entrance, floor, flat, entranceKey } = req.body;
+    // If I do const address = { city, strees, region, distric, house, entrance, floor, flat, entranceKey }
+    // Then where clause for existingAddress fails if one of them is undefined
+    const newAddress: NewAddressBody = { city, street };
+    // Combine two statements above, and you get this bulky construction
+    if (region) newAddress.region = region;
+    if (district) newAddress.district = district;
+    if (house) newAddress.house = house;
+    if (entrance) newAddress.entrance = entrance;
+    if (floor) newAddress.floor = floor;
+    if (flat) newAddress.flat = flat;
+    if (entranceKey) newAddress.entranceKey = entranceKey;
 
-    const savedAddress = await Address.create(address);
+    // Check for this address, must be unique
+    // UNIQUE constraint for postgresql with NULLS NOT DISTINCT did not work - nulls blah blah was ignored by the query
+    // Anyway, it did not make it to the DB after migration, and there is no such option in sequelize
+    // If I make all fields not nullable and put some defaultValue like '' , validations fail for each and every of these empty strings
+    // So, I decided to make this 'unique' check by hand, because I do not want to make user fill every fricking detail
+    // and will leave most fields of address as nullables
+    const [savedAddress, _created] = await Address.findOrCreate({
+      where: { ...newAddress }
+    });
 
-    await req.user.addAddress(savedAddress);
+    // Check if user already has this address
+    const existingUserAddress = await UserAddress.findOne({
+      where: {
+        addressId: savedAddress.id,
+        userId: req.user.id
+      }
+    });
+
+    const statusCode = existingUserAddress ?
+      409 : 201;
+
+    if (!existingUserAddress)
+      await req.user.addAddress(savedAddress);
 
     const resBody: AddressDT = {
       ...savedAddress.dataValues
     };
 
-    res.status(200).json(resBody);
+    res.status(statusCode).json(resBody);
+
+  }) as RequestHandler
+);
+
+usersRouter.put(
+  '/address/:id',
+  middleware.verifyToken,
+  middleware.userExtractor,
+  middleware.sessionCheck,
+  (async (req, res) => {
+
+    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    if (!isEditAddressBody(req.body) || !isNumber(Number(req.params.id))) throw new RequestBodyError('Invalid edit user address request body');
+
+    // check .post route for address above for explanation of this bulk
+    const { city, street, region, district, house, entrance, floor, flat, entranceKey } = req.body;
+
+    const updAddress: EditAddressBody = { city, street };
+
+    if (region) updAddress.region = region;
+    if (district) updAddress.district = district;
+    if (house) updAddress.house = house;
+    if (entrance) updAddress.entrance = entrance;
+    if (floor) updAddress.floor = floor;
+    if (flat) updAddress.flat = flat;
+    if (entranceKey) updAddress.entranceKey = entranceKey;
+
+    const oldAddressId = Number(req.params.id);
+    const oldAddress = await Address.findByPk(oldAddressId);
+
+    if (!oldAddress) throw new DatabaseError(`No address entry with this id ${oldAddressId}`);
+
+    // Check for this address, must be unique
+    const [savedAddress, _created] = await Address.findOrCreate({
+      where: { ...updAddress }
+    });
+
+    // Check if user already has this new, "updated / edited" address
+    const existingUserAddress = await UserAddress.findOne({
+      where: {
+        addressId: savedAddress.id,
+        userId: req.user.id
+      }
+    });
+
+    const statusCode = existingUserAddress ?
+      409 : 201;
+
+    if (!existingUserAddress) {
+      await req.user.addAddress(savedAddress);
+      await req.user.removeAddress(oldAddress);
+
+      // One of any is enough for check, findAll is not needed
+      const addressUser = await UserAddress.findOne({
+        where: {
+          addressId: oldAddressId
+        }
+      });
+      const addressFacility = await Facility.findOne({
+        where: {
+          addressId: oldAddressId
+        }
+      });
+
+      if (!addressUser && !addressFacility) await oldAddress.destroy();
+    }
+
+    const resBody: AddressDT = {
+      ...savedAddress.dataValues
+    };
+
+    res.status(statusCode).json(resBody);
 
   }) as RequestHandler
 );
