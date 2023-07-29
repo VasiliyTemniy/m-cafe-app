@@ -9,11 +9,13 @@ import {
   usernameChars
 } from './test_helper';
 
+export const initialUsersPassword = 'iwannabeahero';
+
 export const initialUsers: Omit<UserData, 'id'>[] = [
   {
     username: "Vasisualiy",
     name: "Mikhail Dyachenko",
-    passwordHash: "$2a$10$ofK5pjq4S7.Df5H4LXkVfuNpRWXG51oF4mNXI8heuthC0vTFlRbSe",
+    passwordHash: "$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm",
     phonenumber: "88003561256"
   },
   {
