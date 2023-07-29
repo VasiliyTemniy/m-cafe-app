@@ -42,7 +42,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [regionRegExp, 'i'],
         len: [minRegionLen, maxRegionLen]
-      }
+      },
+      unique: 'unique_address'
     },
     district: {
       type: DataTypes.STRING,
@@ -50,7 +51,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [districtRegExp, 'i'],
         len: [minDistrictLen, maxDistrictLen]
-      }
+      },
+      unique: 'unique_address'
     },
     city: {
       type: DataTypes.STRING,
@@ -58,7 +60,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [cityRegExp, 'i'],
         len: [minCityLen, maxCityLen]
-      }
+      },
+      unique: 'unique_address'
     },
     street: {
       type: DataTypes.STRING,
@@ -66,7 +69,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [streetRegExp, 'i'],
         len: [minStreetLen, maxStreetLen]
-      }
+      },
+      unique: 'unique_address'
     },
     house: {
       type: DataTypes.STRING,
@@ -74,7 +78,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [houseRegExp, 'i'],
         len: [minHouseLen, maxHouseLen]
-      }
+      },
+      unique: 'unique_address'
     },
     entrance: {
       type: DataTypes.STRING,
@@ -82,7 +87,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [entranceRegExp, 'i'],
         len: [minEntranceLen, maxEntranceLen]
-      }
+      },
+      unique: 'unique_address'
     },
     floor: {
       type: DataTypes.INTEGER,
@@ -90,7 +96,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         isNumeric: true,
         len: [minFloorLen, maxFloorLen]
-      }
+      },
+      unique: 'unique_address'
     },
     flat: {
       type: DataTypes.STRING,
@@ -98,7 +105,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [flatRegExp, 'i'],
         len: [minFlatLen, maxFlatLen]
-      }
+      },
+      unique: 'unique_address'
     },
     entrance_key: {
       type: DataTypes.STRING,
@@ -106,7 +114,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [entranceKeyRegExp, 'i'],
         len: [minEntranceKeyLen, maxEntranceKeyLen]
-      }
+      },
+      unique: 'unique_address'
     },
     created_at: {
       type: DataTypes.DATE,
@@ -115,6 +124,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     updated_at: {
       type: DataTypes.DATE,
       allowNull: false
+    }
+  }, {
+    uniqueKeys: {
+      unique_address: {
+        customIndex: true,
+        fields: ['region', 'district', 'city', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
+      }
     }
   });
 };

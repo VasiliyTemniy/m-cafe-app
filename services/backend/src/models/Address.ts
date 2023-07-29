@@ -43,7 +43,8 @@ Address.init({
     validate: {
       is: [regionRegExp, 'i'],
       len: [minRegionLen, maxRegionLen]
-    }
+    },
+    unique: 'unique_address'
   },
   district: {
     type: DataTypes.STRING,
@@ -51,7 +52,8 @@ Address.init({
     validate: {
       is: [districtRegExp, 'i'],
       len: [minDistrictLen, maxDistrictLen]
-    }
+    },
+    unique: 'unique_address'
   },
   city: {
     type: DataTypes.STRING,
@@ -59,7 +61,8 @@ Address.init({
     validate: {
       is: [cityRegExp, 'i'],
       len: [minCityLen, maxCityLen]
-    }
+    },
+    unique: 'unique_address'
   },
   street: {
     type: DataTypes.STRING,
@@ -67,7 +70,8 @@ Address.init({
     validate: {
       is: [streetRegExp, 'i'],
       len: [minStreetLen, maxStreetLen]
-    }
+    },
+    unique: 'unique_address'
   },
   house: {
     type: DataTypes.STRING,
@@ -75,7 +79,8 @@ Address.init({
     validate: {
       is: [houseRegExp, 'i'],
       len: [minHouseLen, maxHouseLen]
-    }
+    },
+    unique: 'unique_address'
   },
   entrance: {
     type: DataTypes.STRING,
@@ -83,7 +88,8 @@ Address.init({
     validate: {
       is: [entranceRegExp, 'i'],
       len: [minEntranceLen, maxEntranceLen]
-    }
+    },
+    unique: 'unique_address'
   },
   floor: {
     type: DataTypes.INTEGER,
@@ -91,7 +97,8 @@ Address.init({
     validate: {
       isNumeric: true,
       len: [minFloorLen, maxFloorLen]
-    }
+    },
+    unique: 'unique_address'
   },
   flat: {
     type: DataTypes.STRING,
@@ -99,7 +106,8 @@ Address.init({
     validate: {
       is: [flatRegExp, 'i'],
       len: [minFlatLen, maxFlatLen]
-    }
+    },
+    unique: 'unique_address'
   },
   entranceKey: {
     type: DataTypes.STRING,
@@ -107,7 +115,8 @@ Address.init({
     validate: {
       is: [entranceKeyRegExp, 'i'],
       len: [minEntranceKeyLen, maxEntranceKeyLen]
-    }
+    },
+    unique: 'unique_address'
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -121,7 +130,13 @@ Address.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'address'
+  modelName: 'address',
+  indexes: [
+    {
+      unique: true,
+      fields: ['region', 'district', 'city', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
+    }
+  ]
 });
 
 export default Address;
