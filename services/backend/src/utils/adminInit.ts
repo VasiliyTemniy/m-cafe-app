@@ -26,7 +26,6 @@ export const initSuperAdmin = async () => {
   await User.create(user);
 
   process.env.SUPERADMIN_USERNAME = '';
-  process.env.SUPERADMIN_PHONENUMBER = '';
   process.env.SUPERADMIN_PASSWORD = '';
 
   return logger.info('Super admin user successfully created!');
