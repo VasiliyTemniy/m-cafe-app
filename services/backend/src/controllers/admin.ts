@@ -1,8 +1,9 @@
 import { Router, RequestHandler } from 'express';
-import { DatabaseError, hasOwnProperty, RequestBodyError } from '@m-cafe-app/utils';
+import { DatabaseError, hasOwnProperty, ProhibitedError, RequestBodyError } from '@m-cafe-app/utils';
 import { isAdministrateUserBody } from '@m-cafe-app/utils';
 import middleware from '../utils/middleware.js';
 import { User, Session } from '../models/index.js';
+import config from '../utils/config.js';
 
 const adminRouter = Router();
 
@@ -52,6 +53,8 @@ adminRouter.put(
     const userSubject = await User.scope('all').findByPk(req.params.id);
 
     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
+    if (userSubject.phonenumber === config.SUPERADMIN_PHONENUMBER)
+      throw new ProhibitedError('Attempt to alter superadmin');
 
     if (hasOwnProperty(req.body, 'disable')) {
       userSubject.disabled = req.body.disable;
