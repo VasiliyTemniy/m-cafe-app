@@ -1,6 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import logger from './logger.js';
 import { User } from '../models/index.js';
+import config from './config.js';
 
 export const initSuperAdmin = async () => {
 
@@ -10,6 +11,8 @@ export const initSuperAdmin = async () => {
     }
   });
   if (existingUser) {
+    process.env.SUPERADMIN_USERNAME = '';
+    process.env.SUPERADMIN_PASSWORD = '';
     return logger.info('Super admin user already exists');
   }
 
@@ -18,7 +21,7 @@ export const initSuperAdmin = async () => {
 
   const user = {
     username: process.env.SUPERADMIN_USERNAME as string,
-    phonenumber: process.env.SUPERADMIN_PHONENUMBER as string,
+    phonenumber: config.SUPERADMIN_PHONENUMBER,
     passwordHash,
     admin: true
   };
