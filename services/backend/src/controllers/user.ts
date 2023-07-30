@@ -14,14 +14,13 @@ import {
   isEditAddressBody,
   UserAddress,
   DatabaseError,
-  Facility,
   isNumber,
   NewAddressBody,
   EditAddressBody
 } from '@m-cafe-app/utils';
 import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
-import { User, Address } from '../models/index.js';
+import { User, Address, Facility } from '../models/index.js';
 import { maxPasswordLen, minPasswordLen } from '../utils/constants.js';
 
 const usersRouter = Router();
@@ -176,7 +175,7 @@ usersRouter.put(
   (async (req, res) => {
 
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
-    if (!isEditAddressBody(req.body) || !isNumber(Number(req.params.id))) throw new RequestBodyError('Invalid edit user address request body');
+    if (!isEditAddressBody(req.body) || !isNumber(Number(req.params.id))) throw new RequestBodyError('Invalid edit user address request body or params id');
 
     // check .post route for address above for explanation of this bulk
     const { city, street, region, district, house, entrance, floor, flat, entranceKey } = req.body;
@@ -239,6 +238,43 @@ usersRouter.put(
 
   }) as RequestHandler
 );
+
+usersRouter.delete(
+  '/address/:id',
+  middleware.verifyToken,
+  middleware.userExtractor,
+  middleware.sessionCheck,
+  (async (req, res) => {
+
+    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    if (!isNumber(Number(req.params.id))) throw new RequestBodyError('Invalid delete user address params id');
+
+    const oldAddressId = Number(req.params.id);
+    const oldAddress = await Address.findByPk(oldAddressId);
+
+    if (!oldAddress) throw new DatabaseError(`No address entry with this id ${oldAddressId}`);
+
+    await req.user.removeAddress(oldAddress);
+
+    // One of any is enough for check, findAll is not needed
+    const addressUser = await UserAddress.findOne({
+      where: {
+        addressId: oldAddressId
+      }
+    });
+    const addressFacility = await Facility.findOne({
+      where: {
+        addressId: oldAddressId
+      }
+    });
+
+    if (!addressUser && !addressFacility) await oldAddress.destroy();
+
+    res.status(204);
+
+  }) as RequestHandler
+);
+
 
 usersRouter.get(
   '/me',
