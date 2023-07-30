@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
-import { DatabaseError, RequestBodyError } from '@m-cafe-app/utils';
-import { isDisableUserBody } from '@m-cafe-app/utils';
+import { DatabaseError, hasOwnProperty, RequestBodyError } from '@m-cafe-app/utils';
+import { isAdministrateUserBody } from '@m-cafe-app/utils';
 import middleware from '../utils/middleware.js';
 import { User, Session } from '../models/index.js';
 
@@ -14,7 +14,7 @@ adminRouter.get(
   (async (req, res) => {
 
     const userSubjects = await User.findAll({
-      attributes: { exclude: ['createdAt', 'updatedAt', 'passwordHash', 'disabled', 'admin'] }
+      attributes: { exclude: ['passwordHash'] }
     });
 
     res.status(200).json(userSubjects);
@@ -30,7 +30,7 @@ adminRouter.get(
   (async (req, res) => {
 
     const userSubject = await User.findByPk(req.params.id, {
-      attributes: { exclude: ['createdAt', 'updatedAt', 'passwordHash', 'disabled', 'admin'] }
+      attributes: { exclude: ['passwordHash'] }
     });
 
     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
@@ -47,20 +47,26 @@ adminRouter.put(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    if (!isDisableUserBody(req.body)) throw new RequestBodyError('Invalid disable user request body');
+    if (!isAdministrateUserBody(req.body)) throw new RequestBodyError('Invalid administrate user request body');
 
     const userSubject = await User.scope('all').findByPk(req.params.id);
 
     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
 
-    userSubject.disabled = req.body.disable;
+    if (hasOwnProperty(req.body, 'disable')) {
+      userSubject.disabled = req.body.disable;
 
-    if (userSubject.disabled) {
-      await Session.destroy({
-        where: {
-          userId: userSubject.id,
-        }
-      });
+      if (userSubject.disabled) {
+        await Session.destroy({
+          where: {
+            userId: userSubject.id,
+          }
+        });
+      }
+    }
+
+    if (hasOwnProperty(req.body, 'admin')) {
+      userSubject.admin = req.body.admin;
     }
 
     await userSubject.save();
