@@ -776,4 +776,73 @@ adds only a new junction if it was existing', async () => {
 
   });
 
+  it('Delete user address route works. If the address is used by anybody else, it does not get deleted', async () => {
+
+    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const token2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent);
+
+    const response1 = await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token1}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    // Second user adds first address as his own. Maybe, they live together
+    const response2 = await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    // Second user lives in two apartments
+    const response3 = await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[1])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    // Just to make sure that it is the same address, and DB did not create another row
+    expect(response1.body.id).to.equal(response2.body.id);
+
+    const userAddresses1 = await UserAddress.findAll({});
+    const addresses1 = await Address.findAll({});
+
+    // 2 records for addresses, 3 for user's addresses
+    expect(userAddresses1).to.be.lengthOf(3);
+    expect(addresses1).to.be.lengthOf(2);
+
+    // Appears that... They break up :\
+    await api
+      .delete(`${apiBaseUrl}/users/address/${response2.body.id}`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .expect(204);
+
+    // Also appears that the second user does not live anywhere anymore...
+    await api
+      .delete(`${apiBaseUrl}/users/address/${response3.body.id}`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .expect(204);
+
+    const userAddresses2 = await UserAddress.findAll({});
+    const addresses2 = await Address.findAll({});
+
+    // Now only the first user has address, and it is validAddresses[0]
+    expect(userAddresses2).to.be.lengthOf(1);
+    expect(addresses2).to.be.lengthOf(1);
+
+    expect(userAddresses2[0].userId).to.equal(validUserInDB.dbEntry.id);
+
+    expect(addresses2[0].city).to.equal(validAddresses[0].city);
+    expect(addresses2[0].street).to.equal(validAddresses[0].street);
+
+  });
+
 });
