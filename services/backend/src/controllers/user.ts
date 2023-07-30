@@ -270,7 +270,7 @@ usersRouter.delete(
 
     if (!addressUser && !addressFacility) await oldAddress.destroy();
 
-    res.status(204);
+    res.status(204).end();
 
   }) as RequestHandler
 );
