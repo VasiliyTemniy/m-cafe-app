@@ -1,8 +1,8 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyRemoveAssociationMixin } from 'sequelize';
-import { isBoolean, isNumber, isString } from "../types/typeParsers";
-import { MapToDT, MapToUnknown, PropertiesCreationOptional } from "../types/helpers.js";
-import { Address } from './Address';
-import { Session } from './Session';
+import { isBoolean, isNumber, isString } from "../types/typeParsers.js";
+import { hasOwnProperty, MapToDT, MapToUnknown, PropertiesCreationOptional } from "../types/helpers.js";
+import { Address } from './Address.js';
+import { Session } from './Session.js';
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
@@ -31,25 +31,25 @@ export type UserDT = Omit<MapToDT<UserData>, 'passwordHash'>;
 type UserDTFields = MapToUnknown<UserDT>;
 
 const hasUserDTFields = (obj: unknown): obj is UserDTFields =>
-  Object.prototype.hasOwnProperty.call(obj, "id")
+  hasOwnProperty(obj, "id")
   &&
-  Object.prototype.hasOwnProperty.call(obj, "phonenumber");
+  hasOwnProperty(obj, "phonenumber");
 
 export const isUserDT = (obj: unknown): obj is UserDT => {
   if (!hasUserDTFields(obj)) return false;
 
   if (
-    (Object.prototype.hasOwnProperty.call(obj, "username") && !isString(obj.username))
+    (hasOwnProperty(obj, "username") && !isString(obj.username))
     ||
-    (Object.prototype.hasOwnProperty.call(obj, "name") && !isString(obj.name))
+    (hasOwnProperty(obj, "name") && !isString(obj.name))
     ||
-    (Object.prototype.hasOwnProperty.call(obj, "email") && !isString(obj.email))
+    (hasOwnProperty(obj, "email") && !isString(obj.email))
     ||
-    (Object.prototype.hasOwnProperty.call(obj, "birthdate") && !isString(obj.birthdate))
+    (hasOwnProperty(obj, "birthdate") && !isString(obj.birthdate))
     ||
-    (Object.prototype.hasOwnProperty.call(obj, "disabled") && !isBoolean(obj.disabled))
+    (hasOwnProperty(obj, "disabled") && !isBoolean(obj.disabled))
     ||
-    (Object.prototype.hasOwnProperty.call(obj, "admin") && !isBoolean(obj.admin))
+    (hasOwnProperty(obj, "admin") && !isBoolean(obj.admin))
   ) return false;
 
   return isNumber(obj.id) && isString(obj.phonenumber);

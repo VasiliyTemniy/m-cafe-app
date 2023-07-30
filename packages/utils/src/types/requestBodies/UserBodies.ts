@@ -1,6 +1,6 @@
 import { InferAttributes } from "sequelize";
 import { User } from "../../models/User.js";
-import { MapToDT, MapToUnknown, PropertiesCreationOptional } from "../helpers.js";
+import { hasOwnProperty, MapToDT, MapToUnknown, PropertiesCreationOptional } from "../helpers.js";
 import { isString } from "../typeParsers.js";
 
 
@@ -13,21 +13,19 @@ export type NewUserBody = MapToDT<
 type NewUserBodyFields = MapToUnknown<NewUserBody>;
 
 const hasNewUserBodyFields = (body: unknown): body is NewUserBodyFields =>
-  Object.prototype.hasOwnProperty.call(body, "password")
-  &&
-  Object.prototype.hasOwnProperty.call(body, "phonenumber");
+  hasOwnProperty(body, "password") && hasOwnProperty(body, "phonenumber");
 
 export const isNewUserBody = (body: unknown): body is NewUserBody => {
   if (!hasNewUserBodyFields(body)) return false;
 
   if (
-    (Object.prototype.hasOwnProperty.call(body, "username") && !isString(body.username))
+    (hasOwnProperty(body, "username") && !isString(body.username))
     ||
-    (Object.prototype.hasOwnProperty.call(body, "name") && !isString(body.name))
+    (hasOwnProperty(body, "name") && !isString(body.name))
     ||
-    (Object.prototype.hasOwnProperty.call(body, "email") && !isString(body.email))
+    (hasOwnProperty(body, "email") && !isString(body.email))
     ||
-    (Object.prototype.hasOwnProperty.call(body, "birthdate") && !isString(body.birthdate))
+    (hasOwnProperty(body, "birthdate") && !isString(body.birthdate))
   ) return false;
 
   return isString(body.phonenumber) && isString(body.password);
@@ -42,23 +40,23 @@ export interface EditUserBody extends Omit<NewUserBody, 'phonenumber'> {
 type EditUserBodyFields = MapToUnknown<EditUserBody>;
 
 const hasEditUserBodyFields = (body: unknown): body is EditUserBodyFields =>
-  Object.prototype.hasOwnProperty.call(body, "password");
+  hasOwnProperty(body, "password");
 
 export const isEditUserBody = (body: unknown): body is EditUserBody => {
   if (!hasEditUserBodyFields(body)) return false;
 
   if (
-    (Object.prototype.hasOwnProperty.call(body, "newPassword") && !isString(body.newPassword))
+    (hasOwnProperty(body, "newPassword") && !isString(body.newPassword))
     ||
-    (Object.prototype.hasOwnProperty.call(body, "phonenumber") && !isString(body.phonenumber))
+    (hasOwnProperty(body, "phonenumber") && !isString(body.phonenumber))
     ||
-    (Object.prototype.hasOwnProperty.call(body, "username") && !isString(body.username))
+    (hasOwnProperty(body, "username") && !isString(body.username))
     ||
-    (Object.prototype.hasOwnProperty.call(body, "name") && !isString(body.name))
+    (hasOwnProperty(body, "name") && !isString(body.name))
     ||
-    (Object.prototype.hasOwnProperty.call(body, "email") && !isString(body.email))
+    (hasOwnProperty(body, "email") && !isString(body.email))
     ||
-    (Object.prototype.hasOwnProperty.call(body, "birthdate") && !isString(body.birthdate))
+    (hasOwnProperty(body, "birthdate") && !isString(body.birthdate))
   ) return false;
 
   return isString(body.password);

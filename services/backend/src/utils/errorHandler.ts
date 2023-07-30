@@ -2,7 +2,7 @@ import logger from './logger.js';
 import type { ErrorRequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { Session } from '../models/index.js';
-import { isCustomError, isNamedError } from '@m-cafe-app/utils';
+import { hasOwnProperty, isCustomError, isNamedError } from '@m-cafe-app/utils';
 import jwt from 'jsonwebtoken';
 import { JwtPayloadCustom } from '../types/JWTPayloadCustom.js';
 import { AggregateError as SequelizeAggregateError } from 'sequelize';
@@ -80,7 +80,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
 
     case 'TokenExpiredError':
 
-      const hasToken = (req: unknown): req is { token: unknown; } => Object.prototype.hasOwnProperty.call(req, "token");
+      const hasToken = (req: unknown): req is { token: unknown; } => hasOwnProperty(req, "token");
       if (!hasToken(req)) {
         res.status(401).json({
           error: {

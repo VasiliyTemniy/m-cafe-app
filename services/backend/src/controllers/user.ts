@@ -16,7 +16,8 @@ import {
   DatabaseError,
   isNumber,
   NewAddressBody,
-  EditAddressBody
+  EditAddressBody,
+  hasOwnProperty
 } from '@m-cafe-app/utils';
 import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
@@ -30,7 +31,7 @@ usersRouter.post(
   (async (req, res) => {
 
     if (!isNewUserBody(req.body)) throw new RequestBodyError('Invalid new user request body');
-    if (Object.prototype.hasOwnProperty.call(req.body, "admin")) throw new HackError('Please do not try this');
+    if (hasOwnProperty(req.body, "admin")) throw new HackError('Please do not try this');
 
     const { username, name, password, phonenumber, email, birthdate } = req.body;
 

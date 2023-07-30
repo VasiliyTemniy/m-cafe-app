@@ -1,4 +1,4 @@
-import { isNumber, isString } from '@m-cafe-app/utils';
+import { hasOwnProperty, isNumber, isString } from '@m-cafe-app/utils';
 import { Request } from 'express';
 import { User } from '../models/index.js';
 
@@ -19,16 +19,10 @@ export interface RequestCustom extends Request {
 }
 
 export const hasRequestCustomFields = (req: Request): req is RequestCustomFields =>
-  Object.prototype.hasOwnProperty.call(req, "userId")
-  &&
-  Object.prototype.hasOwnProperty.call(req, "token");
+  hasOwnProperty(req, "userId") && hasOwnProperty(req, "token");
 
-export const isRequestCustom = (req: Request): req is RequestCustom => {
-  if (hasRequestCustomFields(req)) {
-    if (isNumber(req.userId) && isString(req.token)) return true;
-  }
-  return false;
-};
+export const isRequestCustom = (req: Request): req is RequestCustom =>
+  hasRequestCustomFields(req) && isNumber(req.userId) && isString(req.token);
 
 interface RequestWithUserFields extends RequestCustom {
   user: unknown;
@@ -39,11 +33,7 @@ export interface RequestWithUser extends RequestCustom {
 }
 
 export const hasRequestWithUserFields = (req: Request): req is RequestWithUserFields =>
-  Object.prototype.hasOwnProperty.call(req, "userId")
-  &&
-  Object.prototype.hasOwnProperty.call(req, "token")
-  &&
-  Object.prototype.hasOwnProperty.call(req, "user");
+  hasOwnProperty(req, "userId") && hasOwnProperty(req, "token") && hasOwnProperty(req, "user");
 
 export const isRequestWithUser = (req: Request): req is RequestWithUser =>
   hasRequestWithUserFields(req) && isNumber(req.userId) && isString(req.token) && req.user instanceof User;

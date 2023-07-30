@@ -1,3 +1,4 @@
+import { hasOwnProperty } from "@m-cafe-app/utils";
 import { parseString } from "./typeParsers";
 
 type CheckFromApiFields = {
@@ -9,7 +10,7 @@ export type CheckFromApi = {
 };
 
 const hasCheckFromApiFields = (obj: unknown): obj is CheckFromApiFields =>
-  Object.prototype.hasOwnProperty.call(obj, 'message');
+  hasOwnProperty(obj, 'message');
 
 export const pingValidator = (check: unknown): CheckFromApi => {
 
