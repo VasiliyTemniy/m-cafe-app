@@ -67,7 +67,7 @@ password, username get zeroified, phonenumber left for distinguishing reasons', 
 });
 
 
-describe.only('Admin router basics', () => {
+describe('Admin router basics', () => {
 
   let validAdminInDBID: number;
   let validUserInDBID: number;
