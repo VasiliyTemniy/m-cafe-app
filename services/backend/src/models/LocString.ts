@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-import { LocString } from '@m-cafe-app/utils';
+import { LocString } from '@m-cafe-app/db-models';
 
 LocString.init({
   id: {

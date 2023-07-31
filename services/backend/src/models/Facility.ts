@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-import { Facility } from '@m-cafe-app/utils';
+import { Facility } from '@m-cafe-app/db-models';
 
 Facility.init({
   id: {

@@ -1,3 +1,4 @@
+import { hasOwnProperty } from "@m-cafe-app/utils";
 import { JwtPayload } from "jsonwebtoken";
 
 export interface JwtPayloadCustom extends JwtPayload {
@@ -5,4 +6,4 @@ export interface JwtPayloadCustom extends JwtPayload {
 }
 
 export const isCustomPayload = (payload: JwtPayload): payload is JwtPayloadCustom =>
-  Object.prototype.hasOwnProperty.call(payload, "id");
+  hasOwnProperty(payload, "id");

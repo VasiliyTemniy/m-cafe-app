@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-import { Session } from '@m-cafe-app/utils';
+import { Session } from '@m-cafe-app/db-models';
 
 Session.init({
   id: {

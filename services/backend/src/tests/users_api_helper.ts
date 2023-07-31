@@ -1,4 +1,5 @@
-import { NewAddressBody, NewUserBody, UserData } from '@m-cafe-app/utils';
+import { NewAddressBody, NewUserBody } from '@m-cafe-app/utils';
+import { UserData } from '@m-cafe-app/db-models';
 import {
   alphabetAll,
   alphabetEn,
@@ -79,11 +80,10 @@ export const validNewUser: NewUserBody = {
 
 export const validUserInDB: {
   password: string;
-  dbEntry: UserData;
+  dbEntry: Omit<UserData, 'id'>;
 } = {
   password: 'iwannabeahero',
   dbEntry: {
-    id: 5000,
     username: 'Petro',
     name: 'Vasilenko Pyotr Ivanovich',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',

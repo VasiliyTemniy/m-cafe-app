@@ -1,4 +1,5 @@
-import { isNumber, isString } from "../typeParsers";
+import { hasOwnProperty } from "../helpers.js";
+import { isNumber, isString } from "../typeParsers.js";
 
 export interface TokenBody {
   token: string;
@@ -6,9 +7,7 @@ export interface TokenBody {
 }
 
 const hasTokenBodyFields = (body: unknown): body is { token: unknown, id: unknown; } =>
-  Object.prototype.hasOwnProperty.call(body, "token")
-  &&
-  Object.prototype.hasOwnProperty.call(body, "id");
+  hasOwnProperty(body, "token") && hasOwnProperty(body, "id");
 
 export const isTokenBody = (body: unknown): body is TokenBody =>
   (hasTokenBodyFields(body) && isString(body.token) && isNumber(body.id));

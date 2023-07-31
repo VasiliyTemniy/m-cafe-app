@@ -36,13 +36,12 @@ import {
   usernameRegExp
 } from "../utils/constants";
 import {
-  Address,
-  AddressData,
   EditUserBody,
   NewAddressBody,
-  NewUserBody,
-  UserAddress
+  NewUserBody
 } from "@m-cafe-app/utils";
+import { Address, UserAddress } from '../models';
+import { AddressData } from "@m-cafe-app/db-models";
 import { initLogin, userAgent } from "./sessions_api_helper";
 
 
@@ -54,7 +53,7 @@ const api = supertest(app);
 describe('User POST request tests', () => {
 
   beforeEach(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
   });
 
@@ -102,13 +101,13 @@ describe('User POST request tests', () => {
       password: 'iwannabeahero'
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(400);
 
-    expect(result.body.error.name).to.equal('RequestBodyError');
-    expect(result.body.error.message).to.equal('Invalid new user request body');
+    expect(response.body.error.name).to.equal('RequestBodyError');
+    expect(response.body.error.message).to.equal('Invalid new user request body');
 
     const usersAtEnd = await User.findAll({});
 
@@ -144,15 +143,15 @@ describe('User POST request tests', () => {
       phonenumber: '89354652235'
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(409);
 
-    expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
-    expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response.body.error.name).to.equal('SequelizeUniqueConstraintError');
+    expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    expect(result.body.error.originalError).to.exist;
+    expect(response.body.error.originalError).to.exist;
 
     const usersAtEnd = await User.findAll({});
 
@@ -167,15 +166,15 @@ describe('User POST request tests', () => {
       phonenumber: '88003561256' // already in initialUsers
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(409);
 
-    expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
-    expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response.body.error.name).to.equal('SequelizeUniqueConstraintError');
+    expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    expect(result.body.error.originalError).to.exist;
+    expect(response.body.error.originalError).to.exist;
 
     const usersAtEnd = await User.findAll({});
 
@@ -191,15 +190,15 @@ describe('User POST request tests', () => {
       email: 'my-emah@jjjjppp.com' // already in initialUsers
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(409);
 
-    expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
-    expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response.body.error.name).to.equal('SequelizeUniqueConstraintError');
+    expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    expect(result.body.error.originalError).to.exist;
+    expect(response.body.error.originalError).to.exist;
 
     const usersAtEnd = await User.findAll({});
 
@@ -217,17 +216,17 @@ describe('User POST request tests', () => {
       birthdate: 'ohI`mNotADateSir!' // !isDate
     };
 
-    const result1 = await api
+    const response1 = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUserFail1)
       .expect(400);
 
-    expect(result1.body.error.name).to.equal('SequelizeValidationError');
-    expect(result1.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response1.body.error.name).to.equal('SequelizeValidationError');
+    expect(response1.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    if (result1.body.error.name !== 'SequelizeValidationError') return;
+    if (response1.body.error.name !== 'SequelizeValidationError') return;
 
-    const validationError1 = result1.body.error.originalError as ValidationError;
+    const validationError1 = response1.body.error.originalError as ValidationError;
     const errorMessages1 = validationError1.errors.map(error => error.message);
 
     expect(errorMessages1).to.have.members([
@@ -249,17 +248,17 @@ describe('User POST request tests', () => {
       birthdate: '23.07.2001 13:12' // !isDate
     };
 
-    const result2 = await api
+    const response2 = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUserFail2)
       .expect(400);
 
-    expect(result2.body.error.name).to.equal('SequelizeValidationError');
-    expect(result2.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response2.body.error.name).to.equal('SequelizeValidationError');
+    expect(response2.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    if (result2.body.error.name !== 'SequelizeValidationError') return;
+    if (response2.body.error.name !== 'SequelizeValidationError') return;
 
-    const validationError2 = result2.body.error.originalError as ValidationError;
+    const validationError2 = response2.body.error.originalError as ValidationError;
     const errorMessages2 = validationError2.errors.map(error => error.message);
 
     expect(errorMessages2).to.have.members([
@@ -278,17 +277,17 @@ describe('User POST request tests', () => {
       birthdate: '2001-07-23_07:31:03.242Z' // !isDate
     };
 
-    const result3 = await api
+    const response3 = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUserFail3)
       .expect(400);
 
-    expect(result3.body.error.name).to.equal('SequelizeValidationError');
-    expect(result3.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response3.body.error.name).to.equal('SequelizeValidationError');
+    expect(response3.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    if (result3.body.error.name !== 'SequelizeValidationError') return;
+    if (response3.body.error.name !== 'SequelizeValidationError') return;
 
-    const validationError3 = result3.body.error.originalError as ValidationError;
+    const validationError3 = response3.body.error.originalError as ValidationError;
     const errorMessages3 = validationError3.errors.map(error => error.message);
 
     expect(errorMessages3).to.have.members([
@@ -316,13 +315,13 @@ describe('User POST request tests', () => {
       birthdate: '2001-07-23T07:31:03.242Z',
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(400);
 
-    expect(result.body.error.name).to.equal('PasswordLengthError');
-    expect(result.body.error.message).to.equal(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
+    expect(response.body.error.name).to.equal('PasswordLengthError');
+    expect(response.body.error.message).to.equal(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
 
     const usersAtEnd = await User.findAll({});
 
@@ -358,13 +357,13 @@ describe('User POST request tests', () => {
         emailsSet.has(newUser.email as string)
       ) {
 
-        const result = await api
+        const response = await api
           .post(`${apiBaseUrl}/users`)
           .send(newUser)
           .expect(409);
 
-        expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
-        expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+        expect(response.body.error.name).to.equal('SequelizeUniqueConstraintError');
+        expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
       } else {
 
@@ -418,17 +417,17 @@ describe('User POST request tests', () => {
         ...newIncorrectGen.birthdate.errors
       ]);
 
-      const result = await api
+      const response = await api
         .post(`${apiBaseUrl}/users`)
         .send(newUserIncorrect)
         .expect(400);
 
-      expect(result.body.error.name).to.equal('SequelizeValidationError');
-      expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+      expect(response.body.error.name).to.equal('SequelizeValidationError');
+      expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-      if (result.body.error.name !== 'SequelizeValidationError') return;
+      if (response.body.error.name !== 'SequelizeValidationError') return;
 
-      const validationError = result.body.error.originalError as ValidationError;
+      const validationError = response.body.error.originalError as ValidationError;
       const errorMessages = validationError.errors.map(error => error.message);
 
       expect(errorMessages).to.have.members(Array.from(errorsSet));
@@ -446,15 +445,19 @@ describe('User POST request tests', () => {
 
 describe('User PUT request tests', () => {
 
+  let validUserInDBID: number;
+
   before(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
   });
 
   beforeEach(async () => {
     await Session.destroy({ where: {} });
-    await User.destroy({ where: { id: validUserInDB.dbEntry.id } });
-    await User.create(validUserInDB.dbEntry);
+    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
   });
 
   it('A valid request to change user credentials succeds, needs original password', async () => {
@@ -472,14 +475,14 @@ describe('User PUT request tests', () => {
     };
 
     await api
-      .put(`${apiBaseUrl}/users/${validUserInDB.dbEntry.id}`)
+      .put(`${apiBaseUrl}/users/${validUserInDBID}`)
       .set({ Authorization: `bearer ${token}` })
       .set('User-Agent', userAgent)
       .send(updateUserData)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const updatedUserInDB = await User.findOne({ where: { id: validUserInDB.dbEntry.id } });
+    const updatedUserInDB = await User.findOne({ where: { id: validUserInDBID } });
 
     if (!updatedUserInDB) return expect(true).to.equal(false);
 
@@ -545,7 +548,7 @@ describe('User PUT request tests', () => {
     };
 
     const response = await api
-      .put(`${apiBaseUrl}/users/${validUserInDB.dbEntry.id}`)
+      .put(`${apiBaseUrl}/users/${validUserInDBID}`)
       .set({ Authorization: `bearer ${token}` })
       .set('User-Agent', userAgent)
       .send(updateUserData)
@@ -562,10 +565,14 @@ describe('User PUT request tests', () => {
 
 describe('User GET request tests', () => {
 
+  let validUserInDBID: number;
+
   before(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
-    await User.create(validUserInDB.dbEntry);
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
   });
 
   beforeEach(async () => {
@@ -583,7 +590,7 @@ describe('User GET request tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.id).to.equal(validUserInDB.dbEntry.id);
+    expect(response.body.id).to.equal(validUserInDBID);
     expect(response.body.username).to.equal(validUserInDB.dbEntry.username);
     expect(response.body.name).to.equal(validUserInDB.dbEntry.name);
     expect(response.body.phonenumber).to.equal(validUserInDB.dbEntry.phonenumber);
@@ -607,18 +614,83 @@ describe('User GET request tests', () => {
 
 });
 
+describe('User DELETE request tests', () => {
 
-describe('User addresses requests tests', () => {
+  let validUserInDBID: number;
 
   before(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
   });
 
   beforeEach(async () => {
     await Session.destroy({ where: {} });
-    await User.destroy({ where: { id: validUserInDB.dbEntry.id } });
-    await User.create(validUserInDB.dbEntry);
+    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
+  });
+
+  it('User delete route works, marks user as deletedAt, gets response with deletedAt mark. All his sessions get deleted. \
+User marked as deleted gets appropriate message when trying to login', async () => {
+
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    const userBeforeDeletion = await User.findByPk(validUserInDBID);
+    if (!userBeforeDeletion) return expect(true).to.equal(false);
+
+    expect(!userBeforeDeletion.deletedAt).to.equal(true);
+
+    const response1 = await api
+      .delete(`${apiBaseUrl}/users`)
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response1.body.deletedAt).to.exist;
+
+    const sessions = await Session.findAll({});
+
+    expect(sessions).to.be.lengthOf(0);
+
+    const deletedUser = await User.findByPk(validUserInDBID, { paranoid: false });
+    if (!deletedUser) return expect(true).to.equal(false);
+
+    expect(!deletedUser.deletedAt).to.equal(false);
+
+    const response2 = await api
+      .get(`${apiBaseUrl}/users/me`)
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response2.body.error.name).to.equal('ProhibitedError');
+    expect(response2.body.error.message).to.equal('You have deleted your own account. To delete it permanently or restore it, contact admin');
+
+  });
+
+});
+
+
+
+describe('User addresses requests tests', () => {
+
+  let validUserInDBID: number;
+
+  before(async () => {
+    await User.scope('all').destroy({ force: true, where: {} });
+    await User.bulkCreate(initialUsers);
+  });
+
+  beforeEach(async () => {
+    await Session.destroy({ where: {} });
+    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
+
     await UserAddress.destroy({ where: {} });
     await Address.destroy({ where: {} });
   });
@@ -655,7 +727,7 @@ describe('User addresses requests tests', () => {
           expect(response.body[key]).to.equal(addressInDB?.dataValues[key as keyof AddressData]);
       }
       const junction = await UserAddress.findOne({ where: { addressId: addressInDB?.id } });
-      expect(junction?.userId).to.equal(validUserInDB.dbEntry.id);
+      expect(junction?.userId).to.equal(validUserInDBID);
     }
 
   });
@@ -736,7 +808,7 @@ adds only a new junction if it was existing', async () => {
 
     // To make sure that old junction does not exist
     const junctions1 = await UserAddress.findAll({});
-    expect(junctions1[0].userId).to.equal(validUserInDB.dbEntry.id);
+    expect(junctions1[0].userId).to.equal(validUserInDBID);
     expect(junctions1).to.be.lengthOf(1);
 
     await api
@@ -773,6 +845,75 @@ adds only a new junction if it was existing', async () => {
     // To make sure that first user has one junction, and second user has two of them
     const junctions2 = await UserAddress.findAll({});
     expect(junctions2).to.be.lengthOf(3);
+
+  });
+
+  it('Delete user address route works. If the address is used by anybody else, it does not get deleted', async () => {
+
+    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const token2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent);
+
+    const response1 = await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token1}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    // Second user adds first address as his own. Maybe, they live together
+    const response2 = await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[0])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    // Second user lives in two apartments
+    const response3 = await api
+      .post(`${apiBaseUrl}/users/address`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send(validAddresses[1])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    // Just to make sure that it is the same address, and DB did not create another row
+    expect(response1.body.id).to.equal(response2.body.id);
+
+    const userAddresses1 = await UserAddress.findAll({});
+    const addresses1 = await Address.findAll({});
+
+    // 2 records for addresses, 3 for user's addresses
+    expect(userAddresses1).to.be.lengthOf(3);
+    expect(addresses1).to.be.lengthOf(2);
+
+    // Appears that... They break up :\
+    await api
+      .delete(`${apiBaseUrl}/users/address/${response2.body.id}`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .expect(204);
+
+    // Also appears that the second user does not live anywhere anymore...
+    await api
+      .delete(`${apiBaseUrl}/users/address/${response3.body.id}`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .expect(204);
+
+    const userAddresses2 = await UserAddress.findAll({});
+    const addresses2 = await Address.findAll({});
+
+    // Now only the first user has address, and it is validAddresses[0]
+    expect(userAddresses2).to.be.lengthOf(1);
+    expect(addresses2).to.be.lengthOf(1);
+
+    expect(userAddresses2[0].userId).to.equal(validUserInDBID);
+
+    expect(addresses2[0].city).to.equal(validAddresses[0].city);
+    expect(addresses2[0].street).to.equal(validAddresses[0].street);
 
   });
 

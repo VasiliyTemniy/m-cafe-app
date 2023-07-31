@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-import { DynamicModule } from '@m-cafe-app/utils';
+import { DynamicModule } from '@m-cafe-app/db-models';
 
 DynamicModule.init({
   id: {

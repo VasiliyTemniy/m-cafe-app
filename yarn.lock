@@ -1645,11 +1645,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@m-cafe-app/db-models@workspace:^, @m-cafe-app/db-models@workspace:packages/dbModels":
+  version: 0.0.0-use.local
+  resolution: "@m-cafe-app/db-models@workspace:packages/dbModels"
+  dependencies:
+    sequelize: ^6.31.1
+    typescript: ^5.0.4
+  languageName: unknown
+  linkType: soft
+
 "@m-cafe-app/utils@workspace:^, @m-cafe-app/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/utils@workspace:packages/utils"
   dependencies:
-    sequelize: ^6.31.1
+    "@m-cafe-app/db-models": "workspace:^"
     typescript: ^5.0.4
   languageName: unknown
   linkType: soft
@@ -6404,6 +6413,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "m-cafe-backend@workspace:services/backend"
   dependencies:
+    "@m-cafe-app/db-models": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     "@types/bcryptjs": ^2.4.2
     "@types/chai": ^4.3.5

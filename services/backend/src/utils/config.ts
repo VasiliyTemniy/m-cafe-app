@@ -18,10 +18,13 @@ const TOKEN_TTL = process.env.TOKEN_TTL as string;
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN as string;
 
+const SUPERADMIN_PHONENUMBER = process.env.SUPERADMIN_PHONENUMBER as string;
+
 export default {
   DATABASE_URL,
   PORT,
   SECRET,
   TOKEN_TTL,
-  ALLOWED_ORIGIN
+  ALLOWED_ORIGIN,
+  SUPERADMIN_PHONENUMBER
 };

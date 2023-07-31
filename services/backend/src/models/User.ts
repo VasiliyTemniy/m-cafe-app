@@ -15,7 +15,7 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from '../utils/constants.js';
-import { User } from '@m-cafe-app/utils';
+import { User } from '@m-cafe-app/db-models';
 
 
 User.init({
@@ -88,10 +88,15 @@ User.init({
     type: DataTypes.DATE,
     allowNull: false
   },
+  deletedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  }
 }, {
   sequelize,
   underscored: true,
   timestamps: true,
+  paranoid: true,
   modelName: 'user',
   defaultScope: {
     where: {

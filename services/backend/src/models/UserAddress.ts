@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-import { UserAddress } from '@m-cafe-app/utils';
+import { UserAddress } from '@m-cafe-app/db-models';
 
 UserAddress.init({
   userId: {

@@ -4,7 +4,7 @@ import { RequestHandler, Router } from 'express';
 import middleware from '../utils/middleware.js';
 import config from '../utils/config.js';
 import { isRequestCustom } from '../types/RequestCustom.js';
-import { RequestBodyError, CredentialsError, BannedError, UnknownError, SessionError } from '@m-cafe-app/utils';
+import { RequestBodyError, CredentialsError, BannedError, UnknownError, SessionError, ProhibitedError } from '@m-cafe-app/utils';
 import { isLoginBody } from '@m-cafe-app/utils';
 import { User, Session } from '../models/index.js';
 
@@ -15,6 +15,7 @@ sessionRouter.post(
   (async (req, res) => {
 
     if (!isLoginBody(req.body)) throw new RequestBodyError('Invalid login request body');
+    if (req.body.phonenumber === config.SUPERADMIN_PHONENUMBER) throw new ProhibitedError('Superadmin must login only with a username');
 
     const { username, phonenumber, password } = req.body;
     const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';

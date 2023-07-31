@@ -1,3 +1,4 @@
+import { hasOwnProperty } from "./helpers.js";
 import { isString } from "./typeParsers.js";
 
 export class SessionError extends Error {
@@ -83,7 +84,7 @@ interface NamedError {
 }
 
 const hasNamedErrorFields = (error: unknown): error is { name: unknown; } =>
-  Object.prototype.hasOwnProperty.call(error, "name");
+  hasOwnProperty(error, "name");
 
 export const isNamedError = (error: unknown): error is NamedError => {
   if (hasNamedErrorFields(error)) {
@@ -99,9 +100,7 @@ interface CustomError {
 }
 
 const hasCustomErrorFields = (error: unknown): error is { name: unknown, message: unknown; } =>
-  Object.prototype.hasOwnProperty.call(error, "name")
-  &&
-  Object.prototype.hasOwnProperty.call(error, "message");
+  hasOwnProperty(error, "name") && hasOwnProperty(error, "message");
 
 export const isCustomError = (error: unknown): error is CustomError => {
   if (hasCustomErrorFields(error)) {
@@ -119,8 +118,8 @@ export const isCustomError = (error: unknown): error is CustomError => {
 // }
 
 // export const isSequelizeOriginalDatabaseError = (error: unknown): error is SequelizeOriginalDatabaseError =>
-//   Object.prototype.hasOwnProperty.call(error, "parent")
+//   hasOwnProperty(error, "parent")
 //   &&
-//   Object.prototype.hasOwnProperty.call(error, "original")
+//   hasOwnProperty(error, "original")
 //   &&
-//   Object.prototype.hasOwnProperty.call(error, "sql");
+//   hasOwnProperty(error, "sql");
