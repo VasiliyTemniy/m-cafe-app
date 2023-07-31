@@ -8,7 +8,6 @@ export const initSuperAdmin = async () => {
   // Check for existing superadmin
   const existingUser = await User.findOne({
     where: {
-      username: process.env.SUPERADMIN_USERNAME as string,
       phonenumber: config.SUPERADMIN_PHONENUMBER
     }
   });
