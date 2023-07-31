@@ -1650,7 +1650,6 @@ __metadata:
   resolution: "@m-cafe-app/db-models@workspace:packages/dbModels"
   dependencies:
     sequelize: ^6.31.1
-    typescript: ^5.0.4
   languageName: unknown
   linkType: soft
 
@@ -1659,7 +1658,6 @@ __metadata:
   resolution: "@m-cafe-app/utils@workspace:packages/utils"
   dependencies:
     "@m-cafe-app/db-models": "workspace:^"
-    typescript: ^5.0.4
   languageName: unknown
   linkType: soft
 
