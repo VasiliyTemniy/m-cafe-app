@@ -206,7 +206,7 @@ describe('Admin router basics', () => {
   });
 
   it('Disabled / banned users are prohibited to use the app, get appropriate message to contact admin. \
-Also, all user sessions gets deleted after being banned. Also, user is not visible through default sequelize scope', async () => {
+Also, all user sessions get deleted after user being banned. Also, user is not visible through default sequelize scope', async () => {
 
     // Some user logins thrice from different browsers
     const validUsersToken = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
