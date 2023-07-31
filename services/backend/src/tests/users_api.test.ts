@@ -615,7 +615,7 @@ describe('User GET request tests', () => {
 
 });
 
-describe.only('User DELETE request tests', () => {
+describe('User DELETE request tests', () => {
 
   let validUserInDBID: number;
 
