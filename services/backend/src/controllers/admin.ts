@@ -50,7 +50,7 @@ adminRouter.put(
 
     if (!isAdministrateUserBody(req.body)) throw new RequestBodyError('Invalid administrate user request body');
 
-    const userSubject = await User.scope('all').findByPk(req.params.id);
+    const userSubject = await User.scope('all').findByPk(req.params.id, { paranoid: false });
 
     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
     if (userSubject.phonenumber === config.SUPERADMIN_PHONENUMBER)
@@ -72,6 +72,10 @@ adminRouter.put(
       userSubject.admin = req.body.admin;
     }
 
+    if (hasOwnProperty(req.body, 'restore') && req.body.restore) {
+      await userSubject.restore();
+    }
+
     await userSubject.save();
 
     res.status(200).json(userSubject);
@@ -86,7 +90,7 @@ adminRouter.delete(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    const userSubject = await User.scope('all').findByPk(req.params.id);
+    const userSubject = await User.scope('all').findByPk(req.params.id, { paranoid: false });
 
     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
     if (!userSubject.deletedAt) throw new ProhibitedError('Only voluntarily deleted users can be fully removed by admins');
