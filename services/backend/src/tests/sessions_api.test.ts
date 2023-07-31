@@ -27,7 +27,7 @@ describe('Login and session', () => {
   let validUserInDBID: number;
 
   before(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
     const user = await User.create(validUserInDB.dbEntry);
 

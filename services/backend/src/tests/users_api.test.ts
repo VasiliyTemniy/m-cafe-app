@@ -54,7 +54,7 @@ const api = supertest(app);
 describe('User POST request tests', () => {
 
   beforeEach(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
   });
 
@@ -449,13 +449,13 @@ describe('User PUT request tests', () => {
   let validUserInDBID: number;
 
   before(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
   });
 
   beforeEach(async () => {
     await Session.destroy({ where: {} });
-    if (validUserInDBID) await User.destroy({ where: { id: validUserInDBID } });
+    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
     const user = await User.create(validUserInDB.dbEntry);
 
     validUserInDBID = user.id;
@@ -569,7 +569,7 @@ describe('User GET request tests', () => {
   let validUserInDBID: number;
 
   before(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
     const user = await User.create(validUserInDB.dbEntry);
 
@@ -621,13 +621,13 @@ describe('User addresses requests tests', () => {
   let validUserInDBID: number;
 
   before(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await User.bulkCreate(initialUsers);
   });
 
   beforeEach(async () => {
     await Session.destroy({ where: {} });
-    if (validUserInDBID) await User.destroy({ where: { id: validUserInDBID } });
+    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
     const user = await User.create(validUserInDB.dbEntry);
 
     validUserInDBID = user.id;

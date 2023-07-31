@@ -21,7 +21,7 @@ const api = supertest(app);
 describe('Superadmin special check', () => {
 
   before(async () => {
-    await User.destroy({ where: {} });
+    await User.scope('all').destroy({ force: true, where: {} });
     await initSuperAdmin();
   });
 
@@ -78,6 +78,7 @@ describe('Admin router basics', () => {
 
   beforeEach(async () => {
     await User.scope('all').destroy({
+      force: true,
       where: {
         phonenumber: {
           [Op.not]: config.SUPERADMIN_PHONENUMBER
