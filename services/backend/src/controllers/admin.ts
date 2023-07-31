@@ -14,7 +14,7 @@ adminRouter.get(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    const userSubjects = await User.findAll({
+    const userSubjects = await User.scope('all').findAll({
       attributes: { exclude: ['passwordHash'] }
     });
 
@@ -30,7 +30,7 @@ adminRouter.get(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    const userSubject = await User.findByPk(req.params.id, {
+    const userSubject = await User.scope('all').findByPk(req.params.id, {
       attributes: { exclude: ['passwordHash'] }
     });
 
@@ -75,6 +75,24 @@ adminRouter.put(
     await userSubject.save();
 
     res.status(200).json(userSubject);
+
+  }) as RequestHandler
+);
+
+adminRouter.delete(
+  '/users/:id',
+  middleware.verifyToken,
+  middleware.adminCheck,
+  middleware.sessionCheck,
+  (async (req, res) => {
+
+    const userSubject = await User.scope('all').findByPk(req.params.id);
+
+    if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
+
+    await userSubject.destroy({ force: true });
+
+    res.status(204).end();
 
   }) as RequestHandler
 );
