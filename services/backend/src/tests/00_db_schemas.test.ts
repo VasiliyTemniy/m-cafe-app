@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { getDBInfo } from "./db_schemas_helper";
+import { getDBInfo } from "./00_db_schemas_helper";
 import { connectToDatabase } from "../utils/db";
 import config from "../utils/config";
 import supertest from "supertest";
