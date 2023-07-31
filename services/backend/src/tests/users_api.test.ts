@@ -615,6 +615,66 @@ describe('User GET request tests', () => {
 
 });
 
+describe.only('User DELETE request tests', () => {
+
+  let validUserInDBID: number;
+
+  before(async () => {
+    await User.scope('all').destroy({ force: true, where: {} });
+    await User.bulkCreate(initialUsers);
+  });
+
+  beforeEach(async () => {
+    await Session.destroy({ where: {} });
+    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
+  });
+
+  it('User delete route works, marks user as deletedAt, gets response with deletedAt mark. All his sessions get deleted. \
+User marked as deleted gets appropriate message when trying to login', async () => {
+
+    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    const userBeforeDeletion = await User.findByPk(validUserInDBID);
+    if (!userBeforeDeletion) return expect(true).to.equal(false);
+
+    expect(!userBeforeDeletion.deletedAt).to.equal(true);
+
+    const response1 = await api
+      .delete(`${apiBaseUrl}/users`)
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response1.body.deletedAt).to.exist;
+
+    const sessions = await Session.findAll({});
+
+    expect(sessions).to.be.lengthOf(0);
+
+    const deletedUser = await User.findByPk(validUserInDBID, { paranoid: false });
+    if (!deletedUser) return expect(true).to.equal(false);
+
+    expect(!deletedUser.deletedAt).to.equal(false);
+
+    const response2 = await api
+      .get(`${apiBaseUrl}/users/me`)
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response2.body.error.name).to.equal('ProhibitedError');
+    expect(response2.body.error.message).to.equal('You have deleted your own account. To delete it permanently or restore it, contact admin');
+
+  });
+
+});
+
+
 
 describe('User addresses requests tests', () => {
 
