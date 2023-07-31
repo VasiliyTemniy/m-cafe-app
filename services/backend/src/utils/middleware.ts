@@ -48,7 +48,7 @@ const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: Ne
 
 const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  const user = await User.scope('all').findByPk(req.userId);
+  const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
   if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
@@ -63,7 +63,7 @@ const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunct
 
 const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  const user = await User.scope('all').findByPk(req.userId);
+  const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
   if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
@@ -76,7 +76,7 @@ const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction)
 
 const adminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  const user = await User.scope('all').findByPk(req.userId);
+  const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
   if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
