@@ -21,7 +21,7 @@ import {
 } from '@m-cafe-app/utils';
 import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
-import { User, Address, Facility } from '../models/index.js';
+import { User, Address, Facility, Session } from '../models/index.js';
 import { maxPasswordLen, minPasswordLen } from '../utils/constants.js';
 
 const usersRouter = Router();
@@ -121,6 +121,7 @@ usersRouter.delete(
 
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
 
+    await Session.destroy({ where: { userId: req.user.id } });
     const deletedUser = await req.user.destroy();
 
     res.status(200).json(deletedUser);
