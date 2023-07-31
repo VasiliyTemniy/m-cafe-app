@@ -56,8 +56,8 @@ adminRouter.put(
     if (userSubject.phonenumber === config.SUPERADMIN_PHONENUMBER)
       throw new ProhibitedError('Attempt to alter superadmin');
 
-    if (hasOwnProperty(req.body, 'disable')) {
-      userSubject.disabled = req.body.disable;
+    if (hasOwnProperty(req.body, 'disabled')) {
+      userSubject.disabled = req.body.disabled;
 
       if (userSubject.disabled) {
         await Session.destroy({
