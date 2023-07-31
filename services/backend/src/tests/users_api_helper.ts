@@ -79,11 +79,10 @@ export const validNewUser: NewUserBody = {
 
 export const validUserInDB: {
   password: string;
-  dbEntry: UserData;
+  dbEntry: Omit<UserData, 'id'>;
 } = {
   password: 'iwannabeahero',
   dbEntry: {
-    id: 5000,
     username: 'Petro',
     name: 'Vasilenko Pyotr Ivanovich',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',

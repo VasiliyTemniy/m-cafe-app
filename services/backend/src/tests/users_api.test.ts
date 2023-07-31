@@ -446,6 +446,8 @@ describe('User POST request tests', () => {
 
 describe('User PUT request tests', () => {
 
+  let validUserInDBID: number;
+
   before(async () => {
     await User.destroy({ where: {} });
     await User.bulkCreate(initialUsers);
@@ -453,8 +455,10 @@ describe('User PUT request tests', () => {
 
   beforeEach(async () => {
     await Session.destroy({ where: {} });
-    await User.destroy({ where: { id: validUserInDB.dbEntry.id } });
-    await User.create(validUserInDB.dbEntry);
+    if (validUserInDBID) await User.destroy({ where: { id: validUserInDBID } });
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
   });
 
   it('A valid request to change user credentials succeds, needs original password', async () => {
@@ -472,14 +476,14 @@ describe('User PUT request tests', () => {
     };
 
     await api
-      .put(`${apiBaseUrl}/users/${validUserInDB.dbEntry.id}`)
+      .put(`${apiBaseUrl}/users/${validUserInDBID}`)
       .set({ Authorization: `bearer ${token}` })
       .set('User-Agent', userAgent)
       .send(updateUserData)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const updatedUserInDB = await User.findOne({ where: { id: validUserInDB.dbEntry.id } });
+    const updatedUserInDB = await User.findOne({ where: { id: validUserInDBID } });
 
     if (!updatedUserInDB) return expect(true).to.equal(false);
 
@@ -545,7 +549,7 @@ describe('User PUT request tests', () => {
     };
 
     const response = await api
-      .put(`${apiBaseUrl}/users/${validUserInDB.dbEntry.id}`)
+      .put(`${apiBaseUrl}/users/${validUserInDBID}`)
       .set({ Authorization: `bearer ${token}` })
       .set('User-Agent', userAgent)
       .send(updateUserData)
@@ -562,10 +566,14 @@ describe('User PUT request tests', () => {
 
 describe('User GET request tests', () => {
 
+  let validUserInDBID: number;
+
   before(async () => {
     await User.destroy({ where: {} });
     await User.bulkCreate(initialUsers);
-    await User.create(validUserInDB.dbEntry);
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
   });
 
   beforeEach(async () => {
@@ -583,7 +591,7 @@ describe('User GET request tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.id).to.equal(validUserInDB.dbEntry.id);
+    expect(response.body.id).to.equal(validUserInDBID);
     expect(response.body.username).to.equal(validUserInDB.dbEntry.username);
     expect(response.body.name).to.equal(validUserInDB.dbEntry.name);
     expect(response.body.phonenumber).to.equal(validUserInDB.dbEntry.phonenumber);
@@ -610,6 +618,8 @@ describe('User GET request tests', () => {
 
 describe('User addresses requests tests', () => {
 
+  let validUserInDBID: number;
+
   before(async () => {
     await User.destroy({ where: {} });
     await User.bulkCreate(initialUsers);
@@ -617,8 +627,11 @@ describe('User addresses requests tests', () => {
 
   beforeEach(async () => {
     await Session.destroy({ where: {} });
-    await User.destroy({ where: { id: validUserInDB.dbEntry.id } });
-    await User.create(validUserInDB.dbEntry);
+    if (validUserInDBID) await User.destroy({ where: { id: validUserInDBID } });
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
+
     await UserAddress.destroy({ where: {} });
     await Address.destroy({ where: {} });
   });
@@ -655,7 +668,7 @@ describe('User addresses requests tests', () => {
           expect(response.body[key]).to.equal(addressInDB?.dataValues[key as keyof AddressData]);
       }
       const junction = await UserAddress.findOne({ where: { addressId: addressInDB?.id } });
-      expect(junction?.userId).to.equal(validUserInDB.dbEntry.id);
+      expect(junction?.userId).to.equal(validUserInDBID);
     }
 
   });
@@ -736,7 +749,7 @@ adds only a new junction if it was existing', async () => {
 
     // To make sure that old junction does not exist
     const junctions1 = await UserAddress.findAll({});
-    expect(junctions1[0].userId).to.equal(validUserInDB.dbEntry.id);
+    expect(junctions1[0].userId).to.equal(validUserInDBID);
     expect(junctions1).to.be.lengthOf(1);
 
     await api
@@ -838,7 +851,7 @@ adds only a new junction if it was existing', async () => {
     expect(userAddresses2).to.be.lengthOf(1);
     expect(addresses2).to.be.lengthOf(1);
 
-    expect(userAddresses2[0].userId).to.equal(validUserInDB.dbEntry.id);
+    expect(userAddresses2[0].userId).to.equal(validUserInDBID);
 
     expect(addresses2[0].city).to.equal(validAddresses[0].city);
     expect(addresses2[0].street).to.equal(validAddresses[0].street);

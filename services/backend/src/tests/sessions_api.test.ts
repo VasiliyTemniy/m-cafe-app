@@ -9,7 +9,6 @@ import {
 } from './users_api_helper';
 import { Session, User } from '../models/index';
 import { connectToDatabase } from "../utils/db";
-import { initSuperAdmin } from "../utils/adminInit";
 import jwt from 'jsonwebtoken';
 import { LoginUserBody } from "@m-cafe-app/utils";
 import { isTokenBody } from "@m-cafe-app/utils";
@@ -25,11 +24,14 @@ const api = supertest(app);
 
 describe('Login and session', () => {
 
+  let validUserInDBID: number;
+
   before(async () => {
     await User.destroy({ where: {} });
     await User.bulkCreate(initialUsers);
-    await initSuperAdmin();
-    await User.create(validUserInDB.dbEntry);
+    const user = await User.create(validUserInDB.dbEntry);
+
+    validUserInDBID = user.id;
   });
 
   beforeEach(async () => {
@@ -72,14 +74,14 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const tokenFirst = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'SUPERTEST');
 
-    const sessionsFirst = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
+    const sessionsFirst = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessionsFirst).to.be.lengthOf(1);
     expect(sessionsFirst[0].token).to.equal(tokenFirst);
 
     const tokenSecond = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'SUPERTEST');
 
-    const sessionsSecond = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
+    const sessionsSecond = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessionsSecond).to.be.lengthOf(1);
     expect(sessionsSecond[0].token).to.equal(tokenSecond);
@@ -96,7 +98,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgents[1]);
 
-    const sessions = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
+    const sessions = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessions).to.be.lengthOf(2);
 
@@ -160,12 +162,12 @@ same browser(userAgent) without logout leads to session token refresh', async ()
   it('Token TTL and expire system works as intended, session gets deleted if expired token detected on protected route', async () => {
 
     const token = jwt.sign({
-      id: validUserInDB.dbEntry.id,
+      id: validUserInDBID,
       rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: '1' });  // 1 ms to make sure it expires until the end of the test
 
     const newSession = {
-      userId: validUserInDB.dbEntry.id,
+      userId: validUserInDBID,
       token,
       userAgent: 'SUPERTEST'
     };
@@ -201,7 +203,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
 
     const tokenInvSecret = jwt.sign({
-      id: validUserInDB.dbEntry.id,
+      id: validUserInDBID,
       rand: Math.random() * 10000
     }, 'IAmASpecialChineseSeckrette', { expiresIn: config.TOKEN_TTL });
 
@@ -233,7 +235,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
   it('Valid token is accepted only when there is a Session record in DB for it', async () => {
 
     const tokenValid = jwt.sign({
-      id: validUserInDB.dbEntry.id,
+      id: validUserInDBID,
       rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
@@ -276,7 +278,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
       .set('User-Agent', userAgent)
       .expect(204);
 
-    const sessionsAfterLogout = await Session.findAll({ where: { userId: validUserInDB.dbEntry.id } });
+    const sessionsAfterLogout = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessionsAfterLogout).to.be.lengthOf(0);
 
