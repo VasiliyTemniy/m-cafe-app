@@ -7,7 +7,7 @@ import { connectToDatabase } from "../utils/db";
 import { User, Session } from '../models/index';
 import { initSuperAdmin } from "../utils/adminInit";
 import { initLogin, userAgent } from "./sessions_api_helper";
-import { initialUsers, validUserInDB } from './users_api_helper';
+import { initialUsers, validNewUser, validUserInDB } from './users_api_helper';
 import config from "../utils/config";
 import { validAdminInDB } from "./admin_api_helper";
 import { Op } from "sequelize";
@@ -67,7 +67,7 @@ password, username get zeroified, phonenumber left for distinguishing reasons', 
 });
 
 
-describe('Admin router basics', () => {
+describe.only('Admin router basics', () => {
 
   let validAdminInDBID: number;
   let validUserInDBID: number;
@@ -279,6 +279,94 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     const dbEntryOfBannedUser2 = await User.scope('all').findOne({ where: { ...validUserInDB.dbEntry } });
 
     expect(dbEntryOfBannedUser2).to.exist;
+
+  });
+
+  it('Admin cannot delete users if they did not try delete them themselves, i.e. without deletedAt notnull property', async () => {
+
+    const token = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+
+    const response = await api
+      .delete(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.error.name).to.equal('ProhibitedError');
+    expect(response.body.error.message).to.equal('Only voluntarily deleted users can be fully removed by admins');
+
+  });
+
+  it('Admin can delete users if they did try delete them themselves, i.e. with deletedAt notnull property', async () => {
+
+    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    await api
+      .delete(`${apiBaseUrl}/users`)
+      .set({ Authorization: `bearer ${token1}` })
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const token2 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+
+    await api
+      .delete(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .expect(204);
+
+    const deletedUser = await User.findByPk(validUserInDBID, { paranoid: false });
+    expect(!deletedUser).to.equal(true);
+
+  });
+
+  it('Admin can restore users if they did try delete them themselves, i.e. with deletedAt notnull property, \
+if they did not request to make permanent deletion', async () => {
+
+    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+
+    await api
+      .delete(`${apiBaseUrl}/users`)
+      .set({ Authorization: `bearer ${token1}` })
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const token2 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+
+    await api
+      .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .set({ Authorization: `bearer ${token2}` })
+      .set('User-Agent', userAgent)
+      .send({ restore: true })
+      .expect(200);
+
+    const restoredUser = await User.findByPk(validUserInDBID);
+    if (!restoredUser) return expect(true).to.equal(false);
+
+    expect(!restoredUser.deletedAt).to.equal(true);
+
+  });
+
+  it('New users cannot assign themselves admin role', async () => {
+
+    const newUserTriesToBeAdmin = {
+      ...validNewUser,
+      admin: true
+    };
+
+    expect(newUserTriesToBeAdmin.admin).to.equal(true);
+
+    const response = await api
+      .post(`${apiBaseUrl}/users`)
+      .send(newUserTriesToBeAdmin)
+      .expect(418)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.error.name).to.equal('HackError');
+    expect(response.body.error.message).to.equal('Please do not try this');
 
   });
 
