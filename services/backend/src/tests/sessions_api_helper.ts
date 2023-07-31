@@ -1,7 +1,7 @@
 import { LoginUserBody } from "@m-cafe-app/utils";
 import supertest from 'supertest';
 import { apiBaseUrl } from './test_helper';
-import { UserData } from "@m-cafe-app/utils";
+import { UserData } from "@m-cafe-app/db-models";
 import { expect } from "chai";
 
 export const userAgent = 'SUPERTEST';

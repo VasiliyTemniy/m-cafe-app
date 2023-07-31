@@ -1,5 +1,4 @@
-import { hasOwnProperty } from "@m-cafe-app/utils";
-import { parseString } from "./typeParsers";
+import { hasOwnProperty, parseString } from "@m-cafe-app/utils";
 
 type CheckFromApiFields = {
   message: unknown;

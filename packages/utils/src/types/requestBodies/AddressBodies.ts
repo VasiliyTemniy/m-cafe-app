@@ -1,9 +1,8 @@
-import { InferAttributes } from "sequelize";
-import { Address } from "../../models";
-import { hasOwnProperty, MapToDT, MapToUnknown, PropertiesCreationOptional } from "../helpers.js";
+import { AddressDT } from "../../models/Address.js";
+import { hasOwnProperty, MapToUnknown } from "../helpers.js";
 import { isString, isNumber } from "../typeParsers.js";
 
-export type NewAddressBody = MapToDT<Omit<InferAttributes<Address>, PropertiesCreationOptional>>;
+export type NewAddressBody = Omit<AddressDT, 'id'>;
 
 type NewAddressBodyFields = MapToUnknown<NewAddressBody>;
 

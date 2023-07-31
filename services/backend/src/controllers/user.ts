@@ -12,7 +12,6 @@ import {
   isNewAddressBody,
   AddressDT,
   isEditAddressBody,
-  UserAddress,
   DatabaseError,
   isNumber,
   NewAddressBody,
@@ -21,7 +20,7 @@ import {
 } from '@m-cafe-app/utils';
 import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
-import { User, Address, Facility, Session } from '../models/index.js';
+import { User, Address, Facility, Session, UserAddress } from '../models/index.js';
 import { maxPasswordLen, minPasswordLen } from '../utils/constants.js';
 
 const usersRouter = Router();

@@ -36,13 +36,12 @@ import {
   usernameRegExp
 } from "../utils/constants";
 import {
-  Address,
-  AddressData,
   EditUserBody,
   NewAddressBody,
-  NewUserBody,
-  UserAddress
+  NewUserBody
 } from "@m-cafe-app/utils";
+import { Address, UserAddress } from '../models';
+import { AddressData } from "@m-cafe-app/db-models";
 import { initLogin, userAgent } from "./sessions_api_helper";
 
 

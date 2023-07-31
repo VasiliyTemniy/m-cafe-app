@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-import { FoodComponent } from '@m-cafe-app/utils';
+import { FoodComponent } from '@m-cafe-app/db-models';
 
 FoodComponent.init({
   id: {

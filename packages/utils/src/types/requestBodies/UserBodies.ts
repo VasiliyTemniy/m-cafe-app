@@ -1,14 +1,9 @@
-import { InferAttributes } from "sequelize";
-import { User } from "../../models/User.js";
-import { hasOwnProperty, MapToDT, MapToUnknown, PropertiesCreationOptional } from "../helpers.js";
+import { UserDT } from "../../models/User.js";
+import { hasOwnProperty, MapToUnknown } from "../helpers.js";
 import { isString } from "../typeParsers.js";
 
 
-export type NewUserBody = MapToDT<
-  Omit<InferAttributes<User>, PropertiesCreationOptional | 'admin' | 'disabled' | 'passwordHash'>
-> & {
-  password: string;
-};
+export type NewUserBody = Omit<UserDT, 'admin' | 'disabled' | 'id'> & { password: string; };
 
 type NewUserBodyFields = MapToUnknown<NewUserBody>;
 

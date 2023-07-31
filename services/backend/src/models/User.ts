@@ -15,7 +15,7 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from '../utils/constants.js';
-import { User } from '@m-cafe-app/utils';
+import { User } from '@m-cafe-app/db-models';
 
 
 User.init({

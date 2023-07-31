@@ -9,7 +9,4 @@ export type MapToDT<T> = {
   : T[Property]
 };
 
-export type PropertiesTimestamps = 'createdAt' | 'updatedAt' | 'deletedAt';
-export type PropertiesCreationOptional = 'id' | PropertiesTimestamps;
-
 export const hasOwnProperty = (obj: unknown, property: string) => Object.prototype.hasOwnProperty.call(obj, property);

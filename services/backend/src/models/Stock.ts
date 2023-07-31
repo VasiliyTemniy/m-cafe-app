@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-import { Stock } from '@m-cafe-app/utils';
+import { Stock } from '@m-cafe-app/db-models';
 
 Stock.init({
   id: {

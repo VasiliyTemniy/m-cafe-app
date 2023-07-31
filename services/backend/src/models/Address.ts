@@ -29,7 +29,7 @@ import {
   regionRegExp,
   streetRegExp
 } from '../utils/constants.js';
-import { Address } from '@m-cafe-app/utils';
+import { Address } from '@m-cafe-app/db-models';
 
 Address.init({
   id: {

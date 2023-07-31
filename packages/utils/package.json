@@ -10,10 +10,8 @@
     "build": "tsc --build",
     "eslint": "eslint ./src/**/*.{ts,tsx}"
   },
-  "dependencies": {
-    "sequelize": "^6.31.1"
-  },
   "devDependencies": {
+    "@m-cafe-app/db-models": "workspace:^",
     "typescript": "^5.0.4"
   }
 }

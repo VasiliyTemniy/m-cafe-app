@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
-import { Picture } from '@m-cafe-app/utils';
+import { Picture } from '@m-cafe-app/db-models';
 
 Picture.init({
   id: {
