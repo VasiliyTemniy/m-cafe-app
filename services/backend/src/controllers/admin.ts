@@ -89,6 +89,7 @@ adminRouter.delete(
     const userSubject = await User.scope('all').findByPk(req.params.id);
 
     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
+    if (!userSubject.deletedAt) throw new ProhibitedError('Only voluntarily deleted users can be fully removed by admins');
 
     await userSubject.destroy({ force: true });
 
