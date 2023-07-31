@@ -1,4 +1,4 @@
-import { DataTypes, Op } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
 import {
@@ -112,13 +112,6 @@ User.init({
     disabled: {
       where: {
         disabled: true
-      }
-    },
-    deleted: {
-      where: {
-        deletedAt: {
-          [Op.not]: null || undefined
-        }
       }
     },
     all: {}
