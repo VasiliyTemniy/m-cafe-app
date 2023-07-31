@@ -51,7 +51,7 @@ const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunct
   const user = await User.findByPk(req.userId);
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
-  if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
+  if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
 
   req.user = user;
 
@@ -65,7 +65,7 @@ const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction)
   const user = await User.findByPk(req.userId);
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
-  if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
+  if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
 
   next();
 
@@ -77,7 +77,7 @@ const adminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction
   const user = await User.findByPk(req.userId);
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
-  if (user.disabled) return next(new BannedError('You have been banned. Please, contact admin'));
+  if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
   if (!user.admin) return next(new ProhibitedError('You have no admin permissions'));
 
   next();
