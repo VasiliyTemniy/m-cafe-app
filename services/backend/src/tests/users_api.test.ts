@@ -102,13 +102,13 @@ describe('User POST request tests', () => {
       password: 'iwannabeahero'
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(400);
 
-    expect(result.body.error.name).to.equal('RequestBodyError');
-    expect(result.body.error.message).to.equal('Invalid new user request body');
+    expect(response.body.error.name).to.equal('RequestBodyError');
+    expect(response.body.error.message).to.equal('Invalid new user request body');
 
     const usersAtEnd = await User.findAll({});
 
@@ -144,15 +144,15 @@ describe('User POST request tests', () => {
       phonenumber: '89354652235'
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(409);
 
-    expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
-    expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response.body.error.name).to.equal('SequelizeUniqueConstraintError');
+    expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    expect(result.body.error.originalError).to.exist;
+    expect(response.body.error.originalError).to.exist;
 
     const usersAtEnd = await User.findAll({});
 
@@ -167,15 +167,15 @@ describe('User POST request tests', () => {
       phonenumber: '88003561256' // already in initialUsers
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(409);
 
-    expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
-    expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response.body.error.name).to.equal('SequelizeUniqueConstraintError');
+    expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    expect(result.body.error.originalError).to.exist;
+    expect(response.body.error.originalError).to.exist;
 
     const usersAtEnd = await User.findAll({});
 
@@ -191,15 +191,15 @@ describe('User POST request tests', () => {
       email: 'my-emah@jjjjppp.com' // already in initialUsers
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(409);
 
-    expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
-    expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response.body.error.name).to.equal('SequelizeUniqueConstraintError');
+    expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    expect(result.body.error.originalError).to.exist;
+    expect(response.body.error.originalError).to.exist;
 
     const usersAtEnd = await User.findAll({});
 
@@ -217,17 +217,17 @@ describe('User POST request tests', () => {
       birthdate: 'ohI`mNotADateSir!' // !isDate
     };
 
-    const result1 = await api
+    const response1 = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUserFail1)
       .expect(400);
 
-    expect(result1.body.error.name).to.equal('SequelizeValidationError');
-    expect(result1.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response1.body.error.name).to.equal('SequelizeValidationError');
+    expect(response1.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    if (result1.body.error.name !== 'SequelizeValidationError') return;
+    if (response1.body.error.name !== 'SequelizeValidationError') return;
 
-    const validationError1 = result1.body.error.originalError as ValidationError;
+    const validationError1 = response1.body.error.originalError as ValidationError;
     const errorMessages1 = validationError1.errors.map(error => error.message);
 
     expect(errorMessages1).to.have.members([
@@ -249,17 +249,17 @@ describe('User POST request tests', () => {
       birthdate: '23.07.2001 13:12' // !isDate
     };
 
-    const result2 = await api
+    const response2 = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUserFail2)
       .expect(400);
 
-    expect(result2.body.error.name).to.equal('SequelizeValidationError');
-    expect(result2.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response2.body.error.name).to.equal('SequelizeValidationError');
+    expect(response2.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    if (result2.body.error.name !== 'SequelizeValidationError') return;
+    if (response2.body.error.name !== 'SequelizeValidationError') return;
 
-    const validationError2 = result2.body.error.originalError as ValidationError;
+    const validationError2 = response2.body.error.originalError as ValidationError;
     const errorMessages2 = validationError2.errors.map(error => error.message);
 
     expect(errorMessages2).to.have.members([
@@ -278,17 +278,17 @@ describe('User POST request tests', () => {
       birthdate: '2001-07-23_07:31:03.242Z' // !isDate
     };
 
-    const result3 = await api
+    const response3 = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUserFail3)
       .expect(400);
 
-    expect(result3.body.error.name).to.equal('SequelizeValidationError');
-    expect(result3.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+    expect(response3.body.error.name).to.equal('SequelizeValidationError');
+    expect(response3.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-    if (result3.body.error.name !== 'SequelizeValidationError') return;
+    if (response3.body.error.name !== 'SequelizeValidationError') return;
 
-    const validationError3 = result3.body.error.originalError as ValidationError;
+    const validationError3 = response3.body.error.originalError as ValidationError;
     const errorMessages3 = validationError3.errors.map(error => error.message);
 
     expect(errorMessages3).to.have.members([
@@ -316,13 +316,13 @@ describe('User POST request tests', () => {
       birthdate: '2001-07-23T07:31:03.242Z',
     };
 
-    const result = await api
+    const response = await api
       .post(`${apiBaseUrl}/users`)
       .send(newUser)
       .expect(400);
 
-    expect(result.body.error.name).to.equal('PasswordLengthError');
-    expect(result.body.error.message).to.equal(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
+    expect(response.body.error.name).to.equal('PasswordLengthError');
+    expect(response.body.error.message).to.equal(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
 
     const usersAtEnd = await User.findAll({});
 
@@ -358,13 +358,13 @@ describe('User POST request tests', () => {
         emailsSet.has(newUser.email as string)
       ) {
 
-        const result = await api
+        const response = await api
           .post(`${apiBaseUrl}/users`)
           .send(newUser)
           .expect(409);
 
-        expect(result.body.error.name).to.equal('SequelizeUniqueConstraintError');
-        expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+        expect(response.body.error.name).to.equal('SequelizeUniqueConstraintError');
+        expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
       } else {
 
@@ -418,17 +418,17 @@ describe('User POST request tests', () => {
         ...newIncorrectGen.birthdate.errors
       ]);
 
-      const result = await api
+      const response = await api
         .post(`${apiBaseUrl}/users`)
         .send(newUserIncorrect)
         .expect(400);
 
-      expect(result.body.error.name).to.equal('SequelizeValidationError');
-      expect(result.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
+      expect(response.body.error.name).to.equal('SequelizeValidationError');
+      expect(response.body.error.message).to.equal('Some internal DB constraints error or Sequelize error');
 
-      if (result.body.error.name !== 'SequelizeValidationError') return;
+      if (response.body.error.name !== 'SequelizeValidationError') return;
 
-      const validationError = result.body.error.originalError as ValidationError;
+      const validationError = response.body.error.originalError as ValidationError;
       const errorMessages = validationError.errors.map(error => error.message);
 
       expect(errorMessages).to.have.members(Array.from(errorsSet));
