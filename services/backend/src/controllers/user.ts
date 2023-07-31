@@ -111,6 +111,24 @@ usersRouter.put(
   }) as RequestHandler
 );
 
+
+usersRouter.delete(
+  '/',
+  middleware.verifyToken,
+  middleware.userExtractor,
+  middleware.sessionCheck,
+  (async (req, res) => {
+
+    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+
+    const deletedUser = await req.user.destroy();
+
+    res.status(200).json(deletedUser);
+
+  }) as RequestHandler
+);
+
+
 usersRouter.post(
   '/address',
   middleware.verifyToken,
