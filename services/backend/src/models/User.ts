@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Op } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
 import {
@@ -88,10 +88,15 @@ User.init({
     type: DataTypes.DATE,
     allowNull: false
   },
+  deletedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  }
 }, {
   sequelize,
   underscored: true,
   timestamps: true,
+  paranoid: true,
   modelName: 'user',
   defaultScope: {
     where: {
@@ -107,6 +112,13 @@ User.init({
     disabled: {
       where: {
         disabled: true
+      }
+    },
+    deleted: {
+      where: {
+        deletedAt: {
+          [Op.not]: null || undefined
+        }
       }
     },
     all: {}

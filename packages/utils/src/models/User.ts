@@ -16,6 +16,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare admin?: boolean;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+  declare deletedAt: CreationOptional<Date>;
   declare getSessions: HasManyGetAssociationsMixin<Session>;
   declare addAddress: HasManyAddAssociationMixin<Address, number>;
   declare getAddresses: HasManyGetAssociationsMixin<Address>;
