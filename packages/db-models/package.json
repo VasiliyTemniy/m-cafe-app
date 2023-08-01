@@ -12,5 +12,8 @@
   },
   "dependencies": {
     "@m-cafe-app/shared-backend-deps": "workspace:^"
+  },
+  "peerDependencies": {
+    "typescript": "*"
   }
 }
