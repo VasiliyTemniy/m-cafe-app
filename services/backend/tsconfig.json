@@ -20,6 +20,9 @@
   "references": [
     {
       "path": "../../packages/utils"
+    },
+    {
+      "path": "../../packages/db-models"
     }
   ]
 }
