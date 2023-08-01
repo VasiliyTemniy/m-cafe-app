@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes } from '@m-cafe-app/shared-backend-deps/sequelize.js';
 
 import { sequelize } from '../utils/db.js';
 import { Food } from '@m-cafe-app/db-models';

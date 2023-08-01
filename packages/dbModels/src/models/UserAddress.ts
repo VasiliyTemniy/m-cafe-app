@@ -1,4 +1,4 @@
-import { Model, InferAttributes, InferCreationAttributes, ForeignKey } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, ForeignKey } from '@m-cafe-app/shared-backend-deps/sequelize.js';
 import { User } from './User.js';
 import { Address } from './Address.js';
 

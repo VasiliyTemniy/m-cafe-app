@@ -1,4 +1,4 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional } from '@m-cafe-app/shared-backend-deps/sequelize.js';
 
 export class LocString extends Model<InferAttributes<LocString>, InferCreationAttributes<LocString>> {
   declare id: CreationOptional<number>;

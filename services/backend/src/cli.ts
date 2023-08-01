@@ -1,5 +1,5 @@
 // import config from './utils/config';
-// import { Sequelize, QueryTypes } from 'sequelize';
+// import { Sequelize, QueryTypes } from '@m-cafe-app/shared-backend-deps/sequelize.js';
 
 // const sequelize = new Sequelize(config.DATABASE_URL, {
 //   dialectOptions: {

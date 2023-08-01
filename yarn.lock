@@ -1649,6 +1649,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/db-models@workspace:packages/dbModels"
   dependencies:
+    "@m-cafe-app/shared-backend-deps": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
+"@m-cafe-app/shared-backend-deps@workspace:^, @m-cafe-app/shared-backend-deps@workspace:packages/sharedBackendDeps":
+  version: 0.0.0-use.local
+  resolution: "@m-cafe-app/shared-backend-deps@workspace:packages/sharedBackendDeps"
+  dependencies:
     sequelize: ^6.31.1
   languageName: unknown
   linkType: soft
@@ -6412,6 +6420,7 @@ __metadata:
   resolution: "m-cafe-backend@workspace:services/backend"
   dependencies:
     "@m-cafe-app/db-models": "workspace:^"
+    "@m-cafe-app/shared-backend-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     "@types/bcryptjs": ^2.4.2
     "@types/chai": ^4.3.5
@@ -6439,7 +6448,6 @@ __metadata:
     mocha: ^10.2.0
     nodemon: ^2.0.22
     pg: ^8.11.1
-    sequelize: ^6.31.1
     supertest: ^6.3.3
     ts-node: ^10.9.1
     tsc-watch: ^6.0.4

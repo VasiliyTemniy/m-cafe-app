@@ -10,7 +10,7 @@ import { initLogin, userAgent } from "./sessions_api_helper";
 import { initialUsers, validNewUser, validUserInDB } from './users_api_helper';
 import config from "../utils/config";
 import { validAdminInDB } from "./admin_api_helper";
-import { Op } from "sequelize";
+import { Op } from '@m-cafe-app/shared-backend-deps/sequelize.js';
 
 
 

@@ -6,7 +6,7 @@ import {
   HasManyGetAssociationsMixin,
   HasManyAddAssociationMixin,
   HasManyRemoveAssociationMixin
-} from 'sequelize';
+} from '@m-cafe-app/shared-backend-deps/sequelize.js';
 import { PropertiesCreationOptional } from "../types/helpers.js";
 import { Address } from './Address.js';
 import { Session } from './Session.js';

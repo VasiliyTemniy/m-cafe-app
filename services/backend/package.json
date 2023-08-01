@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@m-cafe-app/db-models": "workspace:^",
+    "@m-cafe-app/shared-backend-deps": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -29,7 +30,6 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.0",
     "pg": "^8.11.1",
-    "sequelize": "^6.31.1",
     "umzug": "^3.2.1"
   },
   "devDependencies": {

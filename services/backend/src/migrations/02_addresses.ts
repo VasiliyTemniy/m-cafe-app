@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes } from '@m-cafe-app/shared-backend-deps/sequelize.js';
 import { MigrationContext } from '../types/MigrationContext.js';
 import {
   cityRegExp,
