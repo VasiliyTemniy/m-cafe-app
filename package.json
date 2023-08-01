@@ -12,6 +12,7 @@
     "start": "yarn run prepare && concurrently \"yarn start:backend\" \"yarn start:frontend\"",
     "start:backend": "yarn workspace m-cafe-backend start",
     "start:frontend": "yarn workspace m-cafe-frontend start",
+    "start:mobile": "yarn workspace m-cafe-mobile start",
     "dev": "yarn run prepare && concurrently \"yarn run dev:backend\" \"yarn run dev:frontend\"",
     "dev:backend": "yarn workspace m-cafe-backend run dev",
     "dev:frontend": "yarn workspace m-cafe-frontend run dev",
@@ -46,9 +47,10 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.40.0",
     "eslint-plugin-react": "^7.32.2",
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.6"
   },
   "workspaces": [
     "packages/*",
