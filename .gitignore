@@ -21,6 +21,7 @@ yarn-error.log*
 
 # playground
 my_new*.js
+my_new*.mjs
 
 # React native + expo specific
 
