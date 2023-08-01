@@ -19,20 +19,21 @@
   },
   "dependencies": {
     "@m-cafe-app/db-models": "workspace:^",
+    "@m-cafe-app/shared-backend-deps": "workspace:^",
+    "@m-cafe-app/shared-deps": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
     "glob": "^10.3.3",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.0",
     "pg": "^8.11.1",
-    "sequelize": "^6.31.1",
     "umzug": "^3.2.1"
   },
   "devDependencies": {
+    "@m-cafe-app/shared-dev-deps": "workspace:^",
     "@types/bcryptjs": "^2.4.2",
     "@types/chai": "^4.3.5",
     "@types/cors": "^2.8.13",
@@ -45,14 +46,15 @@
     "@types/supertest": "^2.0.12",
     "@wmfs/pg-info": "^1.20.0",
     "chai": "^4.3.7",
-    "cross-env": "^7.0.3",
     "fast-check": "^3.11.0",
     "json-diff": "^1.0.6",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
-    "tsc-watch": "^6.0.4",
-    "typescript": "^5.0.4"
+    "tsc-watch": "^6.0.4"
+  },
+  "peerDependencies": {
+    "typescript": "*"
   }
 }

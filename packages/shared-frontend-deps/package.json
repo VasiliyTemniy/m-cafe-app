@@ -1,0 +1,22 @@
+{
+  "name": "@m-cafe-app/shared-frontend-deps",
+  "productName": "Custom cafe DIY-app",
+  "version": "1.0.0",
+  "description": "This package contains shared dependencies, specifically for frontend",
+  "main": "./index.js",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.4.0",
+    "formik": "^2.2.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
+    "yup": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4"
+  }
+}

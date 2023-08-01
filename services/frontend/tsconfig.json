@@ -18,8 +18,7 @@
     "noEmit": false,
     "outDir": "./dist",
     "rootDirs": [
-      ".",
-      "../shared/src"
+      "."
     ],
     "strict": true,
     "forceConsistentCasingInFileNames": true,

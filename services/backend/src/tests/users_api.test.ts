@@ -17,7 +17,7 @@ import {
 } from './users_api_helper';
 import { Session, User } from '../models/index';
 import { connectToDatabase } from "../utils/db";
-import { ValidationError } from 'sequelize';
+import { ValidationError } from '@m-cafe-app/shared-backend-deps/sequelize.js';
 import {
   dateRegExp,
   emailRegExp,

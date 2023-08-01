@@ -1,0 +1,12 @@
+{
+  "name": "@m-cafe-app/shared-backend-deps",
+  "productName": "Custom cafe DIY-app",
+  "version": "1.0.0",
+  "description": "This package contains shared dependencies, specifically for backend",
+  "main": "./index.js",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "sequelize": "^6.31.1"
+  }
+}

@@ -1,6 +1,6 @@
 import config from './config.js';
 import logger from './logger.js';
-import { Sequelize } from 'sequelize';
+import { Sequelize } from '@m-cafe-app/shared-backend-deps/sequelize.js';
 import { Umzug, SequelizeStorage } from 'umzug';
 import { loadMigrations } from '../migrations/index.js';
 
