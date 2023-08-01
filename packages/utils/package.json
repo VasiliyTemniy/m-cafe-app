@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "@m-cafe-app/db-models": "workspace:^"
+  },
+  "peerDependencies": {
+    "typescript": "*"
   }
 }
