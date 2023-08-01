@@ -13,26 +13,6 @@ services:
     depends_on:
       - nginx
 
-  postgres_db:
-    image: postgres:15.3-alpine3.18
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: vasuser
-      POSTGRES_PASSWORD: crapassword
-      POSTGRES_DB: cafe
-    container_name: m-cafe-postgres_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  adminer:
-    image: adminer:4.8.1-standalone
-    restart: unless-stopped
-    environment:
-      ADMINER_DEFAULT_SERVER: postgres_db
-    container_name: m-cafe-adminer
-    depends_on:
-      - postgres_db
-
   backend:
     image: m-cafe-backend
     build:
