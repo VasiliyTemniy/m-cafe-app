@@ -2,10 +2,16 @@ FROM node:18.16-alpine3.18 AS base-back
 
 WORKDIR /usr/src/app
 
-FROM base-back AS copy-stage-back
 
-COPY --chown=node:node packages/utils packages/utils
-COPY --chown=node:node services/backend services/backend
+FROM base-back as copy-package-files-stage-back
+
+COPY --chown=node:node packages/shared-dev-deps/package.json packages/shared-dev-deps/package.json
+COPY --chown=node:node packages/shared-backend-deps/package.json packages/shared-backend-deps/package.json
+COPY --chown=node:node packages/shared-deps/package.json packages/shared-deps/package.json
+COPY --chown=node:node packages/db-models/package.json packages/db-models/package.json
+COPY --chown=node:node packages/utils/package.json packages/utils/package.json
+
+COPY --chown=node:node services/backend/package.json services/backend/package.json
 
 COPY --chown=node:node services/frontend/package.json services/frontend/package.json
 
@@ -15,18 +21,39 @@ COPY --chown=node:node .yarn .yarn
 COPY --chown=node:node package.json .
 COPY --chown=node:node yarn.lock .
 
-FROM copy-stage-back as install-stage-back
+
+FROM copy-package-files-stage-back as install-stage-back
+
+ENV NODE_ENV development
+
+RUN yarn workspaces focus @m-cafe-app/shared-dev-deps
+RUN yarn workspaces focus @m-cafe-app/shared-backend-deps
+RUN yarn workspaces focus @m-cafe-app/shared-deps
+RUN yarn workspaces focus @m-cafe-app/db-models
+RUN yarn workspaces focus @m-cafe-app/utils
+
+RUN yarn workspaces focus m-cafe-app
 
 RUN yarn workspaces focus m-cafe-backend
 
-RUN yarn workspaces focus @m-cafe-app/utils
+
+FROM install-stage-back as copy-stage-back
+
+COPY --chown=node:node packages/shared-dev-deps packages/shared-dev-deps
+COPY --chown=node:node packages/shared-backend-deps packages/shared-backend-deps
+COPY --chown=node:node packages/shared-deps packages/shared-deps
+COPY --chown=node:node packages/db-models packages/db-models
+COPY --chown=node:node packages/utils packages/utils
+
+COPY --chown=node:node services/backend services/backend
+
+
+FROM copy-stage-back as prepare-stage-back
 
 RUN yarn run prepare:backend
 
 
-FROM install-stage-back AS build-stage-back
-
-WORKDIR /usr/src/app
+FROM prepare-stage-back AS build-stage-back
 
 # ENV NODE_ENV production
 
@@ -45,9 +72,15 @@ FROM base-back as copy-prod-stage-back
 
 RUN apk add --update dumb-init
 
-WORKDIR /usr/src/app
-
 ENV NODE_ENV production
+
+# COPY shared prod dependencies
+COPY --chown=node:node packages/shared-backend-deps/package.json packages/shared-backend-deps/package.json
+COPY --chown=node:node packages/shared-deps/package.json packages/shared-deps/package.json
+
+# COPY built (transpiled) packages
+COPY --chown=node:node --from=build-stage-back usr/src/app/packages/db-models/build packages/db-models/build
+COPY --chown=node:node --from=build-stage-back usr/src/app/packages/db-models/package.json packages/db-models/package.json
 
 COPY --chown=node:node --from=build-stage-back usr/src/app/packages/utils/build packages/utils/build
 COPY --chown=node:node --from=build-stage-back usr/src/app/packages/utils/package.json packages/utils/package.json
@@ -55,14 +88,20 @@ COPY --chown=node:node --from=build-stage-back usr/src/app/packages/utils/packag
 COPY --chown=node:node --from=build-stage-back usr/src/app/services/backend/build services/backend/build
 COPY --chown=node:node --from=build-stage-back usr/src/app/services/backend/package.json services/backend/package.json
 
+# COPY frontend package.json
 COPY --chown=node:node services/frontend/package.json services/frontend/package.json
 
+# COPY main project meta
 COPY --chown=node:node .yarnrc.yml .
 COPY --chown=node:node .yarn .yarn
 COPY --chown=node:node package.json .
 COPY --chown=node:node yarn.lock .
 
 FROM copy-prod-stage-back as install-prod-stage-back
+
+# INSTALL shared deps, backend shared deps, then backend itself
+RUN yarn workspaces focus @m-cafe-app/shared-backend-deps --production
+RUN yarn workspaces focus @m-cafe-app/shared-deps --production
 
 RUN yarn workspaces focus m-cafe-backend --production
 
