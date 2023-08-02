@@ -19,6 +19,16 @@ yarn-error.log*
 
 .vscode
 
+# Redis folder
+
+redis/certs
+redis/data
+
+
+# Production configuration files
+nginx.conf
+redis.conf
+
 # playground
 my_new*.js
 my_new*.mjs
@@ -55,3 +65,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+docker-compose.front.test.yml
+docker-compose.back.test.yml
