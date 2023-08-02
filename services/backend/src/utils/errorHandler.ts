@@ -5,7 +5,7 @@ import { Session } from '../models/index.js';
 import { hasOwnProperty, isCustomError, isNamedError } from '@m-cafe-app/utils';
 import jwt from 'jsonwebtoken';
 import { JwtPayloadCustom } from '../types/JWTPayloadCustom.js';
-import { AggregateError as SequelizeAggregateError } from '@m-cafe-app/shared-backend-deps/sequelize.js';
+import { AggregateError as SequelizeAggregateError } from 'sequelize';
 
 export const errorHandler = (async (error, req: Request, res: Response, next: NextFunction) => {
 

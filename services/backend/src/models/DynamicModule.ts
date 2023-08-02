@@ -1,4 +1,4 @@
-import { DataTypes } from '@m-cafe-app/shared-backend-deps/sequelize.js';
+import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
 import { DynamicModule } from '@m-cafe-app/db-models';

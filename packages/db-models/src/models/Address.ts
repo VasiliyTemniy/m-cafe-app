@@ -1,4 +1,4 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional } from '@m-cafe-app/shared-backend-deps/sequelize.js';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import { PropertiesCreationOptional } from "../types/helpers.js";
 
 export class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {
