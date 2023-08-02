@@ -7,9 +7,9 @@ services:
     build:
       context: ./
       dockerfile: ./services/frontend/Dockerfile
+      args:
+        - BACKEND_URL=http://localhost:8080/api
     container_name: m-cafe-frontend
-    env_file:
-      - ./docker-envs/.docker-front.env
     depends_on:
       - nginx
 
