@@ -23,10 +23,5 @@
   ],
   "ts-node": {
     "esm": true
-  },
-  "references": [
-    {
-      "path": "../db-models"
-    }
-  ]
+  }
 }
