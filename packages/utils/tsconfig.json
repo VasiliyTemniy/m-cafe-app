@@ -15,7 +15,7 @@
     "newLine": "LF",
     "composite": true,
     "paths": {
-      "@m-cafe-app/db-models": ["./node_modules/@m-cafe-app/db-models"]
+      "@m-cafe-app/db-models": ["../db-models/build"]
     }
   },
   "exclude": [
