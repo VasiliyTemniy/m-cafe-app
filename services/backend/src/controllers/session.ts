@@ -16,7 +16,7 @@ import {
 import { isLoginBody } from '@m-cafe-app/utils';
 import { User } from '../models/index.js';
 import { Session } from '../redis/Session.js';
-import { timestampsKeys } from '@m-cafe-app/db-models';
+import { timestampsKeys } from '@m-cafe-app/utils';
 
 const sessionRouter = Router();
 

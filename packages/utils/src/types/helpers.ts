@@ -1,6 +1,5 @@
-import { timestampsKeys } from "@m-cafe-app/db-models";
-import { RedisError } from "./Errors";
-import { isDate } from "./typeParsers";
+import { RedisError } from "./Errors.js";
+import { isDate } from "./typeParsers.js";
 
 export type MapToUnknown<T> = {
   [Property in keyof T]: unknown
@@ -20,6 +19,8 @@ export type MapToStrings<T> = {
 export const hasOwnProperty = (obj: unknown, property: string) => Object.prototype.hasOwnProperty.call(obj, property);
 
 
+export const timestampsKeys = ['createdAt', 'updatedAt', 'deletedAt'];
+export const creationOptionalKeys = ['id', ...timestampsKeys];
 
 
 /**
