@@ -74,7 +74,7 @@ jobs:
 
       - name: Create simlink for db-models package in utils package
         if: steps.tsc-cache.outputs.cache-hit != 'true'
-        run: yarn workspaces focus @m-cafe-app/utils
+        run: yarn install
 
       - name: Build utils package if tsc build changed
         if: steps.tsc-cache.outputs.cache-hit != 'true'
