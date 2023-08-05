@@ -61,32 +61,8 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
 
-      - name: Cache tsc builds for packages
-        id: tsc-cache
-        uses: actions/cache@v3
-        with:
-          path: packages/**/build
-          key: cache-tsc-${{ hashFiles('packages/**/tsconfig.tsbuildinfo') }}
-
-      - name: Build db-models package if tsc build changed
-        if: steps.tsc-cache.outputs.cache-hit != 'true'
-        run: yarn run build:db-models
-
-      - name: Create simlink for db-models package in utils package
-        if: steps.tsc-cache.outputs.cache-hit != 'true'
-        run: yarn install
-
-      # - name: Copy db-models build to utils node_modules folder to make ts see things
-      #   if: steps.tsc-cache.outputs.cache-hit != 'true'
-      #   run: yarn run postbuild:db-models
-
-      - name: Build utils package if tsc build changed
-        if: steps.tsc-cache.outputs.cache-hit != 'true'
-        run: yarn run build:utils
-
-      - name: Create simlinks for packages
-        run: yarn install
-
+      - name: Build packages + create simlinks for packages
+        run: yarn prepare
 
       - name: Lint
         run: yarn run eslint
