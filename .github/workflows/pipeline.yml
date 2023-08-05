@@ -68,12 +68,15 @@ jobs:
           path: packages/**/build
           key: cache-tsc-${{ hashFiles('packages/**/tsconfig.tsbuildinfo') }}
 
-      - name: prepare packages if tsc build changed
+      - name: build db-models package if tsc build changed
         if: steps.tsc-cache.outputs.cache-hit != 'true'
-        run: yarn prepare
+        run: yarn run build:db-models
 
-      - name: prepare packages if tsc build did not change
+      - name: build utils package if tsc build changed
         if: steps.tsc-cache.outputs.cache-hit != 'true'
+        run: yarn run build:utils
+
+      - name: prepare packages
         run: yarn install
 
 
