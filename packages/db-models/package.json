@@ -3,7 +3,8 @@
   "productName": "Custom cafe DIY-app",
   "version": "1.0.0",
   "description": "This package contains db model definitions",
-  "main": "build/index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "type": "module",
   "private": true,
   "scripts": {
