@@ -76,9 +76,9 @@ jobs:
         if: steps.tsc-cache.outputs.cache-hit != 'true'
         run: yarn install
 
-      - name: Copy db-models build to utils node_modules folder to make ts see things
-        if: steps.tsc-cache.outputs.cache-hit != 'true'
-        run: yarn run postbuild:db-models
+      # - name: Copy db-models build to utils node_modules folder to make ts see things
+      #   if: steps.tsc-cache.outputs.cache-hit != 'true'
+      #   run: yarn run postbuild:db-models
 
       - name: Build utils package if tsc build changed
         if: steps.tsc-cache.outputs.cache-hit != 'true'
