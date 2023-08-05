@@ -2,7 +2,8 @@ import { Router, RequestHandler } from 'express';
 import { DatabaseError, hasOwnProperty, ProhibitedError, RequestBodyError } from '@m-cafe-app/utils';
 import { isAdministrateUserBody } from '@m-cafe-app/utils';
 import middleware from '../utils/middleware.js';
-import { User, Session } from '../models/index.js';
+import { User } from '../models/index.js';
+import { Session } from '../redis/Session.js';
 import config from '../utils/config.js';
 
 const adminRouter = Router();

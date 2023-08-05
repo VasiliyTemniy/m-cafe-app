@@ -1,7 +1,7 @@
 import logger from './logger.js';
 import type { ErrorRequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
-import { Session } from '../models/index.js';
+import { Session } from '../redis/Session.js';
 import { hasOwnProperty, isCustomError, isNamedError } from '@m-cafe-app/utils';
 import jwt from 'jsonwebtoken';
 import { JwtPayloadCustom } from '../types/JWTPayloadCustom.js';
@@ -97,7 +97,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
 
       await Session.destroy({
         where: {
-          userId: payload.id,
+          userId: Number(payload.id),
           token,
           userAgent
         }
@@ -224,12 +224,41 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       });
       break;
 
+    case 'ParseError':
+      res.status(400).json({
+        error: {
+          name: 'ParseError',
+          message: error.message
+        }
+      });
+      break;
+
+    case 'RedisError':
+      res.status(500).json({
+        error: {
+          name: 'RedisError',
+          message: error.message
+        }
+      });
+      break;
+
+    case 'ApplicationError':
+      res.status(500).json({
+        error: {
+          name: 'ApplicationError',
+          message: error.message
+        }
+      });
+      break;
+
+
     default:
-      logger.shout('This should not be reached');
+      logger.shout('This should not be reached', error);
       res.status(500).json({
         error: {
           name: 'UnhandledError',
-          message: 'UNHANDLED error!'
+          message: 'UNHANDLED error!',
+          originalError: error
         }
       });
       return next(error);

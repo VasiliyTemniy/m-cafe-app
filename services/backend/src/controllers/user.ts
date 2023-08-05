@@ -16,11 +16,13 @@ import {
   isNumber,
   NewAddressBody,
   EditAddressBody,
-  hasOwnProperty
+  hasOwnProperty,
+  mapDataToTransit
 } from '@m-cafe-app/utils';
 import { isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
-import { User, Address, Facility, Session, UserAddress } from '../models/index.js';
+import { User, Address, Facility, UserAddress } from '../models/index.js';
+import { Session } from '../redis/Session.js';
 import { maxPasswordLen, minPasswordLen } from '../utils/constants.js';
 
 const usersRouter = Router();
@@ -51,14 +53,7 @@ usersRouter.post(
 
     const savedUser = await User.create(user);
 
-    const resBody: UserDT = {
-      id: savedUser.id,
-      username: savedUser.username,
-      name: savedUser.name,
-      phonenumber: savedUser.phonenumber,
-      email: savedUser.email,
-      birthdate: savedUser.birthdate?.toISOString()
-    };
+    const resBody: UserDT = mapDataToTransit(savedUser.dataValues, { omit: ['passwordHash'] });
 
     res.status(201).json(resBody);
 
@@ -96,14 +91,7 @@ usersRouter.put(
 
     await req.user.save();
 
-    const resBody: UserDT = {
-      id: req.user.id,
-      username: req.user.username,
-      name: req.user.name,
-      phonenumber: req.user.phonenumber,
-      email: req.user.email,
-      birthdate: req.user.birthdate?.toISOString()
-    };
+    const resBody: UserDT = mapDataToTransit(req.user.dataValues, { omit: ['passwordHash'] });
 
     res.status(200).json(resBody);
 
@@ -304,14 +292,7 @@ usersRouter.get(
 
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
 
-    const resBody: UserDT = {
-      id: req.user.id,
-      username: req.user.username,
-      name: req.user.name,
-      phonenumber: req.user.phonenumber,
-      email: req.user.email,
-      birthdate: req.user.birthdate?.toISOString()
-    };
+    const resBody: UserDT = mapDataToTransit(req.user.dataValues, { omit: ['passwordHash'] });
 
     res.status(200).json(resBody);
 

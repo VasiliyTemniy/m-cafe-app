@@ -6,13 +6,15 @@ import type { RequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';
 import {
+  ApplicationError,
   AuthorizationError,
   BannedError,
   DatabaseError,
   ProhibitedError,
   SessionError
 } from '@m-cafe-app/utils';
-import { User, Session } from '../models/index.js';
+import { User } from '../models/index.js';
+import { Session } from '../redis/Session.js';
 
 const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   logger.info('Method:' + req.method);
@@ -90,12 +92,13 @@ const adminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction
 
 const sessionCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
+  if (!req.userId) return next(new ApplicationError('Wrong usage of a sessionCheck middleware in app code. Please, contact admins'));
+
   const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
   const session = await Session.findOne({
     where: {
       userId: req.userId,
-      token: req.token,
       userAgent
     }
   });
