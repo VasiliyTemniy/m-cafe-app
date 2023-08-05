@@ -14,8 +14,6 @@ yarn-error.log*
 
 **/*/tsconfig.tsbuildinfo
 
-!/packages/**/*/tsconfig.tsbuildinfo
-
 .yarn/cache
 .yarn/install-state.gz
 
