@@ -21,6 +21,14 @@
   "include": [
     "./src"
   ],
+  "references": [
+    {
+      "path": "../../node_modules/@m-cafe-app/db-models"
+    },
+    {
+      "path": "../db-models"
+    }
+  ],
   "ts-node": {
     "esm": true
   }
