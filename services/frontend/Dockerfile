@@ -2,12 +2,21 @@ FROM node:18.16-alpine3.18 AS base-front
 
 WORKDIR /usr/src/app
 
-FROM base-front AS copy-stage-front
 
-COPY --chown=node:node packages/utils packages/utils
-COPY --chown=node:node services/frontend services/frontend
+FROM base-front as copy-package-files-stage-front
+
+COPY --chown=node:node packages/shared-dev-deps/package.json packages/shared-dev-deps/package.json
+# Shared backend deps are needed to build db-models package and infer types from there to utils package
+COPY --chown=node:node packages/shared-backend-deps/package.json packages/shared-backend-deps/package.json
+COPY --chown=node:node packages/shared-deps/package.json packages/shared-deps/package.json
+COPY --chown=node:node packages/db-models/package.json packages/db-models/package.json
+COPY --chown=node:node packages/utils/package.json packages/utils/package.json
+
+COPY --chown=node:node packages/shared-frontend-deps/package.json packages/shared-frontend-deps/package.json
 
 COPY --chown=node:node services/backend/package.json services/backend/package.json
+
+COPY --chown=node:node services/frontend/package.json services/frontend/package.json
 
 COPY --chown=node:node .eslintrc .
 COPY --chown=node:node .yarnrc.yml .
@@ -15,20 +24,50 @@ COPY --chown=node:node .yarn .yarn
 COPY --chown=node:node package.json .
 COPY --chown=node:node yarn.lock .
 
-FROM copy-stage-front AS install-stage-front
+
+FROM copy-package-files-stage-front as install-stage-front
+
+ENV NODE_ENV development
+
+RUN yarn workspaces focus @m-cafe-app/shared-dev-deps
+RUN yarn workspaces focus @m-cafe-app/shared-backend-deps
+RUN yarn workspaces focus @m-cafe-app/shared-deps
+RUN yarn workspaces focus @m-cafe-app/db-models
+RUN yarn workspaces focus @m-cafe-app/utils
+
+RUN yarn workspaces focus @m-cafe-app/shared-frontend-deps
+
+RUN yarn workspaces focus m-cafe-app
 
 RUN yarn workspaces focus m-cafe-frontend
 
-RUN yarn workspaces focus @m-cafe-app/utils
+
+FROM install-stage-front as copy-stage-front
+
+COPY --chown=node:node packages/shared-dev-deps packages/shared-dev-deps
+COPY --chown=node:node packages/shared-backend-deps packages/shared-backend-deps
+COPY --chown=node:node packages/shared-deps packages/shared-deps
+COPY --chown=node:node packages/db-models packages/db-models
+COPY --chown=node:node packages/utils packages/utils
+
+COPY --chown=node:node services/frontend services/frontend
+
+
+FROM copy-stage-front as prepare-stage-front
 
 RUN yarn run prepare:frontend
 
 
-FROM install-stage-front AS build-stage-front
+FROM prepare-stage-front AS build-stage-front
 
 ENV NODE_ENV production
 
 # RUN CI=true yarn run test
+ARG BACKEND_URL
+
+ENV BACKEND_URL ${BACKEND_URL?backend_url_not_set}
+ENV DOCKERIZED=true
+
 RUN yarn run build:frontend
 
 

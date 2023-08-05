@@ -1,4 +1,4 @@
-import { DataTypes, QueryTypes } from '@m-cafe-app/shared-backend-deps/sequelize.js';
+import { DataTypes, QueryTypes } from 'sequelize';
 import { MigrationContext } from '../types/MigrationContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {

@@ -5,12 +5,17 @@ on:
     branches: [main]
     types: [opened, synchronize]
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
 jobs:
   testing_pipeline:
     runs-on: ubuntu-20.04
     environment: testing_env
 
-    container: node:18.16-alpine3.18
     services:
       postgres:
         image: postgres:15.3-alpine3.18
@@ -26,30 +31,56 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:7.0.12-alpine3.18
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - name: yarn install
+
+      # Checked
+      - name: Cache node modules
+        id: yarn-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .yarn
+            node_modules
+          key: cache-yarn-${{ hashFiles('yarn.lock') }}
+        
+      - name: Yarn install
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
-      - name: prepare utils package
+
+      - name: Build packages + create simlinks for packages
         run: yarn prepare
-      - name: lint
+
+      - name: Lint
         run: yarn run eslint
-      - name: build
+
+      - name: Build
         run: yarn run build
         env:
           FRONTEND_PORT: ${{ vars.FRONTEND_PORT }}
           BACKEND_URL: ${{ vars.BACKEND_URL }}
-      - name: test
+
+      - name: Test
         # run: yarn run test
         run: yarn run test:backend
         env:
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
-          DATABASE_URL: postgres://postgres_user:postgres_password@postgres:5432/postgres_db
-          TEST_DATABASE_URL: postgres://postgres_user:postgres_password@postgres:5432/postgres_db
+          DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
+          TEST_DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
           SECRET: ${{ secrets.SECRET }}
           RUN_COMPARISON_TEST: ${{ vars.RUN_COMPARISON_TEST }}
           ALLOWED_ORIGIN: ${{ vars.ALLOWED_ORIGIN }}
@@ -58,6 +89,8 @@ jobs:
           SUPERADMIN_USERNAME: ${{ secrets.SUPERADMIN_USERNAME }}
           SUPERADMIN_PHONENUMBER: ${{ secrets.SUPERADMIN_PHONENUMBER }}
           SUPERADMIN_PASSWORD: ${{ secrets.SUPERADMIN_PASSWORD }}
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
 
 
       # - name: e2e tests

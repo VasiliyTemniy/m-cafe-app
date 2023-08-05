@@ -3,10 +3,20 @@ import bcryptjs from 'bcryptjs';
 import { RequestHandler, Router } from 'express';
 import middleware from '../utils/middleware.js';
 import config from '../utils/config.js';
-import { isRequestCustom } from '../types/RequestCustom.js';
-import { RequestBodyError, CredentialsError, BannedError, UnknownError, SessionError, ProhibitedError } from '@m-cafe-app/utils';
+import { isRequestCustom, isRequestWithUser } from '../types/RequestCustom.js';
+import {
+  RequestBodyError,
+  CredentialsError,
+  BannedError,
+  UnknownError,
+  SessionError,
+  ProhibitedError,
+  mapToRedisStrings
+} from '@m-cafe-app/utils';
 import { isLoginBody } from '@m-cafe-app/utils';
-import { User, Session } from '../models/index.js';
+import { User } from '../models/index.js';
+import { Session } from '../redis/Session.js';
+import { timestampsKeys } from '@m-cafe-app/utils';
 
 const sessionRouter = Router();
 
@@ -53,6 +63,11 @@ sessionRouter.post(
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
 
+    // Save user transit data to cache for further session checks, user disability/admin checks
+    // const userToCache = mapToRedisStrings(user.dataValues, { omit: ['passwordHash', ...timestampsKeys] });
+    const userToCache = mapToRedisStrings(user.dataValues, { omit: ['passwordHash'] });
+
+
     // If there is no active session in this agent, create new one
     // If there is one - update token
     if (!activeSession) {
@@ -63,13 +78,15 @@ sessionRouter.post(
         userAgent
       };
 
-      await Session.create(session);
+      // await Session.create(session);  <-- to use with postgre Session
+      await Session.create(session, userToCache);
 
     } else {
 
       activeSession.token = token;
 
-      await activeSession.save();
+      // await activeSession.save();  <-- to use with postgre Session
+      await activeSession.save(userToCache);
 
     }
 
@@ -84,10 +101,10 @@ sessionRouter.post(
 sessionRouter.get(
   '/refresh',
   middleware.verifyToken,
-  middleware.userCheck,
+  middleware.userExtractor,
   (async (req, res) => {
 
-    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
 
     const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
@@ -106,9 +123,13 @@ sessionRouter.get(
       rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
+    // Save user transit data to cache for further session checks, user disability/admin checks
+    // const userToCache = mapToRedisStrings(req.user.dataValues, { omit: ['passwordHash', ...timestampsKeys] });
+    const userToCache = mapToRedisStrings(req.user.dataValues, { omit: ['passwordHash', ...timestampsKeys] });
+
     activeSession.token = token;
 
-    await activeSession.save();
+    await activeSession.save(userToCache);
 
     res.status(200).send({
       token,

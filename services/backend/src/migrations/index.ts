@@ -4,7 +4,6 @@
 
 import { glob } from 'glob';
 import { MigrationContext } from '../types/MigrationContext.js';
-import logger from '../utils/logger.js';
 
 type MigrationFn = ({ context }: MigrationContext) => Promise<void>;
 
@@ -20,8 +19,6 @@ export const loadMigrations = async () => {
     const res = process.env.NODE_ENV === 'production'
       ? await glob('build/migrations/*.js', { ignore: 'build/migrations/index.js' })
       : await glob('src/migrations/*.ts', { ignore: 'src/migrations/index.ts' });
-
-    logger.info(res);
 
     const migrationsPromise = res.map(async (file) => {
 

@@ -4,13 +4,14 @@ import supertest from 'supertest';
 import app from "../app";
 import { apiBaseUrl } from './test_helper';
 import { connectToDatabase } from "../utils/db";
-import { User, Session } from '../models/index';
+import { User } from '../models/index';
+import { Session } from '../redis/Session';
 import { initSuperAdmin } from "../utils/adminInit";
 import { initLogin, userAgent } from "./sessions_api_helper";
 import { initialUsers, validNewUser, validUserInDB } from './users_api_helper';
 import config from "../utils/config";
 import { validAdminInDB } from "./admin_api_helper";
-import { Op } from '@m-cafe-app/shared-backend-deps/sequelize.js';
+import { Op } from 'sequelize';
 
 
 
@@ -215,7 +216,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'FIREFOX');
     await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'ELINKS');
 
-    const sessions = await Session.findAll({});
+    const sessions = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessions).to.be.lengthOf(4);
 

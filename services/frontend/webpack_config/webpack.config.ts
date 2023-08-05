@@ -7,12 +7,13 @@ import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-serv
 
 import * as dotenv from "dotenv";
 
+const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
+
 dotenv.config({
-  override: process.env.DOCKERIZED_DEV === 'true' ? false : true
+  override: isDockerized ? false : true
 });
 
 const isDevelopment = process.env.NODE_ENV === 'development';
-const isDockerized = process.env.DOCKERIZED_DEV === 'true';
 
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;

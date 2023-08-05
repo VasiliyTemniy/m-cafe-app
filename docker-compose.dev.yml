@@ -10,9 +10,25 @@ services:
     volumes:
       - ./services/frontend:/usr/src/app/services/frontend
       - ./packages/utils:/usr/src/app/packages/utils
+      - ./packages/db-models:/usr/src/app/packages/db-models
+      - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
+      - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
+      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
     container_name: m-cafe-frontend-dev
     env_file:
-      - .dev.docker-front.env
+      - ./docker-envs/.dev.docker-front.env
+
+  redis:
+    image: redis:7.0.12-alpine3.18
+    container_name: m-cafe-redis-dev
+    restart: always
+    command: ["redis-server", "/etc/redis/redis.conf"]
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.dev.conf:/etc/redis/redis.conf:ro
 
   postgres_db:
     image: postgres:15.3-alpine3.18
@@ -42,17 +58,22 @@ services:
     volumes:
       - ./services/backend:/usr/src/app/services/backend
       - ./packages/utils:/usr/src/app/packages/utils
+      - ./packages/db-models:/usr/src/app/packages/db-models
+      - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
+      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
     container_name: m-cafe-backend-dev
     env_file:
-      - .dev.docker-back.env
+      - ./docker-envs/.dev.docker-back.env
     depends_on:
       - postgres_db
+      - redis
 
   nginx:
     image: nginx:1.25.1
     restart: unless-stopped
     volumes:
-      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 8080:80
     container_name: m-cafe-reverse-proxy-dev

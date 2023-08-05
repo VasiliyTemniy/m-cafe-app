@@ -15,9 +15,10 @@ import {
   validAddresses,
   initialUsersPassword
 } from './users_api_helper';
-import { Session, User } from '../models/index';
+import { User } from '../models/index';
+import { Session } from "../redis/Session";
 import { connectToDatabase } from "../utils/db";
-import { ValidationError } from '@m-cafe-app/shared-backend-deps/sequelize.js';
+import { ValidationError } from 'sequelize';
 import {
   dateRegExp,
   emailRegExp,
@@ -650,7 +651,7 @@ User marked as deleted gets appropriate message when trying to login', async () 
 
     expect(response1.body.deletedAt).to.exist;
 
-    const sessions = await Session.findAll({});
+    const sessions = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessions).to.be.lengthOf(0);
 

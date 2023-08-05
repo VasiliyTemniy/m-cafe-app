@@ -19,8 +19,19 @@ yarn-error.log*
 
 .vscode
 
+# Redis folder
+
+redis/certs
+redis/data
+
+
+# Production configuration files
+nginx.conf
+redis.conf
+
 # playground
 my_new*.js
+my_new*.mjs
 
 # React native + expo specific
 
@@ -52,5 +63,6 @@ yarn-error.*
 # local env files
 .env*.local
 
-# typescript
-*.tsbuildinfo
+
+docker-compose.front.test.yml
+docker-compose.back.test.yml

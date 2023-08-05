@@ -13,7 +13,7 @@
   "dependencies": {
     "@m-cafe-app/shared-backend-deps": "workspace:^"
   },
-  "peerDependencies": {
-    "typescript": "*"
+  "devDependencies": {
+    "typescript": "^5.1.6"
   }
 }

@@ -7,14 +7,17 @@ import {
   initialUsers,
   validUserInDB,
 } from './users_api_helper';
-import { Session, User } from '../models/index';
+import { User } from '../models/index';
+import { Session } from "../redis/Session";
 import { connectToDatabase } from "../utils/db";
 import jwt from 'jsonwebtoken';
-import { LoginUserBody } from "@m-cafe-app/utils";
+import { LoginUserBody, mapToRedisStrings } from "@m-cafe-app/utils";
 import { isTokenBody } from "@m-cafe-app/utils";
 import * as fc from 'fast-check';
 import config from "../utils/config";
 import { initLogin, userAgent } from "./sessions_api_helper";
+import { timestampsKeys } from "@m-cafe-app/utils";
+import sha1 from 'sha1';
 
 
 
@@ -86,7 +89,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
     expect(sessionsSecond).to.be.lengthOf(1);
     expect(sessionsSecond[0].token).to.equal(tokenSecond);
 
-    expect(sessionsFirst[0].id).to.equal(sessionsSecond[0].id);
+    // expect(sessionsFirst[0].id).to.equal(sessionsSecond[0].id); <-- Use this with postgre Session
 
   });
 
@@ -102,7 +105,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     expect(sessions).to.be.lengthOf(2);
 
-    expect(sessions[0].id).not.to.be.equal(sessions[1].id);
+    // expect(sessions[0].id).not.to.be.equal(sessions[1].id); <-- Use this with postgre Session  
     expect(sessions[0].token).not.to.be.equal(sessions[1].token);
     expect(sessions[0].userAgent).not.to.be.equal(sessions[1].userAgent);
 
@@ -110,7 +113,9 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const userAgentsInDB = sessions.map(session => session.userAgent);
 
-    expect(userAgentsInDB).to.have.members(userAgents);
+    const hashedUserAgents = userAgents.map(agent => sha1(agent));
+
+    expect(userAgentsInDB).to.have.members(hashedUserAgents);
 
   });
 
@@ -172,7 +177,14 @@ same browser(userAgent) without logout leads to session token refresh', async ()
       userAgent: 'SUPERTEST'
     };
 
-    await Session.create(newSession);
+    const userInDB = await User.findByPk(validUserInDBID);
+
+    if (!userInDB) return expect(true).to.equal(false);
+
+    const userToCache = mapToRedisStrings(userInDB.dataValues, { omit: ['passwordHash', ...timestampsKeys] });
+
+    // await Session.create(newSession);  <-- Use this with postgre Session  
+    await Session.create(newSession, userToCache);
 
     const response = await api
       .get(`${apiBaseUrl}/users/me`)
@@ -184,7 +196,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
     expect(response.body.error.name).to.equal('TokenExpiredError');
     expect(response.body.error.message).to.equal('Token expired. Please, relogin');
 
-    const sessions = await Session.findAll({});
+    const sessions = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessions).to.be.lengthOf(0);
 
