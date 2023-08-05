@@ -79,8 +79,8 @@ jobs:
         run: yarn run test:backend
         env:
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
-          DATABASE_URL: postgres://postgres_user:postgres_password@postgres:5432/postgres_db
-          TEST_DATABASE_URL: postgres://postgres_user:postgres_password@postgres:5432/postgres_db
+          DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
+          TEST_DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
           SECRET: ${{ secrets.SECRET }}
           RUN_COMPARISON_TEST: ${{ vars.RUN_COMPARISON_TEST }}
           ALLOWED_ORIGIN: ${{ vars.ALLOWED_ORIGIN }}
