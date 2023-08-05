@@ -13,21 +13,16 @@
     "rootDir": "./src",
     "outDir": "./build",
     "newLine": "LF",
-    "composite": true
+    "composite": true,
+    "paths": {
+      "@m-cafe-app/db-models": ["./node_modules/@m-cafe-app/db-models"]
+    }
   },
   "exclude": [
     "node_modules/*"
   ],
   "include": [
     "./src"
-  ],
-  "references": [
-    {
-      "path": "../../node_modules/@m-cafe-app/db-models"
-    },
-    {
-      "path": "../db-models"
-    }
   ],
   "ts-node": {
     "esm": true

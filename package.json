@@ -20,6 +20,7 @@
     "prepare:packages": "yarn run build:db-models && yarn run build:utils",
     "prepare:backend": "yarn run prepare:packages && yarn workspaces focus m-cafe-backend",
     "prepare:frontend": "yarn run prepare:packages && yarn workspaces focus m-cafe-frontend",
+    "postbuild:db-models": "cp -R ./packages/db-models/build ./packages/utils/node_modules/@m-cafe-app/db-models",
     "dev:docker": "docker compose -f docker-compose.dev.yml -p m_cafe_dev up --detach",
     "dev:docker-stop": "docker compose -f docker-compose.dev.yml -p m_cafe_dev down",
     "start:prod-docker": "docker compose -f docker-compose.yml -p m_cafe up --detach",

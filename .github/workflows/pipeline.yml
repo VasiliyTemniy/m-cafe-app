@@ -72,9 +72,13 @@ jobs:
         if: steps.tsc-cache.outputs.cache-hit != 'true'
         run: yarn run build:db-models
 
+      # - name: Create simlink for db-models package in utils package
+      #   if: steps.tsc-cache.outputs.cache-hit != 'true'
+      #   run: yarn install
+
       - name: Create simlink for db-models package in utils package
         if: steps.tsc-cache.outputs.cache-hit != 'true'
-        run: yarn install
+        run: yarn run postbuild:db-models
 
       - name: Build utils package if tsc build changed
         if: steps.tsc-cache.outputs.cache-hit != 'true'
