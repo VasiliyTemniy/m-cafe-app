@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-20.04
     environment: testing_env
 
-    container: node:18.16-alpine3.18
     services:
       postgres:
         image: postgres:15.3-alpine3.18
