@@ -16,7 +16,7 @@ import { isTokenBody } from "@m-cafe-app/utils";
 import * as fc from 'fast-check';
 import config from "../utils/config";
 import { initLogin, userAgent } from "./sessions_api_helper";
-import { timestampsKeys } from "@m-cafe-app/db-models";
+import { timestampsKeys } from "@m-cafe-app/utils";
 import sha1 from 'sha1';
 
 
