@@ -9,6 +9,7 @@ import adminRouter from './controllers/admin.js';
 import middleware from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
+import { connectToRedisSessionDB } from './redis/Session.js';
 
 
 app.use(helmet());
@@ -27,14 +28,17 @@ app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
 
 
-const importTestingRouter = async () => {
+const initTestingHelper = async () => {
   if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     const testingRouter = await import('./controllers/testing.js');
     app.use('/testing', testingRouter.default);
   }
+  if (process.env.NODE_ENV === 'test') {
+    await connectToRedisSessionDB();
+  }
 };
 
-await importTestingRouter();
+await initTestingHelper();
 
 app.use(errorHandler);
 app.use(middleware.unknownEndpoint);
