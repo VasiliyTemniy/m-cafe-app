@@ -57,7 +57,7 @@ jobs:
             node_modules
           key: cache-yarn-${{ hashFiles('yarn.lock') }}
         
-      - name: yarn install
+      - name: Yarn install
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
 
@@ -68,28 +68,32 @@ jobs:
           path: packages/**/build
           key: cache-tsc-${{ hashFiles('packages/**/tsconfig.tsbuildinfo') }}
 
-      - name: build db-models package if tsc build changed
+      - name: Build db-models package if tsc build changed
         if: steps.tsc-cache.outputs.cache-hit != 'true'
         run: yarn run build:db-models
 
-      - name: build utils package if tsc build changed
+      - name: Create simlink for db-models package in utils package
+        if: steps.tsc-cache.outputs.cache-hit != 'true'
+        run: yarn workspaces focus @m-cafe-app/utils
+
+      - name: Build utils package if tsc build changed
         if: steps.tsc-cache.outputs.cache-hit != 'true'
         run: yarn run build:utils
 
-      - name: prepare packages
+      - name: Create simlinks for packages
         run: yarn install
 
 
-      - name: lint
+      - name: Lint
         run: yarn run eslint
 
-      - name: build
+      - name: Build
         run: yarn run build
         env:
           FRONTEND_PORT: ${{ vars.FRONTEND_PORT }}
           BACKEND_URL: ${{ vars.BACKEND_URL }}
 
-      - name: test
+      - name: Test
         # run: yarn run test
         run: yarn run test:backend
         env:
