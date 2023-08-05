@@ -5,6 +5,12 @@ on:
     branches: [main]
     types: [opened, synchronize]
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
 jobs:
   testing_pipeline:
     runs-on: ubuntu-20.04
@@ -26,23 +32,60 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:7.0.12-alpine3.18
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
+
+
+      - name: Cache node modules
+        id: yarn-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .yarn
+            node_modules
+          key: cache-yarn-${{ hashFiles('yarn.lock') }}
+        
       - name: yarn install
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
-      - name: prepare utils package
+
+      - name: Cache tsc builds for packages
+        id: tsc-cache
+        uses: actions/cache@v3
+        with:
+          path: packages/**/build
+          key: cache-tsc-${{ hashFiles('packages/**/tsconfig.tsbuildinfo') }}
+
+      - name: prepare packages if tsc build changed
+        if: steps.tsc-cache.outputs.cache-hit != 'true'
         run: yarn prepare
+
+      - name: prepare packages if tsc build did not change
+        if: steps.tsc-cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+
       - name: lint
         run: yarn run eslint
+
       - name: build
         run: yarn run build
         env:
           FRONTEND_PORT: ${{ vars.FRONTEND_PORT }}
           BACKEND_URL: ${{ vars.BACKEND_URL }}
+
       - name: test
         # run: yarn run test
         run: yarn run test:backend
@@ -58,6 +101,8 @@ jobs:
           SUPERADMIN_USERNAME: ${{ secrets.SUPERADMIN_USERNAME }}
           SUPERADMIN_PHONENUMBER: ${{ secrets.SUPERADMIN_PHONENUMBER }}
           SUPERADMIN_PASSWORD: ${{ secrets.SUPERADMIN_PASSWORD }}
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
 
 
       # - name: e2e tests
