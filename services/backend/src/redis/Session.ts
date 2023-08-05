@@ -2,7 +2,18 @@ import { createClient } from 'redis';
 import config from '../utils/config.js';
 import logger from '../utils/logger.js';
 import sha1 from 'sha1';
-import { hasOwnProperty, isNumber, isString, isUserDT, MapToUnknown, RedisError, UserDT } from '@m-cafe-app/utils';
+import {
+  hasOwnProperty,
+  isNumber,
+  isString,
+  isUserDT,
+  MapToStrings,
+  MapToUnknown,
+  parseRedisToDT,
+  RedisError,
+} from '@m-cafe-app/utils';
+import { User } from '@m-cafe-app/db-models';
+import { InferAttributes } from 'sequelize';
 
 const redis = createClient({ ...config.redisConfig, database: 0 });
 
@@ -12,6 +23,7 @@ export const connectToRedisSessionDB = async () => {
     logger.info('connected to redis');
   } catch (err) {
     logger.error(err as string);
+    logger.shout(err as string);
     logger.info('failed to connect to redis');
     return process.exit(1);
   }
@@ -61,52 +73,76 @@ export const isSessionData = (obj: unknown): obj is SessionData =>
  * But adds special layer for caching user data for userCheck middleware
  */
 export class Session {
+
+  private _userId: number;
+  private _token: string;
+  private _userAgent: string;
+
   constructor(
     userId: number,
     token: string,
     userAgent: string
   ) {
-    this.userId = userId;
-    this.token = token;
-    this.userAgent = userAgent;
+    this._userId = userId;
+    this._token = token;
+    this._userAgent = userAgent;
   }
 
-  userId: number;
-  token: string;
-  userAgent: string;
+  get userId(): number {
+    return this._userId;
+  }
 
-  static async create(session: SessionData, user: UserDT) {
-    await this.storeUserCache(session.token, user);
+  set userId(value) {
+    this._userId = value;
+  }
+
+  get token(): string {
+    return this._token;
+  }
+
+  set token(value) {
+    this._token = value;
+  }
+
+  get userAgent(): string {
+    return this._userAgent;
+  }
+
+  set userAgent(value) {
+    this._userAgent = value;
+  }
+
+  static async create(session: SessionData, userDS: MapToStrings<InferAttributes<User>>) {
+    await this.storeUserCache(session.token, userDS);
     const userAgentHash = sha1(session.userAgent);
-    return await redis.hSet(`user:${session.userId}:tokens`, userAgentHash, session.token);
+    return await redis.hSet(`user:${String(session.userId)}:tokens`, userAgentHash, session.token);
   }
 
-  async save(user: UserDT) {
-    const userAgentHash = sha1(this.userAgent);
-    await Session.destroy({ where: { userId: this.userId, userAgent: userAgentHash } });
+  async save(userDS: MapToStrings<InferAttributes<User>>) {
+    await Session.destroy({ where: { userId: this._userId, userAgent: this._userAgent } });
 
     const session = {
-      userId: this.userId,
-      token: this.token,
-      userAgent: userAgentHash
+      userId: this._userId,
+      token: this._token,
+      userAgent: this._userAgent
     };
 
-    return await Session.create(session, user);
+    return await Session.create(session, userDS);
   }
 
   static async findOne(options: FindOneSessionWhere): Promise<Session | undefined> {
     const userAgentHash = sha1(options.where.userAgent);
-    const token = await redis.hGet(`user:${options.where.userId}:tokens`, userAgentHash);
+    const token = await redis.hGet(`user:${String(options.where.userId)}:tokens`, userAgentHash);
     if (!token) return undefined;
     const sessionData = new Session(options.where.userId, token, options.where.userAgent);
     return sessionData;
   }
 
   static async findAll(options: FindAllSessionWhere): Promise<Session[]> {
-    const userSessions = await redis.hGetAll(`user:${options.where.userId}:tokens`);
+    const userSessions = await redis.hGetAll(`user:${String(options.where.userId)}:tokens`);
     const sessionDatas = [] as Session[];
     for (const key in userSessions) {
-      sessionDatas.concat(new Session(
+      sessionDatas.push(new Session(
         options.where.userId,
         userSessions[key],
         key  // Unfortunately, these are userAgentHashes, but they are used only for checks, not even by tests
@@ -115,38 +151,43 @@ export class Session {
     return sessionDatas;
   }
 
+
   static async destroy(options: DestroySessionWhere) {
 
-    if (options.where.userId && options.where.userAgent) {
+    const userIdStr = options.where.userId ? String(options.where.userId) : undefined;
+    const userAgent = options.where.userAgent;
 
-      const userAgentHash = sha1(options.where.userAgent);
-      const token = await redis.hGet(`user:${options.where.userId}:tokens`, userAgentHash);
+    if (userIdStr && userAgent) {
 
-      if (!token) throw new RedisError(`Somehow data for userId:${options.where.userId} and userAgent:${options.where.userAgent} malformed`);
+      const userAgentHash = sha1(userAgent);
+      const token = await redis.hGet(`user:${userIdStr}:tokens`, userAgentHash);
+
+      if (!token) throw new RedisError(`Somehow data for userId:${options.where.userId} and userAgent:${userAgent} malformed`);
 
       await this.removeUserCache(token);
-      return await redis.hDel(`user:${options.where.userId}:tokens`, options.where.userAgent);
+      return await redis.hDel(`user:${userIdStr}:tokens`, userAgentHash);
 
     }
 
-    if (options.where.userId) {
+    if (userIdStr) {
 
-      const userAgentHashes = await redis.hKeys(`user:${options.where.userId}:tokens`);
-      const tokens = await redis.hVals(`user:${options.where.userId}:tokens`);
+      const userAgentHashes = await redis.hKeys(`user:${userIdStr}:tokens`);
+      const tokens = await redis.hVals(`user:${userIdStr}:tokens`);
 
       for (const token of tokens) {
         await this.removeUserCache(token);
       }
 
-      return await redis.hDel(`user:${options.where.userId}:tokens`, userAgentHashes);
+      return await redis.hDel(`user:${userIdStr}:tokens`, userAgentHashes);
 
     }
 
     return await redis.flushDb();
   }
 
-  static async storeUserCache(token: string, user: UserDT) {
-    await redis.hSet(`token:${token}`, { ...user, admin: String(user.admin), disabled: String(user.disabled) });
+
+  static async storeUserCache(token: string, userDS: MapToStrings<InferAttributes<User>>) {
+    await redis.hSet(`token:${token}`, userDS);
   }
 
   static async removeUserCache(token: string) {
@@ -155,13 +196,9 @@ export class Session {
   }
 
   static async getUserCache(token: string) {
-    const userFromRedis = await redis.hGetAll(`token:${token}`);
+    const userStrings = await redis.hGetAll(`token:${token}`);
 
-    const user = {
-      ...userFromRedis,
-      admin: Boolean(userFromRedis.admin),
-      disabled: Boolean(userFromRedis.disabled)
-    };
+    const user = parseRedisToDT(userStrings);
 
     if (!isUserDT(user)) throw new RedisError(`Somehow data for ${token} malformed`);
 
