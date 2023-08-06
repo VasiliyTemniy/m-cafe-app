@@ -11,12 +11,11 @@ import { User } from '../models/index';
 import { Session } from "../redis/Session";
 import { connectToDatabase } from "../utils/db";
 import jwt from 'jsonwebtoken';
-import { LoginUserBody, mapToRedisStrings } from "@m-cafe-app/utils";
+import { LoginUserBody } from "@m-cafe-app/utils";
 import { isTokenBody } from "@m-cafe-app/utils";
 import * as fc from 'fast-check';
 import config from "../utils/config";
 import { initLogin, userAgent } from "./sessions_api_helper";
-import { timestampsKeys } from "@m-cafe-app/utils";
 import sha1 from 'sha1';
 
 
@@ -181,10 +180,8 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     if (!userInDB) return expect(true).to.equal(false);
 
-    const userToCache = mapToRedisStrings(userInDB.dataValues, { omit: ['passwordHash', ...timestampsKeys] });
-
     // await Session.create(newSession);  <-- Use this with postgre Session  
-    await Session.create(newSession, userToCache);
+    await Session.create(newSession, userInDB.rights);
 
     const response = await api
       .get(`${apiBaseUrl}/users/me`)

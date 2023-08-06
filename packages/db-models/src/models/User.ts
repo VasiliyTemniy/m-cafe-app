@@ -18,7 +18,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare phonenumber: string;
   declare email?: string;
   declare birthdate?: Date;
-  declare rights?: string;
+  declare rights: CreationOptional<string>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
@@ -28,5 +28,5 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
 }
 
 
-export type UserData = Omit<InferAttributes<User>, PropertiesCreationOptional>
-  & { id: number; };
+export type UserData = Omit<InferAttributes<User>, PropertiesCreationOptional | 'rights'>
+  & { id: number; rights: string; };

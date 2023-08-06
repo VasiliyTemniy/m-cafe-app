@@ -12,7 +12,7 @@ import {
 
 export const initialUsersPassword = 'iwannabeahero';
 
-export const initialUsers: Omit<UserData, 'id'>[] = [
+export const initialUsers: Omit<UserData, 'id' | 'rights'>[] = [
   {
     username: "Vasisualiy",
     name: "Mikhail Dyachenko",
@@ -80,7 +80,7 @@ export const validNewUser: NewUserBody = {
 
 export const validUserInDB: {
   password: string;
-  dbEntry: Omit<UserData, 'id'>;
+  dbEntry: Omit<UserData, 'id' | 'rights'>;
 } = {
   password: 'iwannabeahero',
   dbEntry: {

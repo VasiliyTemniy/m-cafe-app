@@ -58,7 +58,7 @@ adminRouter.put(
       throw new ProhibitedError('Attempt to alter superadmin');
 
     if (hasOwnProperty(req.body, 'rights')) {
-      userSubject.rights = req.body.rights;
+      userSubject.rights = req.body.rights!;
 
       if (userSubject.rights === 'disabled') {
         await Session.destroy({
