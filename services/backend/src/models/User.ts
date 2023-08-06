@@ -74,7 +74,7 @@ User.init({
   rights: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: false,
+    defaultValue: 'user',
   },
   createdAt: {
     type: DataTypes.DATE,

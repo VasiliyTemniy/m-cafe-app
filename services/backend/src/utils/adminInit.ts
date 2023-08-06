@@ -15,9 +15,7 @@ export const initSuperAdmin = async () => {
 
     // Some paranoid checks
     if (
-      !existingUser.admin
-      ||
-      existingUser.disabled
+      existingUser.rights !== 'admin'
       ||
       existingUser.phonenumber !== config.SUPERADMIN_PHONENUMBER
     ) {
@@ -26,8 +24,7 @@ export const initSuperAdmin = async () => {
       const saltRounds = 10;
       const passwordHash = await bcryptjs.hash(process.env.SUPERADMIN_PASSWORD as string, saltRounds);
       existingUser.passwordHash = passwordHash;
-      existingUser.admin = true;
-      existingUser.disabled = false;
+      existingUser.rights = 'admin';
       await existingUser.save();
     }
 
@@ -44,7 +41,7 @@ export const initSuperAdmin = async () => {
     username: process.env.SUPERADMIN_USERNAME as string,
     phonenumber: config.SUPERADMIN_PHONENUMBER,
     passwordHash,
-    admin: true
+    rights: 'admin'
   };
 
   await User.create(user);
