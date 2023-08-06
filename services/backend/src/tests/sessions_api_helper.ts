@@ -23,11 +23,16 @@ export const initLogin = async (
     .post(`${apiBaseUrl}/session`)
     .set('User-Agent', loginUserAgent)
     .send(loginBody as object)
-    .expect(expectedStatus)
-    .expect('Content-Type', /application\/json/);
+    .expect(expectedStatus);
 
-  if (!response.body.token) return expect(true).to.equal(false);
+  if (!response.headers['set-cookie']) return expect(true).to.equal(false);
 
-  return response.body.token as string;
+  const loginCookies = response.headers['set-cookie'] as string[];
+
+  const tokenCookie = loginCookies.find(cookie => cookie.startsWith('token='));
+
+  if (!tokenCookie) return expect(true).to.equal(false);
+
+  return tokenCookie;
 
 };
