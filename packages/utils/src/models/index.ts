@@ -1,5 +1,4 @@
 export * from './User.js';
-export * from './Session.js';
 export * from './Address.js';
 export * from './UserAddress.js';
 export * from './Facility.js';
