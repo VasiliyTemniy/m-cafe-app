@@ -68,15 +68,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
         isDate: true
       }
     },
-    disabled: {
-      type: DataTypes.BOOLEAN,
+    rights: {
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: false,
-    },
-    admin: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
+      defaultValue: 'user',
     },
     created_at: {
       type: DataTypes.DATE,
