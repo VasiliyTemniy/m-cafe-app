@@ -84,10 +84,7 @@ sessionRouter.post(
 
     }
 
-    res.status(201).send({
-      token,
-      id: user.id
-    });
+    res.cookie('token', token, config.sessionCookieOptions).status(201).end();
 
   }) as RequestHandler
 );
@@ -122,10 +119,7 @@ sessionRouter.get(
 
     await activeSession.save(req.user.rights);
 
-    res.status(200).send({
-      token,
-      id: req.userId
-    });
+    res.cookie('token', token, config.sessionCookieOptions).status(200).end();
 
   }) as RequestHandler
 );

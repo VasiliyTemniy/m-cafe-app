@@ -6,10 +6,12 @@ import cors from 'cors';
 import usersRouter from './controllers/user.js';
 import sessionRouter from './controllers/session.js';
 import adminRouter from './controllers/admin.js';
+// import foodRouter from './controllers/food.js';
 import middleware from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
 import { connectToRedisSessionDB } from './redis/Session.js';
+import cookieParser from 'cookie-parser';
 
 
 app.use(helmet());
@@ -20,12 +22,15 @@ app.use(cors({
 
 app.use(express.json());
 
+app.use(cookieParser());
+
 
 app.use(middleware.requestLogger);
 
 app.use('/session', sessionRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
+// app.use('/food', foodRouter);
 
 
 const initTestingHelper = async () => {

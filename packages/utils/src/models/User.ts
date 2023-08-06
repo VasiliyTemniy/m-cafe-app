@@ -1,5 +1,5 @@
 import { UserData } from "@m-cafe-app/db-models";
-import { isBoolean, isNumber, isString } from "../types/typeParsers.js";
+import { isNumber, isString } from "../types/typeParsers.js";
 import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
 
 
@@ -24,7 +24,7 @@ export const isUserDT = (obj: unknown): obj is UserDT => {
     ||
     (hasOwnProperty(obj, "birthdate") && !isString(obj.birthdate))
     ||
-    (hasOwnProperty(obj, "rights") && !isBoolean(obj.rights))
+    (hasOwnProperty(obj, "rights") && !isString(obj.rights))
   ) return false;
 
   return isNumber(obj.id) && isString(obj.phonenumber);

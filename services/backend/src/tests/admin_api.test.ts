@@ -100,11 +100,11 @@ describe('Admin router basics', () => {
 
   it('Admin can disable any user or give any user admin rights and vice versa', async () => {
 
-    const token1 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+    const tokenCookie1 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     const response1 = await api
       .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
-      .set({ Authorization: `bearer ${token1}` })
+      .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send({ rights: 'admin' })
       .expect(200)
@@ -113,11 +113,11 @@ describe('Admin router basics', () => {
     expect(response1.body.id).to.equal(validUserInDBID);
     expect(response1.body.rights).to.equal('admin');
 
-    const token2 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie2 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const response2 = await api
       .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'user' })
       .expect(200)
@@ -128,7 +128,7 @@ describe('Admin router basics', () => {
 
     const response3 = await api
       .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
       .expect(200)
@@ -142,7 +142,7 @@ describe('Admin router basics', () => {
 
     await api
       .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'user' })
       .expect(200)
@@ -164,11 +164,11 @@ describe('Admin router basics', () => {
 
     if (!superadmin) expect(true).to.equal(false);
 
-    const token = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     const response = await api
       .put(`${apiBaseUrl}/admin/users/${superadmin.id}`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
       .expect(403)
@@ -181,11 +181,11 @@ describe('Admin router basics', () => {
 
   it('Common users are prohibited to use admin routes', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const response1 = await api
       .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ admin: true })
       .expect(403)
@@ -197,7 +197,7 @@ describe('Admin router basics', () => {
     // Check admin route for getting user data
     const response2 = await api
       .get(`${apiBaseUrl}/admin/users/`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -211,7 +211,7 @@ describe('Admin router basics', () => {
 Also, all user sessions get deleted after user being banned. Also, user is not visible through default sequelize scope', async () => {
 
     // Some user logins thrice from different browsers
-    const validUsersToken = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const validUsersTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
     await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'CHROME');
     await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'FIREFOX');
     await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'ELINKS');
@@ -223,18 +223,18 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     // Check that user's token is valid
     await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer ${validUsersToken}` })
+      .set("Cookie", [validUsersTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     // Admin logs in
-    const token = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     // Admin disables the user
     await api
       .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
       .expect(200)
@@ -264,7 +264,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     // Check that user's previously valid token is now invalid
     const response2 = await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer ${validUsersToken}` })
+      .set("Cookie", [validUsersTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -285,11 +285,11 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
 
   it('Admin cannot delete users if they did not try delete them themselves, i.e. without deletedAt notnull property', async () => {
 
-    const token = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     const response = await api
       .delete(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -301,20 +301,20 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
 
   it('Admin can delete users if they did try delete them themselves, i.e. with deletedAt notnull property', async () => {
 
-    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     await api
       .delete(`${apiBaseUrl}/users`)
-      .set({ Authorization: `bearer ${token1}` })
+      .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const token2 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+    const tokenCookie2 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     await api
       .delete(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .expect(204);
 
@@ -326,20 +326,20 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
   it('Admin can restore users if they did try delete them themselves, i.e. with deletedAt notnull property, \
 if they did not request to make permanent deletion', async () => {
 
-    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     await api
       .delete(`${apiBaseUrl}/users`)
-      .set({ Authorization: `bearer ${token1}` })
+      .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const token2 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent);
+    const tokenCookie2 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     await api
       .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ restore: true })
       .expect(200);

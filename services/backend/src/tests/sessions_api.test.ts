@@ -12,7 +12,6 @@ import { Session } from "../redis/Session";
 import { connectToDatabase } from "../utils/db";
 import jwt from 'jsonwebtoken';
 import { LoginUserBody } from "@m-cafe-app/utils";
-import { isTokenBody } from "@m-cafe-app/utils";
 import * as fc from 'fast-check';
 import config from "../utils/config";
 import { initLogin, userAgent } from "./sessions_api_helper";
@@ -51,10 +50,9 @@ succeds and gives token + id (userId) as response', async () => {
     const responseUsername = await api
       .post(`${apiBaseUrl}/session`)
       .send(loginBodyUsername)
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
+      .expect(201);
 
-    expect(isTokenBody(responseUsername.body)).to.equal(true);
+    expect(responseUsername.headers['set-cookie']).to.exist;
 
     const loginBodyPhonenumber: LoginUserBody = {
       phonenumber: validUserInDB.dbEntry.phonenumber,
@@ -64,31 +62,73 @@ succeds and gives token + id (userId) as response', async () => {
     const responsePhonenumber = await api
       .post(`${apiBaseUrl}/session`)
       .send(loginBodyPhonenumber)
-      .expect(201)
+      .expect(201);
+
+    expect(responsePhonenumber.headers['set-cookie']).to.exist;
+
+  });
+
+  it('Token is sent via http-only cookie; This cookie is accepted by backend middleware; Authorization: bearer is not accepted', async () => {
+
+    const loginBody: LoginUserBody = {
+      phonenumber: validUserInDB.dbEntry.phonenumber,
+      password: validUserInDB.password
+    };
+
+    const response1 = await api
+      .post(`${apiBaseUrl}/session`)
+      .set('User-Agent', userAgent)
+      .send(loginBody as object)
+      .expect(201);
+
+    expect(response1.headers['set-cookie']).to.exist;
+
+    const cookieMessage = response1.headers['set-cookie'][0] as string;
+
+    const cookieParts = cookieMessage.split('; ');
+
+    expect(cookieParts[1]).to.equal('Path=auth');
+    expect(cookieParts[2]).to.equal('HttpOnly');
+
+    const token = cookieParts[0].substring(6);
+
+    const response2 = await api
+      .get(`${apiBaseUrl}/users/me`)
+      .set({ Authorization: `bearer ${token}` })
+      .set('User-Agent', userAgent)
+      .expect(401)
       .expect('Content-Type', /application\/json/);
 
-    expect(isTokenBody(responsePhonenumber.body)).to.equal(true);
+    expect(response2.body.error.name).to.equal('AuthorizationError');
+    expect(response2.body.error.message).to.equal('Authorization required');
+
+    const response3 = await api
+      .get(`${apiBaseUrl}/users/me`)
+      .set("Cookie", [response1.headers['set-cookie'][0] as string])
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response3.body.username).to.equal(validUserInDB.dbEntry.username);
 
   });
 
   it('User login leads to creation of a session with user id and token. Sequential login attempt from the \
 same browser(userAgent) without logout leads to session token refresh', async () => {
 
-    const tokenFirst = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'SUPERTEST');
+    const tokenCookieFirst = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'SUPERTEST') as string;
 
     const sessionsFirst = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessionsFirst).to.be.lengthOf(1);
-    expect(sessionsFirst[0].token).to.equal(tokenFirst);
+    expect(sessionsFirst[0].token).to.equal(tokenCookieFirst.split('; ')[0].substring(6));
 
-    const tokenSecond = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'SUPERTEST');
+    const tokenCookieSecond = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, 'SUPERTEST') as string;
 
     const sessionsSecond = await Session.findAll({ where: { userId: validUserInDBID } });
 
     expect(sessionsSecond).to.be.lengthOf(1);
-    expect(sessionsSecond[0].token).to.equal(tokenSecond);
-
-    // expect(sessionsFirst[0].id).to.equal(sessionsSecond[0].id); <-- Use this with postgre Session
+    expect(sessionsSecond[0].token).to.equal(tokenCookieSecond.split('; ')[0].substring(6));
 
   });
 
@@ -104,7 +144,6 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     expect(sessions).to.be.lengthOf(2);
 
-    // expect(sessions[0].id).not.to.be.equal(sessions[1].id); <-- Use this with postgre Session  
     expect(sessions[0].token).not.to.be.equal(sessions[1].token);
     expect(sessions[0].userAgent).not.to.be.equal(sessions[1].userAgent);
 
@@ -180,12 +219,13 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     if (!userInDB) return expect(true).to.equal(false);
 
-    // await Session.create(newSession);  <-- Use this with postgre Session  
     await Session.create(newSession, userInDB.rights);
+
+    const tokenCookie = `token=${token}; Path=auth; HttpOnly`;
 
     const response = await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', 'SUPERTEST')
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -201,9 +241,11 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
   it('Malformed / incorrect token is not accepted', async () => {
 
+    const invalidTokenCookie = `token=IAmALittleToken; Path=auth; HttpOnly`;
+
     const responseInvToken = await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer IAmALittleToken` })
+      .set("Cookie", [invalidTokenCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -216,9 +258,11 @@ same browser(userAgent) without logout leads to session token refresh', async ()
       rand: Math.random() * 10000
     }, 'IAmASpecialChineseSeckrette', { expiresIn: config.TOKEN_TTL });
 
+    const tokenInvSecretCookie = `token=${tokenInvSecret}; Path=auth; HttpOnly`;
+
     const responseInvSecret = await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer ${tokenInvSecret}` })
+      .set("Cookie", [tokenInvSecretCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -230,9 +274,11 @@ same browser(userAgent) without logout leads to session token refresh', async ()
       rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
+    const tokenInvPayloadCookie = `token=${tokenInvPayload}; Path=auth; HttpOnly`;
+
     const responseInvPayload = await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer ${tokenInvPayload}` })
+      .set("Cookie", [tokenInvPayloadCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -248,9 +294,11 @@ same browser(userAgent) without logout leads to session token refresh', async ()
       rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
+    const tokenValidCookie = `token=${tokenValid}; Path=auth; HttpOnly`;
+
     const response = await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer ${tokenValid}` })
+      .set("Cookie", [tokenValidCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -261,17 +309,25 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
   it('Token refresh route works (route without a password, checks only for a valid token; must have a Session record)', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+
+    const token = tokenCookie.split('; ')[0].substring(6);
 
     const responseRefreshed = await api
       .get(`${apiBaseUrl}/session/refresh`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
-      .expect(200)
-      .expect('Content-Type', /application\/json/);
+      .expect(200);
 
-    if (!responseRefreshed.body.token) expect(true).to.equal(false);
-    const tokenRefreshed = responseRefreshed.body.token as string;
+    if (!responseRefreshed.headers['set-cookie']) return expect(true).to.equal(false);
+
+    const loginCookiesRefreshed = responseRefreshed.headers['set-cookie'] as string[];
+
+    const tokenCookieRefreshed = loginCookiesRefreshed.find(cookie => cookie.startsWith('token='));
+
+    if (!tokenCookieRefreshed) return expect(true).to.equal(false);
+
+    const tokenRefreshed = tokenCookieRefreshed.split('; ')[0].substring(6);
 
     expect(token).to.not.equal(tokenRefreshed);
 
@@ -279,11 +335,11 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
   it('Logout route deletes Session', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     await api
       .delete(`${apiBaseUrl}/session`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 

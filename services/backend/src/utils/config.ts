@@ -1,6 +1,7 @@
 import { RedisClientOptions, RedisFunctions, RedisModules, RedisScripts } from "@redis/client";
 import * as dotenv from "dotenv";
 import { readFileSync } from "fs";
+import { CookieOptions } from 'express';
 
 const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 
@@ -43,6 +44,13 @@ const redisConfig: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts
 };
 
 
+const sessionCookieOptions: CookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  path: 'auth'
+};
+
+
 export default {
   DATABASE_URL,
   PORT,
@@ -50,5 +58,6 @@ export default {
   TOKEN_TTL,
   ALLOWED_ORIGIN,
   SUPERADMIN_PHONENUMBER,
-  redisConfig
+  redisConfig,
+  sessionCookieOptions
 };

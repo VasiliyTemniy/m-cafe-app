@@ -463,7 +463,7 @@ describe('User PUT request tests', () => {
 
   it('A valid request to change user credentials succeds, needs original password', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const updateUserData: EditUserBody = {
       username: 'Ordan',
@@ -477,7 +477,7 @@ describe('User PUT request tests', () => {
 
     await api
       .put(`${apiBaseUrl}/users/${validUserInDBID}`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
       .expect(200)
@@ -499,7 +499,7 @@ describe('User PUT request tests', () => {
 
   it('Request to change another user`s data fails', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const updateUserData: EditUserBody = {
       username: 'Ordan',
@@ -513,7 +513,7 @@ describe('User PUT request tests', () => {
 
     const responseNonExisting = await api
       .put(`${apiBaseUrl}/users/100500`) // not existing user
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
       .expect(418)
@@ -524,7 +524,7 @@ describe('User PUT request tests', () => {
 
     const responseAnotherUser = await api
       .put(`${apiBaseUrl}/users/1`) // InitialUsers[0] ? should be
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
       .expect(418)
@@ -537,7 +537,7 @@ describe('User PUT request tests', () => {
 
   it('Request without password fails', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const updateUserData = {
       username: 'Ordan',
@@ -550,7 +550,7 @@ describe('User PUT request tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/users/${validUserInDBID}`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
       .expect(400)
@@ -582,11 +582,11 @@ describe('User GET request tests', () => {
 
   it('A users/me path gives correct user info to frontend', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const response = await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -635,7 +635,7 @@ describe('User DELETE request tests', () => {
   it('User delete route works, marks user as deletedAt, gets response with deletedAt mark. All his sessions get deleted. \
 User marked as deleted gets appropriate message when trying to login', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const userBeforeDeletion = await User.findByPk(validUserInDBID);
     if (!userBeforeDeletion) return expect(true).to.equal(false);
@@ -644,7 +644,7 @@ User marked as deleted gets appropriate message when trying to login', async () 
 
     const response1 = await api
       .delete(`${apiBaseUrl}/users`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -662,7 +662,7 @@ User marked as deleted gets appropriate message when trying to login', async () 
 
     const response2 = await api
       .get(`${apiBaseUrl}/users/me`)
-      .set({ Authorization: `bearer ${token}` })
+      .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -698,14 +698,14 @@ describe('User addresses requests tests', () => {
 
   it('A valid request to add user address succeeds, user address gets added to junction table', async () => {
 
-    const token = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const responses: Response[] = [];
 
     for (const address of validAddresses) {
       const response = await api
         .post(`${apiBaseUrl}/users/address`)
-        .set({ Authorization: `bearer ${token}` })
+        .set("Cookie", [tokenCookie])
         .set('User-Agent', userAgent)
         .send(address)
         .expect(201)
@@ -736,11 +736,11 @@ describe('User addresses requests tests', () => {
   it('The same address cannot be added twice to the same user. \
 If another user adds the same address, the address does not get created, instead a new association is added', async () => {
 
-    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
+    const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token1}` })
+      .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
       .expect(201)
@@ -748,17 +748,17 @@ If another user adds the same address, the address does not get created, instead
 
     await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token1}` })
+      .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
       .expect(409)
       .expect('Content-Type', /application\/json/);
 
-    const token2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent);
+    const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
 
     await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
       .expect(201)
@@ -778,12 +778,12 @@ If another user adds the same address, the address does not get created, instead
 does not delete address if somebody or a facility uses it, adds a new address if it did not exist, \
 adds only a new junction if it was existing', async () => {
 
-    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
-    const token2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent);
+    const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
 
     const response1 = await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token1}` })
+      .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
       .expect(201)
@@ -791,7 +791,7 @@ adds only a new junction if it was existing', async () => {
 
     const response2 = await api
       .put(`${apiBaseUrl}/users/address/${response1.body.id}`)
-      .set({ Authorization: `bearer ${token1}` })
+      .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[1])
       .expect(201)
@@ -814,7 +814,7 @@ adds only a new junction if it was existing', async () => {
 
     await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[1])    // The same address as the one that first user changed to 
       .expect(201)
@@ -822,7 +822,7 @@ adds only a new junction if it was existing', async () => {
 
     const response4 = await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])    // The previously deleted by first user address
       .expect(201)
@@ -833,7 +833,7 @@ adds only a new junction if it was existing', async () => {
     // So, this attempt gives 409 and does nothing
     await api
       .put(`${apiBaseUrl}/users/address/${response4.body.id}`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[1])
       .expect(409)
@@ -851,12 +851,12 @@ adds only a new junction if it was existing', async () => {
 
   it('Delete user address route works. If the address is used by anybody else, it does not get deleted', async () => {
 
-    const token1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
-    const token2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent);
+    const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
 
     const response1 = await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token1}` })
+      .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
       .expect(201)
@@ -865,7 +865,7 @@ adds only a new junction if it was existing', async () => {
     // Second user adds first address as his own. Maybe, they live together
     const response2 = await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
       .expect(201)
@@ -874,7 +874,7 @@ adds only a new junction if it was existing', async () => {
     // Second user lives in two apartments
     const response3 = await api
       .post(`${apiBaseUrl}/users/address`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[1])
       .expect(201)
@@ -893,14 +893,14 @@ adds only a new junction if it was existing', async () => {
     // Appears that... They break up :\
     await api
       .delete(`${apiBaseUrl}/users/address/${response2.body.id}`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .expect(204);
 
     // Also appears that the second user does not live anywhere anymore...
     await api
       .delete(`${apiBaseUrl}/users/address/${response3.body.id}`)
-      .set({ Authorization: `bearer ${token2}` })
+      .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .expect(204);
 

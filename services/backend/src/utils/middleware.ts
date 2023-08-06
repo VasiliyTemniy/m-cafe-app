@@ -27,13 +27,9 @@ const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFu
 
 const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  const authorization = req.get('authorization');
-  const token =
-    authorization && authorization.toLowerCase().startsWith('bearer ')
-      ? authorization.substring(7)
-      : null;
+  if (!req.cookies.token) return next(new AuthorizationError('Authorization required'));
 
-  if (!req.headers.authorization || !token) return next(new AuthorizationError('Authorization required'));
+  const token = req.cookies.token as string;
 
   req.token = token;
 
