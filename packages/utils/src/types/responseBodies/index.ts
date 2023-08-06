@@ -1,1 +1,1 @@
-export * from './TokenBody.js';
+export const dummyIndex = 'dummy';
