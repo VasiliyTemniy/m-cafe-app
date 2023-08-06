@@ -39,11 +39,12 @@ sessionRouter.post(
     const passwordCorrect =
       user === null ? false : await bcryptjs.compare(password, user.passwordHash);
 
-    if (!(user && passwordCorrect)) {
+    if (!(user && passwordCorrect))
       throw new CredentialsError('Invalid login or password');
-    } else if (user.rights === 'disabled') {
+    if (user.rights === 'disabled')
       throw new BannedError('Your account have been banned. Contact admin to unblock account');
-    }
+    if (user.deletedAt)
+      throw new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin');
 
     const activeSession = await Session.findOne({
       where: {
