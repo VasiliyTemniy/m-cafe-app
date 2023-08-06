@@ -43,7 +43,7 @@ sessionRouter.post(
 
     if (!(user && passwordCorrect)) {
       throw new CredentialsError('Invalid login or password');
-    } else if (user.disabled) {
+    } else if (user.rights === 'disabled') {
       throw new BannedError('Your account have been banned. Contact admin to unblock account');
     }
 
