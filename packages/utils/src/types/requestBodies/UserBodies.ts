@@ -3,7 +3,7 @@ import { hasOwnProperty, MapToUnknown } from "../helpers.js";
 import { isString } from "../typeParsers.js";
 
 
-export type NewUserBody = Omit<UserDT, 'admin' | 'disabled' | 'id'> & { password: string; };
+export type NewUserBody = Omit<UserDT, 'rights' | 'id'> & { password: string; };
 
 type NewUserBodyFields = MapToUnknown<NewUserBody>;
 

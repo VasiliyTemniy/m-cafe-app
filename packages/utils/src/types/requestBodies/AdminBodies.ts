@@ -1,14 +1,13 @@
 import { hasOwnProperty } from "../helpers.js";
-import { isBoolean } from "../typeParsers.js";
+import { isBoolean, isString } from "../typeParsers.js";
 
 export interface AdministrateUserBody {
-  disabled?: boolean;
-  admin?: boolean;
+  rights?: string;
   restore?: boolean;
 }
 
-const hasAdministrateUserBodyFields = (body: unknown): body is { disabled: unknown; admin: unknown; restore: unknown; } =>
-  hasOwnProperty(body, "disabled") || hasOwnProperty(body, "admin") || hasOwnProperty(body, "restore");
+const hasAdministrateUserBodyFields = (body: unknown): body is { rights: unknown, restore: unknown; } =>
+  hasOwnProperty(body, "rights") || hasOwnProperty(body, "restore");
 
 export const isAdministrateUserBody = (body: unknown): body is AdministrateUserBody =>
-  hasAdministrateUserBodyFields(body) && (isBoolean(body.disabled) || isBoolean(body.admin) || isBoolean(body.restore));
+  hasAdministrateUserBodyFields(body) && (isString(body.rights) || isBoolean(body.restore));

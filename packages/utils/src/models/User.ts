@@ -24,9 +24,7 @@ export const isUserDT = (obj: unknown): obj is UserDT => {
     ||
     (hasOwnProperty(obj, "birthdate") && !isString(obj.birthdate))
     ||
-    (hasOwnProperty(obj, "disabled") && !isBoolean(obj.disabled))
-    ||
-    (hasOwnProperty(obj, "admin") && !isBoolean(obj.admin))
+    (hasOwnProperty(obj, "rights") && !isBoolean(obj.rights))
   ) return false;
 
   return isNumber(obj.id) && isString(obj.phonenumber);
