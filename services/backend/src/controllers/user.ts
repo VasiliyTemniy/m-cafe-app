@@ -19,7 +19,7 @@ import {
   hasOwnProperty,
   mapDataToTransit
 } from '@m-cafe-app/utils';
-import { isRequestWithUser } from '../types/RequestCustom.js';
+import { isRequestCustom, isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
 import { User, Address, Facility, UserAddress } from '../models/index.js';
 import { Session } from '../redis/Session.js';
@@ -32,7 +32,7 @@ usersRouter.post(
   (async (req, res) => {
 
     if (!isNewUserBody(req.body)) throw new RequestBodyError('Invalid new user request body');
-    if (hasOwnProperty(req.body, "admin")) throw new HackError('Please do not try this');
+    if (hasOwnProperty(req.body, "rights")) throw new HackError('Please do not try this');
 
     const { username, name, password, phonenumber, email, birthdate } = req.body;
 
@@ -120,11 +120,11 @@ usersRouter.delete(
 usersRouter.post(
   '/address',
   middleware.verifyToken,
-  middleware.userExtractor,
+  middleware.userCheck,
   middleware.sessionCheck,
   (async (req, res) => {
 
-    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
     if (!isNewAddressBody(req.body)) throw new RequestBodyError('Invalid add user address request body');
 
     // If I do just const address = req.body, some other malformed keys can happen to go through
@@ -155,7 +155,7 @@ usersRouter.post(
     const existingUserAddress = await UserAddress.findOne({
       where: {
         addressId: savedAddress.id,
-        userId: req.user.id
+        userId: req.userId
       }
     });
 
@@ -163,11 +163,10 @@ usersRouter.post(
       409 : 201;
 
     if (!existingUserAddress)
-      await req.user.addAddress(savedAddress);
+      // await req.user.addAddress(savedAddress);
+      await UserAddress.create({ userId: req.userId, addressId: savedAddress.id });
 
-    const resBody: AddressDT = {
-      ...savedAddress.dataValues
-    };
+    const resBody: AddressDT = mapDataToTransit(savedAddress.dataValues);
 
     res.status(statusCode).json(resBody);
 
@@ -181,7 +180,7 @@ usersRouter.put(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
     if (!isEditAddressBody(req.body) || !isNumber(Number(req.params.id))) throw new RequestBodyError('Invalid edit user address request body or params id');
 
     // check .post route for address above for explanation of this bulk
@@ -211,7 +210,7 @@ usersRouter.put(
     const existingUserAddress = await UserAddress.findOne({
       where: {
         addressId: savedAddress.id,
-        userId: req.user.id
+        userId: req.userId
       }
     });
 
@@ -219,8 +218,10 @@ usersRouter.put(
       409 : 201;
 
     if (!existingUserAddress) {
-      await req.user.addAddress(savedAddress);
-      await req.user.removeAddress(oldAddress);
+      // await req.user.addAddress(savedAddress);
+      // await req.user.removeAddress(oldAddress);
+      await UserAddress.create({ userId: req.userId, addressId: savedAddress.id });
+      await UserAddress.destroy({ where: { userId: req.userId, addressId: oldAddress.id } });
 
       // One of any is enough for check, findAll is not needed
       const addressUser = await UserAddress.findOne({
@@ -237,9 +238,7 @@ usersRouter.put(
       if (!addressUser && !addressFacility) await oldAddress.destroy();
     }
 
-    const resBody: AddressDT = {
-      ...savedAddress.dataValues
-    };
+    const resBody: AddressDT = mapDataToTransit(savedAddress.dataValues);
 
     res.status(statusCode).json(resBody);
 
@@ -249,11 +248,11 @@ usersRouter.put(
 usersRouter.delete(
   '/address/:id',
   middleware.verifyToken,
-  middleware.userExtractor,
+  middleware.userCheck,
   middleware.sessionCheck,
   (async (req, res) => {
 
-    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
     if (!isNumber(Number(req.params.id))) throw new RequestBodyError('Invalid delete user address params id');
 
     const oldAddressId = Number(req.params.id);
@@ -261,7 +260,8 @@ usersRouter.delete(
 
     if (!oldAddress) throw new DatabaseError(`No address entry with this id ${oldAddressId}`);
 
-    await req.user.removeAddress(oldAddress);
+    // await req.user.removeAddress(oldAddress);
+    await UserAddress.destroy({ where: { userId: req.userId, addressId: oldAddress.id } });
 
     // One of any is enough for check, findAll is not needed
     const addressUser = await UserAddress.findOne({

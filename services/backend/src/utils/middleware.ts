@@ -53,7 +53,7 @@ const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunct
   const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
-  if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
+  if (user.rights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
   if (user.deletedAt) return next(new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin'));
 
   req.user = user;
@@ -65,11 +65,22 @@ const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunct
 
 const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
+  if (!req.token) return next(new ApplicationError('Wrong usage of a userCheck middleware in app code. Please, contact admins'));
 
-  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
-  if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
-  if (user.deletedAt) return next(new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin'));
+  const userRights = await Session.getUserRightsCache(req.token);
+  if (userRights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
+
+  next();
+
+}) as RequestHandler;
+
+
+const managerCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
+
+  if (!req.token) return next(new ApplicationError('Wrong usage of a adminCheck middleware in app code. Please, contact admins'));
+
+  const userRights = await Session.getUserRightsCache(req.token);
+  if (!(userRights === 'manager' || userRights === 'admin')) return next(new ProhibitedError('You have no manager permissions'));
 
   next();
 
@@ -78,12 +89,10 @@ const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction)
 
 const adminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
+  if (!req.token) return next(new ApplicationError('Wrong usage of a adminCheck middleware in app code. Please, contact admins'));
 
-  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
-  if (user.disabled) return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
-  if (!user.admin) return next(new ProhibitedError('You have no admin permissions'));
-  if (user.deletedAt) return next(new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin'));
+  const userRights = await Session.getUserRightsCache(req.token);
+  if (userRights !== 'admin') return next(new ProhibitedError('You have no admin permissions'));
 
   next();
 
@@ -124,6 +133,7 @@ export default {
   verifyToken,
   userExtractor,
   userCheck,
+  managerCheck,
   adminCheck,
   sessionCheck,
   unknownEndpoint

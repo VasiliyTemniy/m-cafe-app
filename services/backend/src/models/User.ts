@@ -16,6 +16,7 @@ import {
   usernameRegExp
 } from '../utils/constants.js';
 import { User } from '@m-cafe-app/db-models';
+import { Op } from 'sequelize';
 
 
 User.init({
@@ -70,15 +71,10 @@ User.init({
       isDate: true
     }
   },
-  disabled: {
-    type: DataTypes.BOOLEAN,
+  rights: {
+    type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: false,
-  },
-  admin: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: false,
+    defaultValue: 'user',
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -100,18 +96,31 @@ User.init({
   modelName: 'user',
   defaultScope: {
     where: {
-      disabled: false
+      rights: {
+        [Op.ne]: 'disabled'
+      }
     }
   },
   scopes: {
     admin: {
       where: {
-        admin: true
+        rights: {
+          [Op.eq]: 'admin'
+        }
+      }
+    },
+    manager: {
+      where: {
+        rights: {
+          [Op.eq]: 'manager'
+        }
       }
     },
     disabled: {
       where: {
-        disabled: true
+        rights: {
+          [Op.eq]: 'disabled'
+        }
       }
     },
     all: {}

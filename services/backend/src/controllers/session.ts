@@ -10,13 +10,11 @@ import {
   BannedError,
   UnknownError,
   SessionError,
-  ProhibitedError,
-  mapToRedisStrings
+  ProhibitedError
 } from '@m-cafe-app/utils';
 import { isLoginBody } from '@m-cafe-app/utils';
 import { User } from '../models/index.js';
 import { Session } from '../redis/Session.js';
-import { timestampsKeys } from '@m-cafe-app/utils';
 
 const sessionRouter = Router();
 
@@ -41,11 +39,12 @@ sessionRouter.post(
     const passwordCorrect =
       user === null ? false : await bcryptjs.compare(password, user.passwordHash);
 
-    if (!(user && passwordCorrect)) {
+    if (!(user && passwordCorrect))
       throw new CredentialsError('Invalid login or password');
-    } else if (user.disabled) {
+    if (user.rights === 'disabled')
       throw new BannedError('Your account have been banned. Contact admin to unblock account');
-    }
+    if (user.deletedAt)
+      throw new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin');
 
     const activeSession = await Session.findOne({
       where: {
@@ -63,11 +62,6 @@ sessionRouter.post(
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
 
-    // Save user transit data to cache for further session checks, user disability/admin checks
-    // const userToCache = mapToRedisStrings(user.dataValues, { omit: ['passwordHash', ...timestampsKeys] });
-    const userToCache = mapToRedisStrings(user.dataValues, { omit: ['passwordHash'] });
-
-
     // If there is no active session in this agent, create new one
     // If there is one - update token
     if (!activeSession) {
@@ -79,14 +73,14 @@ sessionRouter.post(
       };
 
       // await Session.create(session);  <-- to use with postgre Session
-      await Session.create(session, userToCache);
+      await Session.create(session, user.rights);
 
     } else {
 
       activeSession.token = token;
 
       // await activeSession.save();  <-- to use with postgre Session
-      await activeSession.save(userToCache);
+      await activeSession.save(user.rights);
 
     }
 
@@ -123,13 +117,10 @@ sessionRouter.get(
       rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
-    // Save user transit data to cache for further session checks, user disability/admin checks
-    // const userToCache = mapToRedisStrings(req.user.dataValues, { omit: ['passwordHash', ...timestampsKeys] });
-    const userToCache = mapToRedisStrings(req.user.dataValues, { omit: ['passwordHash', ...timestampsKeys] });
 
     activeSession.token = token;
 
-    await activeSession.save(userToCache);
+    await activeSession.save(req.user.rights);
 
     res.status(200).send({
       token,

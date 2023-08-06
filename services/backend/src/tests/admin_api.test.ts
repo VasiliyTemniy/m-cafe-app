@@ -32,7 +32,7 @@ password, username get zeroified, phonenumber left for distinguishing reasons', 
     const adminUsers = await User.scope('admin').findAll({});
 
     expect(adminUsers).to.be.lengthOf(1);
-    expect(adminUsers[0].admin).to.equal(true);
+    expect(adminUsers[0].rights).to.equal('admin');
     expect(adminUsers[0].phonenumber).to.exist;
     expect(adminUsers[0].username).to.exist;
     expect(adminUsers[0].passwordHash).to.exist;
@@ -106,12 +106,12 @@ describe('Admin router basics', () => {
       .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
       .set({ Authorization: `bearer ${token1}` })
       .set('User-Agent', userAgent)
-      .send({ admin: true })
+      .send({ rights: 'admin' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     expect(response1.body.id).to.equal(validUserInDBID);
-    expect(response1.body.admin).to.equal(true);
+    expect(response1.body.rights).to.equal('admin');
 
     const token2 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent);
 
@@ -119,18 +119,18 @@ describe('Admin router basics', () => {
       .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
       .set({ Authorization: `bearer ${token2}` })
       .set('User-Agent', userAgent)
-      .send({ admin: false })
+      .send({ rights: 'user' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     expect(response2.body.id).to.equal(validAdminInDBID);
-    expect(response2.body.admin).to.equal(false);
+    expect(response2.body.rights).to.equal('user');
 
     const response3 = await api
       .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
       .set({ Authorization: `bearer ${token2}` })
       .set('User-Agent', userAgent)
-      .send({ disabled: true })
+      .send({ rights: 'disabled' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -144,7 +144,7 @@ describe('Admin router basics', () => {
       .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
       .set({ Authorization: `bearer ${token2}` })
       .set('User-Agent', userAgent)
-      .send({ disabled: false })
+      .send({ rights: 'user' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -170,7 +170,7 @@ describe('Admin router basics', () => {
       .put(`${apiBaseUrl}/admin/users/${superadmin.id}`)
       .set({ Authorization: `bearer ${token}` })
       .set('User-Agent', userAgent)
-      .send({ admin: false, disabled: true })
+      .send({ rights: 'disabled' })
       .expect(403)
       .expect('Content-Type', /application\/json/);
 
@@ -236,7 +236,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
       .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
       .set({ Authorization: `bearer ${token}` })
       .set('User-Agent', userAgent)
-      .send({ disabled: true })
+      .send({ rights: 'disabled' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -355,10 +355,10 @@ if they did not request to make permanent deletion', async () => {
 
     const newUserTriesToBeAdmin = {
       ...validNewUser,
-      admin: true
+      rights: 'admin'
     };
 
-    expect(newUserTriesToBeAdmin.admin).to.equal(true);
+    expect(newUserTriesToBeAdmin.rights).to.equal('admin');
 
     const response = await api
       .post(`${apiBaseUrl}/users`)

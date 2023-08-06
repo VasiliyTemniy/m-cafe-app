@@ -3,6 +3,7 @@ import config from '../utils/config.js';
 import logger from '../utils/logger.js';
 import sha1 from 'sha1';
 import {
+  ApplicationError,
   hasOwnProperty,
   isNumber,
   isString,
@@ -10,7 +11,7 @@ import {
   MapToStrings,
   MapToUnknown,
   parseRedisToDT,
-  RedisError,
+  RedisError
 } from '@m-cafe-app/utils';
 import { User } from '@m-cafe-app/db-models';
 import { InferAttributes } from 'sequelize';
@@ -112,13 +113,13 @@ export class Session {
     this._userAgent = value;
   }
 
-  static async create(session: SessionData, userDS: MapToStrings<InferAttributes<User>>) {
-    await this.storeUserCache(session.token, userDS);
+  static async create(session: SessionData, rights: string) {
+    await this.storeUserRightsCache(session.token, rights);
     const userAgentHash = sha1(session.userAgent);
     return await redis.hSet(`user:${String(session.userId)}:tokens`, userAgentHash, session.token);
   }
 
-  async save(userDS: MapToStrings<InferAttributes<User>>) {
+  async save(rights: string) {
     await Session.destroy({ where: { userId: this._userId, userAgent: this._userAgent } });
 
     const session = {
@@ -127,7 +128,7 @@ export class Session {
       userAgent: this._userAgent
     };
 
-    return await Session.create(session, userDS);
+    return await Session.create(session, rights);
   }
 
   static async findOne(options: FindOneSessionWhere): Promise<Session | undefined> {
@@ -164,7 +165,7 @@ export class Session {
 
       if (!token) throw new RedisError(`Somehow data for userId:${options.where.userId} and userAgent:${userAgent} malformed`);
 
-      await this.removeUserCache(token);
+      await this.removeUserRightsCache(token);
       return await redis.hDel(`user:${userIdStr}:tokens`, userAgentHash);
 
     }
@@ -175,26 +176,44 @@ export class Session {
       const tokens = await redis.hVals(`user:${userIdStr}:tokens`);
 
       for (const token of tokens) {
-        await this.removeUserCache(token);
+        await this.removeUserRightsCache(token);
       }
 
       return await redis.hDel(`user:${userIdStr}:tokens`, userAgentHashes);
 
     }
 
-    return await redis.flushDb();
+    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev')
+      return await redis.flushDb();
+    else
+      throw new ApplicationError('Attempt to flush Redis data in prod');
+  }
+
+  static async storeUserRightsCache(token: string, rights: string) {
+    await redis.set(`token:${token}`, rights);
+  }
+
+  static async removeUserRightsCache(token: string) {
+    await redis.del(`token:${token}`);
+  }
+
+  static async getUserRightsCache(token: string) {
+    return redis.get(`token:${token}`);
   }
 
 
+  // Currently unused
   static async storeUserCache(token: string, userDS: MapToStrings<InferAttributes<User>>) {
     await redis.hSet(`token:${token}`, userDS);
   }
 
+  // Currently unused
   static async removeUserCache(token: string) {
     const userData = await redis.hKeys(`token:${token}`);
     await redis.hDel(`token:${token}`, userData);
   }
 
+  // Currently unused
   static async getUserCache(token: string) {
     const userStrings = await redis.hGetAll(`token:${token}`);
 
@@ -204,5 +223,4 @@ export class Session {
 
     return user;
   }
-
 }

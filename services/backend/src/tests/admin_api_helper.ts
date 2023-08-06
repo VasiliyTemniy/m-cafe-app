@@ -12,6 +12,6 @@ export const validAdminInDB: {
     phonenumber: '89351111111',
     email: 'his-email@kontra.com',
     birthdate: new Date('2001-07-23T07:31:03.242Z'),
-    admin: true
+    rights: 'admin'
   }
 };

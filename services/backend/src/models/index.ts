@@ -1,5 +1,4 @@
 import User from './User.js';
-import Session from './Session.js';
 import Address from './Address.js';
 import Food from './Food.js';
 import Ingredient from './Ingredient.js';
@@ -15,21 +14,6 @@ import Stock from './Stock.js';
 import DynamicModule from './DynamicModule.js';
 import Picture from './Picture.js';
 import FoodPicture from './FoodPicture.js';
-
-/*****
- * User + Session table associations BEGIN
- ******/
-
-User.hasMany(Session, {
-  foreignKey: 'userId',
-  as: 'sessions'
-});
-Session.belongsTo(User);
-
-/*****
- * User + Session table associations END
- ******/
-
 
 /*****
  * User + Address table associations BEGIN
@@ -359,7 +343,6 @@ FoodPicture.belongsTo(Food);
 
 export {
   User,
-  Session,
   Address,
   Food,
   Ingredient,
