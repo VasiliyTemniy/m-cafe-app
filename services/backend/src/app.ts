@@ -6,7 +6,8 @@ import cors from 'cors';
 import usersRouter from './controllers/user.js';
 import sessionRouter from './controllers/session.js';
 import adminRouter from './controllers/admin.js';
-// import foodRouter from './controllers/food.js';
+import foodRouter from './controllers/food.js';
+import foodTypeRouter from './controllers/foodType.js';
 import middleware from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
@@ -30,7 +31,8 @@ app.use(middleware.requestLogger);
 app.use('/session', sessionRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
-// app.use('/food', foodRouter);
+app.use('/food', foodRouter);
+app.use('/foodtype', foodTypeRouter);
 
 
 const initTestingHelper = async () => {
