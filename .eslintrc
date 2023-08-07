@@ -9,7 +9,8 @@
       "warn",
       2,
       { 
-        "SwitchCase": 1
+        "SwitchCase": 1,
+        "flatTernaryExpressions": true
       }
     ],
     "linebreak-style": [
