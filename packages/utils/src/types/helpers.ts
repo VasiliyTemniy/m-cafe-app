@@ -1,4 +1,4 @@
-import { RedisError } from "./Errors.js";
+import { ApplicationError, RedisError } from "./Errors.js";
 import { isDate } from "./typeParsers.js";
 
 export type MapToUnknown<T> = {
@@ -7,9 +7,12 @@ export type MapToUnknown<T> = {
 
 export type MapToDT<T> = {
   [Property in keyof T]:
-  T[Property] extends Date | undefined ? string
-  : T[Property] extends Date ? string
-  : T[Property]
+  T[Property] extends Date | undefined ? string :
+  T[Property] extends Date ? string :
+  // Maybe this will be useful later...
+  // T[Property] extends number ? number :
+  // T[Property] extends ForeignKey<infer V> ? MapToDT<V> :
+  T[Property]
 };
 
 export type MapToStrings<T> = {
@@ -119,18 +122,23 @@ export const parseRedisToDT = <T>(dataObjStrings: MapToStrings<T>): T => {
 /**
  * Used only to map obj values to transit data
  */
-export const mapDataToTransit = <T>(data: T, omitProps?: { omit: string[]; }): MapToDT<T> => {
+export const mapDataToTransit = <T>(data: T, omitProps?: { omit: string[]; }, omitTimestamps = true): MapToDT<T> => {
   const dataTransit = {} as MapToDT<T>;
 
-  const omitFields = omitProps ?
-    [...timestampsKeys, ...omitProps.omit]
-    : [...timestampsKeys];
+  const omitFields =
+    omitProps && omitTimestamps ? [...timestampsKeys, ...omitProps.omit] :
+    omitTimestamps ? [...timestampsKeys] :
+    omitProps ? [...omitProps.omit] :
+    [];
 
   for (const keyString in data) {
 
     const key = keyString as keyof T;
     if (!data[key]) continue;
     if (omitFields.includes(String(key))) continue;
+
+    // Remove all foreign keys... In runtime only option is to check like this while all such keys must end up with 'Id'
+    if (keyString.endsWith('Id')) continue;
 
     if (typeof data[key] === 'object')
       if (isDate(data[key])) {
@@ -146,4 +154,26 @@ export const mapDataToTransit = <T>(data: T, omitProps?: { omit: string[]; }): M
   }
 
   return dataTransit;
+};
+
+
+/**
+ * Used only to update db entry fields one by one for instance update
+ */
+export const updateInstance = <T>(oldInstance: T, newInstanceData: MapToDT<T>) => {
+  for (const keyString in newInstanceData) {
+    const key = keyString as keyof MapToDT<T>;
+
+    if (typeof newInstanceData[key] === 'object') {
+      if (isDate(newInstanceData[key])) {
+        const date = newInstanceData[key] as unknown as string;
+        oldInstance[key] = Date.parse(date) as unknown as T[keyof T];
+        continue;
+      } else {
+        throw new ApplicationError('updateInstance function is used to update nested object! Check implementations');
+      }
+    }
+
+    oldInstance[key] = newInstanceData[key] as unknown as T[keyof T];
+  }
 };
