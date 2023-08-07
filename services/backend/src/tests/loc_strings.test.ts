@@ -13,6 +13,8 @@ describe('Localization strings', () => {
 
   it('Localization strings can be created, updated, deleted', async () => {
 
+    await LocString.destroy({ where: {} });
+
     const locString: NewLocString = {
       ruString: 'Превед!',
       enString: 'Hallo!',

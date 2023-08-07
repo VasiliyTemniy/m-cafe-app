@@ -44,10 +44,16 @@ const redisConfig: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts
 };
 
 
+const cookieExpiracyMS =
+  TOKEN_TTL.endsWith('s') ? Number(TOKEN_TTL.slice(0, TOKEN_TTL.length - 1)) * 1000 :
+  TOKEN_TTL.endsWith('m') ? Number(TOKEN_TTL.slice(0, TOKEN_TTL.length - 1)) * 60 * 1000 :
+  TOKEN_TTL.endsWith('h') ? Number(TOKEN_TTL.slice(0, TOKEN_TTL.length - 1)) * 60 * 60 * 1000 :
+  TOKEN_TTL.endsWith('d') ? Number(TOKEN_TTL.slice(0, TOKEN_TTL.length - 1)) * 24 * 60 * 60 * 1000
+  : Number(TOKEN_TTL);
+
 const sessionCookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  path: 'auth'
+  secure: process.env.NODE_ENV === 'production'
 };
 
 
@@ -59,5 +65,6 @@ export default {
   ALLOWED_ORIGIN,
   SUPERADMIN_PHONENUMBER,
   redisConfig,
-  sessionCookieOptions
+  sessionCookieOptions,
+  cookieExpiracyMS
 };
