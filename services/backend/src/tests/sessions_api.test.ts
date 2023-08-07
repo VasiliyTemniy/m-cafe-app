@@ -87,8 +87,7 @@ succeds and gives token + id (userId) as response', async () => {
 
     const cookieParts = cookieMessage.split('; ');
 
-    expect(cookieParts[1]).to.equal('Path=auth');
-    expect(cookieParts[2]).to.equal('HttpOnly');
+    expect(cookieParts[cookieParts.length - 1]).to.equal('HttpOnly');
 
     const token = cookieParts[0].substring(6);
 
@@ -221,7 +220,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     await Session.create(newSession, userInDB.rights);
 
-    const tokenCookie = `token=${token}; Path=auth; HttpOnly`;
+    const tokenCookie = `token=${token}; HttpOnly`;
 
     const response = await api
       .get(`${apiBaseUrl}/users/me`)
@@ -241,7 +240,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
   it('Malformed / incorrect token is not accepted', async () => {
 
-    const invalidTokenCookie = `token=IAmALittleToken; Path=auth; HttpOnly`;
+    const invalidTokenCookie = `token=IAmALittleToken; HttpOnly`;
 
     const responseInvToken = await api
       .get(`${apiBaseUrl}/users/me`)
@@ -258,7 +257,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
       rand: Math.random() * 10000
     }, 'IAmASpecialChineseSeckrette', { expiresIn: config.TOKEN_TTL });
 
-    const tokenInvSecretCookie = `token=${tokenInvSecret}; Path=auth; HttpOnly`;
+    const tokenInvSecretCookie = `token=${tokenInvSecret}; HttpOnly`;
 
     const responseInvSecret = await api
       .get(`${apiBaseUrl}/users/me`)
@@ -274,7 +273,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
       rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
-    const tokenInvPayloadCookie = `token=${tokenInvPayload}; Path=auth; HttpOnly`;
+    const tokenInvPayloadCookie = `token=${tokenInvPayload}; HttpOnly`;
 
     const responseInvPayload = await api
       .get(`${apiBaseUrl}/users/me`)
@@ -294,7 +293,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
       rand: Math.random() * 10000
     }, config.SECRET, { expiresIn: config.TOKEN_TTL });
 
-    const tokenValidCookie = `token=${tokenValid}; Path=auth; HttpOnly`;
+    const tokenValidCookie = `token=${tokenValid}; HttpOnly`;
 
     const response = await api
       .get(`${apiBaseUrl}/users/me`)

@@ -84,7 +84,12 @@ sessionRouter.post(
 
     }
 
-    res.cookie('token', token, config.sessionCookieOptions).status(201).end();
+    res
+      .cookie('token', token, {
+        ...config.sessionCookieOptions,
+        expires: new Date(Date.now() + config.cookieExpiracyMS)
+      })
+      .status(201).end();
 
   }) as RequestHandler
 );
@@ -119,7 +124,12 @@ sessionRouter.get(
 
     await activeSession.save(req.user.rights);
 
-    res.cookie('token', token, config.sessionCookieOptions).status(200).end();
+    res
+      .cookie('token', token, {
+        ...config.sessionCookieOptions,
+        expires: new Date(Date.now() + config.cookieExpiracyMS)
+      })
+      .status(200).end();
 
   }) as RequestHandler
 );
@@ -142,7 +152,7 @@ sessionRouter.delete(
       }
     });
 
-    res.status(204).end();
+    res.clearCookie('token', config.sessionCookieOptions).status(204).end();
 
   }) as RequestHandler
 );
