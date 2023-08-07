@@ -23,12 +23,12 @@ User.belongsToMany(Address, { through: UserAddress });
 Address.belongsToMany(User, { through: UserAddress });
 User.hasMany(UserAddress, {
   foreignKey: 'userId',
-  as: 'user_addresses'
+  as: 'userAddresses'
 });
 UserAddress.belongsTo(User, { targetKey: 'id' });
 Address.hasOne(UserAddress, {
   foreignKey: 'addressId',
-  as: 'address_user'
+  as: 'addressUser'
 });
 UserAddress.belongsTo(Address, { targetKey: 'id' });
 
@@ -137,7 +137,10 @@ FoodType.hasMany(Food, {
   foreignKey: 'foodTypeId',
   as: 'foodType'
 });
-Food.belongsTo(FoodType);
+Food.belongsTo(FoodType, {
+  foreignKey: 'foodTypeId',
+  as: 'foodType'
+});
 
 /*****
  * Food + FoodType table associations END
@@ -231,7 +234,7 @@ Food.hasMany(FoodComponent, {
 
 Address.hasOne(Facility, {
   foreignKey: 'addressId',
-  as: 'facility_address'
+  as: 'facilityAddress'
 });
 Facility.belongsTo(Address);
 
@@ -240,12 +243,12 @@ Facility.belongsToMany(User, { through: FacilityManager });
 User.belongsToMany(Facility, { through: FacilityManager });
 Facility.hasMany(FacilityManager, {
   foreignKey: 'facilityId',
-  as: 'facility_managers'
+  as: 'facilityManagers'
 });
 FacilityManager.belongsTo(Facility);
 User.hasOne(FacilityManager, {
   foreignKey: 'userId',
-  as: 'manager_facility'
+  as: 'managerFacility'
 });
 FacilityManager.belongsTo(User);
 
@@ -282,7 +285,7 @@ Stock.belongsTo(Facility);
 
 Address.hasOne(Order, {
   foreignKey: 'addressId',
-  as: 'order_address'
+  as: 'orderAddress'
 });
 Order.belongsTo(Address);
 
@@ -290,12 +293,12 @@ Order.belongsToMany(Food, { through: OrderFood });
 Food.belongsToMany(Order, { through: OrderFood });
 Order.hasMany(OrderFood, {
   foreignKey: 'orderId',
-  as: 'order_foods'
+  as: 'orderFoods'
 });
 OrderFood.belongsTo(Order);
 Food.hasMany(OrderFood, {
   foreignKey: 'orderId',
-  as: 'food_orders'
+  as: 'foodOrders'
 });
 OrderFood.belongsTo(Food);
 
@@ -310,7 +313,7 @@ OrderFood.belongsTo(Food);
 
 Picture.hasOne(DynamicModule, {
   foreignKey: 'pictureId',
-  as: 'picture_dynamic_module'
+  as: 'pictureDynamicModule'
 });
 DynamicModule.belongsTo(Picture);
 
@@ -327,12 +330,12 @@ Picture.belongsToMany(Food, { through: FoodPicture });
 Food.belongsToMany(Picture, { through: FoodPicture });
 Picture.hasMany(FoodPicture, {
   foreignKey: 'pictureId',
-  as: 'picture_foods'
+  as: 'pictureFoods'
 });
 FoodPicture.belongsTo(Picture);
 Food.hasMany(FoodPicture, {
   foreignKey: 'foodId',
-  as: 'food_pictures'
+  as: 'foodPictures'
 });
 FoodPicture.belongsTo(Food);
 
