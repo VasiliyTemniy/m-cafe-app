@@ -32,7 +32,7 @@ Picture.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'pictures'
+  modelName: 'picture'
 });
 
 export default Picture;

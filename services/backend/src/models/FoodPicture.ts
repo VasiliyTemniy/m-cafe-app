@@ -35,7 +35,7 @@ FoodPicture.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'food_pictures'
+  modelName: 'food_picture'
 });
 
 export default FoodPicture;
