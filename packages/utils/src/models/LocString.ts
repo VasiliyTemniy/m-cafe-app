@@ -42,3 +42,8 @@ export const isNewLocString = (obj: unknown): obj is NewLocString => {
 
   return isString(obj.ruString);
 };
+
+export type EditLocString = LocStringDT;
+
+export const isEditLocString = (obj: unknown): obj is EditLocString =>
+  isLocStringDT(obj);
