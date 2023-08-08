@@ -177,6 +177,11 @@ foodTypeRouter.put(
     updateInstance(updNameLoc, nameLoc);
     updateInstance(updDescriptionLoc, descriptionLoc);
 
+    await updNameLoc.save();
+    await updDescriptionLoc.save();
+
+    await updFoodType.save();
+
     const resBody: FoodTypeDT = {
       id: updFoodType.id,
       nameLoc: mapDataToTransit(updNameLoc.dataValues),
