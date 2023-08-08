@@ -163,7 +163,7 @@ ingredientRouter.put(
       ...mapDataToTransit(updIngredient)
     };
 
-    res.status(201).json(resBody);
+    res.status(200).json(resBody);
 
   }) as RequestHandler
 );
