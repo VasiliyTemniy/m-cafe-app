@@ -121,14 +121,16 @@ export const parseRedisToDT = <T>(dataObjStrings: MapToStrings<T>): T => {
 
 /**
  * Used only to map obj values to transit data
+ * Maps date obj to ISO strings, omits foreign keys, omits 
+ * For nested objects, use separately for each layer
  */
-export const mapDataToTransit = <T>(data: T, omitProps?: { omit: string[]; }, omitTimestamps = true): MapToDT<T> => {
+export const mapDataToTransit = <T>(data: T, omitProps?: { omit?: string[]; omitTimestamps?: boolean }): MapToDT<T> => {
   const dataTransit = {} as MapToDT<T>;
 
   const omitFields =
-    omitProps && omitTimestamps ? [...timestampsKeys, ...omitProps.omit] :
-    omitTimestamps ? [...timestampsKeys] :
-    omitProps ? [...omitProps.omit] :
+    omitProps && omitProps.omit && omitProps.omitTimestamps ? [...timestampsKeys, ...omitProps.omit] :
+    omitProps && omitProps.omitTimestamps ? [...timestampsKeys] :
+    omitProps && omitProps.omit ? [...omitProps.omit] :
     [];
 
   for (const keyString in data) {
@@ -146,7 +148,7 @@ export const mapDataToTransit = <T>(data: T, omitProps?: { omit: string[]; }, om
         dataTransit[key] = date.toISOString() as unknown as MapToDT<T>[keyof T];
         continue;
       } else {
-        dataTransit[key] = mapDataToTransit(data[key]) as unknown as MapToDT<T>[keyof T];
+        // For nested objects use destructuring and apply this func manually for every layer. Needed like this for sequelize model instances
         continue;
       }
 
