@@ -458,7 +458,7 @@ describe('Food requests tests', () => {
 
     const foodTypesWithFoods = foodTypes.filter(foodType => !!foodType.foodTypeFoods && foodType.foodTypeFoods.length > 0);
 
-    const queryFoodTypeId = foodTypesWithFoods[Math.round(Math.random() * (foodTypes.length - 1))].id;
+    const queryFoodTypeId = foodTypesWithFoods[Math.round(Math.random() * (foodTypesWithFoods.length - 1))].id;
 
     const response = await api
       .get(`${apiBaseUrl}/food/?foodtypeid=${queryFoodTypeId}`)
