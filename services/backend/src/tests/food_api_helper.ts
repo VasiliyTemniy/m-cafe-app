@@ -124,11 +124,13 @@ export const initialFoods: Omit<FoodData, 'id' | 'nameLocId' | 'descriptionLocId
 ];
 
 
-export const initFoodTypes = async () => {
+export const initFoodTypes = async (foodTypesCount?: number) => {
 
   const locStrings = await LocString.bulkCreate(initialFoodLocStrings);
 
   let i = 0;
+
+  let j = 0;
 
   const foodTypes = [];
 
@@ -138,7 +140,10 @@ export const initFoodTypes = async () => {
       descriptionLocId: locStrings[i+1].id
     });
     i += 2;
+    j++;
     foodTypes.push(foodType);
+
+    if (foodTypesCount && j >= foodTypesCount) return foodTypes;
   }
 
   return foodTypes;
