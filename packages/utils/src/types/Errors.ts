@@ -15,6 +15,13 @@ export class RequestBodyError extends Error {
   }
 }
 
+export class RequestQueryError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "RequestQueryError";
+  }
+}
+
 export class CredentialsError extends Error {
   constructor(message: string) {
     super(message);

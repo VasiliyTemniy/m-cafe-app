@@ -146,7 +146,7 @@ export const initFoodTypes = async () => {
   return foodTypes;
 };
 
-export const initFoods = async () => {
+export const initFoods = async (foodsCount?: number) => {
 
   // on delete - cascade to foodtype, food, etc
   await LocString.destroy({ where: {} });
@@ -180,6 +180,8 @@ export const initFoods = async () => {
     i += 2;
     j++;
     foods.push(food);
+
+    if (foodsCount && j >= foodsCount) return foods;
   }
 
   return foods;

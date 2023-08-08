@@ -152,6 +152,15 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       });
       break;
 
+    case 'RequestQueryError':
+      res.status(400).json({
+        error: {
+          name: 'RequestQueryError',
+          message: error.message
+        }
+      });
+      break;
+
     case 'CredentialsError':
       res.status(401).json({
         error: {

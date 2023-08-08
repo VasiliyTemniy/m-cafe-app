@@ -135,7 +135,7 @@ Picture.belongsTo(LocString, {
 
 FoodType.hasMany(Food, {
   foreignKey: 'foodTypeId',
-  as: 'foodType'
+  as: 'foodTypeFoods'
 });
 Food.belongsTo(FoodType, {
   foreignKey: 'foodTypeId',

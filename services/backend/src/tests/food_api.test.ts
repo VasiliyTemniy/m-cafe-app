@@ -45,7 +45,7 @@ describe('Food type requests tests', () => {
     foodTypes = await initFoodTypes();
   });
 
-  it('Food type get routes work without authorization', async () => {
+  it('Food type GET routes work without authorization', async () => {
 
     const response1 = await api
       .get(`${apiBaseUrl}/foodtype/${foodTypes[0].id}`)
@@ -90,7 +90,7 @@ describe('Food type requests tests', () => {
 
   });
 
-  it('Food type post, put, delete routes require admin rights', async () => {
+  it('Food type POST, PUT, DELETE routes require admin rights', async () => {
 
     const response1 = await api
       .delete(`${apiBaseUrl}/foodtype/${foodTypes[0].id}`)
@@ -199,6 +199,49 @@ describe('Food type requests tests', () => {
 
   });
 
+  it('Food type GET / path accepts withfoodonly query key (only 0 as false or > 0 numeric as true)', async () => {
+
+    await initFoods(2);
+
+    const foodTypesInDB = await FoodType.findAll({
+      include: [
+        {
+          model: Food,
+          as: 'foodTypeFoods'
+        }
+      ]
+    });
+
+    const response = await api
+      .get(`${apiBaseUrl}/foodtype/?withfoodonly=${1}`)
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    for (const foodTypeInRes of response.body) {
+      expect(
+        foodTypesInDB
+          .find(foodTypeInDB => foodTypeInDB.id === foodTypeInRes.id)
+          ?.foodTypeFoods
+          ?.length
+      ).to.be.above(0);
+    }
+
+  });
+
+  it('Food type GET / path does not accept withfoodonly query key if it is not numeric', async () => {
+
+    const response = await api
+      .get(`${apiBaseUrl}/foodtype/?withfoodonly=${'some_malicious_query?hope_it_wont_get_through!'}`)
+      .set('User-Agent', userAgent)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.error.name).to.equal('RequestQueryError');
+    expect(response.body.error.message).to.equal('Incorrect query string');
+
+  });
+
 });
 
 
@@ -224,7 +267,7 @@ describe('Food requests tests', () => {
     foods = await initFoods();
   });
 
-  it('Food get routes work without authorization', async () => {
+  it('Food GET routes work without authorization', async () => {
 
     const response1 = await api
       .get(`${apiBaseUrl}/food/${foods[0].id}`)
@@ -293,7 +336,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it('Food post, put, delete routes require admin rights', async () => {
+  it('Food POST, PUT, DELETE routes require admin rights', async () => {
 
     const response1 = await api
       .delete(`${apiBaseUrl}/food/${foods[0].id}`)
@@ -348,7 +391,7 @@ describe('Food requests tests', () => {
         ruString: 'Супергут'
       },
       price: 100500,
-      foodTypeId: foods[Math.round(Math.random() * foods.length - 1)].foodTypeId
+      foodTypeId: foods[Math.round(Math.random() * (foods.length - 1))].foodTypeId
     };
 
     const response = await api
@@ -376,7 +419,7 @@ describe('Food requests tests', () => {
         ruString: 'Супергут'
       },
       price: 100500,
-      foodTypeId: foods[Math.round(Math.random() * foods.length - 1)].foodTypeId
+      foodTypeId: foods[Math.round(Math.random() * (foods.length - 1))].foodTypeId
     };
 
     const response = await api
@@ -399,6 +442,98 @@ describe('Food requests tests', () => {
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
+
+  });
+
+  it('Food GET / path accepts foodtypeid query key (only numeric as id)', async () => {
+
+    const foodTypes = await FoodType.findAll({
+      include: [
+        {
+          model: Food,
+          as: 'foodTypeFoods'
+        }
+      ]
+    });
+
+    const foodTypesWithFoods = foodTypes.filter(foodType => !!foodType.foodTypeFoods && foodType.foodTypeFoods.length > 0);
+
+    const queryFoodTypeId = foodTypesWithFoods[Math.round(Math.random() * (foodTypes.length - 1))].id;
+
+    const response = await api
+      .get(`${apiBaseUrl}/food/?foodtypeid=${queryFoodTypeId}`)
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const foodWithQueryFoodTypeIdInDB = await Food.findAll({
+      where: { foodTypeId: queryFoodTypeId },
+      attributes: {
+        exclude: [...timestampsKeys]
+      },
+      include: [
+        {
+          model: LocString,
+          as: 'nameLoc',
+          attributes: {
+            exclude: [...timestampsKeys]
+          }
+        },
+        {
+          model: LocString,
+          as: 'descriptionLoc',
+          attributes: {
+            exclude: [...timestampsKeys]
+          }
+        },
+        {
+          model: FoodType,
+          as: 'foodType',
+          attributes: {
+            exclude: [...timestampsKeys]
+          },
+          include: [
+            {
+              model: LocString,
+              as: 'nameLoc',
+              attributes: {
+                exclude: [...timestampsKeys]
+              }
+            },
+            {
+              model: LocString,
+              as: 'descriptionLoc',
+              attributes: {
+                exclude: [...timestampsKeys]
+              }
+            },
+          ]
+        }
+      ]
+    });
+
+    expect(response.body).to.be.lengthOf(foodWithQueryFoodTypeIdInDB.length);
+
+    const matchingIndexInArray = foodWithQueryFoodTypeIdInDB.findIndex(food => food.id === response.body[0].id);
+
+    expect(response.body[0].nameLoc.id).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].nameLoc?.id);
+    expect(response.body[0].nameLoc.ruString).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].nameLoc?.ruString);
+    expect(response.body[0].descriptionLoc.id).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].descriptionLoc?.id);
+    expect(response.body[0].descriptionLoc.ruString).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].descriptionLoc?.ruString);
+    expect(response.body[0].price).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].price);
+
+  });
+
+  it('Food GET / path does not accept foodtypeid query key if it is not numeric', async () => {
+
+    const response = await api
+      .get(`${apiBaseUrl}/food/?foodtypeid=${'some_malicious_query?hope_it_wont_get_through!'}`)
+      .set('User-Agent', userAgent)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.error.name).to.equal('RequestQueryError');
+    expect(response.body.error.message).to.equal('Incorrect query string');
 
   });
 
