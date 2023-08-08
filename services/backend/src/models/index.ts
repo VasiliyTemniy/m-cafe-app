@@ -111,9 +111,12 @@ Facility.belongsTo(LocString, {
 
 LocString.hasOne(DynamicModule, {
   foreignKey: 'locStringId',
+  as: 'moduleLocString'
+});
+DynamicModule.belongsTo(LocString, {
+  foreignKey: 'locStringId',
   as: 'locString'
 });
-DynamicModule.belongsTo(LocString);
 
 LocString.hasOne(Picture, {
   foreignKey: 'altTextLocId',
