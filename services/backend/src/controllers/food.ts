@@ -75,15 +75,14 @@ foodRouter.get(
 
     const resBody: FoodDT[] = foods.map(food => {
       return {
-        id: food.id,
         nameLoc: mapDataToTransit(food.nameLoc!.dataValues),
         descriptionLoc: mapDataToTransit(food.descriptionLoc!.dataValues),
-        price: food.price,
         foodType: {
-          id: food.foodType!.id,
           nameLoc: mapDataToTransit(food.foodType!.nameLoc!.dataValues),
-          descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues)
-        }
+          descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
+          ...mapDataToTransit(food.foodType!.dataValues)
+        },
+        ...mapDataToTransit(food.dataValues)
       };
     });
 
@@ -144,15 +143,14 @@ foodRouter.get(
     if (!food) throw new DatabaseError(`No food type entry with this id ${req.params.id}`);
 
     const resBody: FoodDT = {
-      id: food.id,
       nameLoc: mapDataToTransit(food.nameLoc!.dataValues),
       descriptionLoc: mapDataToTransit(food.descriptionLoc!.dataValues),
-      price: food.price,
       foodType: {
-        id: food.foodType!.id,
         nameLoc: mapDataToTransit(food.foodType!.nameLoc!.dataValues),
-        descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues)
-      }
+        descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
+        ...mapDataToTransit(food.foodType!.dataValues)
+      },
+      ...mapDataToTransit(food.dataValues)
     };
 
     res.status(200).json(resBody);
@@ -209,7 +207,7 @@ foodRouter.post(
       id: savedFood.id,
       nameLoc: mapDataToTransit(savedNameLoc.dataValues),
       descriptionLoc: mapDataToTransit(savedDescriptionLoc.dataValues),
-      price,
+      price: savedFood.price,
       foodType: {
         id: foodTypeId,
         nameLoc: mapDataToTransit(existingFoodType.nameLoc!.dataValues),
@@ -271,7 +269,7 @@ foodRouter.put(
       id: updFood.id,
       nameLoc: mapDataToTransit(updNameLoc.dataValues),
       descriptionLoc: mapDataToTransit(updDescriptionLoc.dataValues),
-      price,
+      price: updFood.price,
       foodType: {
         id: foodTypeId,
         nameLoc: mapDataToTransit(updFoodType.nameLoc!.dataValues),
