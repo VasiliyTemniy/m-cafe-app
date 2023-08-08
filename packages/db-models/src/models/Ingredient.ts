@@ -1,4 +1,5 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
+import { PropertiesCreationOptional } from '../types/helpers.js';
 import { LocString } from './LocString.js';
 
 export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
@@ -12,3 +13,7 @@ export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreation
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
+
+
+export type IngredientData = Omit<InferAttributes<Ingredient>, PropertiesCreationOptional>
+  & { id: number; };
