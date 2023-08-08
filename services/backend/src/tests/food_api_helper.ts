@@ -1,4 +1,5 @@
-import { Food, FoodData, FoodType, FoodTypeData, LocString, LocStringData } from "@m-cafe-app/db-models";
+import { FoodData, FoodTypeData, LocStringData } from "@m-cafe-app/db-models";
+import { Food, FoodType, LocString } from '../models';
 
 
 export const initialFoodLocStrings: Omit<LocStringData, 'id'>[] = [
