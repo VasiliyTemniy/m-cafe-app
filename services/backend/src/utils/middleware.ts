@@ -73,7 +73,7 @@ const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction)
 
 const managerCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  if (!req.token) return next(new ApplicationError('Wrong usage of a adminCheck middleware in app code. Please, contact admins'));
+  if (!req.token) return next(new ApplicationError('Wrong usage of a managerCheck middleware in app code. Please, contact admins'));
 
   const userRights = await Session.getUserRightsCache(req.token);
   if (!(userRights === 'manager' || userRights === 'admin')) return next(new ProhibitedError('You have no manager permissions'));

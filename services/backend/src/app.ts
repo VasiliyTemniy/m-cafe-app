@@ -8,6 +8,7 @@ import sessionRouter from './controllers/session.js';
 import adminRouter from './controllers/admin.js';
 import foodRouter from './controllers/food.js';
 import foodTypeRouter from './controllers/foodType.js';
+import ingredientRouter from './controllers/ingredient.js';
 import middleware from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
@@ -33,6 +34,7 @@ app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
 app.use('/food', foodRouter);
 app.use('/foodtype', foodTypeRouter);
+app.use('/ingredient', ingredientRouter);
 
 
 const initTestingHelper = async () => {

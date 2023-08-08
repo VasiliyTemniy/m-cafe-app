@@ -1,5 +1,5 @@
 import { ApplicationError, RedisError } from "./Errors.js";
-import { isDate } from "./typeParsers.js";
+import { isDate, isNumber } from "./typeParsers.js";
 
 export type MapToUnknown<T> = {
   [Property in keyof T]: unknown
@@ -121,20 +121,22 @@ export const parseRedisToDT = <T>(dataObjStrings: MapToStrings<T>): T => {
 
 /**
  * Used only to map obj values to transit data
+ * Maps date obj to ISO strings, omits foreign keys, omits 
+ * For nested objects, use separately for each layer
  */
-export const mapDataToTransit = <T>(data: T, omitProps?: { omit: string[]; }, omitTimestamps = true): MapToDT<T> => {
+export const mapDataToTransit = <T>(data: T, omitProps?: { omit?: string[]; omitTimestamps?: boolean }): MapToDT<T> => {
   const dataTransit = {} as MapToDT<T>;
 
   const omitFields =
-    omitProps && omitTimestamps ? [...timestampsKeys, ...omitProps.omit] :
-    omitTimestamps ? [...timestampsKeys] :
-    omitProps ? [...omitProps.omit] :
+    omitProps && omitProps.omit && omitProps.omitTimestamps ? [...timestampsKeys, ...omitProps.omit] :
+    omitProps && omitProps.omitTimestamps ? [...timestampsKeys] :
+    omitProps && omitProps.omit ? [...omitProps.omit] :
     [];
 
   for (const keyString in data) {
 
     const key = keyString as keyof T;
-    if (!data[key]) continue;
+    if (!data[key]) if (!isNumber(data[key])) continue;
     if (omitFields.includes(String(key))) continue;
 
     // Remove all foreign keys... In runtime only option is to check like this while all such keys must end up with 'Id'
@@ -146,7 +148,7 @@ export const mapDataToTransit = <T>(data: T, omitProps?: { omit: string[]; }, om
         dataTransit[key] = date.toISOString() as unknown as MapToDT<T>[keyof T];
         continue;
       } else {
-        dataTransit[key] = mapDataToTransit(data[key]) as unknown as MapToDT<T>[keyof T];
+        // For nested objects use destructuring and apply this func manually for every layer. Needed like this for sequelize model instances
         continue;
       }
 

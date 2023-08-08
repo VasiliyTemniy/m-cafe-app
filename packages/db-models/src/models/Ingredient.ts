@@ -1,4 +1,5 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
+import { PropertiesCreationOptional } from '../types/helpers.js';
 import { LocString } from './LocString.js';
 
 export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
@@ -11,4 +12,10 @@ export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreation
   declare calories?: number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+  declare nameLoc?: NonAttribute<LocString>;
+  declare stockMeasureLoc?: NonAttribute<LocString>;
 }
+
+
+export type IngredientData = Omit<InferAttributes<Ingredient>, PropertiesCreationOptional>
+  & { id: number; };

@@ -39,7 +39,7 @@ describe('Food type requests tests', () => {
     await Session.destroy({ where: {} });
     tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
-    await FoodType.destroy({ where: {} });
+    // on delete - cascade to foodtype, food, etc
     await LocString.destroy({ where: {} });
 
     foodTypes = await initFoodTypes();
@@ -184,8 +184,30 @@ describe('Food type requests tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
+    const updFoodTypeInDB = await FoodType.findByPk(foodTypes[0].id, {
+      include: [
+        {
+          model: LocString,
+          as: 'nameLoc',
+          attributes: {
+            exclude: [...timestampsKeys]
+          }
+        },
+        {
+          model: LocString,
+          as: 'descriptionLoc',
+          attributes: {
+            exclude: [...timestampsKeys]
+          }
+        },
+      ]
+    });
+
     expect(response.body.nameLoc.ruString).to.equal(updFoodType.nameLoc.ruString);
     expect(response.body.descriptionLoc.ruString).to.equal(updFoodType.descriptionLoc.ruString);
+
+    expect(updFoodTypeInDB?.nameLoc?.ruString).to.equal(updFoodType.nameLoc.ruString);
+    expect(updFoodTypeInDB?.descriptionLoc?.ruString).to.equal(updFoodType.descriptionLoc.ruString);
 
   });
 
@@ -200,6 +222,9 @@ describe('Food type requests tests', () => {
   });
 
   it('Food type GET / path accepts withfoodonly query key (only 0 as false or > 0 numeric as true)', async () => {
+
+    // on delete - cascade to foodtype, food, etc
+    await LocString.destroy({ where: {} });
 
     await initFoods(2);
 
@@ -263,6 +288,9 @@ describe('Food requests tests', () => {
     await User.create(validAdminInDB.dbEntry);
     await Session.destroy({ where: {} });
     tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
+
+    // on delete - cascade to foodtype, food, etc
+    await LocString.destroy({ where: {} });
 
     foods = await initFoods();
   });
@@ -409,7 +437,7 @@ describe('Food requests tests', () => {
 
   it('Food can be updated', async () => {
 
-    const updFoodType: EditFoodBody = {
+    const updFood: EditFoodBody = {
       nameLoc: {
         id: foods[0].nameLocId,
         ruString: 'Маргарита'
@@ -426,12 +454,64 @@ describe('Food requests tests', () => {
       .put(`${apiBaseUrl}/food/${foods[0].id}`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
-      .send(updFoodType)
+      .send(updFood)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.nameLoc.ruString).to.equal(updFoodType.nameLoc.ruString);
-    expect(response.body.descriptionLoc.ruString).to.equal(updFoodType.descriptionLoc.ruString);
+    const updFoodInDB = await Food.findByPk(foods[0].id, {
+      attributes: {
+        exclude: [...timestampsKeys]
+      },
+      include: [
+        {
+          model: LocString,
+          as: 'nameLoc',
+          attributes: {
+            exclude: [...timestampsKeys]
+          }
+        },
+        {
+          model: LocString,
+          as: 'descriptionLoc',
+          attributes: {
+            exclude: [...timestampsKeys]
+          }
+        },
+        {
+          model: FoodType,
+          as: 'foodType',
+          attributes: {
+            exclude: [...timestampsKeys]
+          },
+          include: [
+            {
+              model: LocString,
+              as: 'nameLoc',
+              attributes: {
+                exclude: [...timestampsKeys]
+              }
+            },
+            {
+              model: LocString,
+              as: 'descriptionLoc',
+              attributes: {
+                exclude: [...timestampsKeys]
+              }
+            },
+          ]
+        }
+      ]
+    });
+
+    expect(response.body.nameLoc.ruString).to.equal(updFood.nameLoc.ruString);
+    expect(response.body.descriptionLoc.ruString).to.equal(updFood.descriptionLoc.ruString);
+    expect(response.body.price).to.equal(updFood.price);
+    expect(response.body.foodType.id).to.equal(updFood.foodTypeId);
+
+    expect(updFoodInDB?.nameLoc?.ruString).to.equal(updFood.nameLoc.ruString);
+    expect(updFoodInDB?.descriptionLoc?.ruString).to.equal(updFood.descriptionLoc.ruString);
+    expect(updFoodInDB?.price).to.equal(updFood.price);
+    expect(updFoodInDB?.foodTypeId).to.equal(updFood.foodTypeId);
 
   });
 
@@ -458,7 +538,7 @@ describe('Food requests tests', () => {
 
     const foodTypesWithFoods = foodTypes.filter(foodType => !!foodType.foodTypeFoods && foodType.foodTypeFoods.length > 0);
 
-    const queryFoodTypeId = foodTypesWithFoods[Math.round(Math.random() * (foodTypes.length - 1))].id;
+    const queryFoodTypeId = foodTypesWithFoods[Math.round(Math.random() * (foodTypesWithFoods.length - 1))].id;
 
     const response = await api
       .get(`${apiBaseUrl}/food/?foodtypeid=${queryFoodTypeId}`)

@@ -1,4 +1,5 @@
-import { Food, FoodData, FoodType, FoodTypeData, LocString, LocStringData } from "@m-cafe-app/db-models";
+import { FoodData, FoodTypeData, LocStringData } from "@m-cafe-app/db-models";
+import { Food, FoodType, LocString } from '../models';
 
 
 export const initialFoodLocStrings: Omit<LocStringData, 'id'>[] = [
@@ -123,14 +124,13 @@ export const initialFoods: Omit<FoodData, 'id' | 'nameLocId' | 'descriptionLocId
 ];
 
 
-export const initFoodTypes = async () => {
-
-  // on delete - cascade to foodtype, food, etc
-  await LocString.destroy({ where: {} });
+export const initFoodTypes = async (foodTypesCount?: number) => {
 
   const locStrings = await LocString.bulkCreate(initialFoodLocStrings);
 
   let i = 0;
+
+  let j = 0;
 
   const foodTypes = [];
 
@@ -140,16 +140,16 @@ export const initFoodTypes = async () => {
       descriptionLocId: locStrings[i+1].id
     });
     i += 2;
+    j++;
     foodTypes.push(foodType);
+
+    if (foodTypesCount && j >= foodTypesCount) return foodTypes;
   }
 
   return foodTypes;
 };
 
 export const initFoods = async (foodsCount?: number) => {
-
-  // on delete - cascade to foodtype, food, etc
-  await LocString.destroy({ where: {} });
 
   const locStrings = await LocString.bulkCreate(initialFoodLocStrings);
 
