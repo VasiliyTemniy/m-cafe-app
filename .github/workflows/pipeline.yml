@@ -49,17 +49,22 @@ jobs:
           node-version: '18'
 
       # Checked
-      - name: Cache node modules
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            .yarn
-            node_modules
-          key: cache-yarn-${{ hashFiles('yarn.lock') }}
-        
+      # Actually, this almost does nothing with 'just test this pull request' strategy
+      # Because Github thinks that it is better keep cache branch-specific
+      # So if PR number is not the same as this cache was saved -> it does not 'cache-hit' the key
+      # - name: Cache node modules
+      #   id: yarn-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       .yarn
+      #       node_modules
+      #     key: cache-yarn-${{ hashFiles('yarn.lock') }}     
+      # - name: Yarn install
+      #   if: steps.yarn-cache.outputs.cache-hit != 'true'
+      #   run: yarn install
+
       - name: Yarn install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
 
       - name: Build packages + create simlinks for packages
