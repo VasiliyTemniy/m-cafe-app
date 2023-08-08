@@ -160,7 +160,7 @@ ingredientRouter.put(
     const resBody: IngredientDT = {
       nameLoc: mapDataToTransit(updNameLoc.dataValues),
       stockMeasureLoc: mapDataToTransit(updStockMeasureLoc.dataValues),
-      ...mapDataToTransit(updIngredient)
+      ...mapDataToTransit(updIngredient.dataValues)
     };
 
     res.status(200).json(resBody);
