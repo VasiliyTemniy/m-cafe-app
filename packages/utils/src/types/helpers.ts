@@ -1,5 +1,5 @@
 import { ApplicationError, RedisError } from "./Errors.js";
-import { isDate } from "./typeParsers.js";
+import { isDate, isNumber } from "./typeParsers.js";
 
 export type MapToUnknown<T> = {
   [Property in keyof T]: unknown
@@ -136,7 +136,7 @@ export const mapDataToTransit = <T>(data: T, omitProps?: { omit?: string[]; omit
   for (const keyString in data) {
 
     const key = keyString as keyof T;
-    if (!data[key]) continue;
+    if (!data[key]) if (!isNumber(data[key])) continue;
     if (omitFields.includes(String(key))) continue;
 
     // Remove all foreign keys... In runtime only option is to check like this while all such keys must end up with 'Id'
