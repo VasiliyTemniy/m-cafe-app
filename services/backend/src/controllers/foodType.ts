@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { FoodType, LocString } from '../models/index.js';
+import { Food, FoodType, LocString } from '../models/index.js';
 import {
   FoodTypeDT,
   isNewFoodTypeBody,
@@ -9,7 +9,8 @@ import {
   timestampsKeys,
   DatabaseError,
   updateInstance,
-  isEditFoodTypeBody
+  isEditFoodTypeBody,
+  RequestQueryError
 } from '@m-cafe-app/utils';
 
 
@@ -19,29 +20,59 @@ foodTypeRouter.get(
   '/',
   (async (req, res) => {
 
+    let withFoodOnly = false;
+
+    if (req.query.withfoodonly) {
+      if (isNaN(Number(req.query.withfoodonly))) throw new RequestQueryError('Incorrect query string');
+      withFoodOnly = Boolean(Number(req.query.withfoodonly));
+    }
+
+    // Form sequelize include list for all food types _or_ only those with food
+    const includeList: {
+      model: typeof LocString | typeof Food;
+      as: string;
+      attributes?: {
+          exclude: string[];
+      };
+    }[] = [
+      {
+        model: LocString,
+        as: 'nameLoc',
+        attributes: {
+          exclude: [...timestampsKeys]
+        }
+      },
+      {
+        model: LocString,
+        as: 'descriptionLoc',
+        attributes: {
+          exclude: [...timestampsKeys]
+        }
+      }
+    ];
+
+    if (withFoodOnly) includeList.push({
+      model: Food,
+      as: 'foodTypeFoods'
+    });
+
+
     const foodTypes = await FoodType.findAll({
       attributes: {
         exclude: [...timestampsKeys]
       },
       include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        }
+        ...includeList
       ]
     });
 
-    const resBody: FoodTypeDT[] = foodTypes.map(foodType => {
+
+    const resFoodTypes =
+      withFoodOnly ? foodTypes.filter(foodType => !!foodType.foodTypeFoods && foodType.foodTypeFoods.length > 0)
+      : foodTypes;
+
+
+    const resBody: FoodTypeDT[] = resFoodTypes.map(foodType => {
       return {
         id: foodType.id,
         nameLoc: mapDataToTransit(foodType.nameLoc!.dataValues),

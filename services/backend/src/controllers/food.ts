@@ -10,6 +10,7 @@ import {
   isEditFoodBody,
   DatabaseError,
   updateInstance,
+  RequestQueryError,
 } from '@m-cafe-app/utils';
 
 
@@ -19,7 +20,15 @@ foodRouter.get(
   '/',
   (async (req, res) => {
 
+    let where = {};
+
+    if (req.query.foodtypeid) {
+      if (isNaN(Number(req.query.foodtypeid))) throw new RequestQueryError('Incorrect query string');
+      where = { foodTypeId: Number(req.query.foodtypeid) };
+    }
+
     const foods = await Food.findAll({
+      where,
       attributes: {
         exclude: [...timestampsKeys]
       },
