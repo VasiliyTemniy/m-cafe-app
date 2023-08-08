@@ -125,9 +125,6 @@ export const initialFoods: Omit<FoodData, 'id' | 'nameLocId' | 'descriptionLocId
 
 export const initFoodTypes = async () => {
 
-  // on delete - cascade to foodtype, food, etc
-  await LocString.destroy({ where: {} });
-
   const locStrings = await LocString.bulkCreate(initialFoodLocStrings);
 
   let i = 0;
@@ -147,9 +144,6 @@ export const initFoodTypes = async () => {
 };
 
 export const initFoods = async (foodsCount?: number) => {
-
-  // on delete - cascade to foodtype, food, etc
-  await LocString.destroy({ where: {} });
 
   const locStrings = await LocString.bulkCreate(initialFoodLocStrings);
 

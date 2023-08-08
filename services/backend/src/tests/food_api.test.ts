@@ -39,7 +39,7 @@ describe('Food type requests tests', () => {
     await Session.destroy({ where: {} });
     tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
-    await FoodType.destroy({ where: {} });
+    // on delete - cascade to foodtype, food, etc
     await LocString.destroy({ where: {} });
 
     foodTypes = await initFoodTypes();
@@ -223,6 +223,9 @@ describe('Food type requests tests', () => {
 
   it('Food type GET / path accepts withfoodonly query key (only 0 as false or > 0 numeric as true)', async () => {
 
+    // on delete - cascade to foodtype, food, etc
+    await LocString.destroy({ where: {} });
+
     await initFoods(2);
 
     const foodTypesInDB = await FoodType.findAll({
@@ -285,6 +288,9 @@ describe('Food requests tests', () => {
     await User.create(validAdminInDB.dbEntry);
     await Session.destroy({ where: {} });
     tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
+
+    // on delete - cascade to foodtype, food, etc
+    await LocString.destroy({ where: {} });
 
     foods = await initFoods();
   });
