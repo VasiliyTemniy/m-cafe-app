@@ -1,5 +1,6 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
 import { PropertiesCreationOptional } from '../types/helpers.js';
+import { Food } from './Food.js';
 import { LocString } from './LocString.js';
 
 export class FoodType extends Model<InferAttributes<FoodType>, InferCreationAttributes<FoodType>> {
@@ -10,6 +11,7 @@ export class FoodType extends Model<InferAttributes<FoodType>, InferCreationAttr
   declare updatedAt: CreationOptional<Date>;
   declare nameLoc?: NonAttribute<LocString>;
   declare descriptionLoc?: NonAttribute<LocString>;
+  declare foodTypeFoods?: NonAttribute<Food>[];
 }
 
 
