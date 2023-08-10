@@ -76,6 +76,7 @@ FoodComponent.addHook("afterFind", findResult => {
 
   if (!Array.isArray(findResult)) {
     mapComponentKey(findResult as FoodComponent);
+    return;
   }
 
   for (const instance of findResult as FoodComponent[]) {
