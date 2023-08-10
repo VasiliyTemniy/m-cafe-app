@@ -42,11 +42,6 @@ FoodComponent.init({
   underscored: true,
   timestamps: true,
   modelName: 'food_component',
-  defaultScope: {
-    where: {
-      compositeFood: false
-    }
-  },
   scopes: {
     compositeFood: {
       where: {
@@ -59,6 +54,32 @@ FoodComponent.init({
       }
     },
     all: {}
+  }
+});
+
+FoodComponent.addHook("afterFind", findResult => {
+  if (!findResult) return;
+
+  const mapComponentKey = (instance: FoodComponent) => {
+    if (instance.compositeFood && instance.food !== undefined) {
+      instance.component = instance.food;
+    } else if (!instance.compositeFood && instance.ingredient !== undefined) {
+      instance.component = instance.ingredient;
+    }
+    // Taken from sequelize docs
+    // To prevent mistakes:
+    delete instance.food;
+    // delete instance.dataValues.food;
+    delete instance.ingredient;
+    // delete instance.dataValues.ingredient;
+  };
+
+  if (!Array.isArray(findResult)) {
+    mapComponentKey(findResult as FoodComponent);
+  }
+
+  for (const instance of findResult as FoodComponent[]) {
+    mapComponentKey(instance);
   }
 });
 
