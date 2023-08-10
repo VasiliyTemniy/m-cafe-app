@@ -10,8 +10,12 @@ import {
   isEditFoodBody,
   DatabaseError,
   updateInstance,
-  RequestQueryError,
+  RequestQueryError
 } from '@m-cafe-app/utils';
+import {
+  includeNameDescriptionLocNoTimestamps,
+  includeNameDescriptionLocNoTimestampsSecondLayer
+} from '../utils/sequelizeHelpers.js';
 
 
 const foodRouter = Router();
@@ -34,42 +38,16 @@ foodRouter.get(
       },
       include: [
         {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
           model: FoodType,
           as: 'foodType',
           attributes: {
             exclude: [...timestampsKeys]
           },
           include: [
-            {
-              model: LocString,
-              as: 'nameLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
-            {
-              model: LocString,
-              as: 'descriptionLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
+            ...includeNameDescriptionLocNoTimestampsSecondLayer
           ]
-        }
+        },
+        ...includeNameDescriptionLocNoTimestamps,
       ]
     });
 
@@ -101,42 +79,16 @@ foodRouter.get(
       },
       include: [
         {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
           model: FoodType,
           as: 'foodType',
           attributes: {
             exclude: [...timestampsKeys]
           },
           include: [
-            {
-              model: LocString,
-              as: 'nameLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
-            {
-              model: LocString,
-              as: 'descriptionLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
+            ...includeNameDescriptionLocNoTimestampsSecondLayer
           ]
-        }
+        },
+        ...includeNameDescriptionLocNoTimestamps,
       ]
     });
 
@@ -174,20 +126,7 @@ foodRouter.post(
         exclude: [...timestampsKeys]
       },
       include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        }
+        ...includeNameDescriptionLocNoTimestamps
       ]
     });
 
@@ -236,14 +175,7 @@ foodRouter.put(
 
     const updFoodType = await FoodType.findByPk(foodTypeId, {
       include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-        }
+        ...includeNameDescriptionLocNoTimestamps
       ]
     });
     if (!updFoodType) throw new DatabaseError(`No food type entry with this id ${foodTypeId}`);

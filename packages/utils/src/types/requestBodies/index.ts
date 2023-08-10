@@ -5,3 +5,4 @@ export * from './UserBodies.js';
 export * from './FoodTypeBodies.js';
 export * from './FoodBodies.js';
 export * from './IngredientBodies.js';
+export * from './FoodComponentsBodies.js';

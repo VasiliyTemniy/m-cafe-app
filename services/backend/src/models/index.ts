@@ -184,7 +184,13 @@ Food.hasMany(FoodComponent, {
   as: 'foodComponents',
   constraints: false,
 });
-FoodComponent.belongsTo(Food);
+FoodComponent.belongsTo(Food, {
+  foreignKey: 'componentId',
+  as: 'food',
+  constraints: false,
+  foreignKeyConstraint: false
+});
+
 Ingredient.hasMany(FoodComponent, {
   foreignKey: 'componentId',
   as: 'ingredientFoods',
@@ -192,6 +198,12 @@ Ingredient.hasMany(FoodComponent, {
   scope: {
     compositeFood: false
   }
+});
+FoodComponent.belongsTo(Ingredient, {
+  foreignKey: 'componentId',
+  as: 'ingredient',
+  constraints: false,
+  foreignKeyConstraint: false
 });
 
 

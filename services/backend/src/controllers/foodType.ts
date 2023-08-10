@@ -12,6 +12,7 @@ import {
   isEditFoodTypeBody,
   RequestQueryError
 } from '@m-cafe-app/utils';
+import { includeNameDescriptionLocNoTimestamps } from '../utils/sequelizeHelpers.js';
 
 
 const foodTypeRouter = Router();
@@ -35,20 +36,7 @@ foodTypeRouter.get(
           exclude: string[];
       };
     }[] = [
-      {
-        model: LocString,
-        as: 'nameLoc',
-        attributes: {
-          exclude: [...timestampsKeys]
-        }
-      },
-      {
-        model: LocString,
-        as: 'descriptionLoc',
-        attributes: {
-          exclude: [...timestampsKeys]
-        }
-      }
+      ...includeNameDescriptionLocNoTimestamps
     ];
 
     if (withFoodOnly) includeList.push({
@@ -94,20 +82,7 @@ foodTypeRouter.get(
         exclude: [...timestampsKeys]
       },
       include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        }
+        ...includeNameDescriptionLocNoTimestamps
       ]
     });
 

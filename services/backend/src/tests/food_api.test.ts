@@ -13,6 +13,10 @@ import { initLogin, userAgent } from "./sessions_api_helper";
 import { apiBaseUrl } from "./test_helper";
 import { initFoods, initFoodTypes } from "./food_api_helper";
 import { validUserInDB } from "./users_api_helper";
+import {
+  includeNameDescriptionLocNoTimestamps,
+  includeNameDescriptionLocNoTimestampsSecondLayer
+} from "../utils/sequelizeHelpers";
 
 
 
@@ -58,20 +62,7 @@ describe('Food type requests tests', () => {
         exclude: [...timestampsKeys]
       },
       include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        }
+        ...includeNameDescriptionLocNoTimestamps
       ]
     });
 
@@ -186,20 +177,7 @@ describe('Food type requests tests', () => {
 
     const updFoodTypeInDB = await FoodType.findByPk(foodTypes[0].id, {
       include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
+        ...includeNameDescriptionLocNoTimestamps
       ]
     });
 
@@ -309,42 +287,16 @@ describe('Food requests tests', () => {
       },
       include: [
         {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
           model: FoodType,
           as: 'foodType',
           attributes: {
             exclude: [...timestampsKeys]
           },
           include: [
-            {
-              model: LocString,
-              as: 'nameLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
-            {
-              model: LocString,
-              as: 'descriptionLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
+            ...includeNameDescriptionLocNoTimestampsSecondLayer
           ]
-        }
+        },
+        ...includeNameDescriptionLocNoTimestamps
       ]
     });
 
@@ -464,42 +416,16 @@ describe('Food requests tests', () => {
       },
       include: [
         {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
           model: FoodType,
           as: 'foodType',
           attributes: {
             exclude: [...timestampsKeys]
           },
           include: [
-            {
-              model: LocString,
-              as: 'nameLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
-            {
-              model: LocString,
-              as: 'descriptionLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
+            ...includeNameDescriptionLocNoTimestampsSecondLayer
           ]
-        }
+        },
+        ...includeNameDescriptionLocNoTimestamps
       ]
     });
 
@@ -553,42 +479,16 @@ describe('Food requests tests', () => {
       },
       include: [
         {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
-        {
           model: FoodType,
           as: 'foodType',
           attributes: {
             exclude: [...timestampsKeys]
           },
           include: [
-            {
-              model: LocString,
-              as: 'nameLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
-            {
-              model: LocString,
-              as: 'descriptionLoc',
-              attributes: {
-                exclude: [...timestampsKeys]
-              }
-            },
+            ...includeNameDescriptionLocNoTimestampsSecondLayer
           ]
-        }
+        },
+        ...includeNameDescriptionLocNoTimestamps
       ]
     });
 

@@ -7,6 +7,7 @@ import usersRouter from './controllers/user.js';
 import sessionRouter from './controllers/session.js';
 import adminRouter from './controllers/admin.js';
 import foodRouter from './controllers/food.js';
+import foodComponentRouter from './controllers/foodComponent.js';
 import foodTypeRouter from './controllers/foodType.js';
 import ingredientRouter from './controllers/ingredient.js';
 import middleware from './utils/middleware.js';
@@ -33,6 +34,7 @@ app.use('/session', sessionRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
 app.use('/food', foodRouter);
+app.use('/food', foodComponentRouter);
 app.use('/foodtype', foodTypeRouter);
 app.use('/ingredient', ingredientRouter);
 
