@@ -12,7 +12,7 @@ import { initLogin, userAgent } from "./sessions_api_helper";
 import { apiBaseUrl } from "./test_helper";
 import { validUserInDB } from "./users_api_helper";
 import { initFoodComponents } from "./foodComponents_api_helper";
-import { AddFoodComponentsBody, timestampsKeys } from "@m-cafe-app/utils";
+import { AddFoodComponentsBody, EditFoodComponentBody, timestampsKeys } from "@m-cafe-app/utils";
 import { initIngredients } from "./ingredient_api_helper";
 import { initFoods } from "./food_api_helper";
 
@@ -230,13 +230,11 @@ describe('FoodComponents requests tests', () => {
 
   });
 
-  it('FoodComponents can be updated by admin', async () => {
+  it('FoodComponents can be updated by admin - path to replace all components', async () => {
 
     const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
 
-    await FoodComponent.destroy({ where: { foodId: randomFoodId } });
-
-    const newSimpleFoodComponents: AddFoodComponentsBody = {
+    const updSimpleFoodComponents: AddFoodComponentsBody = {
       foodComponents: [
         {
           amount: 100,
@@ -255,22 +253,20 @@ describe('FoodComponents requests tests', () => {
       .put(`${apiBaseUrl}/food/${randomFoodId}/components`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
-      .send(newSimpleFoodComponents)
+      .send(updSimpleFoodComponents)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     for (const addedComponent of response1.body) {
-      const indexInRequest = newSimpleFoodComponents.foodComponents
+      const indexInRequest = updSimpleFoodComponents.foodComponents
         .findIndex(component => component.componentId === addedComponent.componentId);
       expect(indexInRequest).to.not.equal(-1);
 
-      expect(addedComponent.amount).to.equal(newSimpleFoodComponents.foodComponents[indexInRequest].amount);
-      expect(addedComponent.compositeFood).to.equal(newSimpleFoodComponents.foodComponents[indexInRequest].compositeFood);
+      expect(addedComponent.amount).to.equal(updSimpleFoodComponents.foodComponents[indexInRequest].amount);
+      expect(addedComponent.compositeFood).to.equal(updSimpleFoodComponents.foodComponents[indexInRequest].compositeFood);
     }
 
-    await FoodComponent.destroy({ where: { foodId: 0 } });
-
-    const newCompositeFoodComponents: AddFoodComponentsBody = {
+    const updCompositeFoodComponents: AddFoodComponentsBody = {
       foodComponents: [
         {
           amount: 100,
@@ -289,18 +285,44 @@ describe('FoodComponents requests tests', () => {
       .put(`${apiBaseUrl}/food/${foods[0].id}/components`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
-      .send(newCompositeFoodComponents)
+      .send(updCompositeFoodComponents)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     for (const addedComponent of response2.body) {
-      const indexInRequest = newCompositeFoodComponents.foodComponents
+      const indexInRequest = updCompositeFoodComponents.foodComponents
         .findIndex(component => component.componentId === addedComponent.componentId);
       expect(indexInRequest).to.not.equal(-1);
 
-      expect(addedComponent.amount).to.equal(newCompositeFoodComponents.foodComponents[indexInRequest].amount);
-      expect(addedComponent.compositeFood).to.equal(newCompositeFoodComponents.foodComponents[indexInRequest].compositeFood);
+      expect(addedComponent.amount).to.equal(updCompositeFoodComponents.foodComponents[indexInRequest].amount);
+      expect(addedComponent.compositeFood).to.equal(updCompositeFoodComponents.foodComponents[indexInRequest].compositeFood);
     }
+
+  });
+
+  it('FoodComponents can be updated by admin - path to update one component', async () => {
+
+    const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
+
+    const foodComponentsToUpdate = await FoodComponent.findAll({ where: { foodId: randomFoodId } });
+
+    const updFoodComponent: EditFoodComponentBody = {
+      amount: 100500,
+      compositeFood: false,
+      componentId: ingredients[0].id
+    };
+
+    const response = await api
+      .put(`${apiBaseUrl}/food/${randomFoodId}/components/${foodComponentsToUpdate[0].id}`)
+      .set("Cookie", [tokenCookie])
+      .set('User-Agent', userAgent)
+      .send(updFoodComponent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.component.id).to.equal(updFoodComponent.componentId);
+    expect(response.body.amount).to.equal(updFoodComponent.amount);
+    expect(response.body.compositeFood).to.equal(updFoodComponent.compositeFood);
 
   });
 
@@ -323,13 +345,5 @@ describe('FoodComponents requests tests', () => {
       .expect(204);
 
   });
-
-  // it('Food type GET / path accepts withfoodonly query key (only 0 as false or > 0 numeric as true)', async () => {
-
-  // });
-
-  // it('Food type GET / path does not accept withfoodonly query key if it is not numeric', async () => {
-
-  // });
 
 });
