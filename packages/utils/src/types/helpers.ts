@@ -1,5 +1,5 @@
 import { ApplicationError, RedisError } from "./Errors.js";
-import { isDate, isNumber } from "./typeParsers.js";
+import { isBoolean, isDate, isNumber } from "./typeParsers.js";
 
 export type MapToUnknown<T> = {
   [Property in keyof T]: unknown
@@ -120,9 +120,9 @@ export const parseRedisToDT = <T>(dataObjStrings: MapToStrings<T>): T => {
 
 
 /**
- * Used only to map obj values to transit data
- * Maps date obj to ISO strings, omits foreign keys, omits 
- * For nested objects, use separately for each layer
+ * Used only to map obj values to transit data.
+ * Maps date obj to ISO strings, omits foreign keys, omits spicified props.
+ * For nested objects use separately for each layer
  */
 export const mapDataToTransit = <T>(data: T, omitProps?: { omit?: string[]; omitTimestamps?: boolean }): MapToDT<T> => {
   const dataTransit = {} as MapToDT<T>;
@@ -136,7 +136,7 @@ export const mapDataToTransit = <T>(data: T, omitProps?: { omit?: string[]; omit
   for (const keyString in data) {
 
     const key = keyString as keyof T;
-    if (!data[key]) if (!isNumber(data[key])) continue;
+    if (!data[key]) if (!isNumber(data[key]) && !isBoolean(data[key])) continue;
     if (omitFields.includes(String(key))) continue;
 
     // Remove all foreign keys... In runtime only option is to check like this while all such keys must end up with 'Id'
