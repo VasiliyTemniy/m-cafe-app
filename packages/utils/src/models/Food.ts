@@ -37,3 +37,24 @@ export const isFoodDT = (obj: unknown): obj is FoodDT =>
   isFoodTypeDT(obj.foodType)
   &&
   isNumber(obj.price);
+
+
+export type FoodDTS = Omit<MapToDT<FoodData>, 'nameLocId' | 'descriptionLocId' | 'foodTypeId' | 'price'>
+  & {
+    nameLoc: LocStringDT;
+  };
+  
+type FoodDTSFields = MapToUnknown<FoodDTS>;
+
+
+const hasFoodDTSFields = (obj: unknown): obj is FoodDTSFields =>
+  hasOwnProperty(obj, "id")
+  &&
+  hasOwnProperty(obj, "nameLoc");
+
+export const isFoodDTS = (obj: unknown): obj is FoodDTS =>
+  hasFoodDTSFields(obj)
+  &&
+  isNumber(obj.id)
+  &&
+  isLocStringDT(obj.nameLoc);
