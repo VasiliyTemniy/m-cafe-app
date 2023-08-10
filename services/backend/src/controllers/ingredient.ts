@@ -2,6 +2,7 @@ import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
 import { Ingredient, LocString } from '../models/index.js';
 import { DatabaseError, IngredientDT, mapDataToTransit, timestampsKeys, isNewIngredientBody, RequestBodyError, isEditIngredientBody, updateInstance } from '@m-cafe-app/utils';
+import { includeNameLocNoTimestamps } from '../utils/sequelizeHelpers.js';
 
 
 const ingredientRouter = Router();
@@ -18,13 +19,7 @@ ingredientRouter.get(
         exclude: [...timestampsKeys]
       },
       include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
+        includeNameLocNoTimestamps,
         {
           model: LocString,
           as: 'stockMeasureLoc',
@@ -60,13 +55,7 @@ ingredientRouter.get(
         exclude: [...timestampsKeys]
       },
       include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        },
+        includeNameLocNoTimestamps,
         {
           model: LocString,
           as: 'stockMeasureLoc',
