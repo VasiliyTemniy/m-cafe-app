@@ -10,10 +10,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     },
     address_id: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: { model: 'addresses', key: 'id' },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      onDelete: 'CASCADE'
     },
     name_loc_id: {
       type: DataTypes.INTEGER,
