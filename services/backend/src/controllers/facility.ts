@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { Address, Facility, FacilityManager, LocString, User, UserAddress } from '../models/index.js';
+import { Address, Facility, FacilityManager, Ingredient, LocString, Stock, User, UserAddress } from '../models/index.js';
 import {
   FacilityDT,
   isNewFacilityBody,
@@ -11,9 +11,21 @@ import {
   updateInstance,
   isEditFacilityBody,
   NewAddressBody,
-  isNumber
+  isNumber,
+  UnknownError,
+  isEditStockBody,
+  ProhibitedError,
+  StockDT,
+  hasOwnProperty,
+  EditStock,
+  NewStock
 } from '@m-cafe-app/utils';
-import { includeNameDescriptionLocNoTimestamps } from '../utils/sequelizeHelpers.js';
+import {
+  includeNameDescriptionLocNoTimestamps,
+  includeNameLocNoTimestamps
+} from '../utils/sequelizeHelpers.js';
+import { isRequestCustom } from '../types/RequestCustom.js';
+import { Session } from '../redis/Session.js';
 
 
 const facilityRouter = Router();
@@ -92,6 +104,81 @@ facilityRouter.get(
       descriptionLoc: mapDataToTransit(facility.descriptionLoc!.dataValues),
       address: mapDataToTransit(facility.address!.dataValues),
       managers: facility.managers?.map(manager => mapDataToTransit(manager.dataValues))
+    };
+
+    res.status(200).json(resBody);
+
+  }) as RequestHandler
+);
+
+
+facilityRouter.get(
+  '/:id/stocks',
+  middleware.verifyToken,
+  middleware.managerCheck,
+  middleware.sessionCheck,
+  middleware.requestParamsCheck,
+  (async (req, res) => {
+
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+
+    const facilityManager = await FacilityManager.findOne({ where: { facilityId: req.params.id, userId: req.userId } });
+    if (!facilityManager) {
+      const userRights = await Session.getUserRightsCache(req.token);
+      if (userRights !== 'admin') // <-- Admin is permitted to get any facility's stock
+        throw new ProhibitedError('You are not a manager of this facility. Contact admins to solve this problem');
+    }
+
+    const facility = await Facility.findByPk(req.params.id, {
+      attributes: {
+        exclude: [...timestampsKeys]
+      },
+      include: [
+        {
+          model: Address,
+          as: 'address',
+          attributes: {
+            exclude: [...timestampsKeys]
+          },
+        },
+        {
+          model: Stock,
+          as: 'stocks',
+          attributes: {
+            exclude: ['facilityId', ...timestampsKeys]
+          },
+          include: [
+            {
+              model: Ingredient,
+              as: 'ingredient',
+              attributes: {
+                exclude: [...timestampsKeys]
+              },
+              include: [
+                includeNameLocNoTimestamps,
+                {
+                  model: LocString,
+                  as: 'stockMeasureLoc',
+                  attributes: {
+                    exclude: [...timestampsKeys]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        ...includeNameDescriptionLocNoTimestamps
+      ]
+    });
+
+    if (!facility) throw new DatabaseError(`No facility entry with this id ${req.params.id}`);
+
+    const resBody: FacilityDT = {
+      id: facility.id,
+      nameLoc: mapDataToTransit(facility.nameLoc!.dataValues),
+      descriptionLoc: mapDataToTransit(facility.descriptionLoc!.dataValues),
+      address: mapDataToTransit(facility.address!.dataValues),
+      stocks: facility.stocks?.map(stock => mapDataToTransit(stock.dataValues))
     };
 
     res.status(200).json(resBody);
@@ -209,6 +296,64 @@ facilityRouter.post(
     };
 
     res.status(201).json(resBody);
+
+  }) as RequestHandler
+);
+
+facilityRouter.put(
+  '/:id/stocks',
+  middleware.verifyToken,
+  middleware.managerCheck,
+  middleware.sessionCheck,
+  middleware.requestParamsCheck,
+  (async (req, res) => {
+
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+    if (!isEditStockBody(req.body)) throw new RequestBodyError('Invalid update stock request body');
+
+    const facilityManager = await FacilityManager.findOne({ where: { facilityId: req.params.id, userId: req.userId } });
+    if (!facilityManager) {
+      const userRights = await Session.getUserRightsCache(req.token);
+      if (userRights !== 'admin') // <-- Admin is permitted to upd any facility's stock
+        throw new ProhibitedError('You are not a manager of this facility. Contact admins to solve this problem');
+    }
+
+    const stockFacility = await Facility.findByPk(req.params.id);
+    if (!stockFacility) throw new DatabaseError(`No facility entry with this id ${req.params.id}`);
+
+    const { stocksUpdate } = req.body;
+
+    const responseStocks: StockDT[] = [];
+
+    for (const stock of stocksUpdate ) {
+
+      if (hasOwnProperty(stock, 'id')) {
+
+        const updStock = stock as EditStock;
+        const stockInDB = await Stock.findByPk(updStock.id);
+        if (!stockInDB) throw new DatabaseError(`No stock entry with this id ${updStock.id}. This should not be reached, check frontend`);
+        stockInDB.amount = updStock.amount;
+        await stockInDB.save();
+
+        responseStocks.push(stockInDB.dataValues);
+
+      } else {
+
+        const newStock = stock as NewStock;
+        const ingredientInDB = await Ingredient.findByPk(newStock.ingredientId);
+        if (!ingredientInDB) throw new DatabaseError(`No ingredient entry with this id ${newStock.ingredientId}`);
+        const stockInDB = await Stock.create({
+          facilityId: stockFacility.id,
+          ingredientId: ingredientInDB.id,
+          amount: newStock.amount
+        });
+
+        responseStocks.push(stockInDB.dataValues);
+
+      }
+    }
+
+    res.status(200).json(responseStocks);
 
   }) as RequestHandler
 );

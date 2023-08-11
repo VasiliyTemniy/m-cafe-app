@@ -12,12 +12,14 @@ Stock.init({
   ingredientId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: 'ingredients', key: 'id' }
+    references: { model: 'ingredients', key: 'id' },
+    unique: 'unique_stock'
   },
   facilityId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: { model: 'facilities', key: 'id' }
+    references: { model: 'facilities', key: 'id' },
+    unique: 'unique_stock'
   },
   amount: {
     type: DataTypes.INTEGER,
@@ -35,7 +37,13 @@ Stock.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'stock'
+  modelName: 'stock',
+  indexes: [
+    {
+      unique: true,
+      fields: ['ingredient_id', 'facility_id']
+    }
+  ]
 });
 
 export default Stock;

@@ -1,7 +1,16 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
 import { Ingredient, LocString } from '../models/index.js';
-import { DatabaseError, IngredientDT, mapDataToTransit, timestampsKeys, isNewIngredientBody, RequestBodyError, isEditIngredientBody, updateInstance } from '@m-cafe-app/utils';
+import {
+  DatabaseError,
+  IngredientDT,
+  mapDataToTransit,
+  timestampsKeys,
+  isNewIngredientBody,
+  RequestBodyError,
+  isEditIngredientBody,
+  updateInstance
+} from '@m-cafe-app/utils';
 import { includeNameLocNoTimestamps } from '../utils/sequelizeHelpers.js';
 
 

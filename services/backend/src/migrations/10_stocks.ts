@@ -34,6 +34,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.DATE,
       allowNull: false
     }
+  }, {
+    uniqueKeys: {
+      unique_stock: {
+        customIndex: true,
+        fields: ['ingredient_id', 'facility_id']
+      }
+    }
   });
 };
 
