@@ -121,7 +121,7 @@ export const parseRedisToDT = <T>(dataObjStrings: MapToStrings<T>): T => {
 
 /**
  * Used only to map obj values to transit data.
- * Maps date obj to ISO strings, omits foreign keys, omits spicified props.
+ * Maps date obj to ISO strings, omits foreign keys, omits specified props.
  * For nested objects use separately for each layer
  */
 export const mapDataToTransit = <T>(data: T, omitProps?: { omit?: string[]; omitTimestamps?: boolean }): MapToDT<T> => {

@@ -102,6 +102,13 @@ User.init({
     }
   },
   scopes: {
+    user: {
+      where: {
+        rights: {
+          [Op.eq]: 'user'
+        }
+      }
+    },
     admin: {
       where: {
         rights: {

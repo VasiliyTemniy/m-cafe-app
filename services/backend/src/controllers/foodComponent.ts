@@ -24,6 +24,7 @@ const foodComponentRouter = Router();
  */
 foodComponentRouter.get(
   '/:id/components',
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     const foodComponents = await FoodComponent.findAll({
@@ -80,6 +81,7 @@ foodComponentRouter.post(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isAddFoodComponentsBody(req.body)) throw new RequestBodyError('Invalid add food components request body');
@@ -148,6 +150,7 @@ foodComponentRouter.put(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isAddFoodComponentsBody(req.body)) throw new RequestBodyError('Invalid add food components request body');
@@ -196,6 +199,7 @@ foodComponentRouter.put(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isEditFoodComponentBody(req.body)) throw new RequestBodyError('Invalid add food components request body');
@@ -262,6 +266,7 @@ foodComponentRouter.delete(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     await FoodComponent.destroy({ where: { foodId: req.params.id } });
@@ -279,6 +284,7 @@ foodComponentRouter.delete(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     await FoodComponent.destroy({ where: { foodId: req.params.id, componentId: req.params.foodComponentId } });

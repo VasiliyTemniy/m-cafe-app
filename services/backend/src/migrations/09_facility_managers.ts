@@ -3,11 +3,6 @@ import { MigrationContext } from '../types/MigrationContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('facility_managers', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -21,19 +16,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       references: { model: 'facilities', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false
     }
   });
 
   const constraintCheck = await queryInterface.sequelize.query(
-    "SELECT * FROM pg_constraint WHERE conname = 'facility_managers_user_id_facility_id_key'",
+    "SELECT * FROM pg_constraint WHERE conname = 'facility_managers_pkey'",
     { type: QueryTypes.SELECT }
   );
 
@@ -42,8 +29,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       fields: [
         'user_id', 'facility_id'
       ],
-      type: 'unique',
-      name: 'facility_managers_user_id_facility_id_key'
+      type: 'primary key',
+      name: 'facility_managers_pkey'
     });
   }
 };

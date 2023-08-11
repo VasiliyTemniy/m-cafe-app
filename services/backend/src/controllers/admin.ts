@@ -29,6 +29,7 @@ adminRouter.get(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     const userSubject = await User.scope('all').findByPk(req.params.id, {
@@ -47,6 +48,7 @@ adminRouter.put(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isAdministrateUserBody(req.body)) throw new RequestBodyError('Invalid administrate user request body');
@@ -85,6 +87,7 @@ adminRouter.delete(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     const userSubject = await User.scope('all').findByPk(req.params.id, { paranoid: false });

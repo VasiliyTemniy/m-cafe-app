@@ -10,6 +10,7 @@ import foodRouter from './controllers/food.js';
 import foodComponentRouter from './controllers/foodComponent.js';
 import foodTypeRouter from './controllers/foodType.js';
 import ingredientRouter from './controllers/ingredient.js';
+import facilityRouter from './controllers/facility.js';
 import middleware from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
@@ -37,6 +38,7 @@ app.use('/food', foodRouter);
 app.use('/food', foodComponentRouter);
 app.use('/foodtype', foodTypeRouter);
 app.use('/ingredient', ingredientRouter);
+app.use('/facility', facilityRouter);
 
 
 const initTestingHelper = async () => {

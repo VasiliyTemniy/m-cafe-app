@@ -65,6 +65,7 @@ usersRouter.put(
   middleware.verifyToken,
   middleware.userExtractor,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
@@ -178,6 +179,7 @@ usersRouter.put(
   middleware.verifyToken,
   middleware.userExtractor,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
@@ -250,6 +252,7 @@ usersRouter.delete(
   middleware.verifyToken,
   middleware.userCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');

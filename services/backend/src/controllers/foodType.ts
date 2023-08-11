@@ -75,6 +75,7 @@ foodTypeRouter.get(
 
 foodTypeRouter.get(
   '/:id',
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     const foodType = await FoodType.findByPk(req.params.id, {
@@ -134,6 +135,7 @@ foodTypeRouter.put(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isEditFoodTypeBody(req.body)) throw new RequestBodyError('Invalid add food type request body');
@@ -173,6 +175,7 @@ foodTypeRouter.delete(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     await FoodType.destroy({ where: { id: req.params.id } });
