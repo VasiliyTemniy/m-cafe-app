@@ -48,6 +48,7 @@ ingredientRouter.get(
   middleware.verifyToken,
   middleware.managerCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     const ingredient = await Ingredient.findByPk(req.params.id, {
@@ -118,6 +119,7 @@ ingredientRouter.put(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     if (!isEditIngredientBody(req.body)) throw new RequestBodyError('Invalid edit ingredient request body');
@@ -162,6 +164,7 @@ ingredientRouter.delete(
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
+  middleware.requestParamsCheck,
   (async (req, res) => {
 
     await Ingredient.destroy({ where: { id: req.params.id } });
