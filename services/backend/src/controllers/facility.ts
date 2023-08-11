@@ -20,8 +20,12 @@ import {
   EditStock,
   NewStock
 } from '@m-cafe-app/utils';
-import { includeNameDescriptionLocNoTimestamps } from '../utils/sequelizeHelpers.js';
+import {
+  includeNameDescriptionLocNoTimestamps,
+  includeNameLocNoTimestamps
+} from '../utils/sequelizeHelpers.js';
 import { isRequestCustom } from '../types/RequestCustom.js';
+import { Session } from '../redis/Session.js';
 
 
 const facilityRouter = Router();
@@ -100,6 +104,81 @@ facilityRouter.get(
       descriptionLoc: mapDataToTransit(facility.descriptionLoc!.dataValues),
       address: mapDataToTransit(facility.address!.dataValues),
       managers: facility.managers?.map(manager => mapDataToTransit(manager.dataValues))
+    };
+
+    res.status(200).json(resBody);
+
+  }) as RequestHandler
+);
+
+
+facilityRouter.get(
+  '/:id/stocks',
+  middleware.verifyToken,
+  middleware.managerCheck,
+  middleware.sessionCheck,
+  middleware.requestParamsCheck,
+  (async (req, res) => {
+
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+
+    const facilityManager = await FacilityManager.findOne({ where: { facilityId: req.params.id, userId: req.userId } });
+    if (!facilityManager) {
+      const userRights = await Session.getUserRightsCache(req.token);
+      if (userRights !== 'admin') // <-- Admin is permitted to get any facility's stock
+        throw new ProhibitedError('You are not a manager of this facility. Contact admins to solve this problem');
+    }
+
+    const facility = await Facility.findByPk(req.params.id, {
+      attributes: {
+        exclude: [...timestampsKeys]
+      },
+      include: [
+        {
+          model: Address,
+          as: 'address',
+          attributes: {
+            exclude: [...timestampsKeys]
+          },
+        },
+        {
+          model: Stock,
+          as: 'stocks',
+          attributes: {
+            exclude: ['facilityId', ...timestampsKeys]
+          },
+          include: [
+            {
+              model: Ingredient,
+              as: 'ingredient',
+              attributes: {
+                exclude: [...timestampsKeys]
+              },
+              include: [
+                includeNameLocNoTimestamps,
+                {
+                  model: LocString,
+                  as: 'stockMeasureLoc',
+                  attributes: {
+                    exclude: [...timestampsKeys]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        ...includeNameDescriptionLocNoTimestamps
+      ]
+    });
+
+    if (!facility) throw new DatabaseError(`No facility entry with this id ${req.params.id}`);
+
+    const resBody: FacilityDT = {
+      id: facility.id,
+      nameLoc: mapDataToTransit(facility.nameLoc!.dataValues),
+      descriptionLoc: mapDataToTransit(facility.descriptionLoc!.dataValues),
+      address: mapDataToTransit(facility.address!.dataValues),
+      stocks: facility.stocks?.map(stock => mapDataToTransit(stock.dataValues))
     };
 
     res.status(200).json(resBody);
@@ -222,7 +301,7 @@ facilityRouter.post(
 );
 
 facilityRouter.put(
-  '/:id/stock',
+  '/:id/stocks',
   middleware.verifyToken,
   middleware.managerCheck,
   middleware.sessionCheck,
@@ -232,11 +311,15 @@ facilityRouter.put(
     if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
     if (!isEditStockBody(req.body)) throw new RequestBodyError('Invalid update stock request body');
 
+    const facilityManager = await FacilityManager.findOne({ where: { facilityId: req.params.id, userId: req.userId } });
+    if (!facilityManager) {
+      const userRights = await Session.getUserRightsCache(req.token);
+      if (userRights !== 'admin') // <-- Admin is permitted to upd any facility's stock
+        throw new ProhibitedError('You are not a manager of this facility. Contact admins to solve this problem');
+    }
+
     const stockFacility = await Facility.findByPk(req.params.id);
     if (!stockFacility) throw new DatabaseError(`No facility entry with this id ${req.params.id}`);
-
-    const facilityManager = await FacilityManager.findOne({ where: { facilityId: req.params.id, userId: req.userId } });
-    if (!facilityManager) throw new ProhibitedError('You are not a manager of this facility. Contact admins to solve this problem');
 
     const { stocksUpdate } = req.body;
 
