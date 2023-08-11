@@ -4,6 +4,7 @@ import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
 import { isLocStringDT, LocStringDT } from "./LocString.js";
 import { AddressDT, isAddressDT } from "./Address.js";
 import { isUserDT, UserDT } from "./User.js";
+import { isStockDT, StockDT } from "./Stock.js";
 
 
 export type FacilityDT = Omit<MapToDT<FacilityData>, 'nameLocId' | 'descriptionLocId' | 'addressId'>
@@ -12,6 +13,7 @@ export type FacilityDT = Omit<MapToDT<FacilityData>, 'nameLocId' | 'descriptionL
   descriptionLoc: LocStringDT;
   address: AddressDT;
   managers?: UserDT[];
+  stocks?: StockDT[];
 };
 
 type FacilityDTFields = MapToUnknown<FacilityDT>;
@@ -32,6 +34,12 @@ export const isFacilityDT = (obj: unknown): obj is FacilityDT => {
     if (!Array.isArray(obj.managers)) return false;
     for (const manager of obj.managers)
       if (!isUserDT(manager)) return false;
+  }
+
+  if (obj.stocks) {
+    if (!Array.isArray(obj.stocks)) return false;
+    for (const stock of obj.stocks)
+      if (!isStockDT(stock)) return false;
   }
 
   return isNumber(obj.id)

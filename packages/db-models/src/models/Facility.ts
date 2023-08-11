@@ -2,6 +2,7 @@ import { Model, InferAttributes, InferCreationAttributes, CreationOptional, Fore
 import { PropertiesCreationOptional } from '../types/helpers.js';
 import { Address } from './Address.js';
 import { LocString } from './LocString.js';
+import { Stock } from './Stock.js';
 import { User } from './User.js';
 
 export class Facility extends Model<InferAttributes<Facility>, InferCreationAttributes<Facility>> {
@@ -15,6 +16,7 @@ export class Facility extends Model<InferAttributes<Facility>, InferCreationAttr
   declare nameLoc?: NonAttribute<LocString>;
   declare descriptionLoc?: NonAttribute<LocString>;
   declare managers?: NonAttribute<User[]>;
+  declare stocks?: NonAttribute<Stock[]>;
 }
 
 
