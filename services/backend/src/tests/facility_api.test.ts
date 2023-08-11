@@ -1,4 +1,4 @@
-import { EditFacilityBody, NewAddressBody, NewFacilityBody, UserDT } from "@m-cafe-app/utils";
+import { EditFacilityBody, EditStock, isStockDT, NewAddressBody, NewFacilityBody, NewStock, StockDT, UserDT } from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
@@ -11,11 +11,12 @@ import { Op } from 'sequelize';
 import { Session } from "../redis/Session";
 import { initLogin, userAgent } from "./sessions_api_helper";
 import { apiBaseUrl } from "./test_helper";
-import { initialUsers, validUserInDB } from "./users_api_helper";
+import { initialUsers, initialUsersPassword, validUserInDB } from "./users_api_helper";
 import {
   includeNameDescriptionLocNoTimestamps
 } from "../utils/sequelizeHelpers";
 import { initFacilities } from "./facility_api_helper";
+import { initIngredients } from "./ingredient_api_helper";
 
 
 
@@ -351,12 +352,13 @@ describe('Facility requests tests', () => {
 
     const usersInDB = await User.scope('user').findAll();
 
-    await api
-      .post(`${apiBaseUrl}/facility/${facilities[0].id}/managers?userid=${usersInDB[0].id}`)
-      .set("Cookie", [tokenCookie])
-      .set('User-Agent', userAgent)
-      .send({ userId: usersInDB[0].id })
-      .expect(201);
+    const userToBecomeManager = usersInDB[Math.round(Math.random() * (usersInDB.length - 1))];
+
+    userToBecomeManager.rights = 'manager';
+
+    await userToBecomeManager.save();
+
+    await FacilityManager.create({ facilityId: facilities[0].id, userId: userToBecomeManager.id });
 
     const response = await api
       .get(`${apiBaseUrl}/facility/${facilities[0].id}/managers`)
@@ -370,7 +372,176 @@ describe('Facility requests tests', () => {
     const managers = response.body.managers as Array<UserDT>;
     const managerIds = managers.map(manager => manager.id);
 
-    expect(managerIds.includes(usersInDB[0].id)).to.equal(true);
+    expect(managerIds.includes(userToBecomeManager.id)).to.equal(true);
+
+  });
+
+  it('Facility :id/stocks PUT route works and can be used either by current facility manager or by any admin. \
+New stocks get added, other stocks get updated', async () => {
+
+    const usersInDB = await User.scope('user').findAll();
+
+    const userToBecomeManager = usersInDB[Math.round(Math.random() * (usersInDB.length - 1))];
+
+    userToBecomeManager.rights = 'manager';
+
+    await userToBecomeManager.save();
+
+    await FacilityManager.findOrCreate({ where: { facilityId: facilities[0].id, userId: userToBecomeManager.id } });
+
+    const managerTokenCookie = await initLogin(userToBecomeManager.dataValues, initialUsersPassword, api, 201, userAgent) as string;
+
+    const ingredients = await initIngredients();
+
+    // Manager wants to add stocks
+    const stocksToSend: NewStock[] = [];
+
+    for (const ingredient of ingredients) {
+      const stock: NewStock = {
+        ingredientId: ingredient.id,
+        amount: Math.round(Math.random() * 1000)
+      };
+      stocksToSend.push(stock);
+    }
+
+    // Manager adds stocks
+    const response = await api
+      .put(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
+      .set("Cookie", [managerTokenCookie])
+      .set('User-Agent', userAgent)
+      .send({ stocksUpdate: stocksToSend })
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const resStocks = response.body as Array<StockDT>;
+
+    for (const resStock of resStocks) {
+      const sentStock = stocksToSend.find(stock => stock.ingredientId === resStock.ingredientId);
+      expect(sentStock).to.exist;
+      expect(sentStock?.amount).to.equal(resStock.amount);
+    }
+
+    // Admin wants to update stocks
+    const stocksToUpdate: EditStock[] = [];
+
+    for (const resStock of resStocks) {
+      resStock.amount = Math.round(Math.random() * 1000);
+      stocksToUpdate.push(resStock as EditStock);
+    }
+
+    // Admin updates stocks
+    const response2 = await api
+      .put(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
+      .set("Cookie", [tokenCookie])
+      .set('User-Agent', userAgent)
+      .send({ stocksUpdate: stocksToUpdate })
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  
+    const resStocks2 = response2.body as Array<StockDT>;
+  
+    for (const resStock of resStocks2) {
+      const sentStock = stocksToUpdate.find(stock => stock.ingredientId === resStock.ingredientId);
+      expect(sentStock).to.exist;
+      expect(sentStock?.amount).to.equal(resStock.amount);
+    }
+
+  });
+
+  it('Facility :id/stocks PUT route cannot be used by other facility`s manager', async () => {
+  
+    // manager from previous test must have moved to another scope
+    const usersInDB = await User.scope('user').findAll();
+  
+    const userToBecomeManager = usersInDB[Math.round(Math.random() * (usersInDB.length - 1))];
+  
+    userToBecomeManager.rights = 'manager';
+  
+    await userToBecomeManager.save();
+  
+    // Manager of facility number 1
+    await FacilityManager.findOrCreate({ where: { facilityId: facilities[1].id, userId: userToBecomeManager.id } });
+  
+    const managerTokenCookie = await initLogin(userToBecomeManager.dataValues, initialUsersPassword, api, 201, userAgent) as string;
+  
+    const ingredients = await initIngredients();
+  
+    const stocksToSend: NewStock[] = [];
+  
+    for (const ingredient of ingredients) {
+      const stock: NewStock = {
+        ingredientId: ingredient.id,
+        amount: Math.round(Math.random() * 1000)
+      };
+      stocksToSend.push(stock);
+    }
+  
+    // Manager of facility number 1 wants to add stocks to facility 0
+    const response = await api
+      .put(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
+      .set("Cookie", [managerTokenCookie])
+      .set('User-Agent', userAgent)
+      .send({ stocksUpdate: stocksToSend })
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.error.name).to.equal('ProhibitedError');
+    expect(response.body.error.message).to.equal('You are not a manager of this facility. Contact admins to solve this problem');
+  
+  });
+
+  it('Facility :id/stocks GET route gives facility info including stocks. \
+Can be used either by current facility manager or by any admin', async () => {
+
+    const usersInDB = await User.scope('user').findAll();
+
+    const userToBecomeManager = usersInDB[Math.round(Math.random() * (usersInDB.length - 1))];
+
+    userToBecomeManager.rights = 'manager';
+
+    await userToBecomeManager.save();
+
+    await FacilityManager.findOrCreate({ where: { facilityId: facilities[0].id, userId: userToBecomeManager.id } });
+
+    const managerTokenCookie = await initLogin(userToBecomeManager.dataValues, initialUsersPassword, api, 201, userAgent) as string;
+
+    const response1 = await api
+      .get(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
+      .set("Cookie", [managerTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response1.body.stocks).to.exist;
+
+    const resStocks = response1.body.stocks as StockDT[];
+    for (const resStock of resStocks) {
+      if (!isStockDT(resStock)) expect(true).to.equal(false);
+    }
+
+    const response2 = await api
+      .get(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
+      .set("Cookie", [tokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response2.body.stocks).to.exist;
+
+
+    // Manager moves to facility number 2
+    await FacilityManager.destroy({ where: { facilityId: facilities[0].id, userId: userToBecomeManager.id } });
+    await FacilityManager.findOrCreate({ where: { facilityId: facilities[1].id, userId: userToBecomeManager.id } });
+
+    const response3 = await api
+      .get(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
+      .set("Cookie", [managerTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response3.body.error.name).to.equal('ProhibitedError');
+    expect(response3.body.error.message).to.equal('You are not a manager of this facility. Contact admins to solve this problem');
 
   });
 
@@ -379,7 +550,7 @@ describe('Facility requests tests', () => {
     const usersInDB = await User.scope('user').findAll();
 
     await api
-      .post(`${apiBaseUrl}/facility/${facilities[0].id}/managers?userid=${usersInDB[0].id}`)
+      .post(`${apiBaseUrl}/facility/${facilities[0].id}/managers`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ userId: usersInDB[0].id })
