@@ -251,11 +251,22 @@ Address.hasOne(Facility, {
   foreignKey: 'addressId',
   as: 'facilityAddress'
 });
-Facility.belongsTo(Address);
+Facility.belongsTo(Address, {
+  foreignKey: 'addressId',
+  as: 'address'
+});
 
 
-Facility.belongsToMany(User, { through: FacilityManager });
-User.belongsToMany(Facility, { through: FacilityManager });
+Facility.belongsToMany(User, {
+  through: FacilityManager,
+  foreignKey: 'facilityId',
+  as: 'managers'
+});
+// User.belongsToMany(Facility, {
+//   through: FacilityManager,
+//   foreignKey: 'userId',
+//   as: 'manager'
+// });
 Facility.hasMany(FacilityManager, {
   foreignKey: 'facilityId',
   as: 'facilityManagers'
