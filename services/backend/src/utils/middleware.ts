@@ -11,6 +11,7 @@ import {
   BannedError,
   DatabaseError,
   ProhibitedError,
+  RequestQueryError,
   SessionError
 } from '@m-cafe-app/utils';
 import { User } from '../models/index.js';
@@ -115,6 +116,19 @@ const sessionCheck = (async (req: RequestMiddle, res: Response, next: NextFuncti
 }) as RequestHandler;
 
 
+const requestParamsCheck = (req: RequestMiddle, res: Response, next: NextFunction) => {
+
+  if (!req.params) return next();
+
+  for (const paramKey in req.params)
+    if (paramKey.toLowerCase().endsWith('id') && isNaN(Number(req.params[paramKey])))
+      return next(new RequestQueryError('Request params malformed'));
+
+  next();
+
+};
+
+
 const unknownEndpoint: RequestHandler = (req: Request, res: Response) => {
   res.status(404).json({
     error: {
@@ -132,5 +146,6 @@ export default {
   managerCheck,
   adminCheck,
   sessionCheck,
+  requestParamsCheck,
   unknownEndpoint
 };
