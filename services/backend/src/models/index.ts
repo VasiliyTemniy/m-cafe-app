@@ -289,14 +289,17 @@ FacilityManager.belongsTo(User);
 
 Ingredient.hasMany(Stock, {
   foreignKey: 'ingredientId',
+  as: 'facilitiesStocks'
+});
+Stock.belongsTo(Ingredient, {
+  foreignKey: 'ingredientId',
   as: 'ingredient'
 });
-Stock.belongsTo(Ingredient);
 
 
 Facility.hasMany(Stock, {
   foreignKey: 'facilityId',
-  as: 'facility'
+  as: 'stocks'
 });
 Stock.belongsTo(Facility);
 
