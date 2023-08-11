@@ -3,7 +3,7 @@ import { hasOwnProperty, MapToUnknown } from "../helpers.js";
 import { isNumber } from "../typeParsers.js";
 
 
-export type EditStock = Omit<StockDT, 'ingredientId' | 'facilityId'>
+export type EditStock = Omit<StockDT, 'ingredientId' | 'facilityId' | 'ingredient'>
 & {
   ingredientId: number;
 };
@@ -33,15 +33,15 @@ const hasEditStockFields = (obj: unknown): obj is EditStockFields =>
   hasOwnProperty(obj, 'ingredientId');
 
 
-const hasEditStockBodyFields = (body: unknown): body is { stockUpdate: unknown } =>
+const hasEditStockBodyFields = (body: unknown): body is { stocksUpdate: unknown } =>
   hasOwnProperty(body, 'stocksUpdate');
   
 export const isEditStockBody = (body: unknown): body is EditStockBody => {
   if (!hasEditStockBodyFields(body)) return false;
 
-  if (!Array.isArray(body.stockUpdate)) return false;
+  if (!Array.isArray(body.stocksUpdate)) return false;
 
-  for (const obj of body.stockUpdate) {
+  for (const obj of body.stocksUpdate) {
 
     if (hasEditStockFields(obj)) if (
       isNumber(obj.id)
