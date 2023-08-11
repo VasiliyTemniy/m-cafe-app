@@ -16,55 +16,55 @@ export const initialUsers: Omit<UserData, 'id' | 'rights'>[] = [
   {
     username: "Vasisualiy",
     name: "Mikhail Dyachenko",
-    passwordHash: "$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561256"
   },
   {
     username: "flash_us",
     name: "Ilja Dyachenko",
-    passwordHash: "$2a$10$kO1TOacajXmBd463xhyd6uxTqBayJOeOdOwRtkfzms7l2mtf6yCT.",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561277"
   },
   {
     username: "StevieDoesntKnow",
     name: "Steve Miller",
-    passwordHash: "$2a$10$exzJXbj/hbO6jS.2rzkz8.Gq6.VSq6X8w7vl7C1jkTgcFOnB/7beW",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561288",
     birthdate: new Date('2001-07-23T07:31:03.242Z')
   },
   {
     username: "Poperdopeler",
     name: "Vasisualiy Edipstein",
-    passwordHash: "$2a$10$ofK5pjq4S7.Df5H4LXkVfuNpRWXG51oF4mNXI8heuthC0vTFlRbSe",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561294",
     email: 'my-emah@jjjjppp.com'
   },
   {
     username: "FanstasmagoR",
     name: "Hren Petrovich",
-    passwordHash: "$2a$10$kO1TOacajXmBd463xhyd6uxTqBayJOeOdOwRtkfzms7l2mtf6yCT.",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561227"
   },
   {
     username: "utopia_Forever",
-    passwordHash: "$2a$10$exzJXbj/hbO6jS.2rzkz8.Gq6.VSq6X8w7vl7C1jkTgcFOnB/7beW",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561211"
   },
   {
     username: "gollum",
-    passwordHash: "$2a$10$ofK5pjq4S7.Df5H4LXkVfuNpRWXG51oF4mNXI8heuthC0vTFlRbSe",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561226",
     birthdate: new Date('2001-07-23T07:31:03.242Z')
   },
   {
     username: "OW_YEAH",
-    passwordHash: "$2a$10$kO1TOacajXmBd463xhyd6uxTqBayJOeOdOwRtkfzms7l2mtf6yCT.",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561236",
     email: 'my-email@jjjjppp.com',
   },
   {
     username: "fantasy",
-    passwordHash: "$2a$10$exzJXbj/hbO6jS.2rzkz8.Gq6.VSq6X8w7vl7C1jkTgcFOnB/7beW",
+    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: "88003561293"
   }
 ];
