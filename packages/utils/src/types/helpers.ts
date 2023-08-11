@@ -9,8 +9,8 @@ export type MapToDT<T> = {
   [Property in keyof T]:
   T[Property] extends Date | undefined ? string :
   T[Property] extends Date ? string :
-  // Maybe this will be useful later...
-  // T[Property] extends number ? number :
+  T[Property] extends number ? number :
+    // Maybe this will be useful later...
   // T[Property] extends ForeignKey<infer V> ? MapToDT<V> :
   T[Property]
 };
