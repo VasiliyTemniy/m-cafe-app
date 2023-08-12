@@ -18,10 +18,10 @@ Order.init({
   },
   addressId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     references: { model: 'addresses', key: 'id' },
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    onDelete: 'SET NULL'
   },
   deliverAt: {
     type: DataTypes.DATE,
