@@ -2,18 +2,18 @@ import { Address, AddressData, Facility, FacilityData, LocString, LocStringData 
 
 const initialFacilitiesLocStrings: Omit<LocStringData, 'id'>[] = [
   {
-    ruString: 'Шаварма outcorporated',
-    enString: 'Shawarma outcorporated',
+    mainStr: 'Шаварма outcorporated',
+    secStr: 'Shawarma outcorporated',
   },
   {
-    ruString: 'Луччая шаварма в твоём городе!',
-    enString: 'Da beste meatrolls in yr townie!',
+    mainStr: 'Луччая шаварма в твоём городе!',
+    secStr: 'Da beste meatrolls in yr townie!',
   },
   {
-    ruString: 'Роллы от дяди Стёпы',
+    mainStr: 'Роллы от дяди Стёпы',
   },
   {
-    ruString: 'Делаем роллы ещё длиннее',
+    mainStr: 'Делаем роллы ещё длиннее',
   }
 ];
 

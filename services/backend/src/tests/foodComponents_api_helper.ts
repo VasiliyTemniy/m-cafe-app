@@ -4,10 +4,10 @@ import { Food, FoodComponent, LocString, Ingredient } from "../models";
 
 const newCompositeFoodLocStrings: Omit<LocStringData, 'id'>[] = [
   {
-    ruString: 'Сет "Домик в деревне"'
+    mainStr: 'Сет "Домик в деревне"'
   },
   {
-    ruString: 'Прекрасный сет на ужин для компании от 1 до 100 человек'
+    mainStr: 'Прекрасный сет на ужин для компании от 1 до 100 человек'
   }
 ];
 

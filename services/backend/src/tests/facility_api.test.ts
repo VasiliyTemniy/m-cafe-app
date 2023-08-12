@@ -116,10 +116,10 @@ describe('Facility requests tests', () => {
 
     const newFacility: NewFacilityBody = {
       nameLoc: {
-        ruString: 'Улыбка Дяди Вани'
+        mainStr: 'Улыбка Дяди Вани'
       },
       descriptionLoc: {
-        ruString: 'Самая весёлая улыбка из Ваших кошмаров!'
+        mainStr: 'Самая весёлая улыбка из Ваших кошмаров!'
       },
       address: {
         city: 'Черноголовка',
@@ -135,8 +135,8 @@ describe('Facility requests tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.nameLoc.ruString).to.equal(newFacility.nameLoc.ruString);
-    expect(response.body.descriptionLoc.ruString).to.equal(newFacility.descriptionLoc.ruString);
+    expect(response.body.nameLoc.mainStr).to.equal(newFacility.nameLoc.mainStr);
+    expect(response.body.descriptionLoc.mainStr).to.equal(newFacility.descriptionLoc.mainStr);
     expect(response.body.address.city).to.equal(newFacility.address.city);
     expect(response.body.address.street).to.equal(newFacility.address.street);
   });
@@ -146,11 +146,11 @@ describe('Facility requests tests', () => {
     const updFacility: EditFacilityBody = {
       nameLoc: {
         id: facilities[0].nameLocId,
-        ruString: 'Колобесъ и ко',
+        mainStr: 'Колобесъ и ко',
       },
       descriptionLoc: {
         id: facilities[0].descriptionLocId,
-        ruString: 'МЫ ПЕРЕЕХАЛИ! ВСТРИЧАЙТИ',
+        mainStr: 'МЫ ПЕРЕЕХАЛИ! ВСТРИЧАЙТИ',
       },
       address: {
         city: 'Урюпинск',
@@ -176,13 +176,13 @@ describe('Facility requests tests', () => {
       ]
     });
 
-    expect(response.body.nameLoc.ruString).to.equal(updFacility.nameLoc.ruString);
-    expect(response.body.descriptionLoc.ruString).to.equal(updFacility.descriptionLoc.ruString);
+    expect(response.body.nameLoc.mainStr).to.equal(updFacility.nameLoc.mainStr);
+    expect(response.body.descriptionLoc.mainStr).to.equal(updFacility.descriptionLoc.mainStr);
     expect(response.body.address.city).to.equal(updFacility.address.city);
     expect(response.body.address.street).to.equal(updFacility.address.street);
 
-    expect(updFacilityInDB?.nameLoc?.ruString).to.equal(updFacility.nameLoc.ruString);
-    expect(updFacilityInDB?.descriptionLoc?.ruString).to.equal(updFacility.descriptionLoc.ruString);
+    expect(updFacilityInDB?.nameLoc?.mainStr).to.equal(updFacility.nameLoc.mainStr);
+    expect(updFacilityInDB?.descriptionLoc?.mainStr).to.equal(updFacility.descriptionLoc.mainStr);
     expect(updFacilityInDB?.address?.city).to.equal(updFacility.address.city);
     expect(updFacilityInDB?.address?.street).to.equal(updFacility.address.street);
 
@@ -208,10 +208,10 @@ describe('Facility requests tests', () => {
 
     const newFacility: NewFacilityBody = {
       nameLoc: {
-        ruString: 'Младокрендельский бублокомбинат',
+        mainStr: 'Младокрендельский бублокомбинат',
       },
       descriptionLoc: {
-        ruString: 'Бубельные бублики от младокрендельского комбината №1',
+        mainStr: 'Бубельные бублики от младокрендельского комбината №1',
       },
       address: doubleUsedAddress
     };
@@ -241,11 +241,11 @@ describe('Facility requests tests', () => {
     const updFacility: EditFacilityBody = {
       nameLoc: {
         id: newFacilityData.nameLocId,
-        ruString: 'Колобесъ и ко',
+        mainStr: 'Колобесъ и ко',
       },
       descriptionLoc: {
         id: newFacilityData.descriptionLocId,
-        ruString: 'МЫ ПЕРЕЕХАЛИ! ВСТРИЧАЙТИ',
+        mainStr: 'МЫ ПЕРЕЕХАЛИ! ВСТРИЧАЙТИ',
       },
       address: newFacilityAddress
     };
@@ -279,11 +279,11 @@ describe('Facility requests tests', () => {
     const updFacility2: EditFacilityBody = {
       nameLoc: {
         id: newFacilityData.nameLocId,
-        ruString: 'Колобесъ и ко',
+        mainStr: 'Колобесъ и ко',
       },
       descriptionLoc: {
         id: newFacilityData.descriptionLocId,
-        ruString: 'МЫ ПЕРЕЕХАЛИ! ВСТРИЧАЙТИ',
+        mainStr: 'МЫ ПЕРЕЕХАЛИ! ВСТРИЧАЙТИ',
       },
       address: doubleUsedAddress
     };
@@ -303,11 +303,11 @@ describe('Facility requests tests', () => {
     const updFacility3: EditFacilityBody = {
       nameLoc: {
         id: newFacilityData.nameLocId,
-        ruString: 'Колобесъ и ко',
+        mainStr: 'Колобесъ и ко',
       },
       descriptionLoc: {
         id: newFacilityData.descriptionLocId,
-        ruString: 'МЫ ПЕРЕЕХАЛИ! ВСТРИЧАЙТИ',
+        mainStr: 'МЫ ПЕРЕЕХАЛИ! ВСТРИЧАЙТИ',
       },
       address: newFacilityAddress
     };

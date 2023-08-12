@@ -4,68 +4,68 @@ import { Food, FoodType, LocString } from '../models';
 
 export const initialFoodLocStrings: Omit<LocStringData, 'id'>[] = [
   {
-    ruString: 'Роллы',
-    enString: 'Rolls',
-    altString: 'Roullettesse'
+    mainStr: 'Роллы',
+    secStr: 'Rolls',
+    altStr: 'Roullettesse'
   },
   {
-    ruString: 'Те самые роллы',
-    enString: 'Rolls, you know',
-    altString: 'Imagine that it`s not engrish'
+    mainStr: 'Те самые роллы',
+    secStr: 'Rolls, you know',
+    altStr: 'Imagine that it`s not engrish'
   },
   {
-    ruString: 'Бургеры',
-    enString: 'Burgers',
-    altString: 'Bourgerettes'
+    mainStr: 'Бургеры',
+    secStr: 'Burgers',
+    altStr: 'Bourgerettes'
   },
   {
-    ruString: 'Бургеры - жратва такая',
-    enString: 'Burgers is what you can eat',
-    altString: 'Imagine that it`s not engrish'
+    mainStr: 'Бургеры - жратва такая',
+    secStr: 'Burgers is what you can eat',
+    altStr: 'Imagine that it`s not engrish'
   },
   {
-    ruString: 'Напитки',
-    enString: 'Drinks',
-    altString: 'Wasserunterubercanisterdrinkone'
+    mainStr: 'Напитки',
+    secStr: 'Drinks',
+    altStr: 'Wasserunterubercanisterdrinkone'
   },
   {
-    ruString: 'Соки, воды, газировки, алкоголъ',
-    enString: 'You can drink this',
-    altString: 'Imagine that it`s not engrish'
+    mainStr: 'Соки, воды, газировки, алкоголъ',
+    secStr: 'You can drink this',
+    altStr: 'Imagine that it`s not engrish'
   },
   {
-    ruString: 'Сеты'
+    mainStr: 'Сеты'
   },
   {
-    ruString: 'Набор еды из различных других типов'
+    mainStr: 'Набор еды из различных других типов'
   },
   {
-    ruString: 'Калифорния',
-    enString: 'California',
-    altString: '32dfg35k3df'
+    mainStr: 'Калифорния',
+    secStr: 'California',
+    altStr: '32dfg35k3df'
   },
   {
-    ruString: 'Вкусняшко',
-    enString: 'Mm, tasty',
-    altString: 'abirvalg'
+    mainStr: 'Вкусняшко',
+    secStr: 'Mm, tasty',
+    altStr: 'abirvalg'
   },
   {
-    ruString: 'Филадельфия',
+    mainStr: 'Филадельфия',
   },
   {
-    ruString: 'Вкусняшко тоже',
+    mainStr: 'Вкусняшко тоже',
   },
   {
-    ruString: 'Шаверма классическая',
+    mainStr: 'Шаверма классическая',
   },
   {
-    ruString: 'Нежный лаваш, сочное мясо, которое вчера даже не мяукало',
+    mainStr: 'Нежный лаваш, сочное мясо, которое вчера даже не мяукало',
   },
   {
-    ruString: 'МаргаритаБургер',
+    mainStr: 'МаргаритаБургер',
   },
   {
-    ruString: 'Бургер, правда?',
+    mainStr: 'Бургер, правда?',
   }
 ];
 

@@ -82,9 +82,9 @@ describe('Ingredient type requests tests', () => {
     });
 
     expect(response1.body.nameLoc.id).to.equal(ingredientInDB?.nameLoc?.id);
-    expect(response1.body.nameLoc.ruString).to.equal(ingredientInDB?.nameLoc?.ruString);
+    expect(response1.body.nameLoc.mainStr).to.equal(ingredientInDB?.nameLoc?.mainStr);
     expect(response1.body.stockMeasureLoc.id).to.equal(ingredientInDB?.stockMeasureLoc?.id);
-    expect(response1.body.stockMeasureLoc.ruString).to.equal(ingredientInDB?.stockMeasureLoc?.ruString);
+    expect(response1.body.stockMeasureLoc.mainStr).to.equal(ingredientInDB?.stockMeasureLoc?.mainStr);
 
     const response2 = await api
       .get(`${apiBaseUrl}/ingredient`)
@@ -192,10 +192,10 @@ describe('Ingredient type requests tests', () => {
 
     const newIngredient: NewIngredientBody = {
       nameLoc: {
-        ruString: 'Листья салата'
+        mainStr: 'Листья салата'
       },
       stockMeasureLoc: {
-        ruString: 'гр'
+        mainStr: 'гр'
       },
       proteins: 1,
       fats: 0,
@@ -211,8 +211,8 @@ describe('Ingredient type requests tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.nameLoc.ruString).to.equal(newIngredient.nameLoc.ruString);
-    expect(response.body.stockMeasureLoc.ruString).to.equal(newIngredient.stockMeasureLoc.ruString);
+    expect(response.body.nameLoc.mainStr).to.equal(newIngredient.nameLoc.mainStr);
+    expect(response.body.stockMeasureLoc.mainStr).to.equal(newIngredient.stockMeasureLoc.mainStr);
     expect(response.body.proteins).to.equal(newIngredient.proteins);
     expect(response.body.fats).to.equal(newIngredient.fats);
     expect(response.body.carbohydrates).to.equal(newIngredient.carbohydrates);
@@ -225,13 +225,13 @@ describe('Ingredient type requests tests', () => {
     const updIngredient: EditIngredientBody = {
       nameLoc: {
         id: ingredients[0].nameLocId,
-        ruString: 'Морковко',
-        enString: 'Carrot'
+        mainStr: 'Морковко',
+        secStr: 'Carrot'
       },
       stockMeasureLoc: {
         id: ingredients[0].stockMeasureLocId,
-        ruString: 'гр',
-        enString: 'gr'
+        mainStr: 'гр',
+        secStr: 'gr'
       },
       proteins: 100500
     };
@@ -263,12 +263,12 @@ describe('Ingredient type requests tests', () => {
       ]
     });
 
-    expect(response.body.nameLoc.ruString).to.equal(updIngredient.nameLoc.ruString);
-    expect(response.body.stockMeasureLoc.ruString).to.equal(updIngredient.stockMeasureLoc.ruString);
+    expect(response.body.nameLoc.mainStr).to.equal(updIngredient.nameLoc.mainStr);
+    expect(response.body.stockMeasureLoc.mainStr).to.equal(updIngredient.stockMeasureLoc.mainStr);
     expect(response.body.proteins).to.equal(updIngredient.proteins);
 
-    expect(updIngredientInDB?.nameLoc?.ruString).to.equal(updIngredient.nameLoc.ruString);
-    expect(updIngredientInDB?.stockMeasureLoc?.ruString).to.equal(updIngredient.stockMeasureLoc.ruString);
+    expect(updIngredientInDB?.nameLoc?.mainStr).to.equal(updIngredient.nameLoc.mainStr);
+    expect(updIngredientInDB?.stockMeasureLoc?.mainStr).to.equal(updIngredient.stockMeasureLoc.mainStr);
     expect(updIngredientInDB?.proteins).to.equal(updIngredient.proteins);
 
   });

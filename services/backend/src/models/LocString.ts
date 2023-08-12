@@ -9,15 +9,15 @@ LocString.init({
     primaryKey: true,
     autoIncrement: true
   },
-  ruString: {
+  mainStr: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  enString: {
+  secStr: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  altString: {
+  altStr: {
     type: DataTypes.STRING,
     allowNull: true
   },
