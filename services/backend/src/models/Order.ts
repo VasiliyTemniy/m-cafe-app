@@ -34,6 +34,10 @@ Order.init({
     type: DataTypes.STRING,
     allowNull: false
   },
+  totalCost: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false
