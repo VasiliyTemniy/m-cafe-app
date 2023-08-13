@@ -8,15 +8,15 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       primaryKey: true,
       autoIncrement: true
     },
-    ru_string: {
+    main_str: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    en_string: {
+    sec_str: {
       type: DataTypes.STRING,
       allowNull: true
     },
-    alt_string: {
+    alt_str: {
       type: DataTypes.STRING,
       allowNull: true
     },

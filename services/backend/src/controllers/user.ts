@@ -129,13 +129,14 @@ usersRouter.post(
     if (!isNewAddressBody(req.body)) throw new RequestBodyError('Invalid add user address request body');
 
     // If I do just const address = req.body, some other malformed keys can happen to go through
-    const { city, street, region, district, house, entrance, floor, flat, entranceKey } = req.body;
+    const { city, cityDistrict, street, region, regionDistrict, house, entrance, floor, flat, entranceKey } = req.body;
     // If I do const address = { city, strees, region, distric, house, entrance, floor, flat, entranceKey }
     // Then where clause for existingAddress fails if one of them is undefined
     const newAddress: NewAddressBody = { city, street };
     // Combine two statements above, and you get this bulky construction
+    if (cityDistrict) newAddress.cityDistrict = cityDistrict;
     if (region) newAddress.region = region;
-    if (district) newAddress.district = district;
+    if (regionDistrict) newAddress.regionDistrict = regionDistrict;
     if (house) newAddress.house = house;
     if (entrance) newAddress.entrance = entrance;
     if (floor) newAddress.floor = floor;
@@ -186,12 +187,13 @@ usersRouter.put(
     if (!isEditAddressBody(req.body) || !isNumber(Number(req.params.id))) throw new RequestBodyError('Invalid edit user address request body or params id');
 
     // check .post route for address above for explanation of this bulk
-    const { city, street, region, district, house, entrance, floor, flat, entranceKey } = req.body;
+    const { city, cityDistrict, street, region, regionDistrict, house, entrance, floor, flat, entranceKey } = req.body;
 
     const updAddress: EditAddressBody = { city, street };
 
+    if (cityDistrict) updAddress.cityDistrict = cityDistrict;
     if (region) updAddress.region = region;
-    if (district) updAddress.district = district;
+    if (regionDistrict) updAddress.regionDistrict = regionDistrict;
     if (house) updAddress.house = house;
     if (entrance) updAddress.entrance = entrance;
     if (floor) updAddress.floor = floor;

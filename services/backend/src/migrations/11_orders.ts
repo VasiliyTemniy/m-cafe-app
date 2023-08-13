@@ -10,15 +10,22 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: { model: 'users', key: 'id' },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      onDelete: 'SET NULL'
     },
     address_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: { model: 'addresses', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
+    },
+    facility_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'facilities', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
@@ -30,6 +37,22 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       }
     },
     status: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    total_cost: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    archive_address: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    customer_name: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    customer_phonenumber: {
       type: DataTypes.STRING,
       allowNull: false
     },

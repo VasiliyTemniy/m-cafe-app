@@ -17,10 +17,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     },
     food_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: { model: 'foods', key: 'id' },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      onDelete: 'SET NULL'
     },
     amount: {
       type: DataTypes.INTEGER,
@@ -28,6 +28,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     },
     archive_price: {
       type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    archive_food_name: {
+      type: DataTypes.STRING,
       allowNull: false
     }
   });

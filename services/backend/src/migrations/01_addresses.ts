@@ -45,7 +45,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       },
       unique: 'unique_address'
     },
-    district: {
+    region_district: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
@@ -60,6 +60,15 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         is: [cityRegExp, 'i'],
         len: [minCityLen, maxCityLen]
+      },
+      unique: 'unique_address'
+    },
+    city_district: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        is: [districtRegExp, 'i'],
+        len: [minDistrictLen, maxDistrictLen]
       },
       unique: 'unique_address'
     },
@@ -129,7 +138,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     uniqueKeys: {
       unique_address: {
         customIndex: true,
-        fields: ['region', 'district', 'city', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
+        fields: ['region', 'region_district', 'city', 'city_district', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
       }
     }
   });

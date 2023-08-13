@@ -67,9 +67,9 @@ describe('Food type requests tests', () => {
     });
 
     expect(response1.body.nameLoc.id).to.equal(foodTypeInDB?.nameLoc?.id);
-    expect(response1.body.nameLoc.ruString).to.equal(foodTypeInDB?.nameLoc?.ruString);
+    expect(response1.body.nameLoc.mainStr).to.equal(foodTypeInDB?.nameLoc?.mainStr);
     expect(response1.body.descriptionLoc.id).to.equal(foodTypeInDB?.descriptionLoc?.id);
-    expect(response1.body.descriptionLoc.ruString).to.equal(foodTypeInDB?.descriptionLoc?.ruString);
+    expect(response1.body.descriptionLoc.mainStr).to.equal(foodTypeInDB?.descriptionLoc?.mainStr);
 
     const response2 = await api
       .get(`${apiBaseUrl}/foodtype`)
@@ -130,10 +130,10 @@ describe('Food type requests tests', () => {
 
     const newFoodType: NewFoodTypeBody = {
       nameLoc: {
-        ruString: 'Пицца'
+        mainStr: 'Пицца'
       },
       descriptionLoc: {
-        ruString: 'Круглая выпечка с открытой начинкой'
+        mainStr: 'Круглая выпечка с открытой начинкой'
       }
     };
 
@@ -145,8 +145,8 @@ describe('Food type requests tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.nameLoc.ruString).to.equal(newFoodType.nameLoc.ruString);
-    expect(response.body.descriptionLoc.ruString).to.equal(newFoodType.descriptionLoc.ruString);
+    expect(response.body.nameLoc.mainStr).to.equal(newFoodType.nameLoc.mainStr);
+    expect(response.body.descriptionLoc.mainStr).to.equal(newFoodType.descriptionLoc.mainStr);
 
   });
 
@@ -155,15 +155,15 @@ describe('Food type requests tests', () => {
     const updFoodType: EditFoodTypeBody = {
       nameLoc: {
         id: foodTypes[0].nameLocId,
-        ruString: 'Пицца',
-        enString: 'Pizza',
-        altString: 'Donnerwetter'
+        mainStr: 'Пицца',
+        secStr: 'Pizza',
+        altStr: 'Donnerwetter'
       },
       descriptionLoc: {
         id: foodTypes[0].descriptionLocId,
-        ruString: 'Круглая выпечка с открытой начинкой',
-        enString: 'Pizza-pizza pie',
-        altString: 'vayvah'
+        mainStr: 'Круглая выпечка с открытой начинкой',
+        secStr: 'Pizza-pizza pie',
+        altStr: 'vayvah'
       }
     };
 
@@ -181,11 +181,11 @@ describe('Food type requests tests', () => {
       ]
     });
 
-    expect(response.body.nameLoc.ruString).to.equal(updFoodType.nameLoc.ruString);
-    expect(response.body.descriptionLoc.ruString).to.equal(updFoodType.descriptionLoc.ruString);
+    expect(response.body.nameLoc.mainStr).to.equal(updFoodType.nameLoc.mainStr);
+    expect(response.body.descriptionLoc.mainStr).to.equal(updFoodType.descriptionLoc.mainStr);
 
-    expect(updFoodTypeInDB?.nameLoc?.ruString).to.equal(updFoodType.nameLoc.ruString);
-    expect(updFoodTypeInDB?.descriptionLoc?.ruString).to.equal(updFoodType.descriptionLoc.ruString);
+    expect(updFoodTypeInDB?.nameLoc?.mainStr).to.equal(updFoodType.nameLoc.mainStr);
+    expect(updFoodTypeInDB?.descriptionLoc?.mainStr).to.equal(updFoodType.descriptionLoc.mainStr);
 
   });
 
@@ -301,9 +301,9 @@ describe('Food requests tests', () => {
     });
 
     expect(response1.body.nameLoc.id).to.equal(foodInDB?.nameLoc?.id);
-    expect(response1.body.nameLoc.ruString).to.equal(foodInDB?.nameLoc?.ruString);
+    expect(response1.body.nameLoc.mainStr).to.equal(foodInDB?.nameLoc?.mainStr);
     expect(response1.body.descriptionLoc.id).to.equal(foodInDB?.descriptionLoc?.id);
-    expect(response1.body.descriptionLoc.ruString).to.equal(foodInDB?.descriptionLoc?.ruString);
+    expect(response1.body.descriptionLoc.mainStr).to.equal(foodInDB?.descriptionLoc?.mainStr);
     expect(response1.body.price).to.equal(foodInDB?.price);
 
     const response2 = await api
@@ -365,10 +365,10 @@ describe('Food requests tests', () => {
 
     const newFood: NewFoodBody = {
       nameLoc: {
-        ruString: 'Маргарита'
+        mainStr: 'Маргарита'
       },
       descriptionLoc: {
-        ruString: 'Супергут'
+        mainStr: 'Супергут'
       },
       price: 100500,
       foodTypeId: foods[Math.round(Math.random() * (foods.length - 1))].foodTypeId
@@ -382,8 +382,8 @@ describe('Food requests tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.nameLoc.ruString).to.equal(newFood.nameLoc.ruString);
-    expect(response.body.descriptionLoc.ruString).to.equal(newFood.descriptionLoc.ruString);
+    expect(response.body.nameLoc.mainStr).to.equal(newFood.nameLoc.mainStr);
+    expect(response.body.descriptionLoc.mainStr).to.equal(newFood.descriptionLoc.mainStr);
 
   });
 
@@ -392,11 +392,11 @@ describe('Food requests tests', () => {
     const updFood: EditFoodBody = {
       nameLoc: {
         id: foods[0].nameLocId,
-        ruString: 'Маргарита'
+        mainStr: 'Маргарита'
       },
       descriptionLoc: {
         id: foods[0].descriptionLocId,
-        ruString: 'Супергут'
+        mainStr: 'Супергут'
       },
       price: 100500,
       foodTypeId: foods[Math.round(Math.random() * (foods.length - 1))].foodTypeId
@@ -429,13 +429,13 @@ describe('Food requests tests', () => {
       ]
     });
 
-    expect(response.body.nameLoc.ruString).to.equal(updFood.nameLoc.ruString);
-    expect(response.body.descriptionLoc.ruString).to.equal(updFood.descriptionLoc.ruString);
+    expect(response.body.nameLoc.mainStr).to.equal(updFood.nameLoc.mainStr);
+    expect(response.body.descriptionLoc.mainStr).to.equal(updFood.descriptionLoc.mainStr);
     expect(response.body.price).to.equal(updFood.price);
     expect(response.body.foodType.id).to.equal(updFood.foodTypeId);
 
-    expect(updFoodInDB?.nameLoc?.ruString).to.equal(updFood.nameLoc.ruString);
-    expect(updFoodInDB?.descriptionLoc?.ruString).to.equal(updFood.descriptionLoc.ruString);
+    expect(updFoodInDB?.nameLoc?.mainStr).to.equal(updFood.nameLoc.mainStr);
+    expect(updFoodInDB?.descriptionLoc?.mainStr).to.equal(updFood.descriptionLoc.mainStr);
     expect(updFoodInDB?.price).to.equal(updFood.price);
     expect(updFoodInDB?.foodTypeId).to.equal(updFood.foodTypeId);
 
@@ -497,9 +497,9 @@ describe('Food requests tests', () => {
     const matchingIndexInArray = foodWithQueryFoodTypeIdInDB.findIndex(food => food.id === response.body[0].id);
 
     expect(response.body[0].nameLoc.id).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].nameLoc?.id);
-    expect(response.body[0].nameLoc.ruString).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].nameLoc?.ruString);
+    expect(response.body[0].nameLoc.mainStr).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].nameLoc?.mainStr);
     expect(response.body[0].descriptionLoc.id).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].descriptionLoc?.id);
-    expect(response.body[0].descriptionLoc.ruString).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].descriptionLoc?.ruString);
+    expect(response.body[0].descriptionLoc.mainStr).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].descriptionLoc?.mainStr);
     expect(response.body[0].price).to.equal(foodWithQueryFoodTypeIdInDB[matchingIndexInArray].price);
 
   });

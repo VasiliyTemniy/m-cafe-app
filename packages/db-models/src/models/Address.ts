@@ -4,8 +4,9 @@ import { PropertiesCreationOptional } from "../types/helpers.js";
 export class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {
   declare id: CreationOptional<number>;
   declare region?: string;
-  declare district?: string;
+  declare regionDistrict?: string;
   declare city: string;
+  declare cityDistrict?: string;
   declare street: string;
   declare house?: string;
   declare entrance?: string;

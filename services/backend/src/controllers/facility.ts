@@ -270,8 +270,9 @@ facilityRouter.post(
 
     const newAddress: NewAddressBody = { city: address.city, street: address.street };
     
+    if (address.cityDistrict) newAddress.cityDistrict = address.cityDistrict;
     if (address.region) newAddress.region = address.region;
-    if (address.district) newAddress.district = address.district;
+    if (address.regionDistrict) newAddress.regionDistrict = address.regionDistrict;
     if (address.house) newAddress.house = address.house;
     if (address.entrance) newAddress.entrance = address.entrance;
     if (address.floor) newAddress.floor = address.floor;

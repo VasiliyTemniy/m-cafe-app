@@ -13,9 +13,11 @@ export const isNewAddressBody = (body: unknown): body is NewAddressBody => {
   if (!hasNewAddressBodyFields(body)) return false;
 
   if (
+    (hasOwnProperty(body, "cityDistrict") && !isString(body.cityDistrict))
+    ||
     (hasOwnProperty(body, "region") && !isString(body.region))
     ||
-    (hasOwnProperty(body, "district") && !isString(body.district))
+    (hasOwnProperty(body, "regionDistrict") && !isString(body.regionDistrict))
     ||
     (hasOwnProperty(body, "house") && !isString(body.house))
     ||

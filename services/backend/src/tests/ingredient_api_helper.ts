@@ -3,36 +3,36 @@ import { LocString, Ingredient } from "../models";
 
 export const initialIngredientLocStrings: Omit<LocStringData, 'id'>[] = [
   {
-    ruString: 'Котлетко',
-    enString: 'FriedMeatball',
-    altString: 'Kotletschwarzubermenschessen'
+    mainStr: 'Котлетко',
+    secStr: 'FriedMeatball',
+    altStr: 'Kotletschwarzubermenschessen'
   },
   {
-    ruString: 'шт',
-    enString: 'unit? I dunno what it`s in english',
-    altString: 'Imagine that it`s not engrish'
+    mainStr: 'шт',
+    secStr: 'unit? I dunno what it`s in english',
+    altStr: 'Imagine that it`s not engrish'
   },
   {
-    ruString: 'Соус белый',
-    enString: 'White sauce'
+    mainStr: 'Соус белый',
+    secStr: 'White sauce'
   },
   {
-    ruString: 'мл',
-    enString: 'ml'
+    mainStr: 'мл',
+    secStr: 'ml'
   },
   {
-    ruString: 'Хлеб',
-    enString: 'Bread'
+    mainStr: 'Хлеб',
+    secStr: 'Bread'
   },
   {
-    ruString: 'гр',
-    enString: 'gr',
+    mainStr: 'гр',
+    secStr: 'gr',
   },
   {
-    ruString: 'Специи'
+    mainStr: 'Специи'
   },
   {
-    ruString: 'гр'
+    mainStr: 'гр'
   }
 ];
 

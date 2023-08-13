@@ -16,8 +16,10 @@ OrderFood.init({
   },
   foodId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'foods', key: 'id' }
+    allowNull: true,
+    references: { model: 'foods', key: 'id' },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
   },
   amount: {
     type: DataTypes.INTEGER,
@@ -25,6 +27,10 @@ OrderFood.init({
   },
   archivePrice: {
     type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  archiveFoodName: {
+    type: DataTypes.STRING,
     allowNull: false
   }
 }, {

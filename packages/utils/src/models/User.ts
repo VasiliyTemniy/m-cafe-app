@@ -1,6 +1,7 @@
 import { UserData } from "@m-cafe-app/db-models";
 import { isNumber, isString } from "../types/typeParsers.js";
 import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
+import { ApplicationError } from "../types/Errors.js";
 
 
 export type UserDT = Omit<MapToDT<UserData>, 'passwordHash'>;
@@ -26,6 +27,8 @@ export const isUserDT = (obj: unknown): obj is UserDT => {
     ||
     (hasOwnProperty(obj, "rights") && !isString(obj.rights))
   ) return false;
+
+  if (hasOwnProperty(obj, 'passwordHash')) throw new ApplicationError('User data transit passwordHash detected! Please, contact admins');
 
   return isNumber(obj.id) && isString(obj.phonenumber);
 };
