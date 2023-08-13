@@ -36,7 +36,11 @@ Order.init({
   },
   totalCost: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
+  },
+  archiveAddress: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
   createdAt: {
     type: DataTypes.DATE,

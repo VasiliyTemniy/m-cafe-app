@@ -35,7 +35,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     },
     total_cost: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
+    },
+    archive_address: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     created_at: {
       type: DataTypes.DATE,
