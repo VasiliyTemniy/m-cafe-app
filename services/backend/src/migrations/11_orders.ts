@@ -22,6 +22,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL'
     },
+    facility_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'facilities', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
     deliver_at: {
       type: DataTypes.DATE,
       allowNull: false,

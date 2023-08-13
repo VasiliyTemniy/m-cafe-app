@@ -23,6 +23,13 @@ Order.init({
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   },
+  facilityId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: 'facilities', key: 'id' },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+  },
   deliverAt: {
     type: DataTypes.DATE,
     allowNull: false,

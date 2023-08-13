@@ -3,11 +3,13 @@ import { User } from './User.js';
 import { Address } from './Address.js';
 import { PropertiesCreationOptional } from '../types/helpers.js';
 import { OrderFood } from './OrderFood.js';
+import { Facility } from './Facility.js';
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
   declare id: CreationOptional<number>;
   declare userId: ForeignKey<User['id']> | null;
   declare addressId: ForeignKey<Address['id']> | null;
+  declare facilityId: ForeignKey<Facility['id']>;
   declare deliverAt: Date;
   declare status: string;
   declare totalCost: number;
@@ -19,6 +21,7 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
   declare user?: NonAttribute<User>;
   declare address?: NonAttribute<Address>;
   declare orderFoods?: NonAttribute<OrderFood[]>;
+  declare facility?: NonAttribute<Facility>;
 }
 
 
