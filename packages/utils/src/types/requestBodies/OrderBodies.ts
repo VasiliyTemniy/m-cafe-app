@@ -37,7 +37,13 @@ export const isNewOrderFood = (obj: unknown): obj is NewOrderFood =>
 const hasNewOrderBodyFields = (body: unknown): body is NewOrderBodyFields =>
   hasOwnProperty(body, 'orderFoods')
   &&
-  hasOwnProperty(body, 'deliverAt');
+  hasOwnProperty(body, 'deliverAt')
+  &&
+  (
+    hasOwnProperty(body, 'address')
+    ||
+    hasOwnProperty(body, 'newAddress')
+  );
 
 export const isNewOrderBody = (body: unknown): body is NewOrderBody => {
   if (!hasNewOrderBodyFields(body)) return false;
@@ -70,9 +76,7 @@ type EditOrderFoodFields = MapToUnknown<EditOrderFood>;
 
 
 const hasEditOrderFoodFields = (obj: unknown): obj is EditOrderFoodFields =>
-  hasOwnProperty(obj, 'amount')
-  &&
-  hasOwnProperty(obj, 'foodId')
+  hasNewOrderFoodFields(obj)
   &&
   hasOwnProperty(obj, 'id');
 
@@ -88,9 +92,7 @@ export const isEditOrderFood = (obj: unknown): obj is EditOrderFood =>
 
 
 const hasEditOrderBodyFields = (body: unknown): body is EditOrderBodyFields =>
-  hasOwnProperty(body, 'orderFoods')
-  &&
-  hasOwnProperty(body, 'deliverAt');
+  hasNewOrderBodyFields(body);
 
 export const isEditOrderBody = (body: unknown): body is EditOrderBody => {
   if (!hasEditOrderBodyFields(body)) return false;
