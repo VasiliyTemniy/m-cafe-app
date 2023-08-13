@@ -11,10 +11,10 @@ Order.init({
   },
   userId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     references: { model: 'users', key: 'id' },
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    onDelete: 'SET NULL'
   },
   addressId: {
     type: DataTypes.INTEGER,
@@ -39,6 +39,14 @@ Order.init({
     allowNull: false,
   },
   archiveAddress: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  customerName: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  customerPhonenumber: {
     type: DataTypes.STRING,
     allowNull: false
   },

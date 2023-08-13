@@ -6,17 +6,19 @@ import { OrderFood } from './OrderFood.js';
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
   declare id: CreationOptional<number>;
-  declare userId: ForeignKey<User['id']>;
+  declare userId: ForeignKey<User['id']> | null;
   declare addressId: ForeignKey<Address['id']> | null;
   declare deliverAt: Date;
   declare status: string;
   declare totalCost: number;
   declare archiveAddress: string;
+  declare customerName?: string;
+  declare customerPhonenumber: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare user?: NonAttribute<User>;
   declare address?: NonAttribute<Address>;
-  declare orderFoods?: NonAttribute<OrderFood>;
+  declare orderFoods?: NonAttribute<OrderFood[]>;
 }
 
 

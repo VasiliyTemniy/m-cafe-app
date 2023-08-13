@@ -26,7 +26,9 @@ const hasOrderDTFields = (obj: unknown): obj is OrderDTFields =>
   &&
   hasOwnProperty(obj, "orderFoods")
   &&
-  hasOwnProperty(obj, "archiveAddress");
+  hasOwnProperty(obj, "archiveAddress")
+  &&
+  hasOwnProperty(obj, "customerPhonenumber");
 
 export const isOrderDT = (obj: unknown): obj is OrderDT => {
   if (!hasOrderDTFields(obj)) return false;
@@ -35,6 +37,8 @@ export const isOrderDT = (obj: unknown): obj is OrderDT => {
     (hasOwnProperty(obj, "address") && !isAddressDT(obj.address))
     ||
     (hasOwnProperty(obj, "user") && !isUserDT(obj.user))
+    ||
+    (hasOwnProperty(obj, "customerName") && !isString(obj.customerName))
   ) return false;
 
   if (!Array.isArray(obj.orderFoods)) return false;
@@ -49,5 +53,7 @@ export const isOrderDT = (obj: unknown): obj is OrderDT => {
   &&
   isNumber(obj.totalCost)
   &&
-  isString(obj.archiveAddress);
+  isString(obj.archiveAddress)
+  &&
+  isString(obj.customerPhonenumber);
 };

@@ -43,7 +43,9 @@ const hasNewOrderBodyFields = (body: unknown): body is NewOrderBodyFields =>
     hasOwnProperty(body, 'address')
     ||
     hasOwnProperty(body, 'newAddress')
-  );
+  )
+  &&
+  hasOwnProperty(body, 'customerPhonenumber');
 
 export const isNewOrderBody = (body: unknown): body is NewOrderBody => {
   if (!hasNewOrderBodyFields(body)) return false;
@@ -52,6 +54,8 @@ export const isNewOrderBody = (body: unknown): body is NewOrderBody => {
     (hasOwnProperty(body, 'address') && !isAddressDT(body.address))
     ||
     (hasOwnProperty(body, 'newAddress') && !isNewAddressBody(body.newAddress))
+    ||
+    (hasOwnProperty(body, "customerName") && !isString(body.customerName))
   )
     return false;
 
@@ -59,7 +63,7 @@ export const isNewOrderBody = (body: unknown): body is NewOrderBody => {
   for (const orderFood of body.orderFoods)
     if (!isNewOrderFood(orderFood)) return false;
 
-  return isString(body.deliverAt);
+  return isString(body.deliverAt) && isString(body.customerPhonenumber);
 };
 
 
@@ -101,6 +105,8 @@ export const isEditOrderBody = (body: unknown): body is EditOrderBody => {
     (hasOwnProperty(body, 'address') && !isAddressDT(body.address))
     ||
     (hasOwnProperty(body, 'newAddress') && !isNewAddressBody(body.newAddress))
+    ||
+    (hasOwnProperty(body, "customerName") && !isString(body.customerName))
   )
     return false;
 
