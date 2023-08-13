@@ -5,10 +5,11 @@ import { hasOwnProperty, MapToUnknown } from "../helpers.js";
 import { isNumber, isString } from "../typeParsers.js";
 import { isNewAddressBody, NewAddressBody } from "./AddressBodies.js";
 
-export type NewOrderBody = Omit<OrderDT, 'id' | 'totalCost' | 'user' | 'orderFoods' | 'status' | 'archiveAddress'>
+export type NewOrderBody = Omit<OrderDT, 'id' | 'totalCost' | 'user' | 'orderFoods' | 'status' | 'archiveAddress' | 'facility'>
 & {
   orderFoods: NewOrderFood[];
   newAddress?: NewAddressBody;
+  facilityId: number;
 };
 
 type NewOrderBodyFields = MapToUnknown<NewOrderBody>;
@@ -45,7 +46,9 @@ const hasNewOrderBodyFields = (body: unknown): body is NewOrderBodyFields =>
     hasOwnProperty(body, 'newAddress')
   )
   &&
-  hasOwnProperty(body, 'customerPhonenumber');
+  hasOwnProperty(body, 'customerPhonenumber')
+  &&
+  hasOwnProperty(body, 'facilityId');
 
 export const isNewOrderBody = (body: unknown): body is NewOrderBody => {
   if (!hasNewOrderBodyFields(body)) return false;
@@ -63,37 +66,16 @@ export const isNewOrderBody = (body: unknown): body is NewOrderBody => {
   for (const orderFood of body.orderFoods)
     if (!isNewOrderFood(orderFood)) return false;
 
-  return isString(body.deliverAt) && isString(body.customerPhonenumber);
+  return isString(body.deliverAt) && isString(body.customerPhonenumber) && isNumber(body.facilityId);
 };
 
 
 export type EditOrderBody = Omit<NewOrderBody, 'orderFoods'>
 & {
-  orderFoods: EditOrderFood[];
+  orderFoods: NewOrderFood[];
 };
 
 type EditOrderBodyFields = MapToUnknown<EditOrderBody>;
-
-export type EditOrderFood = NewOrderFood & { id: number };
-
-type EditOrderFoodFields = MapToUnknown<EditOrderFood>;
-
-
-const hasEditOrderFoodFields = (obj: unknown): obj is EditOrderFoodFields =>
-  hasNewOrderFoodFields(obj)
-  &&
-  hasOwnProperty(obj, 'id');
-
-export const isEditOrderFood = (obj: unknown): obj is EditOrderFood =>
-  hasEditOrderFoodFields(obj)
-  &&
-  isNumber(obj.amount)
-  &&
-  isNumber(obj.foodId)
-  &&
-  isNumber(obj.id);
-
-
 
 const hasEditOrderBodyFields = (body: unknown): body is EditOrderBodyFields =>
   hasNewOrderBodyFields(body);
@@ -112,7 +94,22 @@ export const isEditOrderBody = (body: unknown): body is EditOrderBody => {
 
   if (!Array.isArray(body.orderFoods)) return false;
   for (const orderFood of body.orderFoods)
-    if (!isEditOrderFood(orderFood)) return false;
+    // It's still `new order food` here because of design - on put route,
+    // all the order foods get deleted and recreated
+    if (!isNewOrderFood(orderFood)) return false;
 
-  return isString(body.deliverAt);
+  return isString(body.deliverAt) && isString(body.customerPhonenumber) && isNumber(body.facilityId);
 };
+
+
+export type EditOrderStatusBody = {
+  status: string
+};
+
+const hasEditOrderStatusBodyFields = (body: unknown): body is { status: unknown } =>
+  hasOwnProperty(body, 'status');
+
+export const isEditOrderStatusBody = (body: unknown): body is EditOrderStatusBody =>
+  hasEditOrderStatusBodyFields(body)
+  &&
+  isString(body.status);
