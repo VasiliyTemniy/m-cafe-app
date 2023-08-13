@@ -9,3 +9,4 @@ export * from './FoodComponentsBodies.js';
 export * from './FacilityBodies.js';
 export * from './StockBodies.js';
 export * from './OrderBodies.js';
+export * from './OrderFoodBodies.js';
