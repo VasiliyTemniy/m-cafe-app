@@ -50,3 +50,24 @@ export const isFacilityDT = (obj: unknown): obj is FacilityDT => {
   &&
   isAddressDT(obj.address);
 };
+
+
+
+export type FacilityDTS = Omit<FacilityDT, 'descriptionLoc' | 'address' | 'managers' | 'stocks'>
+& {
+  nameLoc: LocStringDT;
+};
+
+type FacilityDTSFields = MapToUnknown<FacilityDTS>;
+
+const hasFacilityDTSFields = (obj: unknown): obj is FacilityDTSFields =>
+  hasOwnProperty(obj, "id")
+  &&
+  hasOwnProperty(obj, "nameLoc");
+
+export const isFacilityDTS = (obj: unknown): obj is FacilityDTS =>
+  hasFacilityDTSFields(obj)
+  &&
+  isNumber(obj.id)
+  &&
+  isLocStringDT(obj.nameLoc);
