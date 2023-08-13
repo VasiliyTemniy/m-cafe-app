@@ -100,9 +100,10 @@ export const validAddresses: NewAddressBody[] = [
   },
   {
     city: 'Северно-Метеоритинск',
+    cityDistrict: 'АТП',
     street: 'Ленина',
     region: 'Красноармейский край',
-    district: 'Метеоритинский район',
+    regionDistrict: 'Метеоритинский район',
     house: '15/6А литера Б',
     entrance: 'третий подъезд снизу',
     entranceKey: 'Постучать хорошенько',

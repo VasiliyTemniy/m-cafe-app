@@ -13,9 +13,11 @@ export const isAddressDT = (address: unknown): address is AddressDT => {
   if (!hasAddressDTFields(address)) return false;
 
   if (
+    (hasOwnProperty(address, "cityDistrict") && !isString(address.cityDistrict))
+    ||
     (hasOwnProperty(address, "region") && !isString(address.region))
     ||
-    (hasOwnProperty(address, "district") && !isString(address.district))
+    (hasOwnProperty(address, "regionDistrict") && !isString(address.regionDistrict))
     ||
     (hasOwnProperty(address, "house") && !isString(address.house))
     ||

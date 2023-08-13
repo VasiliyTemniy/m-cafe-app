@@ -33,9 +33,10 @@ export const initialFacilityAddresses: Omit<AddressData, 'id'>[] = [
   },
   {
     city: 'Северно-Метеоритинск',
+    cityDistrict: 'Микрорайон 100500Б',
     street: 'Васи Пупкина',
     region: 'Красноармейский край',
-    district: 'Метеоритинский район',
+    regionDistrict: 'Метеоритинский район',
     house: '15/6А литера Б',
     entrance: 'третий подъезд снизу',
     entranceKey: 'Постучать хорошенько',
