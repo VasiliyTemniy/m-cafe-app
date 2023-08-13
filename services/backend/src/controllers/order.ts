@@ -132,7 +132,7 @@ orderRouter.get(
       orderFoods: order.orderFoods!.map(orderFood => {
         const orderFoodDT: OrderFoodDT = {
           food: {
-            nameLoc: mapDataToTransit(orderFood.food!.nameLoc!),
+            nameLoc: mapDataToTransit(orderFood.food!.nameLoc!.dataValues),
             ...mapDataToTransit(orderFood.food!.dataValues)
           },
           ...mapDataToTransit(orderFood.dataValues)
@@ -141,7 +141,7 @@ orderRouter.get(
       }),
       facility: {
         id: order.facility!.id,
-        nameLoc: mapDataToTransit(order.facility!.nameLoc!)
+        nameLoc: mapDataToTransit(order.facility!.nameLoc!.dataValues)
       }
     };
 
@@ -283,7 +283,7 @@ orderRouter.post(
       orderFoods: savedOrderFoodsWithFoodInfo.map(savedInfo => {
         const orderFood: OrderFoodDT = {
           food: {
-            nameLoc: mapDataToTransit(savedInfo.food.nameLoc!),
+            nameLoc: mapDataToTransit(savedInfo.food.nameLoc!.dataValues),
             ...mapDataToTransit(savedInfo.food.dataValues)
           },
           ...mapDataToTransit(savedInfo.savedOrderFood.dataValues)
@@ -292,7 +292,7 @@ orderRouter.post(
       }),
       facility: {
         id: facility.id,
-        nameLoc: mapDataToTransit(facility.nameLoc!)
+        nameLoc: mapDataToTransit(facility.nameLoc!.dataValues)
       }
     };
 
@@ -467,7 +467,7 @@ orderRouter.put(
       orderFoods: savedOrderFoodsWithFoodInfo.map(savedInfo => {
         const orderFood: OrderFoodDT = {
           food: {
-            nameLoc: mapDataToTransit(savedInfo.food.nameLoc!),
+            nameLoc: mapDataToTransit(savedInfo.food.nameLoc!.dataValues),
             ...mapDataToTransit(savedInfo.food.dataValues)
           },
           ...mapDataToTransit(savedInfo.savedOrderFood.dataValues)
@@ -476,7 +476,7 @@ orderRouter.put(
       }),
       facility: {
         id: facility.id,
-        nameLoc: mapDataToTransit(facility.nameLoc!)
+        nameLoc: mapDataToTransit(facility.nameLoc!.dataValues)
       }
     };
 
