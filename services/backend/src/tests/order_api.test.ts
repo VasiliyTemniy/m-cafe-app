@@ -435,7 +435,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
   });
 
-  it.only('Order / GET request gives info about all orders without details. Can be used by admin \
+  it('Order / GET request gives info about all orders without details. Can be used by admin \
 or manager with req query facilityid', async () => {
   
     await FacilityManager.destroy({ where: { userId: validManagerInDBID } });
