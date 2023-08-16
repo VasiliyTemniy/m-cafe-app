@@ -9,6 +9,14 @@ export const includeNameLocNoTimestamps = {
   }
 };
 
+export const includeNameLocNoTimestampsSecondLayer = {
+  model: LocString,
+  as: 'nameLoc',
+  attributes: {
+    exclude: [...timestampsKeys]
+  }
+};
+
 export const includeDescriptionLocNoTimestamps = {
   model: LocString,
   as: 'descriptionLoc',
