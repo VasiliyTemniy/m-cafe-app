@@ -1,10 +1,11 @@
 import { Router, RequestHandler } from 'express';
-import { DatabaseError, hasOwnProperty, ProhibitedError, RequestBodyError } from '@m-cafe-app/utils';
+import { DatabaseError, hasOwnProperty, ProhibitedError, RequestBodyError, RequestQueryError } from '@m-cafe-app/utils';
 import { isAdministrateUserBody } from '@m-cafe-app/utils';
 import middleware from '../utils/middleware.js';
 import { User } from '../models/index.js';
 import { Session } from '../redis/Session.js';
 import config from '../utils/config.js';
+import { possibleUserRights } from '../utils/constants.js';
 
 const adminRouter = Router();
 
@@ -15,8 +16,23 @@ adminRouter.get(
   middleware.sessionCheck,
   (async (req, res) => {
 
+    let limit = 20;
+    let offset = 0;
+
+    if (req.query.limit) {
+      if (isNaN(Number(req.query.limit))) throw new RequestQueryError('Incorrect query string');
+      limit = Number(req.query.limit);
+    }
+
+    if (req.query.offset) {
+      if (isNaN(Number(req.query.offset))) throw new RequestQueryError('Incorrect query string');
+      offset = Number(req.query.offset);
+    }
+
     const userSubjects = await User.scope('all').findAll({
-      attributes: { exclude: ['passwordHash'] }
+      attributes: { exclude: ['passwordHash'] },
+      limit,
+      offset
     });
 
     res.status(200).json(userSubjects);
@@ -60,7 +76,8 @@ adminRouter.put(
       throw new ProhibitedError('Attempt to alter superadmin');
 
     if (hasOwnProperty(req.body, 'rights')) {
-      userSubject.rights = req.body.rights!;
+      if (possibleUserRights.includes(req.body.rights!))
+        userSubject.rights = req.body.rights!;
 
       if (userSubject.rights === 'disabled') {
         await Session.destroy({

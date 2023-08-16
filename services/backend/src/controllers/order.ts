@@ -13,23 +13,26 @@ import {
   OrderFoodDT,
   ProhibitedError,
   RequestBodyError,
+  RequestQueryError,
   timestampsKeys,
   UnknownError,
 } from '@m-cafe-app/utils';
 import { Router, RequestHandler } from 'express';
-import { Facility, Food, Order, OrderFood } from '../models/index.js';
+import { Facility, FacilityManager, Food, Order, OrderFood } from '../models/index.js';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';
 import middleware from '../utils/middleware.js';
-import { includeNameLocNoTimestamps } from '../utils/sequelizeHelpers.js';
+import { includeNameLocNoTimestamps, includeNameLocNoTimestampsSecondLayer } from '../utils/sequelizeHelpers.js';
 import { isRequestCustom } from '../types/RequestCustom.js';
 import { Session } from '../redis/Session.js';
+import { Op } from 'sequelize';
+import { delayedStatusMS } from '../utils/constants.js';
 
 
 const orderRouter = Router();
 
 
 orderRouter.get(
-  '/all/:userId',
+  '/user/:userId',
   middleware.verifyToken,
   middleware.userCheck,
   middleware.sessionCheck,
@@ -44,11 +47,120 @@ orderRouter.get(
       if (userRights === 'user') throw new ProhibitedError('You have no rights to see these order details');
     }
 
+    let limit = 20;
+    let offset = 0;
+
+    if (req.query.limit) {
+      if (isNaN(Number(req.query.limit))) throw new RequestQueryError('Incorrect query string');
+      limit = Number(req.query.limit);
+    }
+
+    if (req.query.offset) {
+      if (isNaN(Number(req.query.offset))) throw new RequestQueryError('Incorrect query string');
+      offset = Number(req.query.offset);
+    }
+
     const orders = await Order.findAll({
       where: { userId: req.userId },
       attributes: {
         exclude: [...timestampsKeys]
       },
+      limit,
+      offset,
+      order: [
+        ['createdAt', 'DESC']
+      ]
+    });
+
+
+    const resBody: OrderDTS[] = orders.map(order => {
+      return {
+        id: order.id,
+        deliverAt: order.deliverAt.toISOString(),
+        status: order.status,
+        totalCost: order.totalCost,
+        archiveAddress: order.archiveAddress,
+        customerName: order.customerName,
+        customerPhonenumber: order.customerPhonenumber,
+        facilityId: order.facilityId
+      };
+    });
+
+    res.status(200).json(resBody);
+
+  }) as RequestHandler
+);
+
+orderRouter.get(
+  '/',
+  middleware.verifyToken,
+  middleware.managerCheck,
+  middleware.sessionCheck,
+  (async (req, res) => {
+
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+
+    const userRights = await Session.getUserRightsCache(req.token);
+    if (userRights !== 'admin') {
+      if (!req.query.facilityid) throw new ProhibitedError('You have to be an admin to see all orders');
+      const facilityManager = await FacilityManager.findOne({ where: { userId: req.userId, facilityId: Number(req.query.facilityid) } });
+      if (!facilityManager) throw new ProhibitedError('You are not a manager of this facility');
+    }
+
+    let limit = 20;
+    let offset = 0;
+
+    if (req.query.limit) {
+      if (isNaN(Number(req.query.limit))) throw new RequestQueryError('Incorrect query string');
+      limit = Number(req.query.limit);
+    }
+
+    if (req.query.offset) {
+      if (isNaN(Number(req.query.offset))) throw new RequestQueryError('Incorrect query string');
+      offset = Number(req.query.offset);
+    }
+
+    const where: {
+      facilityId?: number,
+      [Op.or]?: {
+        status: { [Op.eq]: string },
+        deliverAt: { [Op.lt]: Date }
+      }[],
+    } = {};
+
+    if (req.query.facilityid) {
+      if (isNaN(Number(req.query.facilityid))) throw new RequestQueryError('Incorrect query string');
+      where.facilityId = Number(req.query.facilityid);
+    }
+
+    if (req.query.delayed) {
+      if (isNaN(Number(req.query.delayed))) throw new RequestQueryError('Incorrect query string');
+      where[Op.or] = [
+        {
+          status: { [Op.eq]: 'accepted' },
+          deliverAt: { [Op.lt]: new Date(Date.now() + delayedStatusMS.accepted) }
+        },
+        {
+          status: { [Op.eq]: 'cooking' },
+          deliverAt: { [Op.lt]: new Date(Date.now() + delayedStatusMS.cooking) }
+        },
+        {
+          status: { [Op.eq]: 'delivering' },
+          deliverAt: { [Op.lt]: new Date(Date.now() + delayedStatusMS.delivering) }
+        },
+      ];
+    }
+
+    const orders = await Order.findAll({
+      where,
+      attributes: {
+        exclude: [...timestampsKeys]
+      },
+      offset,
+      limit,
+      order: [
+        ['createdAt', 'DESC']
+      ]
     });
 
 
@@ -96,7 +208,7 @@ orderRouter.get(
                 exclude: ['nameLocId', 'descriptionLocId', 'foodTypeId', 'price', ...timestampsKeys]
               },
               include: [
-                includeNameLocNoTimestamps
+                includeNameLocNoTimestampsSecondLayer
               ]
             }
           ]
@@ -119,6 +231,10 @@ orderRouter.get(
     if (order.userId !== req.userId) {
       const userRights = await Session.getUserRightsCache(req.token);
       if (userRights === 'user') throw new ProhibitedError('You have no rights to see this order details');
+      if (userRights === 'manager') {
+        const facilityManager = await FacilityManager.findOne({ where: { userId: req.userId, facilityId: order.facilityId } });
+        if (!facilityManager) throw new ProhibitedError('You are not a manager of this orders facility');
+      }
     }
 
     const resBody: OrderDT = {
