@@ -12,6 +12,7 @@ import {
   minUsernameLen,
   nameRegExp,
   phonenumberRegExp,
+  possibleUserRights,
   usernameRegExp
 } from '../utils/constants.js';
 
@@ -72,6 +73,9 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'user',
+      validate: {
+        isIn: [[...possibleUserRights]]
+      }
     },
     created_at: {
       type: DataTypes.DATE,

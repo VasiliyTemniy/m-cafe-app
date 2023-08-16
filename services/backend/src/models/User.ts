@@ -13,6 +13,7 @@ import {
   minUsernameLen,
   nameRegExp,
   phonenumberRegExp,
+  possibleUserRights,
   usernameRegExp
 } from '../utils/constants.js';
 import { User } from '@m-cafe-app/db-models';
@@ -75,6 +76,9 @@ User.init({
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'user',
+    validate: {
+      isIn: [[...possibleUserRights]]
+    }
   },
   createdAt: {
     type: DataTypes.DATE,
