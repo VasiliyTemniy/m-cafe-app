@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 
 import { sequelize } from '../utils/db.js';
 import { Food } from '@m-cafe-app/db-models';
+import { FoodComponent } from './index.js';
 
 Food.init({
   id: {
@@ -41,6 +42,38 @@ Food.init({
   underscored: true,
   timestamps: true,
   modelName: 'foods'
+});
+
+Food.addHook("afterFind", findResult => {
+  if (!findResult) return;
+
+  const mapComponentKey = (instance: FoodComponent) => {
+    if (instance.compositeFood && instance.food !== undefined) {
+      instance.component = instance.food;
+    } else if (!instance.compositeFood && instance.ingredient !== undefined) {
+      instance.component = instance.ingredient;
+    }
+    delete instance.food;
+    delete instance.ingredient;
+  };
+
+  const mapFoodComponents = (instance: Food) => {
+    if (instance.foodComponents && instance.foodComponents !== undefined) {
+      for (const foodComponent of instance.foodComponents) {
+        mapComponentKey(foodComponent);
+      }
+      return;
+    }
+  };
+
+  if (!Array.isArray(findResult)) {
+    mapFoodComponents(findResult as Food);
+    return;
+  }
+
+  for (const instance of findResult as Food[]) {
+    mapFoodComponents(instance);
+  }
 });
 
 export default Food;
