@@ -1,5 +1,5 @@
-import { hasOwnProperty, MapToUnknown } from "../helpers";
-import { isNumber, isString } from "../typeParsers";
+import { hasOwnProperty, MapToUnknown } from "../helpers.js";
+import { isNumber, isString } from "../typeParsers.js";
 
 /**
  * This request body is not connected with PictureDT because picture file is
