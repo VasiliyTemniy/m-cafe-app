@@ -4,11 +4,6 @@ import { sequelize } from '../utils/db.js';
 import { FoodPicture } from '@m-cafe-app/db-models';
 
 FoodPicture.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
   foodId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -23,18 +18,15 @@ FoodPicture.init({
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
+  mainPicture: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  }
 }, {
   sequelize,
   underscored: true,
-  timestamps: true,
+  timestamps: false,
   modelName: 'food_picture'
 });
 

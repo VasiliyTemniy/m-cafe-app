@@ -3,11 +3,6 @@ import { MigrationContext } from '../types/MigrationContext.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('food_pictures', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
     food_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -22,18 +17,15 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false
+    main_picture: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
   });
 
   const constraintCheck = await queryInterface.sequelize.query(
-    "SELECT * FROM pg_constraint WHERE conname = 'food_pictures_food_id_picture_id_key'",
+    "SELECT * FROM pg_constraint WHERE conname = 'food_pictures_pkey'",
     { type: QueryTypes.SELECT }
   );
 
@@ -42,8 +34,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       fields: [
         'food_id', 'picture_id'
       ],
-      type: 'unique',
-      name: 'food_pictures_food_id_picture_id_key'
+      type: 'primary key',
+      name: 'food_pictures_pkey'
     });
   }
 };
