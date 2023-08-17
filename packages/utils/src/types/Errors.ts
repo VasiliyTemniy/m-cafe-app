@@ -15,6 +15,13 @@ export class RequestBodyError extends Error {
   }
 }
 
+export class UploadFileError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "UploadFileError";
+  }
+}
+
 export class RequestQueryError extends Error {
   constructor(message: string) {
     super(message);
