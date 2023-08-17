@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { Food, FoodType, LocString } from '../models/index.js';
+import { Food, FoodComponent, FoodPicture, FoodType, LocString, Picture } from '../models/index.js';
 import {
   FoodDT,
   isNewFoodBody,
@@ -10,11 +10,15 @@ import {
   isEditFoodBody,
   DatabaseError,
   updateInstance,
-  RequestQueryError
+  RequestQueryError,
+  PictureDT,
+  FoodComponentDT
 } from '@m-cafe-app/utils';
 import {
+  includeAltTextLocNoTimestamps,
+  includeFoodComponentData,
   includeNameDescriptionLocNoTimestamps,
-  includeNameDescriptionLocNoTimestampsSecondLayer
+  includeNameDescriptionLocNoTimestampsSecondLayer,
 } from '../utils/sequelizeHelpers.js';
 
 
@@ -47,6 +51,26 @@ foodRouter.get(
             ...includeNameDescriptionLocNoTimestampsSecondLayer
           ]
         },
+        {
+          model: FoodPicture,
+          as: 'gallery',
+          required: false,
+          include: [
+            {
+              model: Picture,
+              as: 'picture',
+              attributes: {
+                exclude: [...timestampsKeys]
+              },
+              include: [
+                includeAltTextLocNoTimestamps
+              ]
+            }
+          ],
+          order: [
+            ['orderNumber', 'ASC']
+          ]
+        },
         ...includeNameDescriptionLocNoTimestamps,
       ]
     });
@@ -60,6 +84,10 @@ foodRouter.get(
           descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
           ...mapDataToTransit(food.foodType!.dataValues)
         },
+        mainPicture: food.gallery && food.gallery.length > 0 ? {
+          altTextLoc: mapDataToTransit(food.gallery[0].picture!.altTextLoc!.dataValues),
+          ...mapDataToTransit(food.gallery[0].picture!.dataValues)
+        } : undefined,
         ...mapDataToTransit(food.dataValues)
       };
     });
@@ -89,6 +117,37 @@ foodRouter.get(
             ...includeNameDescriptionLocNoTimestampsSecondLayer
           ]
         },
+        {
+          model: FoodPicture,
+          as: 'gallery',
+          required: false,
+          include: [
+            {
+              model: Picture,
+              as: 'picture',
+              attributes: {
+                exclude: [...timestampsKeys]
+              },
+              include: [
+                includeAltTextLocNoTimestamps
+              ]
+            }
+          ],
+          order: [
+            ['orderNumber', 'ASC']
+          ]
+        },
+        {
+          model: FoodComponent,
+          as: 'foodComponents',
+          required: false,
+          attributes: {
+            exclude: [...timestampsKeys]
+          },
+          include: [
+            ...includeFoodComponentData
+          ]
+        },
         ...includeNameDescriptionLocNoTimestamps,
       ]
     });
@@ -103,6 +162,27 @@ foodRouter.get(
         descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
         ...mapDataToTransit(food.foodType!.dataValues)
       },
+      foodComponents: food.foodComponents && food.foodComponents.length > 0 ? [
+        ...food.foodComponents.map(foodComponent => {
+          const foodComponentRes: FoodComponentDT = {
+            component: {
+              nameLoc: mapDataToTransit(foodComponent.component!.nameLoc!.dataValues),
+              ...mapDataToTransit(foodComponent.component!.dataValues)
+            },
+            ...mapDataToTransit(foodComponent.dataValues)
+          };
+          return foodComponentRes;
+        })
+      ] : undefined,
+      gallery: food.gallery && food.gallery.length > 0 ? [
+        ...food.gallery.map(foodPicture => {
+          const picture: PictureDT = {
+            altTextLoc: mapDataToTransit(foodPicture.picture!.altTextLoc!.dataValues),
+            ...mapDataToTransit(foodPicture.picture!.dataValues)
+          };
+          return picture;
+        })
+      ] : undefined,
       ...mapDataToTransit(food.dataValues)
     };
 

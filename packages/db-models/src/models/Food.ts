@@ -1,6 +1,7 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
 import { PropertiesCreationOptional } from '../types/helpers.js';
 import { FoodComponent } from './FoodComponent.js';
+import { FoodPicture } from './FoodPicture.js';
 import { FoodType } from './FoodType.js';
 import { LocString } from './LocString.js';
 
@@ -16,6 +17,7 @@ export class Food extends Model<InferAttributes<Food>, InferCreationAttributes<F
   declare nameLoc?: NonAttribute<LocString>;
   declare descriptionLoc?: NonAttribute<LocString>;
   declare foodComponents?: NonAttribute<FoodComponent[]>;
+  declare gallery?: NonAttribute<FoodPicture[]>;
 }
 
 

@@ -143,6 +143,15 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
       });
       break;
 
+    case 'UploadFileError':
+      res.status(400).json({
+        error: {
+          name: 'UploadFileError',
+          message: error.message
+        }
+      });
+      break;
+
     case 'RequestBodyError':
       res.status(400).json({
         error: {

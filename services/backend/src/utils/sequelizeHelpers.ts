@@ -1,4 +1,4 @@
-import { LocString } from '../models';
+import { Food, Ingredient, LocString } from '../models/index.js';
 import { timestampsKeys } from '@m-cafe-app/utils';
 
 export const includeNameLocNoTimestamps = {
@@ -58,5 +58,44 @@ export const includeNameDescriptionLocNoTimestampsSecondLayer = [
     attributes: {
       exclude: [...timestampsKeys]
     }
+  }
+];
+
+export const includeAltTextLocNoTimestamps = {
+  model: LocString,
+  as: 'altTextLoc',
+  attributes: {
+    exclude: [...timestampsKeys]
+  }
+};
+
+export const includeStockMeasureLocNoTimestamps = {
+  model: LocString,
+  as: 'stockMeasureLoc',
+  attributes: {
+    exclude: [...timestampsKeys]
+  }
+};
+
+export const includeFoodComponentData = [
+  {
+    model: Food,
+    as: 'food',
+    attributes: {
+      exclude: ['nameLocId', 'descriptionLocId', 'foodTypeId', 'price', ...timestampsKeys]
+    },
+    include: [
+      { ...includeNameLocNoTimestamps }
+    ]
+  },
+  {
+    model: Ingredient,
+    as: 'ingredient',
+    attributes: {
+      exclude: ['nameLocId', 'stockMeasureLocId', ...timestampsKeys]
+    },
+    include: [
+      { ...includeNameLocNoTimestamps }
+    ]
   }
 ];

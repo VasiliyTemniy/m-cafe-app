@@ -1,9 +1,19 @@
-import { EditFoodBody, EditFoodTypeBody, NewFoodBody, NewFoodTypeBody, timestampsKeys } from "@m-cafe-app/utils";
+import {
+  EditFoodBody,
+  EditFoodTypeBody,
+  FoodComponentDT,
+  FoodDT,
+  NewFoodBody,
+  NewFoodTypeBody,
+  NewPictureBody,
+  PictureDT,
+  timestampsKeys
+} from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { Food, FoodType, LocString, User } from "../models";
+import { Food, FoodComponent, FoodPicture, FoodType, LocString, Picture, User } from "../models";
 import config from "../utils/config";
 import { connectToDatabase } from "../utils/db";
 import { validAdminInDB } from "./admin_api_helper";
@@ -17,6 +27,8 @@ import {
   includeNameDescriptionLocNoTimestamps,
   includeNameDescriptionLocNoTimestampsSecondLayer
 } from "../utils/sequelizeHelpers";
+import { initFoodComponents } from "./foodComponents_api_helper";
+import { initIngredients } from "./ingredient_api_helper";
 
 
 
@@ -126,7 +138,7 @@ describe('Food type requests tests', () => {
 
   });
 
-  it('A valid new food type can be added by admin', async () => {
+  it('Food type POST / adds new food type, can be used by admin', async () => {
 
     const newFoodType: NewFoodTypeBody = {
       nameLoc: {
@@ -150,7 +162,7 @@ describe('Food type requests tests', () => {
 
   });
 
-  it('Food type can be updated by admin', async () => {
+  it('Food type PUT /:id updates food type data, can be used by admin', async () => {
 
     const updFoodType: EditFoodTypeBody = {
       nameLoc: {
@@ -189,7 +201,7 @@ describe('Food type requests tests', () => {
 
   });
 
-  it('Food type can be deleted by admin', async () => {
+  it('Food type DELETE /:id deletes a food type, can be used by admin', async () => {
 
     await api
       .delete(`${apiBaseUrl}/foodtype/${foodTypes[0].id}`)
@@ -361,7 +373,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it('A valid new food can be added', async () => {
+  it('Food POST / adds new food, can be used by admin', async () => {
 
     const newFood: NewFoodBody = {
       nameLoc: {
@@ -387,7 +399,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it('Food can be updated', async () => {
+  it('Food PUT / updates food data, can be used by admin', async () => {
 
     const updFood: EditFoodBody = {
       nameLoc: {
@@ -441,7 +453,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it('Food can be deleted', async () => {
+  it('Food DELETE /:id deletes food, can be used by admin', async () => {
 
     await api
       .delete(`${apiBaseUrl}/food/${foods[0].id}`)
@@ -514,6 +526,122 @@ describe('Food requests tests', () => {
 
     expect(response.body.error.name).to.equal('RequestQueryError');
     expect(response.body.error.message).to.equal('Incorrect query string');
+
+  });
+
+  it('Food GET / path gives mainPicture data for every food if picture found', async () => {
+
+    await Picture.destroy({ where: {} });
+
+    const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
+
+    const fakePictureData: NewPictureBody = {
+      type: 'foodPicture',
+      orderNumber: '0',
+      altTextMainStr: 'New Picture! Youll see me if I do not get loaded by browser',
+      subjectId: String(randomFoodId)
+    };
+
+    // Start of fake picture save
+    const savedAltTextLoc = await LocString.create({
+      mainStr: fakePictureData.altTextMainStr
+    });
+
+    const savedPicture = await Picture.create({
+      src: 'fakeSrcPath',
+      altTextLocId: savedAltTextLoc.id
+    });
+
+    await FoodPicture.create({
+      foodId: randomFoodId,
+      pictureId: savedPicture.id,
+      orderNumber: Number(fakePictureData.orderNumber)
+    });
+    // End of fake picture save
+
+    const response = await api
+      .get(`${apiBaseUrl}/food`)
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const resFoods = response.body as FoodDT[];
+
+    const foodWithPictureInResponse = resFoods.find(food => food.id === randomFoodId);
+    if (!foodWithPictureInResponse) return expect(true).to.equal(false);
+
+    expect(foodWithPictureInResponse.mainPicture).to.exist;
+    expect(foodWithPictureInResponse.mainPicture?.src).to.equal(savedPicture.src);
+    expect(foodWithPictureInResponse.mainPicture?.altTextLoc.mainStr).to.equal(savedAltTextLoc.mainStr);
+
+  });
+
+  it('Food GET /:id path gives gallery and foodComponents data if found', async () => {
+
+    await Picture.destroy({ where: {} });
+
+    await FoodComponent.destroy({ where: {} });
+    await LocString.destroy({ where: {} });
+
+    const foods = await initFoods();
+
+    const ingredients = await initIngredients();
+    await initFoodComponents(foods, ingredients);
+
+    const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
+
+    const galleryLength = 5;
+
+    for (let i = 0; i < galleryLength; i++) {
+      const fakePictureData: NewPictureBody = {
+        type: 'foodPicture',
+        orderNumber: String(i),
+        altTextMainStr: 'New Picture! Youll see me if I do not get loaded by browser',
+        subjectId: String(randomFoodId)
+      };
+
+      // Start of fake picture save
+      const savedAltTextLoc = await LocString.create({
+        mainStr: fakePictureData.altTextMainStr
+      });
+
+      const savedPicture = await Picture.create({
+        src: 'fakeSrcPath',
+        altTextLocId: savedAltTextLoc.id
+      });
+
+      await FoodPicture.create({
+        foodId: randomFoodId,
+        pictureId: savedPicture.id,
+        orderNumber: Number(fakePictureData.orderNumber)
+      });
+    // End of fake picture save
+    }
+
+    const response = await api
+      .get(`${apiBaseUrl}/food/${randomFoodId}`)
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const resFood = response.body as FoodDT;
+
+    expect(resFood.foodComponents).to.exist;
+
+    const resFoodComponents = resFood.foodComponents as FoodComponentDT[];
+    expect(resFoodComponents[0].id).to.exist;
+    expect(resFoodComponents[0].amount).to.exist;
+    expect(resFoodComponents[0].component).to.exist;
+    expect(resFoodComponents[0].compositeFood).to.exist;
+
+    expect(resFood.gallery).to.exist;
+
+    const resFoodGallery = resFood.gallery as PictureDT[];
+    expect(resFoodGallery[0].id).to.exist;
+    expect(resFoodGallery[0].src).to.exist;
+    expect(resFoodGallery[0].altTextLoc).to.exist;
+    expect(resFoodGallery[0].altTextLoc.mainStr).to.exist;
+
 
   });
 

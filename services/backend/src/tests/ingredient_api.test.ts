@@ -20,7 +20,7 @@ await connectToDatabase();
 const api = supertest(app);
 
 
-describe('Ingredient type requests tests', () => {
+describe('Ingredient requests tests', () => {
 
   let tokenCookieAdmin: string;
   let tokenCookieManager: string;
@@ -50,7 +50,7 @@ describe('Ingredient type requests tests', () => {
     ingredients = await initIngredients();
   });
 
-  it('Ingredient type GET routes work with authorization from user with at least manager rights', async () => {
+  it('Ingredient GET routes work with authorization from user with at least manager rights', async () => {
 
     const response1 = await api
       .get(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)
@@ -188,7 +188,7 @@ describe('Ingredient type requests tests', () => {
     expect(response9.body.error.name).to.equal('ProhibitedError');
   });
 
-  it('A valid new ingredient can be added by admin', async () => {
+  it('Ingredient POST / adds new ingredient, can be used by admin', async () => {
 
     const newIngredient: NewIngredientBody = {
       nameLoc: {
@@ -220,7 +220,7 @@ describe('Ingredient type requests tests', () => {
 
   });
 
-  it('Ingredient can be updated by admin', async () => {
+  it('Ingredient PUT /:id updates ingredient data, can be used by admin', async () => {
 
     const updIngredient: EditIngredientBody = {
       nameLoc: {
@@ -273,7 +273,7 @@ describe('Ingredient type requests tests', () => {
 
   });
 
-  it('Ingredient can be deleted by admin', async () => {
+  it('Ingredient DELETE /:id deletes ingredient data, can be used by admin', async () => {
 
     await api
       .delete(`${apiBaseUrl}/foodtype/${ingredients[0].id}`)
