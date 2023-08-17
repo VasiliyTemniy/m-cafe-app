@@ -1,4 +1,5 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
+import { PropertiesCreationOptional } from '../types/helpers.js';
 import { LocString } from './LocString.js';
 
 export class Picture extends Model<InferAttributes<Picture>, InferCreationAttributes<Picture>> {
@@ -7,4 +8,9 @@ export class Picture extends Model<InferAttributes<Picture>, InferCreationAttrib
   declare altTextLocId: ForeignKey<LocString['id']>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+  declare altTextLoc?: NonAttribute<LocString>;
 }
+
+
+export type PictureData = Omit<InferAttributes<Picture>, PropertiesCreationOptional>
+  & { id: number; };
