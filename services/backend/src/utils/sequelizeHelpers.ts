@@ -60,3 +60,19 @@ export const includeNameDescriptionLocNoTimestampsSecondLayer = [
     }
   }
 ];
+
+export const includeAltTextLocNoTimestamps = {
+  model: LocString,
+  as: 'altTextLoc',
+  attributes: {
+    exclude: [...timestampsKeys]
+  }
+};
+
+export const includeStockMeasureLocNoTimestamps = {
+  model: LocString,
+  as: 'stockMeasureLoc',
+  attributes: {
+    exclude: [...timestampsKeys]
+  }
+};
