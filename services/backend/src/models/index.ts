@@ -373,7 +373,7 @@ Picture.hasMany(FoodPicture, {
 FoodPicture.belongsTo(Picture);
 Food.hasMany(FoodPicture, {
   foreignKey: 'foodId',
-  as: 'foodPictures'
+  as: 'gallery'
 });
 FoodPicture.belongsTo(Food);
 
