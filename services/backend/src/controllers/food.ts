@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { Food, FoodType, LocString } from '../models/index.js';
+import { Food, FoodComponent, FoodPicture, FoodType, LocString, Picture } from '../models/index.js';
 import {
   FoodDT,
   isNewFoodBody,
@@ -13,8 +13,10 @@ import {
   RequestQueryError
 } from '@m-cafe-app/utils';
 import {
+  includeAltTextLocNoTimestamps,
+  includeFoodComponentData,
   includeNameDescriptionLocNoTimestamps,
-  includeNameDescriptionLocNoTimestampsSecondLayer
+  includeNameDescriptionLocNoTimestampsSecondLayer,
 } from '../utils/sequelizeHelpers.js';
 
 
@@ -45,6 +47,26 @@ foodRouter.get(
           },
           include: [
             ...includeNameDescriptionLocNoTimestampsSecondLayer
+          ]
+        },
+        {
+          model: FoodPicture,
+          as: 'mainPicture',
+          required: false,
+          where: {
+            mainPicture: true
+          },
+          include: [
+            {
+              model: Picture,
+              as: 'picture',
+              attributes: {
+                exclude: [...timestampsKeys]
+              },
+              include: [
+                includeAltTextLocNoTimestamps
+              ]
+            }
           ]
         },
         ...includeNameDescriptionLocNoTimestamps,
@@ -87,6 +109,34 @@ foodRouter.get(
           },
           include: [
             ...includeNameDescriptionLocNoTimestampsSecondLayer
+          ]
+        },
+        {
+          model: FoodPicture,
+          as: 'gallery',
+          required: false,
+          include: [
+            {
+              model: Picture,
+              as: 'picture',
+              attributes: {
+                exclude: [...timestampsKeys]
+              },
+              include: [
+                includeAltTextLocNoTimestamps
+              ]
+            }
+          ]
+        },
+        {
+          model: FoodComponent,
+          as: 'foodComponents',
+          required: false,
+          attributes: {
+            exclude: [...timestampsKeys]
+          },
+          include: [
+            ...includeFoodComponentData
           ]
         },
         ...includeNameDescriptionLocNoTimestamps,
