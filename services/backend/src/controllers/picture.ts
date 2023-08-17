@@ -6,10 +6,10 @@ import { promises as fs } from 'fs';
 import {
   ApplicationError,
   DatabaseError,
-  isBoolean,
   isEditPictureBody,
   isNewPictureBody,
   mapDataToTransit,
+  PictureDT,
   RequestBodyError,
   UploadFileError
 } from '@m-cafe-app/utils';
@@ -74,7 +74,7 @@ pictureRouter.post(
       throw new UploadFileError('Only .png images are allowed');
     }
 
-    const altTextLoc = await LocString.create({
+    const savedAltTextLoc = await LocString.create({
       mainStr: altTextMainStr,
       secStr: altTextSecStr,
       altStr: altTextAltStr
@@ -82,14 +82,14 @@ pictureRouter.post(
 
     const savedPicture = await Picture.create({
       src: targetFilePath,
-      altTextLocId: altTextLoc.id
+      altTextLocId: savedAltTextLoc.id
     });
 
     if (type === 'foodPicture') {
       await FoodPicture.create({
-        foodId: subjectId,
+        foodId: Number(subjectId),
         pictureId: savedPicture.id,
-        mainPicture: main ? main : false
+        mainPicture: main ? Boolean(main) : false
       });
     } else {
       const dynamicModule = foundSubject as DynamicModule;
@@ -98,7 +98,13 @@ pictureRouter.post(
       await dynamicModule.save();
     }
 
-    res.status(201).json(mapDataToTransit(savedPicture.dataValues));
+    const resBody: PictureDT = {
+      id: savedPicture.id,
+      src: savedPicture.src,
+      altTextLoc: mapDataToTransit(savedAltTextLoc.dataValues)
+    };
+
+    res.status(201).json(resBody);
 
   }) as RequestHandler
 );
@@ -128,8 +134,8 @@ pictureRouter.put(
     updAltTextLoc.secStr = altTextSecStr;
     updAltTextLoc.altStr = altTextAltStr;
 
-    if (type === 'foodPicture' && isBoolean(main)) {
-      if (main === false) {
+    if (type === 'foodPicture' && !!main) {
+      if (main === 'false') {
 
         const foodPicture = await FoodPicture.findOne({ where: { pictureId: req.params.id } });
         if (!foodPicture) throw new DatabaseError(`No food picture entry with this picture id ${req.params.id}`);
@@ -154,7 +160,13 @@ pictureRouter.put(
 
     await updAltTextLoc.save();
 
-    res.status(200).json(mapDataToTransit(updPicture.dataValues));
+    const resBody: PictureDT = {
+      id: updPicture.id,
+      src: updPicture.src,
+      altTextLoc: mapDataToTransit(updAltTextLoc.dataValues)
+    };
+
+    res.status(200).json(resBody);
 
   }) as RequestHandler
 );
