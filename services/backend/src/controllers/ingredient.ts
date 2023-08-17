@@ -11,7 +11,7 @@ import {
   isEditIngredientBody,
   updateInstance
 } from '@m-cafe-app/utils';
-import { includeNameLocNoTimestamps } from '../utils/sequelizeHelpers.js';
+import { includeNameLocNoTimestamps, includeStockMeasureLocNoTimestamps } from '../utils/sequelizeHelpers.js';
 
 
 const ingredientRouter = Router();
@@ -29,13 +29,7 @@ ingredientRouter.get(
       },
       include: [
         includeNameLocNoTimestamps,
-        {
-          model: LocString,
-          as: 'stockMeasureLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        }
+        includeStockMeasureLocNoTimestamps
       ]
     });
 
@@ -66,13 +60,7 @@ ingredientRouter.get(
       },
       include: [
         includeNameLocNoTimestamps,
-        {
-          model: LocString,
-          as: 'stockMeasureLoc',
-          attributes: {
-            exclude: [...timestampsKeys]
-          }
-        }
+        includeStockMeasureLocNoTimestamps
       ]
     });
 

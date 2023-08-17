@@ -22,7 +22,8 @@ import {
 } from '@m-cafe-app/utils';
 import {
   includeNameDescriptionLocNoTimestamps,
-  includeNameLocNoTimestamps
+  includeNameLocNoTimestamps,
+  includeStockMeasureLocNoTimestamps
 } from '../utils/sequelizeHelpers.js';
 import { isRequestCustom } from '../types/RequestCustom.js';
 import { Session } from '../redis/Session.js';
@@ -156,13 +157,7 @@ facilityRouter.get(
               },
               include: [
                 includeNameLocNoTimestamps,
-                {
-                  model: LocString,
-                  as: 'stockMeasureLoc',
-                  attributes: {
-                    exclude: [...timestampsKeys]
-                  }
-                }
+                includeStockMeasureLocNoTimestamps
               ]
             }
           ]
