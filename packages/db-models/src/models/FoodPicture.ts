@@ -5,6 +5,6 @@ import { Picture } from './Picture.js';
 export class FoodPicture extends Model<InferAttributes<FoodPicture>, InferCreationAttributes<FoodPicture>> {
   declare foodId: ForeignKey<Food['id']>;
   declare pictureId: ForeignKey<Picture['id']>;
-  declare mainPicture: boolean;
+  declare orderNumber: number;
   declare picture?: NonAttribute<Picture>;
 }

@@ -17,7 +17,6 @@ export class Food extends Model<InferAttributes<Food>, InferCreationAttributes<F
   declare nameLoc?: NonAttribute<LocString>;
   declare descriptionLoc?: NonAttribute<LocString>;
   declare foodComponents?: NonAttribute<FoodComponent[]>;
-  declare mainPicture?: NonAttribute<FoodPicture>;
   declare gallery?: NonAttribute<FoodPicture[]>;
 }
 

@@ -18,10 +18,10 @@ FoodPicture.init({
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   },
-  mainPicture: {
-    type: DataTypes.BOOLEAN,
+  orderNumber: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: false
+    defaultValue: 0
   }
 }, {
   sequelize,

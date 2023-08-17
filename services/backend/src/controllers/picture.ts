@@ -42,7 +42,7 @@ pictureRouter.post(
     if (!req.file) throw new UploadFileError('File cannot be read');
     if (!isNewPictureBody(req.body)) throw new RequestBodyError('Invalid new picture body');
 
-    const { type, main, altTextMainStr, altTextSecStr, altTextAltStr, subjectId } = req.body;
+    const { type, orderNumber, altTextMainStr, altTextSecStr, altTextAltStr, subjectId } = req.body;
 
     const foundSubject = type === 'foodPicture'
       ? await Food.findByPk(subjectId)
@@ -89,7 +89,7 @@ pictureRouter.post(
       await FoodPicture.create({
         foodId: Number(subjectId),
         pictureId: savedPicture.id,
-        mainPicture: main ? Boolean(main) : false
+        orderNumber: orderNumber ? Number(orderNumber) : 0
       });
     } else {
       const dynamicModule = foundSubject as DynamicModule;
@@ -122,7 +122,7 @@ pictureRouter.put(
 
     if (!isEditPictureBody(req.body)) throw new RequestBodyError('Invalid new picture body');
 
-    const { type, main, altTextMainStr, altTextSecStr, altTextAltStr, subjectId } = req.body;
+    const { type, orderNumber, altTextMainStr, altTextSecStr, altTextAltStr } = req.body;
 
     const updPicture = await Picture.findByPk(req.params.id);
     if (!updPicture) throw new DatabaseError(`No picture entry with this id ${req.params.id}`);
@@ -134,28 +134,11 @@ pictureRouter.put(
     updAltTextLoc.secStr = altTextSecStr;
     updAltTextLoc.altStr = altTextAltStr;
 
-    if (type === 'foodPicture' && !!main) {
-      if (main === 'false') {
-
-        const foodPicture = await FoodPicture.findOne({ where: { pictureId: req.params.id } });
-        if (!foodPicture) throw new DatabaseError(`No food picture entry with this picture id ${req.params.id}`);
-        foodPicture.mainPicture = false;
-        await foodPicture.save();
-
-      } else {
-
-        const foodPictures = await FoodPicture.findAll({ where: { foodId: subjectId } });
-
-        for (const foodPicture of foodPictures) {
-          if (foodPicture.pictureId === Number(req.params.id)) {
-            foodPicture.mainPicture = true;
-          } else {
-            foodPicture.mainPicture = false;
-          }
-          await foodPicture.save();
-        }
-
-      }
+    if (type === 'foodPicture' && !!orderNumber) {
+      const foodPicture = await FoodPicture.findOne({ where: { pictureId: req.params.id } });
+      if (!foodPicture) throw new DatabaseError(`No food picture entry with this picture id ${req.params.id}`);
+      foodPicture.orderNumber = Number(orderNumber);
+      await foodPicture.save();
     }
 
     await updAltTextLoc.save();

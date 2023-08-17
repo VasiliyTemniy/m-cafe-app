@@ -1,9 +1,19 @@
-import { EditFoodBody, EditFoodTypeBody, FoodComponentDT, FoodDT, NewFoodBody, NewFoodTypeBody, NewPictureBody, PictureDT, timestampsKeys } from "@m-cafe-app/utils";
+import {
+  EditFoodBody,
+  EditFoodTypeBody,
+  FoodComponentDT,
+  FoodDT,
+  NewFoodBody,
+  NewFoodTypeBody,
+  NewPictureBody,
+  PictureDT,
+  timestampsKeys
+} from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { Food, FoodPicture, FoodType, LocString, Picture, User } from "../models";
+import { Food, FoodComponent, FoodPicture, FoodType, LocString, Picture, User } from "../models";
 import config from "../utils/config";
 import { connectToDatabase } from "../utils/db";
 import { validAdminInDB } from "./admin_api_helper";
@@ -519,7 +529,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it.only('Food GET / path gives mainPicture data for every food if picture found', async () => {
+  it('Food GET / path gives mainPicture data for every food if picture found', async () => {
 
     await Picture.destroy({ where: {} });
 
@@ -527,7 +537,7 @@ describe('Food requests tests', () => {
 
     const fakePictureData: NewPictureBody = {
       type: 'foodPicture',
-      main: 'true',
+      orderNumber: '0',
       altTextMainStr: 'New Picture! Youll see me if I do not get loaded by browser',
       subjectId: String(randomFoodId)
     };
@@ -545,7 +555,7 @@ describe('Food requests tests', () => {
     await FoodPicture.create({
       foodId: randomFoodId,
       pictureId: savedPicture.id,
-      mainPicture: true
+      orderNumber: Number(fakePictureData.orderNumber)
     });
     // End of fake picture save
 
@@ -566,9 +576,14 @@ describe('Food requests tests', () => {
 
   });
 
-  it.only('Food GET /:id path gives gallery and foodComponents data if found', async () => {
+  it('Food GET /:id path gives gallery and foodComponents data if found', async () => {
 
     await Picture.destroy({ where: {} });
+
+    await FoodComponent.destroy({ where: {} });
+    await LocString.destroy({ where: {} });
+
+    const foods = await initFoods();
 
     const ingredients = await initIngredients();
     await initFoodComponents(foods, ingredients);
@@ -580,7 +595,7 @@ describe('Food requests tests', () => {
     for (let i = 0; i < galleryLength; i++) {
       const fakePictureData: NewPictureBody = {
         type: 'foodPicture',
-        main: 'false',
+        orderNumber: String(i),
         altTextMainStr: 'New Picture! Youll see me if I do not get loaded by browser',
         subjectId: String(randomFoodId)
       };
@@ -598,7 +613,7 @@ describe('Food requests tests', () => {
       await FoodPicture.create({
         foodId: randomFoodId,
         pictureId: savedPicture.id,
-        mainPicture: false
+        orderNumber: Number(fakePictureData.orderNumber)
       });
     // End of fake picture save
     }

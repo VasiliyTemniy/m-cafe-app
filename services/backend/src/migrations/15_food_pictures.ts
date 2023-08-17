@@ -17,10 +17,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    main_picture: {
-      type: DataTypes.BOOLEAN,
+    order_number: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: false
+      defaultValue: 0
     }
   });
 

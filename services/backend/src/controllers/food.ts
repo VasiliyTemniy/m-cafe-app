@@ -53,11 +53,8 @@ foodRouter.get(
         },
         {
           model: FoodPicture,
-          as: 'mainPicture',
+          as: 'gallery',
           required: false,
-          where: {
-            mainPicture: true
-          },
           include: [
             {
               model: Picture,
@@ -69,6 +66,9 @@ foodRouter.get(
                 includeAltTextLocNoTimestamps
               ]
             }
+          ],
+          order: [
+            ['orderNumber', 'ASC']
           ]
         },
         ...includeNameDescriptionLocNoTimestamps,
@@ -84,9 +84,9 @@ foodRouter.get(
           descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
           ...mapDataToTransit(food.foodType!.dataValues)
         },
-        mainPicture: food.mainPicture ? {
-          altTextLoc: mapDataToTransit(food.mainPicture.picture!.altTextLoc!.dataValues),
-          ...mapDataToTransit(food.mainPicture.picture!.dataValues)
+        mainPicture: food.gallery && food.gallery.length > 0 ? {
+          altTextLoc: mapDataToTransit(food.gallery[0].picture!.altTextLoc!.dataValues),
+          ...mapDataToTransit(food.gallery[0].picture!.dataValues)
         } : undefined,
         ...mapDataToTransit(food.dataValues)
       };
@@ -132,6 +132,9 @@ foodRouter.get(
                 includeAltTextLocNoTimestamps
               ]
             }
+          ],
+          order: [
+            ['orderNumber', 'ASC']
           ]
         },
         {
@@ -159,7 +162,7 @@ foodRouter.get(
         descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
         ...mapDataToTransit(food.foodType!.dataValues)
       },
-      foodComponents: food.foodComponents ? [
+      foodComponents: food.foodComponents && food.foodComponents.length > 0 ? [
         ...food.foodComponents.map(foodComponent => {
           const foodComponentRes: FoodComponentDT = {
             component: {
@@ -171,7 +174,7 @@ foodRouter.get(
           return foodComponentRes;
         })
       ] : undefined,
-      gallery: food.gallery ? [
+      gallery: food.gallery && food.gallery.length > 0 ? [
         ...food.gallery.map(foodPicture => {
           const picture: PictureDT = {
             altTextLoc: mapDataToTransit(foodPicture.picture!.altTextLoc!.dataValues),
