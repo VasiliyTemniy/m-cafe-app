@@ -396,5 +396,7 @@ export {
   Facility,
   FacilityManager,
   Stock,
-  DynamicModule
+  DynamicModule,
+  Picture,
+  FoodPicture
 };
