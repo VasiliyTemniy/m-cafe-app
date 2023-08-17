@@ -10,7 +10,9 @@ import {
   isEditFoodBody,
   DatabaseError,
   updateInstance,
-  RequestQueryError
+  RequestQueryError,
+  PictureDT,
+  FoodComponentDT
 } from '@m-cafe-app/utils';
 import {
   includeAltTextLocNoTimestamps,
@@ -83,8 +85,8 @@ foodRouter.get(
           ...mapDataToTransit(food.foodType!.dataValues)
         },
         mainPicture: food.mainPicture ? {
-          altTextLoc: mapDataToTransit(food.mainPicture.altTextLoc!.dataValues),
-          ...mapDataToTransit(food.mainPicture.dataValues)
+          altTextLoc: mapDataToTransit(food.mainPicture.picture!.altTextLoc!.dataValues),
+          ...mapDataToTransit(food.mainPicture.picture!.dataValues)
         } : undefined,
         ...mapDataToTransit(food.dataValues)
       };
@@ -159,21 +161,23 @@ foodRouter.get(
       },
       foodComponents: food.foodComponents ? [
         ...food.foodComponents.map(foodComponent => {
-          return {
+          const foodComponentRes: FoodComponentDT = {
             component: {
               nameLoc: mapDataToTransit(foodComponent.component!.nameLoc!.dataValues),
               ...mapDataToTransit(foodComponent.component!.dataValues)
             },
             ...mapDataToTransit(foodComponent.dataValues)
           };
+          return foodComponentRes;
         })
       ] : undefined,
       gallery: food.gallery ? [
-        ...food.gallery.map(picture => {
-          return {
-            altTextLoc: mapDataToTransit(picture.altTextLoc!.dataValues),
-            ...mapDataToTransit(picture.dataValues)
+        ...food.gallery.map(foodPicture => {
+          const picture: PictureDT = {
+            altTextLoc: mapDataToTransit(foodPicture.picture!.altTextLoc!.dataValues),
+            ...mapDataToTransit(foodPicture.picture!.dataValues)
           };
+          return picture;
         })
       ] : undefined,
       ...mapDataToTransit(food.dataValues)
