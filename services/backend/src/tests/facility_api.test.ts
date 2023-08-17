@@ -112,7 +112,7 @@ describe('Facility requests tests', () => {
 
   });
 
-  it('A valid new facility can be added by admin', async () => {
+  it('Facility POST / adds new facility, can be used by admin', async () => {
 
     const newFacility: NewFacilityBody = {
       nameLoc: {
@@ -141,7 +141,7 @@ describe('Facility requests tests', () => {
     expect(response.body.address.street).to.equal(newFacility.address.street);
   });
 
-  it('Facility can be updated by admin', async () => {
+  it('Facility PUT /:id updates facility data, can be used by admin', async () => {
 
     const updFacility: EditFacilityBody = {
       nameLoc: {
@@ -348,7 +348,7 @@ describe('Facility requests tests', () => {
 
   });
 
-  it('Facility :id/managers GET route responses with all facility info including managers list as User DT objects', async () => {
+  it('Facility GET /:id/managers route responses with all facility info including managers list as User DT objects', async () => {
 
     const usersInDB = await User.scope('user').findAll();
 
@@ -376,7 +376,7 @@ describe('Facility requests tests', () => {
 
   });
 
-  it('Facility :id/stocks PUT route works and can be used either by current facility manager or by any admin. \
+  it('Facility PUT /:id/stocks route works and can be used either by current facility manager or by any admin. \
 New stocks get added, other stocks get updated', async () => {
 
     const usersInDB = await User.scope('user').findAll();
@@ -448,7 +448,7 @@ New stocks get added, other stocks get updated', async () => {
 
   });
 
-  it('Facility :id/stocks PUT route cannot be used by other facility`s manager', async () => {
+  it('Facility PUT /:id/stocks route cannot be used by other facility`s manager', async () => {
   
     // manager from previous test must have moved to another scope
     const usersInDB = await User.scope('user').findAll();
@@ -490,7 +490,7 @@ New stocks get added, other stocks get updated', async () => {
   
   });
 
-  it('Facility :id/stocks GET route gives facility info including stocks. \
+  it('Facility GET /:id/stocks route gives facility info including stocks. \
 Can be used either by current facility manager or by any admin', async () => {
 
     const usersInDB = await User.scope('user').findAll();
@@ -545,7 +545,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
   });
 
-  it('Facility manager can be added by admin', async () => {
+  it('Facility POST /:id/managers adds faciliry manager, can be used by admin', async () => {
 
     const usersInDB = await User.scope('user').findAll();
 
@@ -566,7 +566,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
   });
 
-  it('Facility manager can be deleted by admin', async () => {
+  it('Facility DELETE /:id/managers/:userId deletes facility manager, can be used by admin', async () => {
 
     const facilityManagersInDB = await FacilityManager.findAll({ where: { facilityId: facilities[0].id } });
 
@@ -586,7 +586,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
   });
 
-  it('Facility can be deleted by admin', async () => {
+  it('Facility DELETE /:id deletes facility data, can be used by admin', async () => {
 
     await api
       .delete(`${apiBaseUrl}/facility/${facilities[0].id}`)

@@ -156,7 +156,8 @@ describe('FoodComponents requests tests', () => {
 
   });
 
-  it('A valid new food components can be added by admin. Components can be either ingredients or other foods', async () => {
+  it('FoodComponents POST /(food):id/components adds new food components, can be used by admin. \
+Components can be either ingredients or other foods', async () => {
 
     const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
 
@@ -230,7 +231,7 @@ describe('FoodComponents requests tests', () => {
 
   });
 
-  it('FoodComponents can be updated by admin - path to replace all components', async () => {
+  it('FoodComponents PUT /:(food)id/components can be used by admin - path to replace all components', async () => {
 
     const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
 
@@ -300,7 +301,7 @@ describe('FoodComponents requests tests', () => {
 
   });
 
-  it('FoodComponents can be updated by admin - path to update one component', async () => {
+  it('FoodComponents PUT /:(food)id/components/:componentId can be used by admin - path to update one component', async () => {
 
     const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
 
@@ -326,7 +327,7 @@ describe('FoodComponents requests tests', () => {
 
   });
 
-  it('FoodComponents can be deleted by admin', async () => {
+  it('FoodComponents DELETE /:(food)id/components(/:componentId) delete appropriate number of components, can be used by admin', async () => {
 
     const foundFoodComponents = await FoodComponent.findAll({ where: { foodId: foods[0].id } });
 

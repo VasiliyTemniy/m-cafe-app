@@ -126,7 +126,7 @@ describe('Food type requests tests', () => {
 
   });
 
-  it('A valid new food type can be added by admin', async () => {
+  it('Food type POST / adds new food type, can be used by admin', async () => {
 
     const newFoodType: NewFoodTypeBody = {
       nameLoc: {
@@ -150,7 +150,7 @@ describe('Food type requests tests', () => {
 
   });
 
-  it('Food type can be updated by admin', async () => {
+  it('Food type PUT /:id updates food type data, can be used by admin', async () => {
 
     const updFoodType: EditFoodTypeBody = {
       nameLoc: {
@@ -189,7 +189,7 @@ describe('Food type requests tests', () => {
 
   });
 
-  it('Food type can be deleted by admin', async () => {
+  it('Food type DELETE /:id deletes a food type, can be used by admin', async () => {
 
     await api
       .delete(`${apiBaseUrl}/foodtype/${foodTypes[0].id}`)
@@ -361,7 +361,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it('A valid new food can be added', async () => {
+  it('Food POST / adds new food, can be used by admin', async () => {
 
     const newFood: NewFoodBody = {
       nameLoc: {
@@ -387,7 +387,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it('Food can be updated', async () => {
+  it('Food PUT / updates food data, can be used by admin', async () => {
 
     const updFood: EditFoodBody = {
       nameLoc: {
@@ -441,7 +441,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it('Food can be deleted', async () => {
+  it('Food DELETE /:id deletes food, can be used by admin', async () => {
 
     await api
       .delete(`${apiBaseUrl}/food/${foods[0].id}`)

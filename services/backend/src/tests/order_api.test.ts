@@ -66,7 +66,7 @@ describe('Order requests tests', () => {
     initialOrders = await initOrders(api, facilities, foods);
   });
 
-  it('Order POST creates a new order. Can be used without authorization', async () => {
+  it('Order POST / creates a new order. Can be used without authorization', async () => {
 
     const deliverAt = new Date(Date.now() + 1000 * 60 * 60);
 
@@ -163,7 +163,7 @@ describe('Order requests tests', () => {
 
   });
 
-  it('Order PUT updates an order. Can be used by a manager or admin', async () => {
+  it('Order PUT / updates an order. Can be used by a manager or admin', async () => {
 
     const deliverAt = new Date(Date.now() + 1000 * 60 * 60);
 
@@ -236,7 +236,7 @@ describe('Order requests tests', () => {
 
   });
 
-  it('Order :id/status PUT updates order status. Can be used by a manager or admin', async () => {
+  it('Order PUT /:id/status updates order status. Can be used by a manager or admin', async () => {
 
     const deliverAt = new Date(Date.now() + 1000 * 60 * 60);
 
@@ -282,7 +282,7 @@ describe('Order requests tests', () => {
 
   });
 
-  it('Order :id GET request gives detailed info about order. Can be used by exact same user that made new order or by \
+  it('Order GET /:id request gives detailed info about order. Can be used by exact same user that made new order or by \
 this facility`s manager or admin. Other facility`s managers also cannot get this data. No anonymous requests handled here', async () => {
 
     const deliverAt = new Date(Date.now() + 1000 * 60 * 60);
@@ -394,7 +394,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
   });
 
-  it('Order /user/:userId GET request gives info about order without details. Can be used by user, manager or admin', async () => {
+  it('Order GET /user/:userId request gives info about order without details. Can be used by user, manager or admin', async () => {
 
     await Order.destroy({ where: { userId: validUserInDBID }});
 
@@ -435,7 +435,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
   });
 
-  it('Order / GET request gives info about all orders without details. Can be used by admin \
+  it('Order GET / request gives info about all orders without details. Can be used by admin \
 or manager with req query facilityid', async () => {
   
     await FacilityManager.destroy({ where: { userId: validManagerInDBID } });
