@@ -3,6 +3,7 @@ import { PropertiesCreationOptional } from '../types/helpers.js';
 import { FoodComponent } from './FoodComponent.js';
 import { FoodType } from './FoodType.js';
 import { LocString } from './LocString.js';
+import { Picture } from './Picture.js';
 
 export class Food extends Model<InferAttributes<Food>, InferCreationAttributes<Food>> {
   declare id: CreationOptional<number>;
@@ -16,6 +17,8 @@ export class Food extends Model<InferAttributes<Food>, InferCreationAttributes<F
   declare nameLoc?: NonAttribute<LocString>;
   declare descriptionLoc?: NonAttribute<LocString>;
   declare foodComponents?: NonAttribute<FoodComponent[]>;
+  declare mainPicture?: NonAttribute<Picture>;
+  declare gallery?: NonAttribute<Picture[]>;
 }
 
 

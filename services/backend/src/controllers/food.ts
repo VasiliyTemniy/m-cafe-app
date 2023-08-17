@@ -82,6 +82,10 @@ foodRouter.get(
           descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
           ...mapDataToTransit(food.foodType!.dataValues)
         },
+        mainPicture: food.mainPicture ? {
+          altTextLoc: mapDataToTransit(food.mainPicture.altTextLoc!.dataValues),
+          ...mapDataToTransit(food.mainPicture.dataValues)
+        } : undefined,
         ...mapDataToTransit(food.dataValues)
       };
     });
@@ -153,6 +157,25 @@ foodRouter.get(
         descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
         ...mapDataToTransit(food.foodType!.dataValues)
       },
+      foodComponents: food.foodComponents ? [
+        ...food.foodComponents.map(foodComponent => {
+          return {
+            component: {
+              nameLoc: mapDataToTransit(foodComponent.component!.nameLoc!.dataValues),
+              ...mapDataToTransit(foodComponent.component!.dataValues)
+            },
+            ...mapDataToTransit(foodComponent.dataValues)
+          };
+        })
+      ] : undefined,
+      gallery: food.gallery ? [
+        ...food.gallery.map(picture => {
+          return {
+            altTextLoc: mapDataToTransit(picture.altTextLoc!.dataValues),
+            ...mapDataToTransit(picture.dataValues)
+          };
+        })
+      ] : undefined,
       ...mapDataToTransit(food.dataValues)
     };
 
