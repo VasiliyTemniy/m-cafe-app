@@ -12,6 +12,7 @@ import {
   FoodComponentDT,
 } from '@m-cafe-app/utils';
 import {
+  includeFoodComponentData,
   includeNameLocNoTimestamps
 } from '../utils/sequelizeHelpers.js';
 
@@ -33,26 +34,7 @@ foodComponentRouter.get(
         exclude: [...timestampsKeys]
       },
       include: [
-        {
-          model: Food,
-          as: 'food',
-          attributes: {
-            exclude: ['nameLocId', 'descriptionLocId', 'foodTypeId', 'price', ...timestampsKeys]
-          },
-          include: [
-            { ...includeNameLocNoTimestamps }
-          ]
-        },
-        {
-          model: Ingredient,
-          as: 'ingredient',
-          attributes: {
-            exclude: ['nameLocId', 'stockMeasureLocId', ...timestampsKeys]
-          },
-          include: [
-            { ...includeNameLocNoTimestamps }
-          ]
-        }
+        ...includeFoodComponentData
       ]
     });
 
