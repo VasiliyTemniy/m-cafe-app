@@ -1,9 +1,9 @@
-import { EditFoodBody, EditFoodTypeBody, NewFoodBody, NewFoodTypeBody, timestampsKeys } from "@m-cafe-app/utils";
+import { EditFoodBody, EditFoodTypeBody, FoodComponentDT, FoodDT, NewFoodBody, NewFoodTypeBody, NewPictureBody, PictureDT, timestampsKeys } from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { Food, FoodType, LocString, User } from "../models";
+import { Food, FoodPicture, FoodType, LocString, Picture, User } from "../models";
 import config from "../utils/config";
 import { connectToDatabase } from "../utils/db";
 import { validAdminInDB } from "./admin_api_helper";
@@ -17,6 +17,8 @@ import {
   includeNameDescriptionLocNoTimestamps,
   includeNameDescriptionLocNoTimestampsSecondLayer
 } from "../utils/sequelizeHelpers";
+import { initFoodComponents } from "./foodComponents_api_helper";
+import { initIngredients } from "./ingredient_api_helper";
 
 
 
@@ -514,6 +516,117 @@ describe('Food requests tests', () => {
 
     expect(response.body.error.name).to.equal('RequestQueryError');
     expect(response.body.error.message).to.equal('Incorrect query string');
+
+  });
+
+  it.only('Food GET / path gives mainPicture data for every food if picture found', async () => {
+
+    await Picture.destroy({ where: {} });
+
+    const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
+
+    const fakePictureData: NewPictureBody = {
+      type: 'foodPicture',
+      main: 'true',
+      altTextMainStr: 'New Picture! Youll see me if I do not get loaded by browser',
+      subjectId: String(randomFoodId)
+    };
+
+    // Start of fake picture save
+    const savedAltTextLoc = await LocString.create({
+      mainStr: fakePictureData.altTextMainStr
+    });
+
+    const savedPicture = await Picture.create({
+      src: 'fakeSrcPath',
+      altTextLocId: savedAltTextLoc.id
+    });
+
+    await FoodPicture.create({
+      foodId: randomFoodId,
+      pictureId: savedPicture.id,
+      mainPicture: true
+    });
+    // End of fake picture save
+
+    const response = await api
+      .get(`${apiBaseUrl}/food`)
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const resFoods = response.body as FoodDT[];
+
+    const foodWithPictureInResponse = resFoods.find(food => food.id === randomFoodId);
+    if (!foodWithPictureInResponse) return expect(true).to.equal(false);
+
+    expect(foodWithPictureInResponse.mainPicture).to.exist;
+    expect(foodWithPictureInResponse.mainPicture?.src).to.equal(savedPicture.src);
+    expect(foodWithPictureInResponse.mainPicture?.altTextLoc.mainStr).to.equal(savedAltTextLoc.mainStr);
+
+  });
+
+  it.only('Food GET /:id path gives gallery and foodComponents data if found', async () => {
+
+    await Picture.destroy({ where: {} });
+
+    const ingredients = await initIngredients();
+    await initFoodComponents(foods, ingredients);
+
+    const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
+
+    const galleryLength = 5;
+
+    for (let i = 0; i < galleryLength; i++) {
+      const fakePictureData: NewPictureBody = {
+        type: 'foodPicture',
+        main: 'false',
+        altTextMainStr: 'New Picture! Youll see me if I do not get loaded by browser',
+        subjectId: String(randomFoodId)
+      };
+
+      // Start of fake picture save
+      const savedAltTextLoc = await LocString.create({
+        mainStr: fakePictureData.altTextMainStr
+      });
+
+      const savedPicture = await Picture.create({
+        src: 'fakeSrcPath',
+        altTextLocId: savedAltTextLoc.id
+      });
+
+      await FoodPicture.create({
+        foodId: randomFoodId,
+        pictureId: savedPicture.id,
+        mainPicture: false
+      });
+    // End of fake picture save
+    }
+
+    const response = await api
+      .get(`${apiBaseUrl}/food/${randomFoodId}`)
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const resFood = response.body as FoodDT;
+
+    expect(resFood.foodComponents).to.exist;
+
+    const resFoodComponents = resFood.foodComponents as FoodComponentDT[];
+    expect(resFoodComponents[0].id).to.exist;
+    expect(resFoodComponents[0].amount).to.exist;
+    expect(resFoodComponents[0].component).to.exist;
+    expect(resFoodComponents[0].compositeFood).to.exist;
+
+    expect(resFood.gallery).to.exist;
+
+    const resFoodGallery = resFood.gallery as PictureDT[];
+    expect(resFoodGallery[0].id).to.exist;
+    expect(resFoodGallery[0].src).to.exist;
+    expect(resFoodGallery[0].altTextLoc).to.exist;
+    expect(resFoodGallery[0].altTextLoc.mainStr).to.exist;
+
 
   });
 
