@@ -156,7 +156,7 @@ describe('FoodComponents requests tests', () => {
 
   });
 
-  it('FoodComponents POST /(food):id/components adds new food components, can be used by admin. \
+  it('FoodComponents POST /:(food)id/components adds new food components, can be used by admin. \
 Components can be either ingredients or other foods', async () => {
 
     const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
