@@ -14,6 +14,8 @@ import Stock from './Stock.js';
 import DynamicModule from './DynamicModule.js';
 import Picture from './Picture.js';
 import FoodPicture from './FoodPicture.js';
+import UiSetting from './UiSetting.js';
+import FixedLoc from './FixedLoc.js';
 
 /*****
  * User + Address table associations BEGIN
@@ -125,6 +127,15 @@ LocString.hasOne(Picture, {
 Picture.belongsTo(LocString, {
   foreignKey: 'altTextLocId',
   as: 'altTextLoc'
+});
+
+LocString.hasOne(FixedLoc, {
+  foreignKey: 'locStringId',
+  as: 'fixedLocString'
+});
+FixedLoc.belongsTo(LocString, {
+  foreignKey: 'locStringId',
+  as: 'locString'
 });
 
 /*****
@@ -401,5 +412,7 @@ export {
   Stock,
   DynamicModule,
   Picture,
-  FoodPicture
+  FoodPicture,
+  UiSetting,
+  FixedLoc
 };
