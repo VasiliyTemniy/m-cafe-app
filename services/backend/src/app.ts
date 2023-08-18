@@ -14,6 +14,8 @@ import facilityRouter from './controllers/facility.js';
 import orderRouter from './controllers/order.js';
 import pictureRouter from './controllers/picture.js';
 import dynamicModuleRouter from './controllers/dynamicModule.js';
+import uiSettingRouter from './controllers/uiSettings.js';
+import fixedLocRouter from './controllers/fixedLoc.js';
 import middleware from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
@@ -45,6 +47,8 @@ app.use('/facility', facilityRouter);
 app.use('/order', orderRouter);
 app.use('/picture', pictureRouter);
 app.use('/dynamic-module', dynamicModuleRouter);
+app.use('/ui-setting', uiSettingRouter);
+app.use('/fixed-loc', fixedLocRouter);
 
 
 const initTestingHelper = async () => {
