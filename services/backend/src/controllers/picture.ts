@@ -91,7 +91,7 @@ pictureRouter.post(
         pictureId: savedPicture.id,
         orderNumber: orderNumber ? Number(orderNumber) : 0
       });
-    } else {
+    } else if (type === 'modulePicture') {
       const dynamicModule = foundSubject as DynamicModule;
 
       dynamicModule.pictureId = savedPicture.id;

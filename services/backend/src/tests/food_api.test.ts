@@ -531,7 +531,12 @@ describe('Food requests tests', () => {
 
   it('Food GET / path gives mainPicture data for every food if picture found', async () => {
 
+    await FoodPicture.destroy({ where: {} });
     await Picture.destroy({ where: {} });
+
+    await LocString.destroy({ where: {} });
+
+    const foods = await initFoods();
 
     const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
 
@@ -578,6 +583,7 @@ describe('Food requests tests', () => {
 
   it('Food GET /:id path gives gallery and foodComponents data if found', async () => {
 
+    await FoodPicture.destroy({ where: {} });
     await Picture.destroy({ where: {} });
 
     await FoodComponent.destroy({ where: {} });

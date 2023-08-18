@@ -11,3 +11,4 @@ export * from './StockBodies.js';
 export * from './OrderBodies.js';
 export * from './OrderFoodBodies.js';
 export * from './PictureBodies.js';
+export * from './DynamicModuleBodies.js';

@@ -353,7 +353,10 @@ Picture.hasOne(DynamicModule, {
   foreignKey: 'pictureId',
   as: 'pictureDynamicModule'
 });
-DynamicModule.belongsTo(Picture);
+DynamicModule.belongsTo(Picture, {
+  foreignKey: 'pictureId',
+  as: 'picture'
+});
 
 /*****
  * DynamicModule + Picture table associations END

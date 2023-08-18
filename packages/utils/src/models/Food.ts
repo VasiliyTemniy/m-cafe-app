@@ -45,7 +45,7 @@ export const isFoodDT = (obj: unknown): obj is FoodDT => {
       if (!isPictureDT(picture)) return false;
   }
 
-  if (obj.mainPicture) if (!isPictureDT(obj.mainPicture)) return false;
+  if (hasOwnProperty(obj, 'mainPicture')) if (!isPictureDT(obj.mainPicture)) return false;
   
   return isNumber(obj.id)
   &&
