@@ -69,6 +69,15 @@ export const includeAltTextLocNoTimestamps = {
   }
 };
 
+export const includeLocStringNoTimestamps = {
+  model: LocString,
+  as: 'locString',
+  required: false,
+  attributes: {
+    exclude: [...timestampsKeys]
+  }
+};
+
 export const includeStockMeasureLocNoTimestamps = {
   model: LocString,
   as: 'stockMeasureLoc',
