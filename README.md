@@ -19,7 +19,7 @@ Written in typescript without 'any', but with few type assertions
 ### Goals
 - Make this app quickly deployable using docker;
 - Make production, development, etc be accessible, usable, deployable, so on in two ways: through docker-compose or without docker at all;
-- Use as least repeats of types, validators, etc for typescript: achieved by using monorepo with yarn workspaces;
+- Use as least as possible repeats of types, validators, etc for typescript: achieved by using monorepo with yarn workspaces;
 - Make all functional React components with Redux + toolkit in separate package common for web and mobile frontend;
 - Make frontend ui visuals initialized by admins;
 - Make frontend content as mostly as possible initializable by admins. I wouldn't say this is server-side page generation... Who knows. Maybe it would be better to use nextJs;
