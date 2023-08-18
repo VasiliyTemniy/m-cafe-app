@@ -534,6 +534,10 @@ describe('Food requests tests', () => {
     await FoodPicture.destroy({ where: {} });
     await Picture.destroy({ where: {} });
 
+    await LocString.destroy({ where: {} });
+
+    const foods = await initFoods();
+
     const randomFoodId = foods[Math.round(Math.random() * (foods.length - 1))].id;
 
     const fakePictureData: NewPictureBody = {
