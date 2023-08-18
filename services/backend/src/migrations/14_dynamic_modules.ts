@@ -27,6 +27,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    placement_type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'afterMenuPicFirst'
+    },    
     class_name: {
       type: DataTypes.STRING,
       allowNull: true

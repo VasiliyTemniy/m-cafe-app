@@ -28,6 +28,11 @@ DynamicModule.init({
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  placementType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'afterMenuPicFirst'
+  }, 
   className: {
     type: DataTypes.STRING,
     allowNull: true
