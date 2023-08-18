@@ -181,7 +181,7 @@ describe('DynamicModule requests tests', () => {
 
   });
 
-  it('DynamicModule PUT / updates dynamicModule data, can be used by admin', async () => {
+  it('DynamicModule PUT /:id updates dynamicModule data, can be used by admin', async () => {
 
     const updDynamicModule: EditDynamicModuleBody = {
       moduleType: 'cart',

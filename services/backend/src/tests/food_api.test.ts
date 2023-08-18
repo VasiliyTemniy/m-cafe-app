@@ -399,7 +399,7 @@ describe('Food requests tests', () => {
 
   });
 
-  it('Food PUT / updates food data, can be used by admin', async () => {
+  it('Food PUT /:id updates food data, can be used by admin', async () => {
 
     const updFood: EditFoodBody = {
       nameLoc: {
