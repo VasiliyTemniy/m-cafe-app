@@ -14,3 +14,5 @@ export * from './Order.js';
 export * from './OrderFood.js';
 export * from './Picture.js';
 export * from './Stock.js';
+export * from './UiSetting.js';
+export * from './FixedLoc.js';

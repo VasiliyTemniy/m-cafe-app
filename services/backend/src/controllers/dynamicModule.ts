@@ -141,7 +141,7 @@ dynamicModuleRouter.put(
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    if (!isEditDynamicModuleBody(req.body)) throw new RequestBodyError('Invalid new dynamic module request body');
+    if (!isEditDynamicModuleBody(req.body)) throw new RequestBodyError('Invalid edit dynamic module request body');
 
     const { moduleType, page, placement, className, inlineCss, url, locString, placementType } = req.body;
 

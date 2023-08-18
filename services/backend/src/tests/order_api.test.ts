@@ -163,7 +163,7 @@ describe('Order requests tests', () => {
 
   });
 
-  it('Order PUT / updates an order. Can be used by a manager or admin', async () => {
+  it('Order PUT /:id updates an order. Can be used by a manager or admin', async () => {
 
     const deliverAt = new Date(Date.now() + 1000 * 60 * 60);
 
