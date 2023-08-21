@@ -33,7 +33,9 @@
     "node_modules/*"
   ],
   "include": [
-    "src",
+    "user/src",
+    "admin/src",
+    "manager/src",
     "webpack_config"
   ],
   "references": [
