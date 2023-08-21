@@ -8,6 +8,8 @@ yarn-error.log*
 
 .webpack
 .webpack-dev
+.webpack.*
+.webpack-dev.*
 
 **/*/.env
 *.env
