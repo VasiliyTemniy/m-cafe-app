@@ -17,7 +17,7 @@ export const loadMigrations = async () => {
     / in production, all files are .js and served from ./build folder
     */
     const res = process.env.NODE_ENV === 'production'
-      ? await glob('build/migrations/*.js', { ignore: 'build/migrations/index.js' })
+      ? await glob('services/backend/build/migrations/*.js', { ignore: 'services/backend/build/migrations/index.js' })
       : await glob('src/migrations/*.ts', { ignore: 'src/migrations/index.ts' });
 
     const migrationsPromise = res.map(async (file) => {
@@ -26,7 +26,7 @@ export const loadMigrations = async () => {
       / replace path is different for windows and in production src -> build
       */
       const replacePath = process.platform === 'win32' ? 'src\\migrations\\' :
-        process.env.NODE_ENV === 'production' ? 'build/migrations/' : 'src/migrations/';
+        process.env.NODE_ENV === 'production' ? 'services/backend/build/migrations/' : 'src/migrations/';
 
       const { up, down } = await import(file.replace(replacePath, './'));
       return {
