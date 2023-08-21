@@ -53,8 +53,29 @@ COPY --chown=node:node packages/utils packages/utils
 COPY --chown=node:node services/frontend services/frontend
 
 
-FROM copy-stage-front as run-stage-front
+
+# Below are different targets for docker-compose.dev.yml
+
+FROM copy-stage-front as run-stage-front-user
+
+RUN rm -rf services/frontend/admin
+RUN rm -rf services/frontend/manager
 
 RUN yarn run prepare:frontend
 
-CMD ["yarn", "run", "dev:frontend"]
+CMD ["yarn", "run", "dev:frontend:user"]
+
+FROM copy-stage-front as run-stage-front-admin
+
+RUN yarn run prepare:frontend
+
+CMD ["yarn", "run", "dev:frontend:admin"]
+
+FROM copy-stage-front as run-stage-front-manager
+
+RUN rm -rf services/frontend/admin
+RUN rm -rf services/frontend/user
+
+RUN yarn run prepare:frontend
+
+CMD ["yarn", "run", "dev:frontend:manager"]

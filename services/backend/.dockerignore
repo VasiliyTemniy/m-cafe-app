@@ -1,11 +1,28 @@
 node_modules
 
+**/*/node_modules
+
 *.env
+.env
+.env.*
+**/*/.env
+
 .git
+
 nodemon.json
+services/backend/nodemon.json
+**/*/nodemon.json
 
 build
+# ^ This must work, but does not. Hope, below fixes this
+services/backend/build
+**/*/build
+**/*/dist
+
 
 .eslintrc
 
 .eslintignore
+
+services/backend/.eslint*
+**/*/.eslint*

@@ -2,11 +2,12 @@ version: '3.8'
 
 services:
 
-  frontend:
-    image: m-cafe-frontend-dev
+  frontend-user:
+    image: m-cafe-frontend-dev-user
     build:
       context: ./
       dockerfile: ./services/frontend/dev.Dockerfile
+      target: run-stage-front-user
     volumes:
       - ./services/frontend:/usr/src/app/services/frontend
       - ./packages/utils:/usr/src/app/packages/utils
@@ -15,7 +16,43 @@ services:
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-deps:/usr/src/app/packages/shared-deps
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-frontend-dev
+    container_name: m-cafe-frontend-dev-user
+    env_file:
+      - ./docker-envs/.dev.docker-front.env
+
+  frontend-admin:
+    image: m-cafe-frontend-dev-admin
+    build:
+      context: ./
+      dockerfile: ./services/frontend/dev.Dockerfile
+      target: run-stage-front-admin
+    volumes:
+      - ./services/frontend:/usr/src/app/services/frontend
+      - ./packages/utils:/usr/src/app/packages/utils
+      - ./packages/db-models:/usr/src/app/packages/db-models
+      - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
+      - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
+      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
+    container_name: m-cafe-frontend-dev-admin
+    env_file:
+      - ./docker-envs/.dev.docker-front.env
+
+  frontend-manager:
+    image: m-cafe-frontend-dev-manager
+    build:
+      context: ./
+      dockerfile: ./services/frontend/dev.Dockerfile
+      target: run-stage-front-manager
+    volumes:
+      - ./services/frontend:/usr/src/app/services/frontend
+      - ./packages/utils:/usr/src/app/packages/utils
+      - ./packages/db-models:/usr/src/app/packages/db-models
+      - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
+      - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
+      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
+    container_name: m-cafe-frontend-dev-manager
     env_file:
       - ./docker-envs/.dev.docker-front.env
 

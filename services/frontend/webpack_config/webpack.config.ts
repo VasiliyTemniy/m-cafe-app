@@ -4,8 +4,19 @@ import { plugins } from './webpack.plugins';
 //import { optimization } from './webpack.optimization';
 import { Configuration as WebpackConfiguration } from "webpack";
 import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
+import HtmlWebPackPlugin from 'html-webpack-plugin';
 
 import * as dotenv from "dotenv";
+
+const frontend_module = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'user';
+const port =
+  frontend_module === 'user' ?
+    process.env.FRONTEND_USER_PORT ? process.env.FRONTEND_USER_PORT : '4002' :
+    frontend_module === 'admin' ?
+      process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :
+      frontend_module === 'manager' ?
+        process.env.FRONTEND_MANAGER_PORT ? process.env.FRONTEND_MANAGER_PORT : '4004' :
+        '4005';
 
 const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 
@@ -21,33 +32,39 @@ interface Configuration extends WebpackConfiguration {
 
 const config: Configuration = {
   context: path.join(__dirname, '..'),
-  entry: './src/index.tsx',
+  entry: `./${frontend_module}/src/index.tsx`,
   output: {
-    path: isDevelopment ? path.join(__dirname, '..', '.webpack-dev') : path.join(__dirname, '..', '.webpack'),
+    path: isDevelopment ? path.join(__dirname, '..', `.webpack-dev.${frontend_module}`) : path.join(__dirname, '..', `.webpack.${frontend_module}`),
     filename: isDevelopment ? 'build.js' : 'build.[fullhash].js'
   },
   devServer: {
-    static: './.webpack-dev',
+    static: `./.webpack-dev.${frontend_module}`,
     compress: true,
-    port: process.env.FRONTEND_PORT,
+    port,
     allowedHosts: "all",
     hot: true,
     open: true,
     watchFiles: {
-      paths: ['src/**/*', 'public/**/*'],
+      paths: [`${frontend_module}/src/**/*`, `${frontend_module}/public/**/*`],
       options: {
         usePolling: isDockerized ? false : true
       },
     },
     client: {
-      webSocketURL: isDockerized ? 'auto://0.0.0.0:0/ws' : 'ws://localhost:4002/ws',
+      webSocketURL: isDockerized ? 'auto://0.0.0.0:0/ws' : `ws://localhost:${port}/ws`,
     }
   },
   module: {
     rules,
   },
   target: 'web',
-  plugins,
+  plugins: [
+    new HtmlWebPackPlugin({
+      template: `./${frontend_module}/public/index.html`,
+      filename: './index.html'
+    }),
+    ...plugins
+  ],
   mode: isDevelopment ? 'development' : 'production',
   devtool: isDevelopment ? 'inline-source-map' : false,
   resolve: {

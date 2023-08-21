@@ -21,7 +21,7 @@ const SECRET = process.env.SECRET as Secret;
 
 const TOKEN_TTL = process.env.TOKEN_TTL as string;
 
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN as string;
+const ALLOWED_ORIGIN = (process.env.ALLOWED_ORIGIN as string).split(',');
 
 const SUPERADMIN_PHONENUMBER = process.env.SUPERADMIN_PHONENUMBER as string;
 
