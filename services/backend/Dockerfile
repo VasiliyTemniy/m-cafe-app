@@ -109,6 +109,9 @@ RUN yarn workspaces focus m-cafe-backend --production
 RUN rm -rf .yarn/cache
 RUN rm -rf services/frontend
 
+RUN mkdir -p /usr/src/app/public
+RUN chown -Rh node:node /usr/src/app/public
+
 ENV DEBUG=express:*
 USER node
 
