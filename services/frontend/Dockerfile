@@ -71,6 +71,17 @@ ENV DOCKERIZED=true
 RUN yarn run build:frontend
 
 
-FROM nginx:1.25.1-alpine-slim AS run-prod-front
+# Below are different targets for docker-compose.yml
 
-COPY --from=build-stage-front /usr/src/app/services/frontend/.webpack /usr/share/nginx/html
+FROM nginx:1.25.1-alpine-slim AS run-prod-front-user
+
+COPY --from=build-stage-front /usr/src/app/services/frontend/.webpack.user /usr/share/nginx/html
+
+
+FROM nginx:1.25.1-alpine-slim AS run-prod-front-admin
+
+COPY --from=build-stage-front /usr/src/app/services/frontend/.webpack.admin /usr/share/nginx/html
+
+FROM nginx:1.25.1-alpine-slim AS run-prod-front-manager
+
+COPY --from=build-stage-front /usr/src/app/services/frontend/.webpack.manager /usr/share/nginx/html
