@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "es5",
     "allowJs": true,
-    "module": "CommonJS",
+    "module": "esnext",
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
@@ -24,7 +24,7 @@
     "forceConsistentCasingInFileNames": true,
     "lib": [
       "dom",
-      "ES2020",
+      "esnext",
       "ScriptHost"
     ],
     "newLine": "LF"
