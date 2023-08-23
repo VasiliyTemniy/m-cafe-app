@@ -10,7 +10,9 @@ import {
   BannedError,
   UnknownError,
   SessionError,
-  ProhibitedError
+  ProhibitedError,
+  UserDT,
+  mapDataToTransit
 } from '@m-cafe-app/utils';
 import { isLoginBody } from '@m-cafe-app/utils';
 import { User } from '../models/index.js';
@@ -84,12 +86,14 @@ sessionRouter.post(
 
     }
 
+    const resBody: UserDT = mapDataToTransit(user.dataValues, { omit: ['passwordHash'] });
+
     res
       .cookie('token', token, {
         ...config.sessionCookieOptions,
         expires: new Date(Date.now() + config.cookieExpiracyMS)
       })
-      .status(201).end();
+      .status(201).json(resBody);
 
   }) as RequestHandler
 );
@@ -124,12 +128,14 @@ sessionRouter.get(
 
     await activeSession.save(req.user.rights);
 
+    const resBody: UserDT = mapDataToTransit(req.user.dataValues, { omit: ['passwordHash'] });
+
     res
       .cookie('token', token, {
         ...config.sessionCookieOptions,
         expires: new Date(Date.now() + config.cookieExpiracyMS)
       })
-      .status(200).end();
+      .status(200).json(resBody);
 
   }) as RequestHandler
 );

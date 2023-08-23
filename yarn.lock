@@ -2497,6 +2497,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@m-cafe-app/frontend-services@workspace:^, @m-cafe-app/frontend-services@workspace:packages/frontend-services":
+  version: 0.0.0-use.local
+  resolution: "@m-cafe-app/frontend-services@workspace:packages/frontend-services"
+  dependencies:
+    "@m-cafe-app/shared-frontend-deps": "workspace:^"
+    "@m-cafe-app/utils": "workspace:^"
+    typescript: ^5.1.6
+  languageName: unknown
+  linkType: soft
+
+"@m-cafe-app/redux-store@workspace:^, @m-cafe-app/redux-store@workspace:packages/redux-store":
+  version: 0.0.0-use.local
+  resolution: "@m-cafe-app/redux-store@workspace:packages/redux-store"
+  dependencies:
+    "@m-cafe-app/frontend-services": "workspace:^"
+    "@m-cafe-app/shared-frontend-deps": "workspace:^"
+    "@m-cafe-app/utils": "workspace:^"
+    typescript: ^5.1.6
+  languageName: unknown
+  linkType: soft
+
 "@m-cafe-app/shared-backend-deps@workspace:^, @m-cafe-app/shared-backend-deps@workspace:packages/shared-backend-deps":
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/shared-backend-deps@workspace:packages/shared-backend-deps"
@@ -10419,6 +10440,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "m-cafe-frontend@workspace:services/frontend"
   dependencies:
+    "@m-cafe-app/redux-store": "workspace:^"
     "@m-cafe-app/shared-deps": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
     "@m-cafe-app/shared-frontend-deps": "workspace:^"

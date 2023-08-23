@@ -63,6 +63,8 @@
     "build:utils": "yarn workspace @m-cafe-app/utils run build",
     "eslint:db-models": "yarn workspace @m-cafe-app/db-models run eslint",
     "eslint:utils": "yarn workspace @m-cafe-app/utils run eslint",
+    "eslint:redux-store": "yarn workspace @m-cafe-app/redux-store run eslint",
+    "eslint:frontend-services": "yarn workspace @m-cafe-app/frontend-services run eslint",
     "test:packages": "yarn run test:db-models && yarn run test:utils",
     "test:db-models": "yarn workspace @m-cafe-app/db-models run test",
     "test:utils": "yarn workspace @m-cafe-app/utils run test",

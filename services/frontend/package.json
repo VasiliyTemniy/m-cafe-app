@@ -23,6 +23,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@m-cafe-app/redux-store": "workspace:^",
     "@m-cafe-app/shared-deps": "workspace:^",
     "@m-cafe-app/shared-frontend-deps": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",

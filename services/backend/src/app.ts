@@ -1,4 +1,4 @@
-import config from './utils/config.js';
+import config, { isDockerized } from './utils/config.js';
 import express from 'express';
 import 'express-async-errors';
 const app = express();
@@ -25,9 +25,10 @@ import cookieParser from 'cookie-parser';
 
 app.use(helmet());
 
-app.use(cors({
-  origin: config.ALLOWED_ORIGIN
-}));
+if (!isDockerized)
+  app.use(cors({
+    origin: config.ALLOWED_ORIGIN
+  }));
 
 app.use(express.json());
 
