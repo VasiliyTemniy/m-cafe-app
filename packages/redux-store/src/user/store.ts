@@ -1,8 +1,12 @@
 import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import fixedLocsReducer from './reducers/fixedLocsReducer';
 import notificationsReducer from './reducers/notificationsReducer';
+import userReducer from './reducers/userReducer';
 
 export const userReducers = {
-  notifications: notificationsReducer
+  locs: fixedLocsReducer,
+  notifications: notificationsReducer,
+  user: userReducer
 };
 
 const store = configureStore({
