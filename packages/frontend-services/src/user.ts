@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NewUserBody, LoginUserBody } from '@m-cafe-app/utils';
+import { NewUserBody, LoginUserBody, EditUserBody } from '@m-cafe-app/utils';
 import { RequestOptions } from './types/requestOptions';
 
 const createUser = async (newUser: NewUserBody, options: RequestOptions) => {
@@ -8,6 +8,18 @@ const createUser = async (newUser: NewUserBody, options: RequestOptions) => {
   const { data: userInfo } = await axios.post<JSON>(
     `${options.apiBaseUrl}/api/user`,
     JSON.stringify(newUser),
+    config
+  );
+
+  return userInfo;
+};
+
+const updateUser = async (updUser: EditUserBody, userId: number, options: RequestOptions) => {
+
+  const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true  };
+  const { data: userInfo } = await axios.put<JSON>(
+    `${options.apiBaseUrl}/api/user/`,
+    JSON.stringify(updUser),
     config
   );
 
@@ -47,4 +59,4 @@ const logout = async (options: RequestOptions) => {
 
 };
 
-export default { createUser, login, refreshToken, logout };
+export default { createUser, updateUser, login, refreshToken, logout };
