@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { Food, FoodType, LocString } from '../models/index.js';
+import { Food, FoodType, LocString } from '@m-cafe-app/db-models';
 import {
   FoodTypeDT,
   isNewFoodTypeBody,

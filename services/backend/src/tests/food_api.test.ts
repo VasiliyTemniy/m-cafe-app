@@ -13,9 +13,17 @@ import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { Food, FoodComponent, FoodPicture, FoodType, LocString, Picture, User } from "../models";
+import {
+  connectToDatabase,
+  Food,
+  FoodComponent,
+  FoodPicture,
+  FoodType,
+  LocString,
+  Picture,
+  User
+} from '@m-cafe-app/db-models';
 import config from "../utils/config";
-import { connectToDatabase } from "../utils/db";
 import { validAdminInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';
 import { Session } from "../redis/Session";

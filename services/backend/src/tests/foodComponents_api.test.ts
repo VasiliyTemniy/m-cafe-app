@@ -2,9 +2,15 @@ import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { Food, FoodComponent, Ingredient, LocString, User } from "../models";
+import {
+  connectToDatabase,
+  Food,
+  FoodComponent,
+  Ingredient,
+  LocString,
+  User
+} from '@m-cafe-app/db-models';
 import config from "../utils/config";
-import { connectToDatabase } from "../utils/db";
 import { validAdminInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';
 import { Session } from "../redis/Session";

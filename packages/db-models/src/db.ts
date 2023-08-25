@@ -2,7 +2,7 @@ import config from './config.js';
 import logger from './logger.js';
 import { Sequelize } from 'sequelize';
 import { Umzug, SequelizeStorage } from 'umzug';
-import { loadMigrations } from '../migrations/index.js';
+import { loadMigrations } from './migrations/index.js';
 
 const disablePgDbSSL = !(process.env.PG_DB_USE_SSL === 'true');
 

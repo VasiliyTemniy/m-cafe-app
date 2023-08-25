@@ -1,4 +1,4 @@
-import { Food, Ingredient, LocString } from '../models/index.js';
+import { Food, Ingredient, LocString } from '@m-cafe-app/db-models';
 import { timestampsKeys } from '@m-cafe-app/utils';
 
 export const includeNameLocNoTimestamps = {

@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { Food, FoodComponent, Ingredient } from '../models/index.js';
+import { Food, FoodComponent, Ingredient } from '@m-cafe-app/db-models';
 import {
   mapDataToTransit,
   RequestBodyError,

@@ -7,9 +7,8 @@ import {
   initialUsers,
   validUserInDB,
 } from './users_api_helper';
-import { User } from '../models/index';
+import { connectToDatabase, User } from '@m-cafe-app/db-models';
 import { Session } from "../redis/Session";
-import { connectToDatabase } from "../utils/db";
 import jwt from 'jsonwebtoken';
 import { LoginUserBody } from "@m-cafe-app/utils";
 import * as fc from 'fast-check';

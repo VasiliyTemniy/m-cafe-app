@@ -1,11 +1,28 @@
-import { NewOrderBody, NewOrderFood, EditOrderBody, OrderFoodDT, EditOrderStatusBody, OrderDTS, OrderDT } from "@m-cafe-app/utils";
+import {
+  NewOrderBody,
+  NewOrderFood,
+  EditOrderBody,
+  OrderFoodDT,
+  EditOrderStatusBody,
+  OrderDTS,
+  OrderDT
+} from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { Address, Facility, LocString, User, Food, Order, OrderFood, FacilityManager } from "../models";
+import {
+  connectToDatabase,
+  Address,
+  Facility,
+  LocString,
+  User,
+  Food,
+  Order,
+  OrderFood,
+  FacilityManager
+} from '@m-cafe-app/db-models';
 import config from "../utils/config";
-import { connectToDatabase } from "../utils/db";
 import { validAdminInDB, validManagerInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';
 import { Session } from "../redis/Session";

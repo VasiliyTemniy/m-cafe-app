@@ -1,4 +1,4 @@
-import { AddressData } from "@m-cafe-app/db-models";
+import type { AddressData } from "@m-cafe-app/db-models";
 import { isNumber, isString } from "../types/typeParsers.js";
 import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
 

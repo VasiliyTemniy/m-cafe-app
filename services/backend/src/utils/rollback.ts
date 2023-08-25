@@ -1,3 +1,3 @@
-import { rollbackMigration } from './db.js';
+import { rollbackMigration } from '@m-cafe-app/db-models';
 
 await rollbackMigration();

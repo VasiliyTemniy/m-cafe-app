@@ -12,10 +12,10 @@ import {
   SessionError,
   ProhibitedError,
   UserDT,
-  mapDataToTransit
+  mapDataToTransit,
+  isLoginBody
 } from '@m-cafe-app/utils';
-import { isLoginBody } from '@m-cafe-app/utils';
-import { User } from '../models/index.js';
+import { User } from '@m-cafe-app/db-models';
 import { Session } from '../redis/Session.js';
 
 const sessionRouter = Router();

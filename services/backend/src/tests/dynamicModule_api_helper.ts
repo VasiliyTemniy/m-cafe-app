@@ -1,5 +1,5 @@
 import { DynamicModuleData, LocStringData } from "@m-cafe-app/db-models";
-import { LocString, DynamicModule } from '../models';
+import { LocString, DynamicModule } from '@m-cafe-app/db-models';
 
 
 export const initialDynamicModuleLocStrings: Omit<LocStringData, 'id'>[] = [

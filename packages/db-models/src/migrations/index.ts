@@ -3,6 +3,7 @@
 // workaround with custom file imports
 
 import { glob } from 'glob';
+import logger from '../logger.js';
 import { MigrationContext } from '../types/MigrationContext.js';
 
 type MigrationFn = ({ context }: MigrationContext) => Promise<void>;
@@ -13,20 +14,24 @@ export const loadMigrations = async () => {
 
   try {
 
+    const prodMigrationsGlobPath = 'packages/db-models/build/migrations/';
+    const devMigrationsRelativePath = '../../packages/db-models/build/migrations/';
+    const devMigrationsRelativePathWin32 = '..\\..\\packages\\db-models\\build\\migrations\\';
+
     /*
     / in production, all files are .js and served from ./build folder
     */
     const res = process.env.NODE_ENV === 'production'
-      ? await glob('services/backend/build/migrations/*.js', { ignore: 'services/backend/build/migrations/index.js' })
-      : await glob('src/migrations/*.ts', { ignore: 'src/migrations/index.ts' });
+      ? await glob(`${prodMigrationsGlobPath}*.js`, { ignore: `${prodMigrationsGlobPath}index.js` })
+      : await glob(`${devMigrationsRelativePath}*.js`, { ignore: `${devMigrationsRelativePath}index.js` });
 
     const migrationsPromise = res.map(async (file) => {
 
       /*
       / replace path is different for windows and in production src -> build
       */
-      const replacePath = process.platform === 'win32' ? 'src\\migrations\\' :
-        process.env.NODE_ENV === 'production' ? 'services/backend/build/migrations/' : 'src/migrations/';
+      const replacePath = process.platform === 'win32' ? devMigrationsRelativePathWin32 :
+        process.env.NODE_ENV === 'production' ? prodMigrationsGlobPath : devMigrationsRelativePath;
 
       const { up, down } = await import(file.replace(replacePath, './'));
       return {
@@ -38,8 +43,9 @@ export const loadMigrations = async () => {
 
     migrations = await Promise.all(migrationsPromise);
 
-  } catch (err) {
-    // handle `err`
+  } catch (error) {
+    logger.shout(error);
+    throw new Error('Migrations failed to load!');
   }
 
   migrations.sort((migA, migB) => {

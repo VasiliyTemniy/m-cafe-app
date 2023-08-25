@@ -8,7 +8,7 @@ import {
   timestampsKeys
 } from '@m-cafe-app/utils';
 import { Router, RequestHandler } from 'express';
-import { UiSetting } from '../models/index.js';
+import { UiSetting } from '@m-cafe-app/db-models';
 import middleware from '../utils/middleware.js';
 
 

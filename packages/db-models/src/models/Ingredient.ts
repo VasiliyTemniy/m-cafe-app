@@ -1,6 +1,8 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute, DataTypes } from 'sequelize';
 import { PropertiesCreationOptional } from '../types/helpers.js';
-import { LocString } from './LocString.js';
+import LocString from './LocString.js';
+import { sequelize } from '../db.js';
+
 
 export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
   declare id: CreationOptional<number>;
@@ -19,3 +21,53 @@ export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreation
 
 export type IngredientData = Omit<InferAttributes<Ingredient>, PropertiesCreationOptional>
   & { id: number; };
+
+  
+Ingredient.init({
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  nameLocId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: 'loc_strings', key: 'id' }
+  },
+  stockMeasureLocId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: 'loc_strings', key: 'id' }
+  },
+  proteins: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  fats: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  carbohydrates: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  calories: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+}, {
+  sequelize,
+  underscored: true,
+  timestamps: true,
+  modelName: 'ingredient'
+});
+  
+export default Ingredient;

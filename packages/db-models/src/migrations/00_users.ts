@@ -14,7 +14,7 @@ import {
   phonenumberRegExp,
   possibleUserRights,
   usernameRegExp
-} from '../utils/constants.js';
+} from '../constants.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('users', {

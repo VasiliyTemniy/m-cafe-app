@@ -27,7 +27,7 @@ import {
   minStreetLen,
   regionRegExp,
   streetRegExp
-} from '../utils/constants.js';
+} from '../constants.js';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('addresses', {

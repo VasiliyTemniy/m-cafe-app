@@ -13,7 +13,7 @@ import {
   RequestBodyError,
   UploadFileError
 } from '@m-cafe-app/utils';
-import { LocString, Picture, FoodPicture, DynamicModule, Food } from '../models/index.js';
+import { LocString, Picture, FoodPicture, DynamicModule, Food } from '@m-cafe-app/db-models';
 import logger from '../utils/logger.js';
 
 const pictureRouter = Router();

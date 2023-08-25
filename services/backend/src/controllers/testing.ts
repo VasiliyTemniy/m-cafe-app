@@ -1,5 +1,5 @@
 import { RequestHandler, Router } from 'express';
-import { runMigrations, sequelize } from '../utils/db.js';
+import { runMigrations, sequelize } from '@m-cafe-app/db-models';
 
 const testingRouter = Router();
 

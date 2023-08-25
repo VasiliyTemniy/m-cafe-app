@@ -1,4 +1,4 @@
-import { FoodComponentData } from "@m-cafe-app/db-models";
+import type { FoodComponentData } from "@m-cafe-app/db-models";
 import { isNumber, isBoolean } from "../types/typeParsers.js";
 import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
 import { IngredientDTS, isIngredientDTS } from "./Ingredient.js";
