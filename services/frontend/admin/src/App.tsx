@@ -1,33 +1,42 @@
-import { useState } from "react";
-import { pingValidator } from "./types/pingValidator";
-import ping from "./services/ping";
+import { useAppSelector } from '@m-cafe-app/redux-store/src/admin/hooks/reduxHooks';
+import AppRoutes from './AppRoutes';
+import LoginPage from 'common/components/LoginPage';
+import Container from 'common/components/basic/Container';
+
+
 
 const App = () => {
 
-  const [msg, setMsg] = useState('got nofting');
+  const user = useAppSelector((state) => state.user);
 
-  const handlePingClick = async () => {
+  // useAppInit();
 
-    try {
-      const res = await ping.pingApi();
-      const resTV = pingValidator(res as unknown);
-
-      console.log(resTV);
-
-      setMsg(resTV.message);
-    }
-    catch (e) {
-      return;
-    }
-  };
-
-  return (
-    <>
-      <div>Hello! ACTY </div>
-      <button onClick={() => void handlePingClick()}>Ping backend here</button>
-      <div>{msg}</div>
-    </>
-  );
+  if (!user.phonenumber) {
+    return (
+      <>
+        {/* <Header /> */}
+        {/* <Notification/> */}
+        <Container className='window-container' id='main-container'>
+          <LoginPage/>
+        </Container>
+        {/* <Footer /> */}
+      </>
+    );
+  } else {
+    return (
+      <>
+        {/* <Header /> */}
+        <Container className='window-container-divider' id='main-container-divider'>
+          {/* <Menu /> */}
+          <Container className='main-container' id='main-container'>
+            {/* <Notification/> */}
+            <AppRoutes/>
+          </Container>
+          {/* <Footer /> */}
+        </Container>
+      </>
+    );
+  }
 };
 
 export default App;
