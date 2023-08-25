@@ -1,4 +1,4 @@
-import { FoodComponentDT } from "../../models";
+import { FoodComponentDT } from "../../models/FoodComponent.js";
 import { hasOwnProperty, MapToUnknown } from "../helpers.js";
 import { isBoolean, isNumber } from "../typeParsers.js";
 
