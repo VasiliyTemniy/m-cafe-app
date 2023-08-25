@@ -1,18 +1,16 @@
 import { Outlet, Route, Routes } from 'react-router-dom';
 
 import UnderConstruction from '../../common/components/UnderConstruction';
-// import TransactionsPage from './components/TransactionsPage';
-// import PortfoliosPage from './components/PortfoliosPage';
+
+import { apiBaseUrl } from './utils/config';
 
 const AppRoutes = () => {
   return (
     <>
       <Outlet />
       <Routes>
-        {/* <Route path="/" element={<PortfoliosPage />} /> */}
-        {/* <Route path="/portfolio" element={<PortfoliosPage />} /> */}
-        <Route path="/underconstruction" element={<UnderConstruction/>} />
-        {/* <Route path="/transactions" element={<TransactionsPage />} /> */}
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/under-construction" element={<UnderConstruction svgUrl={`${apiBaseUrl}/public/pictures/svg/construction.svg`}/>} />
       </Routes>
     </>
   );
