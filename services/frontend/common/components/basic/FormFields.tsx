@@ -32,7 +32,7 @@ export const FormikTextField = ({ disabled = false, ...props }: FieldHookConfig<
   );
 };
 
-type FormikSelectFieldProps = FieldHookConfig<string> & { options: string[], tNode?: string };
+type FormikSelectFieldProps = FieldHookConfig<string> & { options: string[], tNode?: string, svgUrl: string };
 
 export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFieldProps) => {
   
@@ -55,6 +55,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
         value={field.value}
         onChange={field.onChange}
         onBlur={field.onBlur}
+        svgUrl={props.svgUrl}
         errorMessage={errorMessage}
         disabled={disabled}
         options={props.options}
@@ -91,7 +92,9 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
   );
 };
 
-export const FormikDateField = ({ disabled = false, ...props }: FieldHookConfig<string>) => {
+type FormikDateFieldProps = FieldHookConfig<string> & { svgUrl: string };
+
+export const FormikDateField = ({ disabled = false, ...props }: FormikDateFieldProps) => {
   
   const [field, meta] = useField(props);
 
@@ -107,6 +110,7 @@ export const FormikDateField = ({ disabled = false, ...props }: FieldHookConfig<
         value={field.value}
         onChange={field.onChange}
         onBlur={field.onBlur}
+        svgUrl={props.svgUrl}
         errorMessage={errorMessage}
         disabled={disabled}
       />
@@ -114,7 +118,9 @@ export const FormikDateField = ({ disabled = false, ...props }: FieldHookConfig<
   );
 };
 
-export const FormikTimeField = ({ disabled = false, ...props }: FieldHookConfig<string>) => {
+type FormikTimeFieldProps = FieldHookConfig<string> & { svgUrl: string };
+
+export const FormikTimeField = ({ disabled = false, ...props }: FormikTimeFieldProps) => {
   
   const [field, meta] = useField(props);
 
@@ -130,6 +136,7 @@ export const FormikTimeField = ({ disabled = false, ...props }: FieldHookConfig<
         value={field.value}
         onChange={field.onChange}
         onBlur={field.onBlur}
+        svgUrl={props.svgUrl}
         errorMessage={errorMessage}
         disabled={disabled}
       />
