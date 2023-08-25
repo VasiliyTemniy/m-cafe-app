@@ -9,7 +9,7 @@ import {
   updateInstance
 } from '@m-cafe-app/utils';
 import { Router, RequestHandler } from 'express';
-import { DynamicModule, LocString, Picture } from '@m-cafe-app/db-models';
+import { DynamicModule, LocString, Picture } from '@m-cafe-app/db';
 import middleware from '../utils/middleware.js';
 import { includeAltTextLocNoTimestamps, includeLocStringNoTimestamps } from '../utils/sequelizeHelpers.js';
 

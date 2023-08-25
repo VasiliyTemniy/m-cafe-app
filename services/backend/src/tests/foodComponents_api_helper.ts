@@ -1,5 +1,5 @@
-import { FoodData, FoodType, LocStringData } from "@m-cafe-app/db-models";
-import { Food, FoodComponent, LocString, Ingredient } from '@m-cafe-app/db-models';
+import { FoodData, FoodType, LocStringData } from "@m-cafe-app/db";
+import { Food, FoodComponent, LocString, Ingredient } from '@m-cafe-app/db';
 
 
 const newCompositeFoodLocStrings: Omit<LocStringData, 'id'>[] = [

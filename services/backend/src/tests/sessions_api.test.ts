@@ -7,7 +7,7 @@ import {
   initialUsers,
   validUserInDB,
 } from './users_api_helper';
-import { connectToDatabase, User } from '@m-cafe-app/db-models';
+import { connectToDatabase, User } from '@m-cafe-app/db';
 import { Session } from "../redis/Session";
 import jwt from 'jsonwebtoken';
 import { LoginUserBody } from "@m-cafe-app/utils";

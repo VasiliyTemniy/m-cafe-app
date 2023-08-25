@@ -9,7 +9,7 @@ import {
   Ingredient,
   LocString,
   User
-} from '@m-cafe-app/db-models';
+} from '@m-cafe-app/db';
 import config from "../utils/config";
 import { validAdminInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';

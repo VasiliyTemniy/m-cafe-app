@@ -21,7 +21,7 @@ import {
   Order,
   OrderFood,
   FacilityManager
-} from '@m-cafe-app/db-models';
+} from '@m-cafe-app/db';
 import config from "../utils/config";
 import { validAdminInDB, validManagerInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';

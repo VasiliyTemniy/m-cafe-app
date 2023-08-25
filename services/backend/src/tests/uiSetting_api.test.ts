@@ -7,7 +7,7 @@ import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { connectToDatabase, UiSetting, User } from '@m-cafe-app/db-models';
+import { connectToDatabase, UiSetting, User } from '@m-cafe-app/db';
 import config from "../utils/config";
 import { validAdminInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';

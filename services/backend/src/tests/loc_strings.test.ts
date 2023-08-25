@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { connectToDatabase, LocString } from '@m-cafe-app/db-models';
+import { connectToDatabase, LocString } from '@m-cafe-app/db';
 import { NewLocString } from "@m-cafe-app/utils";
 
 

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 import { getDBInfo } from "./00_db_schemas_helper";
-import { connectToDatabase, DATABASE_URL } from "@m-cafe-app/db-models";
+import { connectToDatabase, DATABASE_URL } from "@m-cafe-app/db";
 import supertest from "supertest";
 import app from "../app";
 import { apiBaseUrl } from "./test_helper";
@@ -11,7 +11,7 @@ import { diffString } from 'json-diff';
 const api = supertest(app);
 
 
-describe.only('Database migrations code is synchronized with models code', () => {
+describe('Database migrations code is synchronized with models code', () => {
 
   it('Schema comparison diff should be null', async () => {
 

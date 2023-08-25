@@ -7,7 +7,7 @@ import {
   FoodType,
   LocString,
   Picture
-} from '@m-cafe-app/db-models';
+} from '@m-cafe-app/db';
 import {
   FoodDT,
   isNewFoodBody,

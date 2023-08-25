@@ -1,5 +1,5 @@
 {
-  "name": "@m-cafe-app/db-models",
+  "name": "@m-cafe-app/db",
   "productName": "Custom cafe DIY-app",
   "version": "1.0.0",
   "description": "This package contains db model definitions",
@@ -14,6 +14,6 @@
     "@m-cafe-app/shared-backend-deps": "workspace:^"
   },
   "devDependencies": {
-    "typescript": "^5.1.6"
+    "typescript": "~5.1.6"
   }
 }

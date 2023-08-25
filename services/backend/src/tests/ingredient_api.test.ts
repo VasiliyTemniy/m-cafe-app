@@ -3,7 +3,7 @@ import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { connectToDatabase, Ingredient, LocString, User } from '@m-cafe-app/db-models';
+import { connectToDatabase, Ingredient, LocString, User } from '@m-cafe-app/db';
 import config from "../utils/config";
 import { validAdminInDB, validManagerInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';

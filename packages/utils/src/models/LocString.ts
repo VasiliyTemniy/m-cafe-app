@@ -1,4 +1,4 @@
-import type { LocStringData } from "@m-cafe-app/db-models";
+import type { LocStringData } from "@m-cafe-app/db";
 import { isNumber, isString } from "../types/typeParsers.js";
 import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
 

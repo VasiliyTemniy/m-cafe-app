@@ -1,4 +1,4 @@
-import { FixedLocData, FixedLoc, LocString } from '@m-cafe-app/db-models';
+import { FixedLocData, FixedLoc, LocString } from '@m-cafe-app/db';
 import { NewLocString } from '@m-cafe-app/utils';
 
 export const initFixedLocs = async () => {

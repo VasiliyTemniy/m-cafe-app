@@ -22,7 +22,7 @@
       "path": "../../packages/utils"
     },
     {
-      "path": "../../packages/db-models"
+      "path": "../../packages/db"
     }
   ]
 }

@@ -2,7 +2,7 @@ import { Router, RequestHandler } from 'express';
 import { DatabaseError, hasOwnProperty, ProhibitedError, RequestBodyError, RequestQueryError } from '@m-cafe-app/utils';
 import { isAdministrateUserBody } from '@m-cafe-app/utils';
 import middleware from '../utils/middleware.js';
-import { User } from '@m-cafe-app/db-models';
+import { User } from '@m-cafe-app/db';
 import { Session } from '../redis/Session.js';
 import config from '../utils/config.js';
 import { possibleUserRights } from '../utils/constants.js';

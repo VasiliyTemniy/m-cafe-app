@@ -2,7 +2,7 @@ import config from './utils/config.js';
 import app from './app.js';
 import http from 'http';
 import logger from './utils/logger.js';
-import { connectToDatabase } from '@m-cafe-app/db-models';
+import { connectToDatabase } from '@m-cafe-app/db';
 import { initSuperAdmin } from './utils/adminInit.js';
 import { connectToRedisSessionDB } from './redis/Session.js';
 import { initUiSettings } from './utils/initUiSettings.js';

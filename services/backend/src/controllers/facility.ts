@@ -9,7 +9,7 @@ import {
   Stock,
   User,
   UserAddress
-} from '@m-cafe-app/db-models';
+} from '@m-cafe-app/db';
 import {
   FacilityDT,
   isNewFacilityBody,

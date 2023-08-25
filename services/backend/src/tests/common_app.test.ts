@@ -3,7 +3,7 @@ import "mocha";
 import supertest from 'supertest';
 import app from "../app";
 import config from "../utils/config";
-import { connectToDatabase, LocString, User } from '@m-cafe-app/db-models';
+import { connectToDatabase, LocString, User } from '@m-cafe-app/db';
 import { validAdminInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';
 import { Session } from "../redis/Session";

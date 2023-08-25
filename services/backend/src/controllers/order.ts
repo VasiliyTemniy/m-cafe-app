@@ -18,7 +18,7 @@ import {
   UnknownError,
 } from '@m-cafe-app/utils';
 import { Router, RequestHandler } from 'express';
-import { Facility, FacilityManager, Food, Order, OrderFood } from '@m-cafe-app/db-models';
+import { Facility, FacilityManager, Food, Order, OrderFood } from '@m-cafe-app/db';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';
 import middleware from '../utils/middleware.js';
 import { includeNameLocNoTimestamps, includeNameLocNoTimestampsSecondLayer } from '../utils/sequelizeHelpers.js';

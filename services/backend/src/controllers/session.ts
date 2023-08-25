@@ -15,7 +15,7 @@ import {
   mapDataToTransit,
   isLoginBody
 } from '@m-cafe-app/utils';
-import { User } from '@m-cafe-app/db-models';
+import { User } from '@m-cafe-app/db';
 import { Session } from '../redis/Session.js';
 
 const sessionRouter = Router();

@@ -1,4 +1,4 @@
-import { Facility, Food, maxNameLen, minNameLen } from '@m-cafe-app/db-models';
+import { Facility, Food, maxNameLen, minNameLen } from '@m-cafe-app/db';
 import { NewOrderBody, NewOrderFood, OrderDT } from '@m-cafe-app/utils';
 import supertest from 'supertest';
 import { userAgent } from './sessions_api_helper';

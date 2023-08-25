@@ -14,9 +14,9 @@ export const loadMigrations = async () => {
 
   try {
 
-    const prodMigrationsGlobPath = 'packages/db-models/build/migrations/';
-    const devMigrationsRelativePath = '../../packages/db-models/build/migrations/';
-    const devMigrationsRelativePathWin32 = '..\\..\\packages\\db-models\\build\\migrations\\';
+    const prodMigrationsGlobPath = 'packages/db/build/migrations/';
+    const devMigrationsRelativePath = '../../packages/db/build/migrations/';
+    const devMigrationsRelativePathWin32 = '..\\..\\packages\\db\\build\\migrations\\';
 
     /*
     / in production, all files are .js and served from ./build folder

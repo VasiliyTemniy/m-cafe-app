@@ -1,4 +1,4 @@
-import type { StockData } from "@m-cafe-app/db-models";
+import type { StockData } from "@m-cafe-app/db";
 import { isNumber } from "../types/typeParsers.js";
 import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
 import { IngredientDT, isIngredientDT } from "./Ingredient.js";

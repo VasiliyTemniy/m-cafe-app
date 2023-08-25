@@ -1,6 +1,6 @@
 import { hasOwnProperty, isNumber, isString } from '@m-cafe-app/utils';
 import { Request } from 'express';
-import { User } from '@m-cafe-app/db-models';
+import { User } from '@m-cafe-app/db';
 
 export interface RequestMiddle extends Request {
   userId?: number;

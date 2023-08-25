@@ -1,4 +1,4 @@
-import { UserData } from "@m-cafe-app/db-models";
+import { UserData } from "@m-cafe-app/db";
 
 export const validAdminInDB: {
   password: string;

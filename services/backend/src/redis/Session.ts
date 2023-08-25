@@ -13,7 +13,7 @@ import {
   parseRedisToDT,
   RedisError
 } from '@m-cafe-app/utils';
-import { User } from '@m-cafe-app/db-models';
+import { User } from '@m-cafe-app/db';
 import { InferAttributes } from 'sequelize';
 
 const redis = createClient({ ...config.redisConfig, database: 0 });

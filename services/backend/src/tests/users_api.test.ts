@@ -15,7 +15,7 @@ import {
   validAddresses,
   initialUsersPassword
 } from './users_api_helper';
-import { User } from '@m-cafe-app/db-models';
+import { User } from '@m-cafe-app/db';
 import { Session } from "../redis/Session";
 import { ValidationError } from 'sequelize';
 import {
@@ -37,13 +37,13 @@ import {
   usernameRegExp,
   Address,
   UserAddress
-} from "@m-cafe-app/db-models";
+} from "@m-cafe-app/db";
 import {
   EditUserBody,
   NewAddressBody,
   NewUserBody
 } from "@m-cafe-app/utils";
-import { AddressData } from "@m-cafe-app/db-models";
+import { AddressData } from "@m-cafe-app/db";
 import { initLogin, userAgent } from "./sessions_api_helper";
 
 

@@ -1,4 +1,4 @@
-import type { FoodData } from "@m-cafe-app/db-models";
+import type { FoodData } from "@m-cafe-app/db";
 import { isNumber } from "../types/typeParsers.js";
 import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
 import { isLocStringDT, LocStringDT } from "./LocString.js";
