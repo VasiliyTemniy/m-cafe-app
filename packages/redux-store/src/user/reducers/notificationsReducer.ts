@@ -7,12 +7,11 @@ export interface Notification {
   type: 'success' | 'error' | 'neutral';
 }
 
-type SetNotificationAction = 
-  | {
-    payload: {
-      notification: Notification,
-      timeoutId: number
-    };
+type SetNotificationAction = {
+  payload: {
+    notification: Notification,
+    timeoutId: number
+  };
 };
 
 type NotificationState = {
