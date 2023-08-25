@@ -45,11 +45,11 @@ const TextAreaField = ({
 
   const handleBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
     onBlur(e);
-    areaRef.current.style.height = "inherit";
-    areaRef.current.style.height = `${
+    areaRef.current!.style.height = "inherit";  // investigate ! flag for current!
+    areaRef.current!.style.height = `${         // investigate ! flag for current!
       Math.min(
         Math.max(
-          areaRef.current.scrollHeight,
+          areaRef.current!.scrollHeight,        // investigate ! flag for current!
           32
         ),
         32 * maxrows + 7
