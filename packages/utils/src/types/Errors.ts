@@ -99,11 +99,27 @@ export class RedisError extends Error {
   }
 }
 
+export type SafeyAny = object | string | number | Array<object> | Array<string> | Array<number> | null | undefined;
+
+interface ApplicationErrorMeta {
+  all?: SafeyAny[];
+  current?: SafeyAny;
+}
+
 export class ApplicationError extends Error {
-  constructor(message: string) {
+
+  private _meta?: ApplicationErrorMeta;
+
+  constructor(message: string, meta?: ApplicationErrorMeta) {
     super(message);
     this.name = "ApplicationError";
+    this._meta = meta;
   }
+
+  get meta() {
+    return this._meta;
+  }
+
 }
 
 
