@@ -1,0 +1,1 @@
+export const dummy = 'Das willst be a good hoozk';
