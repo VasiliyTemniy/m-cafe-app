@@ -14,7 +14,7 @@ import {
   RequestQueryError,
   SessionError
 } from '@m-cafe-app/utils';
-import { User } from '../models/index.js';
+import { User } from '@m-cafe-app/db';
 import { Session } from '../redis/Session.js';
 
 const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFunction) => {

@@ -1,0 +1,20 @@
+{
+  "name": "@m-cafe-app/frontend-services",
+  "productName": "Custom cafe DIY-app",
+  "version": "1.0.0",
+  "description": "This package contains frontend services for web and mobile modules",
+  "main": "build/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "eslint": "eslint ./src/**/*.{ts,tsx}"
+  },
+  "dependencies": {
+    "@m-cafe-app/shared-frontend-deps": "workspace:^",
+    "@m-cafe-app/utils": "workspace:^"
+  },
+  "devDependencies": {
+    "typescript": "~5.1.6"
+  }
+}

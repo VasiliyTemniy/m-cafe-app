@@ -15,11 +15,11 @@ import {
   validAddresses,
   initialUsersPassword
 } from './users_api_helper';
-import { User } from '../models/index';
+import { User } from '@m-cafe-app/db';
 import { Session } from "../redis/Session";
-import { connectToDatabase } from "../utils/db";
 import { ValidationError } from 'sequelize';
 import {
+  connectToDatabase,
   dateRegExp,
   emailRegExp,
   maxEmailLen,
@@ -34,15 +34,16 @@ import {
   minUsernameLen,
   nameRegExp,
   phonenumberRegExp,
-  usernameRegExp
-} from "../utils/constants";
+  usernameRegExp,
+  Address,
+  UserAddress
+} from "@m-cafe-app/db";
 import {
   EditUserBody,
   NewAddressBody,
   NewUserBody
 } from "@m-cafe-app/utils";
-import { Address, UserAddress } from '../models';
-import { AddressData } from "@m-cafe-app/db-models";
+import { AddressData } from "@m-cafe-app/db";
 import { initLogin, userAgent } from "./sessions_api_helper";
 
 

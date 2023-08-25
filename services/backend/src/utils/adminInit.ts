@@ -1,6 +1,6 @@
 import bcryptjs from 'bcryptjs';
 import logger from './logger.js';
-import { User } from '../models/index.js';
+import { User } from '@m-cafe-app/db';
 import config from './config.js';
 
 export const initSuperAdmin = async () => {

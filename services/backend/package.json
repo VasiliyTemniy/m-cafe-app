@@ -18,7 +18,7 @@
     "eslint": "eslint ./src/**/*.{ts,tsx}"
   },
   "dependencies": {
-    "@m-cafe-app/db-models": "workspace:^",
+    "@m-cafe-app/db": "workspace:^",
     "@m-cafe-app/shared-backend-deps": "workspace:^",
     "@m-cafe-app/shared-deps": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",
@@ -61,6 +61,6 @@
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
     "tsc-watch": "^6.0.4",
-    "typescript": "^5.1.6"
+    "typescript": "~5.1.6"
   }
 }

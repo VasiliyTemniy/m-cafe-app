@@ -1,6 +1,13 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { Food, FoodComponent, FoodPicture, FoodType, LocString, Picture } from '../models/index.js';
+import {
+  Food,
+  FoodComponent,
+  FoodPicture,
+  FoodType,
+  LocString,
+  Picture
+} from '@m-cafe-app/db';
 import {
   FoodDT,
   isNewFoodBody,

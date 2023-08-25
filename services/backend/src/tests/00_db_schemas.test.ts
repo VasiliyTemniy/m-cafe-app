@@ -1,8 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 import { getDBInfo } from "./00_db_schemas_helper";
-import { connectToDatabase } from "../utils/db";
-import config from "../utils/config";
+import { connectToDatabase, DATABASE_URL } from "@m-cafe-app/db";
 import supertest from "supertest";
 import app from "../app";
 import { apiBaseUrl } from "./test_helper";
@@ -25,13 +24,13 @@ describe('Database migrations code is synchronized with models code', () => {
       .get(`${apiBaseUrl}/testing/reset`)
       .expect(204);
 
-    const dbInfo1 = await getDBInfo(config.DATABASE_URL);
+    const dbInfo1 = await getDBInfo(DATABASE_URL);
 
     await api
       .get(`${apiBaseUrl}/testing/sync`)
       .expect(204);
 
-    const dbInfo2 = await getDBInfo(config.DATABASE_URL);
+    const dbInfo2 = await getDBInfo(DATABASE_URL);
 
 
     const deepEqual = (obj1: object, obj2: object): boolean => {

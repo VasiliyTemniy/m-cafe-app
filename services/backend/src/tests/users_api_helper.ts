@@ -1,5 +1,5 @@
 import { NewAddressBody, NewUserBody } from '@m-cafe-app/utils';
-import { UserData } from '@m-cafe-app/db-models';
+import { UserData } from '@m-cafe-app/db';
 import {
   alphabetAll,
   alphabetEn,

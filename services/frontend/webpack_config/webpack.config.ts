@@ -1,6 +1,6 @@
 import path from 'path';
-import { rules } from './webpack.rules';
-import { plugins } from './webpack.plugins';
+import { rules } from './webpack.rules.js';
+import { plugins } from './webpack.plugins.js';
 //import { optimization } from './webpack.optimization';
 import { Configuration as WebpackConfiguration } from "webpack";
 import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
@@ -30,11 +30,13 @@ interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
 }
 
+const __dirname = path.resolve();
+
 const config: Configuration = {
-  context: path.join(__dirname, '..'),
+  context: __dirname,
   entry: `./${frontend_module}/src/index.tsx`,
   output: {
-    path: isDevelopment ? path.join(__dirname, '..', `.webpack-dev.${frontend_module}`) : path.join(__dirname, '..', `.webpack.${frontend_module}`),
+    path: isDevelopment ? path.join(__dirname, `.webpack-dev.${frontend_module}`) : path.join(__dirname, `.webpack.${frontend_module}`),
     filename: isDevelopment ? 'build.js' : 'build.[fullhash].js'
   },
   devServer: {

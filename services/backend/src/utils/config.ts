@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import { readFileSync } from "fs";
 import { CookieOptions } from 'express';
 
-const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
+export const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 
 dotenv.config({
   override: isDockerized ? false : true

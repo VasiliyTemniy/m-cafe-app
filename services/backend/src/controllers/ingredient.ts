@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { Ingredient, LocString } from '../models/index.js';
+import { Ingredient, LocString } from '@m-cafe-app/db';
 import {
   DatabaseError,
   IngredientDT,

@@ -11,7 +11,7 @@
     "eslint": "eslint ./src/**/*.{ts,tsx}"
   },
   "devDependencies": {
-    "@m-cafe-app/db-models": "workspace:^",
-    "typescript": "^5.1.6"
+    "@m-cafe-app/db": "workspace:^",
+    "typescript": "~5.1.6"
   }
 }

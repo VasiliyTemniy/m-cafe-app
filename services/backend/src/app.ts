@@ -1,4 +1,4 @@
-import config from './utils/config.js';
+import config, { isDockerized } from './utils/config.js';
 import express from 'express';
 import 'express-async-errors';
 const app = express();
@@ -21,13 +21,18 @@ import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
 import { connectToRedisSessionDB } from './redis/Session.js';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 
+const __dirname = path.resolve();
+
+app.use('/public', express.static(path.resolve(__dirname, './public')));
 
 app.use(helmet());
 
-app.use(cors({
-  origin: config.ALLOWED_ORIGIN
-}));
+if (!isDockerized)
+  app.use(cors({
+    origin: config.ALLOWED_ORIGIN
+  }));
 
 app.use(express.json());
 

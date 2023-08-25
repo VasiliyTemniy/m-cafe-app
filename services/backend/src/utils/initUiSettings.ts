@@ -1,5 +1,4 @@
-import { UiSettingData } from '@m-cafe-app/db-models';
-import { UiSetting } from '../models/index.js';
+import { UiSettingData, UiSetting } from '@m-cafe-app/db';
 
 export const initUiSettings = async () => {
 

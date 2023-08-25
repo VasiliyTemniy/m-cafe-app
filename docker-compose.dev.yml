@@ -11,7 +11,7 @@ services:
     volumes:
       - ./services/frontend:/usr/src/app/services/frontend
       - ./packages/utils:/usr/src/app/packages/utils
-      - ./packages/db-models:/usr/src/app/packages/db-models
+      - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-deps:/usr/src/app/packages/shared-deps
@@ -29,7 +29,7 @@ services:
     volumes:
       - ./services/frontend:/usr/src/app/services/frontend
       - ./packages/utils:/usr/src/app/packages/utils
-      - ./packages/db-models:/usr/src/app/packages/db-models
+      - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-deps:/usr/src/app/packages/shared-deps
@@ -47,7 +47,7 @@ services:
     volumes:
       - ./services/frontend:/usr/src/app/services/frontend
       - ./packages/utils:/usr/src/app/packages/utils
-      - ./packages/db-models:/usr/src/app/packages/db-models
+      - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-deps:/usr/src/app/packages/shared-deps
@@ -95,7 +95,7 @@ services:
     volumes:
       - ./services/backend:/usr/src/app/services/backend
       - ./packages/utils:/usr/src/app/packages/utils
-      - ./packages/db-models:/usr/src/app/packages/db-models
+      - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-deps:/usr/src/app/packages/shared-deps
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps

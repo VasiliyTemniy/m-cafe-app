@@ -8,7 +8,7 @@ FROM base-back as copy-package-files-stage-back
 COPY --chown=node:node packages/shared-dev-deps/package.json packages/shared-dev-deps/package.json
 COPY --chown=node:node packages/shared-backend-deps/package.json packages/shared-backend-deps/package.json
 COPY --chown=node:node packages/shared-deps/package.json packages/shared-deps/package.json
-COPY --chown=node:node packages/db-models/package.json packages/db-models/package.json
+COPY --chown=node:node packages/db/package.json packages/db/package.json
 COPY --chown=node:node packages/utils/package.json packages/utils/package.json
 
 COPY --chown=node:node services/backend/package.json services/backend/package.json
@@ -29,7 +29,7 @@ ENV NODE_ENV development
 RUN yarn workspaces focus @m-cafe-app/shared-dev-deps
 RUN yarn workspaces focus @m-cafe-app/shared-backend-deps
 RUN yarn workspaces focus @m-cafe-app/shared-deps
-RUN yarn workspaces focus @m-cafe-app/db-models
+RUN yarn workspaces focus @m-cafe-app/db
 RUN yarn workspaces focus @m-cafe-app/utils
 
 RUN yarn workspaces focus m-cafe-app
@@ -42,7 +42,7 @@ FROM install-stage-back as copy-stage-back
 COPY --chown=node:node packages/shared-dev-deps packages/shared-dev-deps
 COPY --chown=node:node packages/shared-backend-deps packages/shared-backend-deps
 COPY --chown=node:node packages/shared-deps packages/shared-deps
-COPY --chown=node:node packages/db-models packages/db-models
+COPY --chown=node:node packages/db packages/db
 COPY --chown=node:node packages/utils packages/utils
 
 COPY --chown=node:node services/backend services/backend
@@ -79,8 +79,8 @@ COPY --chown=node:node packages/shared-backend-deps/package.json packages/shared
 COPY --chown=node:node packages/shared-deps/package.json packages/shared-deps/package.json
 
 # COPY built (transpiled) packages
-COPY --chown=node:node --from=build-stage-back usr/src/app/packages/db-models/build packages/db-models/build
-COPY --chown=node:node --from=build-stage-back usr/src/app/packages/db-models/package.json packages/db-models/package.json
+COPY --chown=node:node --from=build-stage-back usr/src/app/packages/db/build packages/db/build
+COPY --chown=node:node --from=build-stage-back usr/src/app/packages/db/package.json packages/db/package.json
 
 COPY --chown=node:node --from=build-stage-back usr/src/app/packages/utils/build packages/utils/build
 COPY --chown=node:node --from=build-stage-back usr/src/app/packages/utils/package.json packages/utils/package.json

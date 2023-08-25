@@ -1,11 +1,27 @@
-import { EditFacilityBody, EditStock, isStockDT, NewAddressBody, NewFacilityBody, NewStock, StockDT, UserDT } from "@m-cafe-app/utils";
+import {
+  EditFacilityBody,
+  EditStock,
+  isStockDT,
+  NewAddressBody,
+  NewFacilityBody,
+  NewStock,
+  StockDT,
+  UserDT
+} from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
 import app from "../app";
-import { Address, Facility, FacilityManager, LocString, User, UserAddress } from "../models";
+import {
+  connectToDatabase,
+  Address,
+  Facility,
+  FacilityManager,
+  LocString,
+  User,
+  UserAddress
+} from '@m-cafe-app/db';
 import config from "../utils/config";
-import { connectToDatabase } from "../utils/db";
 import { validAdminInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';
 import { Session } from "../redis/Session";

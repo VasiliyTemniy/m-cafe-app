@@ -1,6 +1,15 @@
 import { Router, RequestHandler } from 'express';
 import middleware from '../utils/middleware.js';
-import { Address, Facility, FacilityManager, Ingredient, LocString, Stock, User, UserAddress } from '../models/index.js';
+import {
+  Address,
+  Facility,
+  FacilityManager,
+  Ingredient,
+  LocString,
+  Stock,
+  User,
+  UserAddress
+} from '@m-cafe-app/db';
 import {
   FacilityDT,
   isNewFacilityBody,
