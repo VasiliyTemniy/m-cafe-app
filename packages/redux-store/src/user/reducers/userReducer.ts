@@ -15,15 +15,15 @@ type SetUserAction =
     payload: UserDT;
 };
 
-interface UserState extends UserDT {}
+export interface UserState extends UserDT {}
 
 const initialState: UserState = {
   id: 0,
-  username: '',
-  name: '',
+  username: undefined,
+  name: undefined,
   phonenumber: '',
-  email: '',
-  birthdate: '',
+  email: undefined,
+  birthdate: undefined,
   rights: ''
 };
 
@@ -57,7 +57,7 @@ export const sendLogin = (credentials: LoginUserBody, options: RequestOptions) =
   return async (dispatch: AppDispatch) => {
     try {
       const user = await userService.login(credentials, options);
-      if (!isUserDT(user)) throw new ApplicationError('Server has sent wrong data');
+      if (!isUserDT(user)) throw new ApplicationError('Server has sent wrong data', { current: user });
       dispatch(setUser(user));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e));
@@ -81,7 +81,7 @@ export const sendRefreshToken = (options: RequestOptions) => {
   return async (dispatch: AppDispatch) => {
     try {
       const user = await userService.refreshToken(options);
-      if (!isUserDT(user)) throw new ApplicationError('Server has sent wrong data');
+      if (!isUserDT(user)) throw new ApplicationError('Server has sent wrong data', { current: user });
       dispatch(setUser(user));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e));
