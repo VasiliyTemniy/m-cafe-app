@@ -21,7 +21,11 @@ import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
 import { connectToRedisSessionDB } from './redis/Session.js';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 
+const __dirname = path.resolve();
+
+app.use('/public', express.static(path.resolve(__dirname, './public')));
 
 app.use(helmet());
 
