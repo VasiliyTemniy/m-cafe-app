@@ -1,8 +1,8 @@
 {
-  "name": "@m-cafe-app/redux-store",
+  "name": "@m-cafe-app/frontend-logic",
   "productName": "Custom cafe DIY-app",
   "version": "1.0.0",
-  "description": "This package contains redux store for web and mobile frontend, divided to user store, admin store and manager store",
+  "description": "This package contains redux stores, frontend services, shared stateful components for web and mobile frontend",
   "main": "build/index.js",
   "type": "module",
   "private": true,
@@ -11,7 +11,6 @@
     "eslint": "eslint ./src/**/*.{ts,tsx}"
   },
   "dependencies": {
-    "@m-cafe-app/frontend-services": "workspace:^",
     "@m-cafe-app/shared-frontend-deps": "workspace:^",
     "@m-cafe-app/utils": "workspace:^"
   },

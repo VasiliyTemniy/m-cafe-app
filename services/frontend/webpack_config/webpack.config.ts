@@ -8,9 +8,9 @@ import HtmlWebPackPlugin from 'html-webpack-plugin';
 
 import * as dotenv from "dotenv";
 
-const frontend_module = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'user';
+const frontend_module = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'customer';
 const port =
-  frontend_module === 'user' ?
+  frontend_module === 'customer' ?
     process.env.FRONTEND_USER_PORT ? process.env.FRONTEND_USER_PORT : '4002' :
     frontend_module === 'admin' ?
       process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :

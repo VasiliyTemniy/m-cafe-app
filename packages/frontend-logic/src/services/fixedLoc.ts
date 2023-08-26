@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { NewFixedLocBody, EditFixedLocBody } from '@m-cafe-app/utils';
-import { RequestOptions } from './types/requestOptions';
+import { RequestOptions } from '../types/requestOptions';
 
 const createLoc = async (newLoc: NewFixedLocBody, options: RequestOptions) => {
 

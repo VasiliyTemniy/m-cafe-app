@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
 
-  frontend-user:
-    image: m-cafe-frontend-dev-user
+  frontend-customer:
+    image: m-cafe-frontend-dev-customer
     build:
       context: ./
       dockerfile: ./services/frontend/dev.Dockerfile
-      target: run-stage-front-user
+      target: run-stage-front-customer
     volumes:
       - ./services/frontend:/usr/src/app/services/frontend
       - ./packages/utils:/usr/src/app/packages/utils
@@ -16,7 +16,7 @@ services:
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-deps:/usr/src/app/packages/shared-deps
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-frontend-dev-user
+    container_name: m-cafe-frontend-dev-customer
     env_file:
       - ./docker-envs/.dev.docker-front.env
 

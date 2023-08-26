@@ -3,15 +3,15 @@ import fixedLocsReducer from './reducers/fixedLocsReducer';
 import notificationsReducer from './reducers/notificationsReducer';
 import userReducer from './reducers/userReducer';
 
-export const userReducers = {
-  locs: fixedLocsReducer,
+export const customerReducers = {
   notifications: notificationsReducer,
-  user: userReducer
+  user: userReducer,
+  fixedLocs: fixedLocsReducer,
 };
 
 const store = configureStore({
   reducer: {
-    ...userReducers
+    ...customerReducers
   },
 });
 

@@ -33,10 +33,10 @@
     "node_modules/*"
   ],
   "include": [
-    "user/src",
+    "customer/src",
     "admin/src",
     "manager/src",
-    "common",
+    "shared",
     "webpack_config"
   ],
   "references": [

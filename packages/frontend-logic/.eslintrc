@@ -50,8 +50,7 @@
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
         "project": [
-          "./tsconfig.json",
-          "../../packages/utils/tsconfig.json"
+          "./tsconfig.json"
         ]
       }
     }

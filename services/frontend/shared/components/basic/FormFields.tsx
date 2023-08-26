@@ -43,7 +43,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
     : '';
 
   const handleChooseOption = (e: SyntheticEvent<HTMLDivElement>) => {
-    helpers.setValue(e.currentTarget.innerText, false);
+    void helpers.setValue(e.currentTarget.innerText, false);
   };
 
   return(

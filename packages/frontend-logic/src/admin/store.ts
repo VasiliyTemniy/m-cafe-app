@@ -1,9 +1,11 @@
 import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import { userReducers } from '../user/store';
+import { customerReducers } from '../customer/store';
+import fixedLocsReducer from './reducers/fixedLocsReducer';
 
 const store = configureStore({
   reducer: {
-    ...userReducers
+    ...customerReducers,
+    fixedLocs: fixedLocsReducer
   },
 });
 

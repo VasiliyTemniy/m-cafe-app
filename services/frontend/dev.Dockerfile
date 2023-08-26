@@ -11,8 +11,8 @@ COPY --chown=node:node packages/shared-backend-deps/package.json packages/shared
 COPY --chown=node:node packages/shared-deps/package.json packages/shared-deps/package.json
 COPY --chown=node:node packages/db/package.json packages/db/package.json
 COPY --chown=node:node packages/utils/package.json packages/utils/package.json
-
 COPY --chown=node:node packages/shared-frontend-deps/package.json packages/shared-frontend-deps/package.json
+COPY --chown=node:node packages/frontend-logic/package.json packages/frontend-logic/package.json
 
 COPY --chown=node:node services/backend/package.json services/backend/package.json
 
@@ -34,8 +34,8 @@ RUN yarn workspaces focus @m-cafe-app/shared-backend-deps
 RUN yarn workspaces focus @m-cafe-app/shared-deps
 RUN yarn workspaces focus @m-cafe-app/db
 RUN yarn workspaces focus @m-cafe-app/utils
-
 RUN yarn workspaces focus @m-cafe-app/shared-frontend-deps
+RUN yarn workspaces focus @m-cafe-app/frontend-logic
 
 RUN yarn workspaces focus m-cafe-app
 
@@ -49,6 +49,7 @@ COPY --chown=node:node packages/shared-backend-deps packages/shared-backend-deps
 COPY --chown=node:node packages/shared-deps packages/shared-deps
 COPY --chown=node:node packages/db packages/db
 COPY --chown=node:node packages/utils packages/utils
+COPY --chown=node:node packages/frontend-logic packages/frontend-logic
 
 COPY --chown=node:node services/frontend services/frontend
 
@@ -56,14 +57,14 @@ COPY --chown=node:node services/frontend services/frontend
 
 # Below are different targets for docker-compose.dev.yml
 
-FROM copy-stage-front as run-stage-front-user
+FROM copy-stage-front as run-stage-front-customer
 
 RUN rm -rf services/frontend/admin
 RUN rm -rf services/frontend/manager
 
 RUN yarn run prepare:frontend
 
-CMD ["yarn", "run", "dev:frontend:user"]
+CMD ["yarn", "run", "dev:frontend:customer"]
 
 FROM copy-stage-front as run-stage-front-admin
 
@@ -74,7 +75,6 @@ CMD ["yarn", "run", "dev:frontend:admin"]
 FROM copy-stage-front as run-stage-front-manager
 
 RUN rm -rf services/frontend/admin
-RUN rm -rf services/frontend/user
 
 RUN yarn run prepare:frontend
 

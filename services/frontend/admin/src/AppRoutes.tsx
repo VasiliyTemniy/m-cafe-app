@@ -1,8 +1,8 @@
 import { Outlet, Route, Routes } from 'react-router-dom';
 
-import UnderConstruction from '../../common/components/UnderConstruction';
+import UnderConstruction from '../../shared/components/UnderConstruction';
 
-import { apiBaseUrl } from './utils/config';
+import { apiBaseUrl } from '../../shared/utils/config';
 
 const AppRoutes = () => {
   return (

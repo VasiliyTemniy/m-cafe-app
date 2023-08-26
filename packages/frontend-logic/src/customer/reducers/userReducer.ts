@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import userService from '@m-cafe-app/frontend-services/src/user';
+import userService from '../../services/user';
 
 import { AppDispatch } from '../store';
 
 // import { showNotification } from './notificationsReducer';
 
-import { ApplicationError, isUserDT, LoginUserBody, NewUserBody, UserDT } from '@m-cafe-app/utils';
+import { ApplicationError, EditUserBody, isUserDT, LoginUserBody, NewUserBody, UserDT } from '@m-cafe-app/utils';
 
 import { handleAxiosError } from '../../utils/errorHandler';
-import { RequestOptions } from '@m-cafe-app/frontend-services/src/types/requestOptions';
+import { RequestOptions } from '../../types';
 
 type SetUserAction = 
   | {
@@ -47,6 +47,17 @@ export const sendNewUser = (newUser: NewUserBody, options: RequestOptions) => {
     try {
       await userService.createUser(newUser, options);
       await dispatch(sendLogin({ phonenumber: newUser.phonenumber, password: newUser.password }, options));
+    } catch (e: unknown) {
+      dispatch(handleAxiosError(e));
+    }
+  };
+};
+
+export const sendUpdateUser = (updUser: EditUserBody, userId: number, options: RequestOptions) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await userService.updateUser(updUser, userId, options);
+      await dispatch(sendLogin({ phonenumber: updUser.phonenumber, password: updUser.password }, options));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e));
     }

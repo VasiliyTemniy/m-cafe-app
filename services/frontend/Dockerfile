@@ -11,8 +11,8 @@ COPY --chown=node:node packages/shared-backend-deps/package.json packages/shared
 COPY --chown=node:node packages/shared-deps/package.json packages/shared-deps/package.json
 COPY --chown=node:node packages/db/package.json packages/db/package.json
 COPY --chown=node:node packages/utils/package.json packages/utils/package.json
-
 COPY --chown=node:node packages/shared-frontend-deps/package.json packages/shared-frontend-deps/package.json
+COPY --chown=node:node packages/frontend-logic/package.json packages/frontend-logic/package.json
 
 COPY --chown=node:node services/backend/package.json services/backend/package.json
 
@@ -34,8 +34,8 @@ RUN yarn workspaces focus @m-cafe-app/shared-backend-deps
 RUN yarn workspaces focus @m-cafe-app/shared-deps
 RUN yarn workspaces focus @m-cafe-app/db
 RUN yarn workspaces focus @m-cafe-app/utils
-
 RUN yarn workspaces focus @m-cafe-app/shared-frontend-deps
+RUN yarn workspaces focus @m-cafe-app/frontend-logic
 
 RUN yarn workspaces focus m-cafe-app
 
@@ -49,6 +49,7 @@ COPY --chown=node:node packages/shared-backend-deps packages/shared-backend-deps
 COPY --chown=node:node packages/shared-deps packages/shared-deps
 COPY --chown=node:node packages/db packages/db
 COPY --chown=node:node packages/utils packages/utils
+COPY --chown=node:node packages/frontend-logic packages/frontend-logic
 
 COPY --chown=node:node services/frontend services/frontend
 
@@ -56,9 +57,6 @@ COPY --chown=node:node services/frontend services/frontend
 FROM copy-stage-front as prepare-stage-front
 
 RUN yarn run prepare:frontend
-
-
-FROM prepare-stage-front AS build-stage-front
 
 ENV NODE_ENV production
 
@@ -68,20 +66,30 @@ ARG BACKEND_URL
 ENV BACKEND_URL ${BACKEND_URL?backend_url_not_set}
 ENV DOCKERIZED=true
 
-RUN yarn run build:frontend
+
+FROM prepare-stage-front AS build-stage-front-customer
+
+RUN yarn run build:frontend:customer
+
+FROM prepare-stage-front AS build-stage-front-admin
+
+RUN yarn run build:frontend:admin
+
+FROM prepare-stage-front AS build-stage-front-manager
+
+RUN yarn run build:frontend:manager
 
 
 # Below are different targets for docker-compose.yml
 
-FROM nginx:1.25.1-alpine-slim AS run-prod-front-user
+FROM nginx:1.25.1-alpine-slim AS run-prod-front-customer
 
-COPY --from=build-stage-front /usr/src/app/services/frontend/.webpack.user /usr/share/nginx/html
-
+COPY --from=build-stage-front-customer /usr/src/app/services/frontend/.webpack.customer /usr/share/nginx/html
 
 FROM nginx:1.25.1-alpine-slim AS run-prod-front-admin
 
-COPY --from=build-stage-front /usr/src/app/services/frontend/.webpack.admin /usr/share/nginx/html
+COPY --from=build-stage-front-admin /usr/src/app/services/frontend/.webpack.admin /usr/share/nginx/html
 
 FROM nginx:1.25.1-alpine-slim AS run-prod-front-manager
 
-COPY --from=build-stage-front /usr/src/app/services/frontend/.webpack.manager /usr/share/nginx/html
+COPY --from=build-stage-front-manager /usr/src/app/services/frontend/.webpack.manager /usr/share/nginx/html

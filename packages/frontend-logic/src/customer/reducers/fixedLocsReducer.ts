@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { AppDispatch } from '../store';
-import fixedLocRouter from '@m-cafe-app/frontend-services/src/fixedLoc';
-import { RequestOptions } from '@m-cafe-app/frontend-services/src/types/requestOptions';
+import fixedLocRouter from '../../services/fixedLoc';
+import { RequestOptions } from '../../types';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
 
 type SetFixedLocAction = {
@@ -11,31 +11,25 @@ type SetFixedLocAction = {
   };
 };
 
-type FixedLocState = {
-  locs: FixedLocDT[]
-};
+export type FixedLocState = FixedLocDT[];
 
-const initialState: FixedLocState = {
-  locs: []
-};
+const initialState: FixedLocState = [];
 
-const fixedLocSlice = createSlice({
+export const customerFixedLocSliceBase = {
   name: 'fixedLocs',
   initialState,
   reducers: {
     setFixedLocs(state: FixedLocState, action: SetFixedLocAction) {
-      return { ...action.payload };
-    },
-    hideFixedLocs(state: FixedLocState) {
-      return { ...state, timeoutId: 0 };
-    },
-    clearFixedLocs() {
-      return { ...initialState };
+      return { ...action.payload.locs };
     }
-  },
+  }
+};
+
+const fixedLocSlice = createSlice({
+  ...customerFixedLocSliceBase
 });
 
-export const { setFixedLocs, hideFixedLocs, clearFixedLocs } = fixedLocSlice.actions;
+export const { setFixedLocs } = fixedLocSlice.actions;
 
 export const initFixedLocs = (options: RequestOptions) => {
   return async (dispatch: AppDispatch) => {

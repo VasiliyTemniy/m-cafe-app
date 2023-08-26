@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import { showNotification } from "../user/reducers/notificationsReducer";
+import { showNotification } from "../customer/reducers/notificationsReducer";
 
 export const handleAxiosError = (
   e: unknown,

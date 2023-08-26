@@ -2,15 +2,15 @@ version: '3.8'
 
 services:
 
-  frontend-user:
-    image: m-cafe-frontend-user
+  frontend-customer:
+    image: m-cafe-frontend-customer
     build:
       context: ./
       dockerfile: ./services/frontend/Dockerfile
-      target: run-prod-front-user
+      target: run-prod-front-customer
       args:
         - BACKEND_URL=http://localhost:8080/api
-    container_name: m-cafe-frontend-user
+    container_name: m-cafe-frontend-customer
     depends_on:
       - nginx
 
