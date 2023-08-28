@@ -3,8 +3,8 @@
 // workaround with custom file imports
 
 import { glob } from 'glob';
-import logger from '../logger.js';
-import { MigrationContext } from '../types/MigrationContext.js';
+import logger from './logger.js';
+import { MigrationContext } from './types/MigrationContext.js';
 
 type MigrationFn = ({ context }: MigrationContext) => Promise<void>;
 
@@ -22,8 +22,8 @@ export const loadMigrations = async () => {
     / in production, all files are .js and served from ./build folder
     */
     const res = process.env.NODE_ENV === 'production'
-      ? await glob(`${prodMigrationsGlobPath}*.js`, { ignore: `${prodMigrationsGlobPath}index.js` })
-      : await glob(`${devMigrationsRelativePath}*.js`, { ignore: `${devMigrationsRelativePath}index.js` });
+      ? await glob(`${prodMigrationsGlobPath}*.js`)
+      : await glob(`${devMigrationsRelativePath}*.js`);
 
     const migrationsPromise = res.map(async (file) => {
 
@@ -33,7 +33,7 @@ export const loadMigrations = async () => {
       const replacePath = process.platform === 'win32' ? devMigrationsRelativePathWin32 :
         process.env.NODE_ENV === 'production' ? prodMigrationsGlobPath : devMigrationsRelativePath;
 
-      const { up, down } = await import(file.replace(replacePath, './'));
+      const { up, down } = await import(file.replace(replacePath, './migrations/'));
       return {
         name: file.replace(replacePath, '').replace('.ts', '').replace('.js', ''),
         up,
