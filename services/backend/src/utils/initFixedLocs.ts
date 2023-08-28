@@ -26,7 +26,7 @@ export const initFixedLocs = async () => {
 
 const getLocsFiles = async () => {
 
-  const prodFixedLocsGlobPath = 'services/backend/locales/';
+  const prodFixedLocsGlobPath = 'locales/';
   const devFixedLocsRelativePath = 'locales/';
   const devFixedLocsRelativePathWin32 = 'locales\\';
   const fixedLocsReplacePath = './locales/';
