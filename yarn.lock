@@ -2482,7 +2482,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/shared-backend-deps@workspace:packages/shared-backend-deps"
   dependencies:
+    glob: ^10.3.3
     sequelize: ^6.31.1
+    umzug: ^3.2.1
   languageName: unknown
   linkType: soft
 
@@ -10485,7 +10487,6 @@ __metadata:
     express: ^4.18.2
     express-async-errors: ^3.1.1
     fast-check: ^3.11.0
-    glob: ^10.3.3
     helmet: ^7.0.0
     json-diff: ^1.0.6
     jsonwebtoken: ^9.0.0
@@ -10499,7 +10500,6 @@ __metadata:
     ts-node: ^10.9.1
     tsc-watch: ^6.0.4
     typescript: ~5.1.6
-    umzug: ^3.2.1
   languageName: unknown
   linkType: soft
 
