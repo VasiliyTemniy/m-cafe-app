@@ -7,6 +7,8 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "sequelize": "^6.31.1"
+    "glob": "^10.3.3",
+    "sequelize": "^6.31.1",
+    "umzug": "^3.2.1"
   }
 }
