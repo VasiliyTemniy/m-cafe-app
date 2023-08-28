@@ -1,0 +1,9 @@
+// You can edit your locales here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for tNodePath
+{
+  "main": {
+    "cart": {
+      "mainStr": "Корзина",
+      "secStr": "Cart"
+    }
+  }
+}

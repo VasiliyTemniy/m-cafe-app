@@ -1,0 +1,167 @@
+// You can edit your locales here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for tNodePath
+{
+  "loginPage": {
+    "loginForm": {
+      "title": {
+        "mainStr": "Вход в систему",
+        "secStr": "Login page"
+      },
+      "welcome": {
+        "mainStr": "Приветствуем Вас! Пожалуйста, войдите в систему или зарегистрируйтесь",
+        "secStr": "Welcome! Please login or signup"
+      }
+    },
+    "signupForm": {
+      "title": {
+        "mainStr": "Регистрация",
+        "secStr": "Signup"
+      },
+      "welcome": {
+        "mainStr": "Введите ваши данные",
+        "secStr": "Enter details"
+      }
+    },
+    "label": {
+      "username": {
+        "mainStr": "Имя пользователя",
+        "secStr": "Username"
+      },
+      "name": {
+        "mainStr": "Имя",
+        "secStr": "Name"
+      },
+      "password": {
+        "mainStr": "Пароль",
+        "secStr": "Password"
+      },
+      "phonenumber": {
+        "mainStr": "Номер телефона",
+        "secStr": "Phone number"
+      },
+      "email": {
+        "mainStr": "Электронная почта",
+        "secStr": "e-mail"
+      },
+      "birthdate": {
+        "mainStr": "Дата рождения",
+        "secStr": "Birthdate"
+      },
+      "cancel": {
+        "mainStr": "Отмена",
+        "secStr": "Cancel"
+      },
+      "submit": {
+        "mainStr": "Подтвердить",
+        "secStr": "Submit"
+      },
+      "toLogin": {
+        "mainStr": "Логин",
+        "secStr": "Login"
+      },
+      "toSignup": {
+        "mainStr": "Регистрация",
+        "secStr": "Signup"
+      }
+    },
+    "placeholder": {
+      "username": {
+        "mainStr": "Имя пользователя",
+        "secStr": "Username"
+      },
+      "name": {
+        "mainStr": "Имя",
+        "secStr": "Name"
+      },
+      "password": {
+        "mainStr": "Пароль",
+        "secStr": "Password"
+      },
+      "phonenumber": {
+        "mainStr": "Номер телефона",
+        "secStr": "Phone number"
+      },
+      "email": {
+        "mainStr": "Электронная почта",
+        "secStr": "e-mail"
+      },
+      "birthdate": {
+        "mainStr": "Дата рождения",
+        "secStr": "Birthdate"
+      }
+    },
+    "validationErrors": {
+      "invalid": {
+        "username": {
+          "mainStr": "Только цифры, английские буквы или подчеркивания",
+          "secStr": "Only numbers, english letters or underscores"
+        },
+        "name": {
+          "mainStr": "Только русские, английские буквы или пробелы",
+          "secStr": "Only russian or english letters or underscores"
+        },
+        "password": {
+          "mainStr": "Добавьте хотя бы одну цифру или спецсимвол",
+          "secStr": "Add at least one number or special character"
+        },
+        "phonenumber": {
+          "mainStr": "Неправильный телефонный номер",
+          "secStr": "Invalid phone number "
+        },
+        "email": {
+          "mainStr": "Неправильный e-mail",
+          "secStr": "Invalid e-mail"
+        },
+        "birthdate": {
+          "mainStr": "Неправильная дата рождения",
+          "secStr": "Invalid birthdate"
+        }
+      },
+      "required": {
+        "username": {
+          "mainStr": "Требуется имя пользователя",
+          "secStr": "Username required"
+        },
+        "name": {
+          "mainStr": "Требуется имя",
+          "secStr": "Name required"
+        },
+        "password": {
+          "mainStr": "Требуется пароль",
+          "secStr": "Password required"
+        },
+        "phonenumber": {
+          "mainStr": "Требуется номер телефона",
+          "secStr": "Phone number required"
+        },
+        "email": {
+          "mainStr": "Требуется e-mail",
+          "secStr": "e-mail required"
+        },
+        "birthdate": {
+          "mainStr": "Требуется дата рождения",
+          "secStr": "Birthdate required"
+        }
+      },
+      "short": {
+        "username": {
+          "mainStr": "Короткое имя пользователя",
+          "secStr": "Username must be longer"
+        },
+        "password": {
+          "mainStr": "Короткий пароль",
+          "secStr": "Password must be longer"
+        }
+      },
+      "long": {
+        "username": {
+          "mainStr": "Длинное имя пользователя",
+          "secStr": "Username must be shorter"
+        },
+        "password": {
+          "mainStr": "Длинный пароль",
+          "secStr": "Password must be shorter"
+        }
+      }
+    }
+  }
+}
