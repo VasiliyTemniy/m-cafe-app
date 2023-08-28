@@ -86,6 +86,8 @@ COPY --chown=node:node --from=build-stage-back usr/src/app/packages/utils/build 
 COPY --chown=node:node --from=build-stage-back usr/src/app/packages/utils/package.json packages/utils/package.json
 
 COPY --chown=node:node --from=build-stage-back usr/src/app/services/backend/build services/backend/build
+COPY --chown=node:node --from=build-stage-back usr/src/app/services/backend/locales services/backend/locales
+COPY --chown=node:node --from=build-stage-back usr/src/app/services/backend/public services/backend/public
 COPY --chown=node:node --from=build-stage-back usr/src/app/services/backend/package.json services/backend/package.json
 
 # COPY frontend package.json
