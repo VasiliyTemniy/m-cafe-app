@@ -46,7 +46,8 @@ describe('FixedLoc requests tests', () => {
     await FixedLoc.destroy({ where: {} });
     await LocString.destroy({ where: {} });
 
-    fixedLocs = await initFixedLocs();
+    await initFixedLocs();
+    fixedLocs = await FixedLoc.findAll({});
   });
 
   it('FixedLoc GET routes work without authorization', async () => {
