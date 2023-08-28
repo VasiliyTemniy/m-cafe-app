@@ -1,4 +1,4 @@
-import { FixedLocDT } from "../../models/FixedLoc.js";
+import { FixedLocDT, isFixedLocDT } from "../../models/FixedLoc.js";
 import { isNewLocString, NewLocString, isEditLocString, EditLocString } from "../../models/LocString.js";
 import { hasOwnProperty, MapToUnknown } from "../helpers.js";
 import { isString } from "../typeParsers.js";
@@ -29,3 +29,25 @@ const hasEditFixedLocBodyFields = (body: unknown): body is EditFixedLocBodyField
   
 export const isEditFixedLocBody = (body: unknown): body is EditFixedLocBody =>
   hasEditFixedLocBodyFields(body) && isString(body.name) && isEditLocString(body.locString);
+
+
+export type EditManyFixedLocBody = {
+  updLocs: Array<FixedLocDT>
+};
+    
+type EditManyFixedLocBodyFields = MapToUnknown<EditManyFixedLocBody>;
+
+const hasEditManyFixedLocBodyFields = (body: unknown): body is EditManyFixedLocBodyFields =>
+  hasOwnProperty(body, 'updLocs');
+  
+export const isEditManyFixedLocBody = (body: unknown): body is EditManyFixedLocBody => {
+  if (!hasEditManyFixedLocBodyFields(body)) return false;
+
+  if (!Array.isArray(body.updLocs)) return false;
+
+  for (const updLoc of body.updLocs) {
+    if (!isFixedLocDT(updLoc)) return false;
+  }
+
+  return true;
+};
