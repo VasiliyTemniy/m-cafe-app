@@ -9,5 +9,5 @@ Each of them have specific components and use some common components from shared
 App state, frontend services, stateful components, hooks are imported from @m-cafe-app/frontend-logic package to share the same logic with mobile frontend. Each webpack target has its own logic structure
 
 Last letters in component names mean:
-  *S - Stateful
-  *L - Layout
+  *SC - Stateful Component
+  *LC - Layout Component
