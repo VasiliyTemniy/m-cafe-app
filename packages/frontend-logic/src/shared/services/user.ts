@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { NewUserBody, LoginUserBody, EditUserBody } from '@m-cafe-app/utils';
-import { apiBaseUrl } from '../utils/config';
+import { apiBaseUrl } from '../../utils/config';
 
 const createUser = async (newUser: NewUserBody) => {
 
