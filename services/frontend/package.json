@@ -27,9 +27,6 @@
     "@m-cafe-app/shared-deps": "workspace:^",
     "@m-cafe-app/shared-frontend-deps": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",
-    "i18next": "^22.4.15",
-    "i18next-browser-languagedetector": "^7.0.1",
-    "react-i18next": "^12.2.2",
     "react-router-dom": "^6.11.2"
   },
   "devDependencies": {
