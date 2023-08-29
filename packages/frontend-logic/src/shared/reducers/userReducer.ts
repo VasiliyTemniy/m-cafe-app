@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import userService from '../../shared/services/user';
+import userService from '../services/user';
 
 import { AppDispatch } from '../store';
 

@@ -2,7 +2,7 @@ import { ApplicationError, isUiSettingDT, SafeyAny, UiSettingDT } from '@m-cafe-
 import { createSlice } from '@reduxjs/toolkit';
 import { RequestOptions } from '../../types';
 import { AppDispatch } from '../store';
-import uiSettingRouter from '../../shared/services/uiSetting';
+import uiSettingRouter from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
 
 

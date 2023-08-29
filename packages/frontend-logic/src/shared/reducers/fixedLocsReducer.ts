@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { AppDispatch } from '../store';
-import fixedLocRouter from '../../shared/services/fixedLoc';
+import fixedLocRouter from '../services/fixedLoc';
 import { RequestOptions } from '../../types';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
 
