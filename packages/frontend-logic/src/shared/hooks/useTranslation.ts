@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { ApplicationError } from "@m-cafe-app/utils";
-import { useAppSelector } from "../customer/hooks/reduxHooks";
+import { useAppSelector } from "../../customer/hooks/reduxHooks";
 
 export type TFunction = (locName: string) => string;
 
