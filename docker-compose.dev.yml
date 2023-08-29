@@ -19,6 +19,7 @@ services:
     container_name: m-cafe-frontend-dev-customer
     env_file:
       - ./docker-envs/.dev.docker-front.env
+      - ./docker-envs/.docker.validation-overrides.env
 
   frontend-admin:
     image: m-cafe-frontend-dev-admin
@@ -37,6 +38,7 @@ services:
     container_name: m-cafe-frontend-dev-admin
     env_file:
       - ./docker-envs/.dev.docker-front.env
+      - ./docker-envs/.docker.validation-overrides.env
 
   frontend-manager:
     image: m-cafe-frontend-dev-manager
@@ -55,6 +57,7 @@ services:
     container_name: m-cafe-frontend-dev-manager
     env_file:
       - ./docker-envs/.dev.docker-front.env
+      - ./docker-envs/.docker.validation-overrides.env
 
   redis:
     image: redis:7.0.12-alpine3.18
@@ -102,6 +105,7 @@ services:
     container_name: m-cafe-backend-dev
     env_file:
       - ./docker-envs/.dev.docker-back.env
+      - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - postgres_db
       - redis

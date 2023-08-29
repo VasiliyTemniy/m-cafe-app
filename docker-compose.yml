@@ -11,6 +11,8 @@ services:
       args:
         - BACKEND_URL=http://localhost:8080/api
     container_name: m-cafe-frontend-customer
+    env_file:
+      - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - nginx
 
@@ -23,6 +25,8 @@ services:
       args:
         - BACKEND_URL=http://localhost:8080/api
     container_name: m-cafe-frontend-admin
+    env_file:
+      - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - nginx
 
@@ -35,6 +39,8 @@ services:
       args:
         - BACKEND_URL=http://localhost:8080/api
     container_name: m-cafe-frontend-manager
+    env_file:
+      - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - nginx
 
@@ -65,6 +71,7 @@ services:
     container_name: m-cafe-backend
     env_file:
       - ./docker-envs/.docker-back.env
+      - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - nginx
       - redis
