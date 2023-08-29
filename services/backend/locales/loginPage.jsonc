@@ -22,6 +22,10 @@
       }
     },
     "label": {
+      "credential": {
+        "mainStr": "Логин",
+        "secStr": "Login data"
+      },
       "username": {
         "mainStr": "Имя пользователя",
         "secStr": "Username"
@@ -33,6 +37,10 @@
       "password": {
         "mainStr": "Пароль",
         "secStr": "Password"
+      },
+      "passwordConfirm": {
+        "mainStr": "Подтверждение пароля",
+        "secStr": "Password confirm"
       },
       "phonenumber": {
         "mainStr": "Номер телефона",
@@ -64,6 +72,10 @@
       }
     },
     "placeholder": {
+      "credential": {
+        "mainStr": "Телефон или имя пользователя",
+        "secStr": "Login data"
+      },
       "username": {
         "mainStr": "Имя пользователя",
         "secStr": "Username"
@@ -75,6 +87,10 @@
       "password": {
         "mainStr": "Пароль",
         "secStr": "Password"
+      },
+      "passwordConfirm": {
+        "mainStr": "Подтверждение пароля",
+        "secStr": "Password confirm"
       },
       "phonenumber": {
         "mainStr": "Номер телефона",
@@ -91,6 +107,10 @@
     },
     "validationErrors": {
       "invalid": {
+        "credential": {
+          "mainStr": "Номер телефона или имя пользователя неверны",
+          "secStr": "Phone number or username invalid"
+        },
         "username": {
           "mainStr": "Только цифры, английские буквы или подчеркивания",
           "secStr": "Only numbers, english letters or underscores"
@@ -102,6 +122,10 @@
         "password": {
           "mainStr": "Добавьте хотя бы одну цифру или спецсимвол",
           "secStr": "Add at least one number or special character"
+        },
+        "passwordConfirm": {
+          "mainStr": "Пароли не совпадают",
+          "secStr": "Password does not match"
         },
         "phonenumber": {
           "mainStr": "Неправильный телефонный номер",
@@ -117,6 +141,10 @@
         }
       },
       "required": {
+        "credential": {
+          "mainStr": "Требуется номер телефона или имя пользователя",
+          "secStr": "Phone number or username required"
+        },
         "username": {
           "mainStr": "Требуется имя пользователя",
           "secStr": "Username required"
@@ -128,6 +156,10 @@
         "password": {
           "mainStr": "Требуется пароль",
           "secStr": "Password required"
+        },
+        "passwordConfirm": {
+          "mainStr": "Требуется подтверждение пароля",
+          "secStr": "Password confirm required"
         },
         "phonenumber": {
           "mainStr": "Требуется номер телефона",
