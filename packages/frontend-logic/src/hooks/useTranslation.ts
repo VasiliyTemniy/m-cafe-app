@@ -2,7 +2,9 @@ import { useCallback } from 'react';
 import { ApplicationError } from "@m-cafe-app/utils";
 import { useAppSelector } from "../customer/hooks/reduxHooks";
 
-export const useTranslation = () => {
+export type TFunction = (locName: string) => string;
+
+export const useTranslation = (): { t: TFunction } => {
 
   const selectedLanguage = useAppSelector(state => state.settings.language);
 
