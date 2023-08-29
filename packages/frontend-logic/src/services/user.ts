@@ -4,10 +4,12 @@ import { RequestOptions } from '../types/requestOptions';
 
 const createUser = async (newUser: NewUserBody, options: RequestOptions) => {
 
+  const reqBody: NewUserBody = newUser;
+
   const config = { headers: {'Content-Type': 'application/json'} };
   const { data: userInfo } = await axios.post<JSON>(
     `${options.apiBaseUrl}/api/user`,
-    JSON.stringify(newUser),
+    JSON.stringify(reqBody),
     config
   );
 
@@ -16,10 +18,12 @@ const createUser = async (newUser: NewUserBody, options: RequestOptions) => {
 
 const updateUser = async (updUser: EditUserBody, userId: number, options: RequestOptions) => {
 
+  const reqBody: EditUserBody = updUser;
+
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true  };
   const { data: userInfo } = await axios.put<JSON>(
-    `${options.apiBaseUrl}/api/user/`,
-    JSON.stringify(updUser),
+    `${options.apiBaseUrl}/api/user/${userId}`,
+    JSON.stringify(reqBody),
     config
   );
 
@@ -28,10 +32,12 @@ const updateUser = async (updUser: EditUserBody, userId: number, options: Reques
 
 const login = async (credentials: LoginUserBody, options: RequestOptions) => {
 
+  const reqBody: LoginUserBody = credentials;
+
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true };
   const { data: userInfo } = await axios.post<JSON>(
     `${options.apiBaseUrl}/api/session`,
-    JSON.stringify(credentials),
+    JSON.stringify(reqBody),
     config
   );
 
