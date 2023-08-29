@@ -79,6 +79,9 @@ COPY --chown=node:node packages/shared-backend-deps/package.json packages/shared
 COPY --chown=node:node packages/shared-constants/package.json packages/shared-constants/package.json
 
 # COPY built (transpiled) packages
+COPY --chown=node:node --from=build-stage-back usr/src/app/packages/shared-constants/build packages/shared-constants/build
+COPY --chown=node:node --from=build-stage-back usr/src/app/packages/shared-constants/package.json packages/shared-constants/package.json
+
 COPY --chown=node:node --from=build-stage-back usr/src/app/packages/db/build packages/db/build
 COPY --chown=node:node --from=build-stage-back usr/src/app/packages/db/package.json packages/db/package.json
 
