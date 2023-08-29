@@ -6,6 +6,7 @@ import uiSettingRouter from '../../shared/services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { sharedSettingsSliceBase } from '../../shared/reducers/settingsReducer';
 import type { SettingsState } from '../../shared/reducers/settingsReducer';
+import { TFunction } from 'src/shared/hooks/useTranslation';
 
 type UpdUiSettingAction = {
   payload: {
@@ -34,7 +35,7 @@ export const { setLanguage, setUiSettings, updUiSetting } = settingsSlice.action
 /**
  * Updates many ui settings in DB
  */
-export const sendUpdUiSettings = (updUiSettings: UiSettingDT[], options: RequestOptions) => {
+export const sendUpdUiSettings = (updUiSettings: UiSettingDT[], options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       const uiSettings = await uiSettingRouter.updateManyUiSettings(updUiSettings, options);
@@ -44,7 +45,7 @@ export const sendUpdUiSettings = (updUiSettings: UiSettingDT[], options: Request
       }
       dispatch(setUiSettings({ uiSettings }));
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };

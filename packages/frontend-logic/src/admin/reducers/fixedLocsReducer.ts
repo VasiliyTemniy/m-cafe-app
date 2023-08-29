@@ -6,6 +6,7 @@ import { RequestOptions } from '../../types';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
 import { sharedFixedLocSliceBase } from '../../shared/reducers/fixedLocsReducer';
 import type { FixedLocState } from '../../shared/reducers/fixedLocsReducer';
+import { TFunction } from 'src/shared/hooks/useTranslation';
 
 type UpdFixedLocAction = {
   payload: {
@@ -34,7 +35,7 @@ export const { setFixedLocs, updFixedLoc } = fixedLocSlice.actions;
 /**
  * Updates many fixed locs in DB
  */
-export const sendUpdFixedLocs = (updLocs: FixedLocDT[], options: RequestOptions) => {
+export const sendUpdFixedLocs = (updLocs: FixedLocDT[], options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       const fixedLocs = await fixedLocRouter.updateManyLocs(updLocs, options);
@@ -44,7 +45,7 @@ export const sendUpdFixedLocs = (updLocs: FixedLocDT[], options: RequestOptions)
       }
       dispatch(setFixedLocs({ locs: fixedLocs }));
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };
