@@ -9,7 +9,21 @@ services:
       dockerfile: ./services/frontend/dev.Dockerfile
       target: run-stage-front-customer
     volumes:
-      - ./services/frontend:/usr/src/app/services/frontend
+      # Isolated frontend part to prevent reload on another target begin
+      - ./services/frontend/customer:/usr/src/app/services/frontend/customer
+      - ./services/frontend/shared:/usr/src/app/services/frontend/shared
+      - ./services/frontend/webpack_config:/usr/src/app/services/frontend/webpack_config
+      - ./services/frontend/package.json:/usr/src/app/services/frontend/package.json
+      - ./services/frontend/tsconfig.json:/usr/src/app/services/frontend/tsconfig.json
+      # Isolated frontend part to prevent reload on another target end
+      # Isolated frontend-logic part to prevent reload on another target begin
+      - ./packages/frontend-logic/src/customer:/usr/src/app/packages/frontend-logic/src/customer
+      - ./packages/frontend-logic/src/shared:/usr/src/app/packages/frontend-logic/src/shared
+      - ./packages/frontend-logic/src/types:/usr/src/app/packages/frontend-logic/src/types
+      - ./packages/frontend-logic/src/utils:/usr/src/app/packages/frontend-logic/src/utils
+      - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
+      - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
+      # Isolated frontend-logic part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
@@ -28,7 +42,21 @@ services:
       dockerfile: ./services/frontend/dev.Dockerfile
       target: run-stage-front-admin
     volumes:
-      - ./services/frontend:/usr/src/app/services/frontend
+      # Isolated frontend part to prevent reload on another target begin
+      - ./services/frontend/admin:/usr/src/app/services/frontend/admin
+      - ./services/frontend/shared:/usr/src/app/services/frontend/shared
+      - ./services/frontend/webpack_config:/usr/src/app/services/frontend/webpack_config
+      - ./services/frontend/package.json:/usr/src/app/services/frontend/package.json
+      - ./services/frontend/tsconfig.json:/usr/src/app/services/frontend/tsconfig.json
+      # Isolated frontend part to prevent reload on another target end
+      # Isolated frontend-logic part to prevent reload on another target begin
+      - ./packages/frontend-logic/src/admin:/usr/src/app/packages/frontend-logic/src/admin
+      - ./packages/frontend-logic/src/shared:/usr/src/app/packages/frontend-logic/src/shared
+      - ./packages/frontend-logic/src/types:/usr/src/app/packages/frontend-logic/src/types
+      - ./packages/frontend-logic/src/utils:/usr/src/app/packages/frontend-logic/src/utils
+      - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
+      - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
+      # Isolated frontend-logic part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
@@ -47,7 +75,21 @@ services:
       dockerfile: ./services/frontend/dev.Dockerfile
       target: run-stage-front-manager
     volumes:
-      - ./services/frontend:/usr/src/app/services/frontend
+      # Isolated frontend part to prevent reload on another target begin
+      - ./services/frontend/manager:/usr/src/app/services/frontend/manager
+      - ./services/frontend/shared:/usr/src/app/services/frontend/shared
+      - ./services/frontend/webpack_config:/usr/src/app/services/frontend/webpack_config
+      - ./services/frontend/package.json:/usr/src/app/services/frontend/package.json
+      - ./services/frontend/tsconfig.json:/usr/src/app/services/frontend/tsconfig.json
+      # Isolated frontend part to prevent reload on another target end
+      # Isolated frontend-logic part to prevent reload on another target begin
+      - ./packages/frontend-logic/src/manager:/usr/src/app/packages/frontend-logic/src/manager
+      - ./packages/frontend-logic/src/shared:/usr/src/app/packages/frontend-logic/src/shared
+      - ./packages/frontend-logic/src/types:/usr/src/app/packages/frontend-logic/src/types
+      - ./packages/frontend-logic/src/utils:/usr/src/app/packages/frontend-logic/src/utils
+      - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
+      - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
+      # Isolated frontend-logic part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
