@@ -24,7 +24,7 @@
   "private": true,
   "dependencies": {
     "@m-cafe-app/frontend-logic": "workspace:^",
-    "@m-cafe-app/shared-deps": "workspace:^",
+    "@m-cafe-app/shared-constants": "workspace:^",
     "@m-cafe-app/shared-frontend-deps": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",
     "react-router-dom": "^6.11.2"

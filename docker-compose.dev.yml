@@ -14,7 +14,7 @@ services:
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
-      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
     container_name: m-cafe-frontend-dev-customer
     env_file:
@@ -33,7 +33,7 @@ services:
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
-      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
     container_name: m-cafe-frontend-dev-admin
     env_file:
@@ -52,7 +52,7 @@ services:
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
-      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
     container_name: m-cafe-frontend-dev-manager
     env_file:
@@ -100,7 +100,7 @@ services:
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
-      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
     container_name: m-cafe-backend-dev
     env_file:
