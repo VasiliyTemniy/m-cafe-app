@@ -7,7 +7,7 @@ import { AppDispatch } from '../store';
 
 import { ApplicationError, EditUserBody, isUserDT, LoginUserBody, NewUserBody, UserDT } from '@m-cafe-app/utils';
 
-import { handleAxiosError } from '../utils/errorHandler';
+import { handleAxiosError } from '../../utils/errorHandler';
 import { TFunction } from '../hooks/useTranslation';
 
 type SetUserAction = 
