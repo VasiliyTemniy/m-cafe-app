@@ -1,8 +1,8 @@
 import { ApplicationError, isUiSettingDT, SafeyAny, UiSettingDT } from '@m-cafe-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import { AppDispatch } from '../store';
-import uiSettingRouter from '../../shared/services/uiSetting';
-import { handleAxiosError } from '../../shared/utils/errorHandler';
+import uiSettingService from '../services/uiSetting';
+import { handleAxiosError } from '../../utils/errorHandler';
 import { sharedSettingsSliceBase } from '../../shared/reducers/settingsReducer';
 import type { SettingsState } from '../../shared/reducers/settingsReducer';
 import { TFunction } from 'src/shared/hooks/useTranslation';
@@ -37,7 +37,7 @@ export const { setLanguage, setUiSettings, updUiSetting } = settingsSlice.action
 export const sendUpdUiSettings = (updUiSettings: UiSettingDT[], t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const uiSettings = await uiSettingRouter.updateManyUiSettings(updUiSettings);
+      const uiSettings = await uiSettingService.updateManyUiSettings(updUiSettings);
       if (!Array.isArray(uiSettings)) throw new ApplicationError('Server has sent wrong data', { current: uiSettings });
       for (const uiSetting of uiSettings) {
         if (!isUiSettingDT(uiSetting)) throw new ApplicationError('Server has sent wrong data', { all: uiSettings, current: uiSetting as SafeyAny });

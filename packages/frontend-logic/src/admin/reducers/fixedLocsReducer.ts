@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { handleAxiosError } from '../../shared/utils/errorHandler';
+import { handleAxiosError } from '../../utils/errorHandler';
 import { AppDispatch } from '../store';
-import fixedLocRouter from '../../shared/services/fixedLoc';
+import fixedLocService from '../services/fixedLoc';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
 import { sharedFixedLocSliceBase } from '../../shared/reducers/fixedLocsReducer';
 import type { FixedLocState } from '../../shared/reducers/fixedLocsReducer';
@@ -37,7 +37,7 @@ export const { setFixedLocs, updFixedLoc } = fixedLocSlice.actions;
 export const sendUpdFixedLocs = (updLocs: FixedLocDT[], t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const fixedLocs = await fixedLocRouter.updateManyLocs(updLocs);
+      const fixedLocs = await fixedLocService.updateManyLocs(updLocs);
       if (!Array.isArray(fixedLocs)) throw new ApplicationError('Server has sent wrong data', { current: fixedLocs });
       for (const fixedLoc of fixedLocs) {
         if (!isFixedLocDT(fixedLoc)) throw new ApplicationError('Server has sent wrong data', { all: fixedLocs, current: fixedLoc as SafeyAny });
