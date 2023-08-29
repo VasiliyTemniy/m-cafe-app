@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { NewUiSettingBody, EditUiSettingBody, EditManyUiSettingBody, UiSettingDT } from '@m-cafe-app/utils';
-import { RequestOptions } from '../types/requestOptions';
+import { RequestOptions } from '../../types/requestOptions';
 
 /**
  * Should not be used. All ui settings must be initialized on backend and only updated by admin

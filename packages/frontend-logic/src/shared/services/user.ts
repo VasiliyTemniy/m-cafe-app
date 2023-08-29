@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { NewUserBody, LoginUserBody, EditUserBody } from '@m-cafe-app/utils';
-import { RequestOptions } from '../types/requestOptions';
+import { RequestOptions } from '../../types/requestOptions';
 
 const createUser = async (newUser: NewUserBody, options: RequestOptions) => {
 
