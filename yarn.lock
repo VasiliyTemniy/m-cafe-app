@@ -2464,6 +2464,7 @@ __metadata:
   resolution: "@m-cafe-app/db@workspace:packages/db"
   dependencies:
     "@m-cafe-app/shared-backend-deps": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     typescript: ~5.1.6
   languageName: unknown
   linkType: soft
@@ -2472,6 +2473,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/frontend-logic@workspace:packages/frontend-logic"
   dependencies:
+    "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-frontend-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     typescript: ~5.1.6
@@ -2488,11 +2490,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@m-cafe-app/shared-deps@workspace:^, @m-cafe-app/shared-deps@workspace:packages/shared-deps":
+"@m-cafe-app/shared-constants@workspace:^, @m-cafe-app/shared-constants@workspace:packages/shared-constants":
   version: 0.0.0-use.local
-  resolution: "@m-cafe-app/shared-deps@workspace:packages/shared-deps"
+  resolution: "@m-cafe-app/shared-constants@workspace:packages/shared-constants"
   dependencies:
     dotenv: ^16.3.1
+    typescript: ~5.1.6
   languageName: unknown
   linkType: soft
 
@@ -10435,7 +10438,7 @@ __metadata:
   dependencies:
     "@m-cafe-app/db": "workspace:^"
     "@m-cafe-app/shared-backend-deps": "workspace:^"
-    "@m-cafe-app/shared-deps": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     "@types/bcryptjs": ^2.4.2
@@ -10481,7 +10484,7 @@ __metadata:
   resolution: "m-cafe-frontend@workspace:services/frontend"
   dependencies:
     "@m-cafe-app/frontend-logic": "workspace:^"
-    "@m-cafe-app/shared-deps": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
     "@m-cafe-app/shared-frontend-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
@@ -10518,7 +10521,7 @@ __metadata:
     "@babel/preset-env": ^7.22.9
     "@expo/metro-config": ^0.10.7
     "@expo/webpack-config": ^18.1.2
-    "@m-cafe-app/shared-deps": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
     "@m-cafe-app/shared-frontend-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
