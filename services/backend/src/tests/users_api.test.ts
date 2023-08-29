@@ -20,6 +20,10 @@ import { Session } from "../redis/Session";
 import { ValidationError } from 'sequelize';
 import {
   connectToDatabase,
+  Address,
+  UserAddress
+} from "@m-cafe-app/db";
+import {
   dateRegExp,
   emailRegExp,
   maxEmailLen,
@@ -34,10 +38,8 @@ import {
   minUsernameLen,
   nameRegExp,
   phonenumberRegExp,
-  usernameRegExp,
-  Address,
-  UserAddress
-} from "@m-cafe-app/db";
+  usernameRegExp
+} from "@m-cafe-app/shared-constants";
 import {
   EditUserBody,
   NewAddressBody,

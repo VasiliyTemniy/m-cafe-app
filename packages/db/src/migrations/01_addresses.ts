@@ -27,7 +27,7 @@ import {
   minStreetLen,
   regionRegExp,
   streetRegExp
-} from '../constants.js';
+} from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('addresses', {

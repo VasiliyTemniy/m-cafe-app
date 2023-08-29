@@ -51,6 +51,9 @@ export const dateRegExp = process.env.DATE_REGEXP
   : /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/;
 
 
+export const passwordRegExp = process.env.NAME_REGEXP
+  ? new RegExp(process.env.NAME_REGEXP)
+  : /^(?=.*[0-9!@#$%^&*])[a-zA-Z0-9!@#$%^&*]*$/;
 export const minPasswordLen = process.env.PASSWORD_MINLEN
   ? Number(process.env.PASSWORD_MINLEN)
   : 5;
