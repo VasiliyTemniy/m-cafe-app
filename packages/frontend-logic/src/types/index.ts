@@ -1,1 +1,2 @@
-export * from './requestOptions';
+export * from './RequestOptions';
+export * from './LayoutComponentProps';
