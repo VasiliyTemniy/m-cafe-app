@@ -37,6 +37,7 @@
           }
         ],
         "@typescript-eslint/no-explicit-any": 1,
+        "no-useless-escape": 0,
         "no-case-declarations": 0,
         "react/prop-types": 0,
         "react/react-in-jsx-scope": 0
