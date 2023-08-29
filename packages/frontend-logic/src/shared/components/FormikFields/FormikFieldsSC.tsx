@@ -9,6 +9,7 @@ import type {
 } from "../../../types";
 
 type FormikTextFieldProps = FieldHookConfig<string> & {
+  label?: string,
   TextFieldLC: React.FC<TextFieldLCProps>
 };
 
@@ -23,6 +24,7 @@ export const FormikTextFieldSC = ({ disabled = false, TextFieldLC, ...props }: F
   return(
     <TextFieldLC
       placeholder={props.placeholder}
+      label={props.label}
       type={props.type}
       name={field.name}
       value={field.value}
@@ -39,6 +41,7 @@ type FormikSelectFieldProps = FieldHookConfig<string> & {
   options: string[],
   tNode?: string,
   svgUrl: string,
+  label?: string,
   SelectFieldLC: React.FC<SelectFieldLCProps>
 };
 
@@ -57,6 +60,7 @@ export const FormikSelectFieldSC = ({ disabled = false, SelectFieldLC, ...props 
   return(
     <SelectFieldLC
       placeholder={props.placeholder}
+      label={props.label}
       type={props.type}
       name={field.name}
       value={field.value}
@@ -74,6 +78,7 @@ export const FormikSelectFieldSC = ({ disabled = false, SelectFieldLC, ...props 
 
 type FormikTextAreaFieldProps = FieldHookConfig<string> & {
   maxrows: number,
+  label?: string,
   TextAreaFieldLC: React.FC<TextAreaFieldLCProps>
 };
 
@@ -88,6 +93,7 @@ export const FormikTextAreaFieldSC = ({ disabled = false, TextAreaFieldLC, ...pr
   return(
     <TextAreaFieldLC
       placeholder={props.placeholder}
+      label={props.label}
       name={field.name}
       value={field.value}
       onChange={field.onChange}
@@ -101,6 +107,7 @@ export const FormikTextAreaFieldSC = ({ disabled = false, TextAreaFieldLC, ...pr
 
 type FormikDateFieldProps = FieldHookConfig<string> & {
   svgUrl: string,
+  label?: string,
   DateFieldLC: React.FC<DateFieldLCProps>
 };
 
@@ -115,6 +122,7 @@ export const FormikDateFieldSC = ({ disabled = false, DateFieldLC, ...props }: F
   return(
     <DateFieldLC
       placeholder={props.placeholder}
+      label={props.label}
       name={field.name}
       value={field.value}
       onChange={field.onChange}
@@ -128,6 +136,7 @@ export const FormikDateFieldSC = ({ disabled = false, DateFieldLC, ...props }: F
 
 type FormikTimeFieldProps = FieldHookConfig<string> & {
   svgUrl: string,
+  label?: string,
   TimeFieldLC: React.FC<TimeFieldLCProps>
 };
 
@@ -142,6 +151,7 @@ export const FormikTimeFieldSC = ({ disabled = false, TimeFieldLC, ...props }: F
   return(
     <TimeFieldLC
       placeholder={props.placeholder}
+      label={props.label}
       name={field.name}
       value={field.value}
       onChange={field.onChange}
