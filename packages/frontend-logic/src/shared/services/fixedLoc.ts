@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NewFixedLocBody, EditFixedLocBody, FixedLocDT, EditManyFixedLocBody } from '@m-cafe-app/utils';
+import type { NewFixedLocBody, EditFixedLocBody, FixedLocDT, EditManyFixedLocBody } from '@m-cafe-app/utils';
 import { RequestOptions } from '../../types/requestOptions';
 
 /**

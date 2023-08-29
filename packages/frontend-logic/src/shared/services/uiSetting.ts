@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NewUiSettingBody, EditUiSettingBody, EditManyUiSettingBody, UiSettingDT } from '@m-cafe-app/utils';
+import type { NewUiSettingBody, EditUiSettingBody, EditManyUiSettingBody, UiSettingDT } from '@m-cafe-app/utils';
 import { RequestOptions } from '../../types/requestOptions';
 
 /**
