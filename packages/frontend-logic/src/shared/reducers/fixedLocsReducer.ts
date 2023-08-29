@@ -4,6 +4,7 @@ import { AppDispatch } from '../store';
 import fixedLocRouter from '../services/fixedLoc';
 import { RequestOptions } from '../../types';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
+import { TFunction } from '../hooks/useTranslation';
 
 type SetFixedLocAction = {
   payload: {
@@ -31,7 +32,7 @@ const fixedLocSlice = createSlice({
 
 export const { setFixedLocs } = fixedLocSlice.actions;
 
-export const initFixedLocs = (options: RequestOptions) => {
+export const initFixedLocs = (options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       const fixedLocs = await fixedLocRouter.getLocs(options);
@@ -41,7 +42,7 @@ export const initFixedLocs = (options: RequestOptions) => {
       }
       dispatch(setFixedLocs({ locs: fixedLocs }));
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };

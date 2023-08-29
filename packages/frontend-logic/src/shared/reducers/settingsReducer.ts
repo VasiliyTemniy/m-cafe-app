@@ -4,6 +4,7 @@ import { RequestOptions } from '../../types';
 import { AppDispatch } from '../store';
 import uiSettingRouter from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
+import { TFunction } from '../hooks/useTranslation';
 
 
 type SettingsActionSetLanguage = { payload: { language: 'main' | 'sec' | 'alt' } };
@@ -34,7 +35,7 @@ const settingsSlice = createSlice({
 
 export const { setLanguage, setUiSettings } = settingsSlice.actions;
 
-export const initUiSettings = (options: RequestOptions) => {
+export const initUiSettings = (options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       const uiSettings = await uiSettingRouter.getUiSettings(options);
@@ -44,7 +45,7 @@ export const initUiSettings = (options: RequestOptions) => {
       }
       dispatch(setUiSettings({ uiSettings }));
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };

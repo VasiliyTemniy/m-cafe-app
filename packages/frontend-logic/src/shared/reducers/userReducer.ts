@@ -9,6 +9,7 @@ import { ApplicationError, EditUserBody, isUserDT, LoginUserBody, NewUserBody, U
 
 import { handleAxiosError } from '../../utils/errorHandler';
 import { RequestOptions } from '../../types';
+import { TFunction } from '../hooks/useTranslation';
 
 type SetUserAction = 
   | {
@@ -42,60 +43,74 @@ const userSlice = createSlice({
 
 export const { setUser, logout } = userSlice.actions;
 
-export const sendNewUser = (newUser: NewUserBody, options: RequestOptions) => {
+export const sendNewUser = (newUser: NewUserBody, options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       await userService.createUser(newUser, options);
-      await dispatch(sendLogin({ phonenumber: newUser.phonenumber, password: newUser.password }, options));
+      await dispatch(sendLogin({
+        phonenumber: newUser.phonenumber,
+        password: newUser.password
+      },
+      {
+        apiBaseUrl: options.apiBaseUrl
+      },
+      t));
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };
 
-export const sendUpdateUser = (updUser: EditUserBody, userId: number, options: RequestOptions) => {
+export const sendUpdateUser = (updUser: EditUserBody, userId: number, options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       await userService.updateUser(updUser, userId, options);
-      await dispatch(sendLogin({ phonenumber: updUser.phonenumber, password: updUser.password }, options));
+      await dispatch(sendLogin({
+        phonenumber: updUser.phonenumber,
+        password: updUser.password
+      },
+      {
+        apiBaseUrl: options.apiBaseUrl
+      },
+      t));
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };
 
-export const sendLogin = (credentials: LoginUserBody, options: RequestOptions) => {
+export const sendLogin = (credentials: LoginUserBody, options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       const user = await userService.login(credentials, options);
       if (!isUserDT(user)) throw new ApplicationError('Server has sent wrong data', { current: user });
       dispatch(setUser(user));
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };
 
-export const sendLogout = (options: RequestOptions) => {
+export const sendLogout = (options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       await userService.logout(options);
       dispatch(logout);
       window.location.reload();
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };
 
-export const sendRefreshToken = (options: RequestOptions) => {
+export const sendRefreshToken = (options: RequestOptions, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       const user = await userService.refreshToken(options);
       if (!isUserDT(user)) throw new ApplicationError('Server has sent wrong data', { current: user });
       dispatch(setUser(user));
     } catch (e: unknown) {
-      dispatch(handleAxiosError(e));
+      dispatch(handleAxiosError(e, t));
     }
   };
 };
