@@ -1,6 +1,3 @@
-export const possibleUserRights = ['user', 'manager', 'admin', 'disabled'];
-
-
 export const delayedStatusMS = {
   accepted: process.env.DELAYED_STATUS_MS_ACCEPTED
     ? Number(process.env.DELAYED_STATUS_MS_ACCEPTED)
