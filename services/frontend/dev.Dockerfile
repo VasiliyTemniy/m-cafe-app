@@ -61,6 +61,8 @@ FROM copy-stage-front as run-stage-front-customer
 
 RUN rm -rf services/frontend/admin
 RUN rm -rf services/frontend/manager
+RUN rm -rf packages/frontend-logic/admin
+RUN rm -rf packages/frontend-logic/manager
 
 RUN yarn run prepare:frontend
 
@@ -68,13 +70,21 @@ CMD ["yarn", "run", "dev:frontend:customer"]
 
 FROM copy-stage-front as run-stage-front-admin
 
+RUN rm -rf services/frontend/customer
+RUN rm -rf services/frontend/manager
+RUN rm -rf packages/frontend-logic/customer
+RUN rm -rf packages/frontend-logic/manager
+
 RUN yarn run prepare:frontend
 
 CMD ["yarn", "run", "dev:frontend:admin"]
 
 FROM copy-stage-front as run-stage-front-manager
 
+RUN rm -rf services/frontend/customer
 RUN rm -rf services/frontend/admin
+RUN rm -rf packages/frontend-logic/customer
+RUN rm -rf packages/frontend-logic/admin
 
 RUN yarn run prepare:frontend
 
