@@ -1,19 +1,9 @@
 import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import fixedLocsReducer from './reducers/fixedLocsReducer';
-import notificationsReducer from './reducers/notificationsReducer';
-import settingsReducer from './reducers/settingsReducer';
-import userReducer from './reducers/userReducer';
-
-export const customerReducers = {
-  notifications: notificationsReducer,
-  user: userReducer,
-  fixedLocs: fixedLocsReducer,
-  settings: settingsReducer
-};
+import { sharedReducers } from '../shared/store';
 
 const store = configureStore({
   reducer: {
-    ...customerReducers
+    ...sharedReducers
   },
 });
 

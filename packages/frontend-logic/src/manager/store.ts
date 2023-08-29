@@ -1,9 +1,9 @@
 import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import { customerReducers } from '../customer/store';
+import { sharedReducers } from '../shared/store';
 
 const store = configureStore({
   reducer: {
-    ...customerReducers
+    ...sharedReducers
   },
 });
 

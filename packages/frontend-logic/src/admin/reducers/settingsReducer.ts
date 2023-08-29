@@ -2,10 +2,10 @@ import { ApplicationError, isUiSettingDT, SafeyAny, UiSettingDT } from '@m-cafe-
 import { createSlice } from '@reduxjs/toolkit';
 import { RequestOptions } from '../../types';
 import { AppDispatch } from '../store';
-import uiSettingRouter from '../../services/uiSetting';
+import uiSettingRouter from '../../shared/services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
-import { customerSettingsSliceBase } from '../../customer/reducers/settingsReducer';
-import type { SettingsState } from '../../customer/reducers/settingsReducer';
+import { sharedSettingsSliceBase } from '../../shared/reducers/settingsReducer';
+import type { SettingsState } from '../../shared/reducers/settingsReducer';
 
 type UpdUiSettingAction = {
   payload: {
@@ -16,16 +16,16 @@ type UpdUiSettingAction = {
 export type { SettingsState };
 
 /**
- * Slice taken from customer is appended with admin-specific reducers
+ * Slice taken from shared is appended with admin-specific reducers
  */
 const settingsSlice = createSlice({
-  ...customerSettingsSliceBase,
+  ...sharedSettingsSliceBase,
   reducers: {
     updUiSetting(state: SettingsState, action: UpdUiSettingAction) {
       const newUiSettings = state.uiSettings.map(uiSetting => uiSetting.id === action.payload.uiSetting.id ? action.payload.uiSetting : uiSetting);
       return { ...state, uiSettings: newUiSettings };
     },
-    ...customerSettingsSliceBase.reducers
+    ...sharedSettingsSliceBase.reducers
   }
 });
 
@@ -48,5 +48,7 @@ export const sendUpdUiSettings = (updUiSettings: UiSettingDT[], options: Request
     }
   };
 };
+
+export { initUiSettings } from '../../shared/reducers/settingsReducer';
 
 export default settingsSlice.reducer;

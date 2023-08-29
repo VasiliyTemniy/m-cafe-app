@@ -2,7 +2,7 @@ import { ApplicationError, isUiSettingDT, SafeyAny, UiSettingDT } from '@m-cafe-
 import { createSlice } from '@reduxjs/toolkit';
 import { RequestOptions } from '../../types';
 import { AppDispatch } from '../store';
-import uiSettingRouter from '../../services/uiSetting';
+import uiSettingRouter from '../../shared/services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
 
 
@@ -15,7 +15,7 @@ export type SettingsState = { uiSettings: UiSettingDT[], language: 'main' | 'sec
 
 const initialState: SettingsState = { uiSettings: [], language: 'main' };
 
-export const customerSettingsSliceBase = {
+export const sharedSettingsSliceBase = {
   name: 'settings',
   initialState,
   reducers: {
@@ -29,7 +29,7 @@ export const customerSettingsSliceBase = {
 };
 
 const settingsSlice = createSlice({
-  ...customerSettingsSliceBase
+  ...sharedSettingsSliceBase
 });
 
 export const { setLanguage, setUiSettings } = settingsSlice.actions;

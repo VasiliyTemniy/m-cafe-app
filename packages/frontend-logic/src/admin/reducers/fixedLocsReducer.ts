@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { AppDispatch } from '../store';
-import fixedLocRouter from '../../services/fixedLoc';
+import fixedLocRouter from '../../shared/services/fixedLoc';
 import { RequestOptions } from '../../types';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
-import { customerFixedLocSliceBase } from '../../customer/reducers/fixedLocsReducer';
-import type { FixedLocState } from '../../customer/reducers/fixedLocsReducer';
+import { sharedFixedLocSliceBase } from '../../shared/reducers/fixedLocsReducer';
+import type { FixedLocState } from '../../shared/reducers/fixedLocsReducer';
 
 type UpdFixedLocAction = {
   payload: {
@@ -16,16 +16,16 @@ type UpdFixedLocAction = {
 export type { FixedLocState };
 
 /**
- * Slice taken from customer is appended with admin-specific reducers
+ * Slice taken from shared is appended with admin-specific reducers
  */
 const fixedLocSlice = createSlice({
-  ...customerFixedLocSliceBase,
+  ...sharedFixedLocSliceBase,
   reducers: {
     updFixedLoc(state: FixedLocState, action: UpdFixedLocAction) {
       const newState = state.map(loc => loc.id === action.payload.loc.id ? action.payload.loc : loc);
       return { ...newState };
     },
-    ...customerFixedLocSliceBase.reducers
+    ...sharedFixedLocSliceBase.reducers
   }
 });
 
@@ -49,6 +49,6 @@ export const sendUpdFixedLocs = (updLocs: FixedLocDT[], options: RequestOptions)
   };
 };
 
-export { initFixedLocs } from '../../customer/reducers/fixedLocsReducer';
+export { initFixedLocs } from '../../shared/reducers/fixedLocsReducer';
 
 export default fixedLocSlice.reducer;
