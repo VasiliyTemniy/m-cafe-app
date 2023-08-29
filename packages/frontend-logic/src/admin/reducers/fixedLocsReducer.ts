@@ -3,7 +3,7 @@ import { handleAxiosError } from '../../utils/errorHandler';
 import { AppDispatch } from '../store';
 import fixedLocRouter from '../../services/fixedLoc';
 import { RequestOptions } from '../../types';
-import { ApplicationError, EditFixedLocBody, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
+import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
 import { customerFixedLocSliceBase } from '../../customer/reducers/fixedLocsReducer';
 import type { FixedLocState } from '../../customer/reducers/fixedLocsReducer';
 
@@ -31,10 +31,13 @@ const fixedLocSlice = createSlice({
 
 export const { setFixedLocs, updFixedLoc } = fixedLocSlice.actions;
 
-export const sendUpdFixedLoc = (updLoc: EditFixedLocBody, locId: number, options: RequestOptions) => {
+/**
+ * Updates many fixed locs in DB
+ */
+export const sendUpdFixedLocs = (updLocs: FixedLocDT[], options: RequestOptions) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const fixedLocs = await fixedLocRouter.updateLoc(updLoc, locId, options);
+      const fixedLocs = await fixedLocRouter.updateManyLocs(updLocs, options);
       if (!Array.isArray(fixedLocs)) throw new ApplicationError('Server has sent wrong data', { current: fixedLocs });
       for (const fixedLoc of fixedLocs) {
         if (!isFixedLocDT(fixedLoc)) throw new ApplicationError('Server has sent wrong data', { all: fixedLocs, current: fixedLoc as SafeyAny });
