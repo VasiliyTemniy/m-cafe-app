@@ -10,15 +10,18 @@ type SettingsActionSetLanguage = { payload: { language: 'main' | 'sec' | 'alt' }
 
 type SettingsActionSetUiSettings = { payload: { uiSettings: UiSettingDT[] } };
 
+type SettingsActionSetTheme = { payload: { theme: 'dark' | 'light' } };
+
 
 export type SettingsState = {
   uiSettings: {
     [key: string]: UiSettingDT[]
   },
+  theme: 'dark' | 'light',
   language: 'main' | 'sec' | 'alt'
 };
 
-const initialState: SettingsState = { uiSettings: {}, language: 'main' };
+const initialState: SettingsState = { uiSettings: {}, theme: 'light', language: 'main' };
 
 export const sharedSettingsSliceBase = {
   name: 'settings',
@@ -34,6 +37,9 @@ export const sharedSettingsSliceBase = {
         newUiSettingsState[namespace].push(uiSetting);
       }
       return { ...state, uiSettings: newUiSettingsState };
+    },
+    setTheme: (state: SettingsState, action: SettingsActionSetTheme): SettingsState => {
+      return { ...state, theme: action.payload.theme };
     }
   },  
 };
@@ -42,7 +48,7 @@ const settingsSlice = createSlice({
   ...sharedSettingsSliceBase
 });
 
-export const { setLanguage, setUiSettings } = settingsSlice.actions;
+export const { setLanguage, setUiSettings, setTheme } = settingsSlice.actions;
 
 export const initUiSettings = (t: TFunction) => {
   return async (dispatch: AppDispatch) => {
