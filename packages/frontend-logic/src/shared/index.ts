@@ -1,7 +1,15 @@
 import { frontendModule } from '../utils/config';
 
+/**
+ * Reducers section begin
+ */
+
 export { sendLogin, sendNewUser } from './reducers/userReducer';
 export { useTranslation } from './hooks/useTranslation';
+
+/**
+ * Reducers section end
+ */
 
 export const { useAppDispatch, useAppSelector } =
   frontendModule === 'admin' ? await import('../../src/admin') :
