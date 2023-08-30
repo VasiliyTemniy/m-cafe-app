@@ -39,9 +39,15 @@ export const { setFixedLocs, updFixedLoc } = fixedLocSlice.actions;
 /**
  * Updates many fixed locs in DB
  */
-export const sendUpdFixedLocs = (updLocs: FixedLocDT[], t: TFunction) => {
+export const sendUpdFixedLocs = (updLocsState: FixedLocState, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
+      const updLocs = [] as FixedLocDT[];
+      for (const namespace in updLocsState) {
+        for (const loc of updLocsState[namespace]) {
+          updLocs.push(loc);
+        }
+      }
       const fixedLocs = await fixedLocService.updateManyLocs(updLocs);
       if (!Array.isArray(fixedLocs)) throw new ApplicationError('Server has sent wrong data', { current: fixedLocs });
       for (const fixedLoc of fixedLocs) {
