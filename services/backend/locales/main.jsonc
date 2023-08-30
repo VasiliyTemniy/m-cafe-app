@@ -4,6 +4,16 @@
     "cart": {
       "mainStr": "Корзина",
       "secStr": "Cart"
+    },
+    "buttonLabel": {
+      "cancel": {
+        "mainStr": "Отмена",
+        "secStr": "Cancel"
+      },
+      "submit": {
+        "mainStr": "Подтвердить",
+        "secStr": "Submit"
+      }
     }
   }
 }

@@ -54,14 +54,6 @@
         "mainStr": "Дата рождения",
         "secStr": "Birthdate"
       },
-      "cancel": {
-        "mainStr": "Отмена",
-        "secStr": "Cancel"
-      },
-      "submit": {
-        "mainStr": "Подтвердить",
-        "secStr": "Submit"
-      },
       "toLogin": {
         "mainStr": "Логин",
         "secStr": "Login"
