@@ -2,20 +2,20 @@ import { Formik, Form } from "formik";
 import { useTranslation } from '../../index';
 import { loginValidationSchema } from "./validationSchemas";
 import { FormikTextFieldSC } from "../FormikFields";
-import type { TextFieldLCProps } from "../../../types";
+import type { CommonLCProps, TextFieldLCProps } from "../../../types";
 
 export type LoginFormValues = {
   credential: string,
   password: string
 };
 
-export interface LoginFormButtonsLCProps {
+export interface LoginFormButtonsLCProps extends CommonLCProps {
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void,
   onCancel: () => void,
   submitDisabled: boolean
 }
 
-export interface LoginFormLCProps {
+export interface LoginFormLCProps extends CommonLCProps {
   onSubmit: (values: LoginFormValues) => void,
   onCancel: () => void
 }

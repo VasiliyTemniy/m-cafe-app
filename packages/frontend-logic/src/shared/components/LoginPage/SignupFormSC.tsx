@@ -6,6 +6,7 @@ import { FormikTextFieldSC, FormikDateFieldSC } from "../FormikFields";
 import type {
   TextFieldLCProps,
   DateFieldLCProps,
+  CommonLCProps,
 } from "../../../types";
 
 
@@ -13,13 +14,13 @@ export type SignupFormValues = NewUserBody & {
   passwordConfirm: string
 };
 
-export interface SignupFormButtonsLCProps {
+export interface SignupFormButtonsLCProps extends CommonLCProps {
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void,
   onCancel: () => void,
   submitDisabled: boolean
 }
 
-export interface SignupFormLCProps {
+export interface SignupFormLCProps extends CommonLCProps {
   onSubmit: (values: SignupFormValues) => void,
   onCancel: () => void
 }

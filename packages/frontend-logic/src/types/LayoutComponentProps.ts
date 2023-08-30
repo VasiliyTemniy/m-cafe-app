@@ -12,6 +12,8 @@ export interface CommonLCProps {
   uiSettings?: {
     [key: string]: UiSettingDT[]
   };
+  label?: string;
+  tooltip?: string;
 }
 
 /**
@@ -20,7 +22,6 @@ export interface CommonLCProps {
 
 interface CommonFieldLCProps extends CommonLCProps {
   placeholder?: string;
-  label?: string;
   name: string;
   value: string;
   onChange: ChangeEventHandler<HTMLInputElement>;

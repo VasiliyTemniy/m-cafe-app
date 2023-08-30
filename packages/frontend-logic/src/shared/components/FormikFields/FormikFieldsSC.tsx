@@ -5,11 +5,11 @@ import type {
   TextAreaFieldLCProps,
   SelectFieldLCProps,
   DateFieldLCProps,
-  TimeFieldLCProps
+  TimeFieldLCProps,
+  CommonLCProps
 } from "../../../types";
 
-type FormikTextFieldProps = FieldHookConfig<string> & {
-  label?: string,
+type FormikTextFieldProps = FieldHookConfig<string> & CommonLCProps & {
   TextFieldLC: React.FC<TextFieldLCProps>
 };
 
@@ -30,18 +30,19 @@ export const FormikTextFieldSC = ({ disabled = false, TextFieldLC, ...props }: F
       value={field.value}
       onChange={field.onChange}
       onBlur={field.onBlur}
-      className={props.className}
+      classNameAddon={props.classNameAddon}
+      classNameOverride={props.classNameOverride}
       errorMessage={errorMessage}
       disabled={disabled}
+      tooltip={props.tooltip}
     />
   );
 };
 
-type FormikSelectFieldProps = FieldHookConfig<string> & {
+type FormikSelectFieldProps = FieldHookConfig<string> & CommonLCProps & {
   options: string[],
   tNode?: string,
   svgUrl: string,
-  label?: string,
   SelectFieldLC: React.FC<SelectFieldLCProps>
 };
 
@@ -67,18 +68,20 @@ export const FormikSelectFieldSC = ({ disabled = false, SelectFieldLC, ...props 
       onChange={field.onChange}
       onBlur={field.onBlur}
       svgUrl={props.svgUrl}
-      errorMessage={errorMessage}
-      disabled={disabled}
       options={props.options}
       tNode={props.tNode}
       onChooseOption={handleChooseOption}
+      classNameAddon={props.classNameAddon}
+      classNameOverride={props.classNameOverride}
+      errorMessage={errorMessage}
+      disabled={disabled}
+      tooltip={props.tooltip}
     />
   );
 };
 
-type FormikTextAreaFieldProps = FieldHookConfig<string> & {
+type FormikTextAreaFieldProps = FieldHookConfig<string> & CommonLCProps & {
   maxrows: number,
-  label?: string,
   TextAreaFieldLC: React.FC<TextAreaFieldLCProps>
 };
 
@@ -98,16 +101,18 @@ export const FormikTextAreaFieldSC = ({ disabled = false, TextAreaFieldLC, ...pr
       value={field.value}
       onChange={field.onChange}
       onBlur={field.onBlur}
+      maxrows={props.maxrows}
+      classNameAddon={props.classNameAddon}
+      classNameOverride={props.classNameOverride}
       errorMessage={errorMessage}
       disabled={disabled}
-      maxrows={props.maxrows}
+      tooltip={props.tooltip}
     />
   );
 };
 
-type FormikDateFieldProps = FieldHookConfig<string> & {
+type FormikDateFieldProps = FieldHookConfig<string> & CommonLCProps & {
   svgUrl: string,
-  label?: string,
   DateFieldLC: React.FC<DateFieldLCProps>
 };
 
@@ -128,15 +133,17 @@ export const FormikDateFieldSC = ({ disabled = false, DateFieldLC, ...props }: F
       onChange={field.onChange}
       onBlur={field.onBlur}
       svgUrl={props.svgUrl}
+      classNameAddon={props.classNameAddon}
+      classNameOverride={props.classNameOverride}
       errorMessage={errorMessage}
       disabled={disabled}
+      tooltip={props.tooltip}
     />
   );
 };
 
-type FormikTimeFieldProps = FieldHookConfig<string> & {
+type FormikTimeFieldProps = FieldHookConfig<string> & CommonLCProps & {
   svgUrl: string,
-  label?: string,
   TimeFieldLC: React.FC<TimeFieldLCProps>
 };
 
@@ -157,8 +164,11 @@ export const FormikTimeFieldSC = ({ disabled = false, TimeFieldLC, ...props }: F
       onChange={field.onChange}
       onBlur={field.onBlur}
       svgUrl={props.svgUrl}
+      classNameAddon={props.classNameAddon}
+      classNameOverride={props.classNameOverride}
       errorMessage={errorMessage}
       disabled={disabled}
+      tooltip={props.tooltip}
     />
   );
 };
