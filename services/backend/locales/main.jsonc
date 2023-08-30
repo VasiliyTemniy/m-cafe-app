@@ -14,6 +14,32 @@
         "mainStr": "Подтвердить",
         "secStr": "Submit"
       }
+    },
+    "languageNames": {
+      "main": {
+        "mainStr": "РУ",
+        "secStr": "RU"
+      },
+      "sec": {
+        "mainStr": "EN",
+        "secStr": "EN"
+      },
+      "alt": {
+        "mainStr": "РЕЗЕРВ",
+        "secStr": "RESERVE"
+      },
+      "mainFull": {
+        "mainStr": "Русский",
+        "secStr": "Russian"
+      },
+      "secFull": {
+        "mainStr": "Английский",
+        "secStr": "English"
+      },
+      "altFull": {
+        "mainStr": "РЕЗЕРВ",
+        "secStr": "RESERVE"
+      }
     }
   }
 }
