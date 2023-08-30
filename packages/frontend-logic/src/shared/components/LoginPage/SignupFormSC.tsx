@@ -13,7 +13,7 @@ export type SignupFormValues = NewUserBody & {
   passwordConfirm: string
 };
 
-export interface SignupFormButtonLCProps {
+export interface SignupFormButtonsLCProps {
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void,
   onCancel: () => void,
   submitDisabled: boolean
@@ -28,7 +28,7 @@ export interface SignupFormSCProps extends SignupFormLCProps {
   TextFieldLC: React.FC<TextFieldLCProps>,
   DateFieldLC: React.FC<DateFieldLCProps>,
   dateSvgUrl: string,
-  SignupFormButtonsLC: React.FC<SignupFormButtonLCProps>
+  SignupFormButtonsLC: React.FC<SignupFormButtonsLCProps>
 }
 
 

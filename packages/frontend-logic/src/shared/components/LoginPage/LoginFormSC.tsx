@@ -9,7 +9,7 @@ export type LoginFormValues = {
   password: string
 };
 
-export interface LoginFormButtonLCProps {
+export interface LoginFormButtonsLCProps {
   onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void,
   onCancel: () => void,
   submitDisabled: boolean
@@ -22,7 +22,7 @@ export interface LoginFormLCProps {
 
 export interface LoginFormSCProps extends LoginFormLCProps {
   TextFieldLC: React.FC<TextFieldLCProps>,
-  LoginFormButtonsLC: React.FC<LoginFormButtonLCProps>
+  LoginFormButtonsLC: React.FC<LoginFormButtonsLCProps>
 }
 
 
