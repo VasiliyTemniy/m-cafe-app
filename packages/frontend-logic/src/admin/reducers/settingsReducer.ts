@@ -22,8 +22,18 @@ const settingsSlice = createSlice({
   ...sharedSettingsSliceBase,
   reducers: {
     updUiSetting(state: SettingsState, action: UpdUiSettingAction) {
-      const newUiSettings = state.uiSettings.map(uiSetting => uiSetting.id === action.payload.uiSetting.id ? action.payload.uiSetting : uiSetting);
-      return { ...state, uiSettings: newUiSettings };
+      const namespace = action.payload.uiSetting.name.split('.')[0];
+      const newNamespaceState = state.uiSettings[namespace].map(
+        uiSetting => uiSetting.id === action.payload.uiSetting.id ? action.payload.uiSetting : uiSetting
+      );
+      const newState = {
+        ...state,
+        uiSettings: {
+          [namespace]: newNamespaceState,
+          ...state.uiSettings
+        },
+      };
+      return { ...newState };
     },
     ...sharedSettingsSliceBase.reducers
   }

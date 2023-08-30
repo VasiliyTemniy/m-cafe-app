@@ -11,19 +11,29 @@ type SettingsActionSetLanguage = { payload: { language: 'main' | 'sec' | 'alt' }
 type SettingsActionSetUiSettings = { payload: { uiSettings: UiSettingDT[] } };
 
 
-export type SettingsState = { uiSettings: UiSettingDT[], language: 'main' | 'sec' | 'alt' };
+export type SettingsState = {
+  uiSettings: {
+    [key: string]: UiSettingDT[]
+  },
+  language: 'main' | 'sec' | 'alt'
+};
 
-const initialState: SettingsState = { uiSettings: [], language: 'main' };
+const initialState: SettingsState = { uiSettings: {}, language: 'main' };
 
 export const sharedSettingsSliceBase = {
   name: 'settings',
   initialState,
   reducers: {
     setLanguage: (state: SettingsState, action: SettingsActionSetLanguage): SettingsState => {
-      return { ...state, language: action.payload.language};
+      return { ...state, language: action.payload.language };
     },
     setUiSettings: (state: SettingsState, action: SettingsActionSetUiSettings): SettingsState => {
-      return { ...state, uiSettings: action.payload.uiSettings };
+      const newUiSettingsState = {} as { [key: string]: UiSettingDT[] };
+      for (const uiSetting of action.payload.uiSettings) {
+        const namespace = uiSetting.name.split('.')[0];
+        newUiSettingsState[namespace].push(uiSetting);
+      }
+      return { ...state, uiSettings: newUiSettingsState };
     }
   },  
 };
