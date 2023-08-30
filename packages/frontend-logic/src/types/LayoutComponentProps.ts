@@ -1,27 +1,18 @@
+import { UiSettingDT } from "@m-cafe-app/utils";
 import {
   CSSProperties,
   MouseEventHandler,
-  // Ref,
   ChangeEventHandler,
   FocusEventHandler
 } from "react";
 
-interface CommonLCProps {
-  className?: string;
+export interface CommonLCProps {
+  classNameOverride?: string;
+  classNameAddon?: string;
   id?: string;
   style?: CSSProperties;
+  uiSettings: UiSettingDT[];
 }
-
-// export interface ContainerProps extends CommonLayoutComponentProps {
-//   children: JSX.Element[] | JSX.Element;
-//   onClick?: MouseEventHandler;
-//   onMouseMove?: MouseEventHandler;
-//   onMouseDown?: MouseEventHandler;
-//   onMouseLeave?: MouseEventHandler;
-//   onMouseUp?: MouseEventHandler;
-//   ref?: Ref<HTMLDivElement>;
-// }
-
 
 /**
  * Input fields props start
