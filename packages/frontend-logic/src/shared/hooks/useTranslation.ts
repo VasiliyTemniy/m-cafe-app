@@ -9,7 +9,8 @@ export const useTranslation = (): { t: TFunction } => {
   const selectedLanguage = useAppSelector(state => state.settings.language);
 
   const t = useCallback((locName: string) => {
-    const translationLoc = useAppSelector(state => state.fixedLocs.find(loc => loc.name === locName));
+    const namespace = locName.split('.')[0];
+    const translationLoc = useAppSelector(state => state.fixedLocs[namespace].find(loc => loc.name === locName));
     if (!translationLoc) throw new ApplicationError(`No translation found for ${locName}`);
   
     const translation =

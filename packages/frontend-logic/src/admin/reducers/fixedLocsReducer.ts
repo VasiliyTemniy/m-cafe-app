@@ -22,7 +22,12 @@ const fixedLocSlice = createSlice({
   ...sharedFixedLocSliceBase,
   reducers: {
     updFixedLoc(state: FixedLocState, action: UpdFixedLocAction) {
-      const newState = state.map(loc => loc.id === action.payload.loc.id ? action.payload.loc : loc);
+      const namespace = action.payload.loc.name.split('.')[0];
+      const newNamespaceState = state[namespace].map(loc => loc.id === action.payload.loc.id ? action.payload.loc : loc);
+      const newState = {
+        ...state,
+        [namespace]: newNamespaceState,
+      };
       return { ...newState };
     },
     ...sharedFixedLocSliceBase.reducers

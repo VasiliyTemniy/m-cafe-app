@@ -11,16 +11,27 @@ type SetFixedLocAction = {
   };
 };
 
-export type FixedLocState = FixedLocDT[];
+/**
+ * Fixed locs are unnested to namespaces by first part until dot in loc.name
+ * key: string is namespace name
+ */
+export type FixedLocState = {
+  [key: string]: FixedLocDT[]
+};
 
-const initialState: FixedLocState = [];
+const initialState: FixedLocState = {};
 
 export const sharedFixedLocSliceBase = {
   name: 'fixedLocs',
   initialState,
   reducers: {
     setFixedLocs(state: FixedLocState, action: SetFixedLocAction) {
-      return { ...action.payload.locs };
+      const newState = {} as FixedLocState;
+      for (const loc of action.payload.locs) {
+        const namespace = loc.name.split('.')[0];
+        newState[namespace].push(loc);
+      }
+      return { ...newState };
     }
   }
 };
