@@ -1,6 +1,5 @@
 import { UiSettingDT } from "@m-cafe-app/utils";
 import {
-  CSSProperties,
   MouseEventHandler,
   ChangeEventHandler,
   FocusEventHandler
@@ -10,8 +9,9 @@ export interface CommonLCProps {
   classNameOverride?: string;
   classNameAddon?: string;
   id?: string;
-  style?: CSSProperties;
-  uiSettings: UiSettingDT[];
+  uiSettings?: {
+    [key: string]: UiSettingDT[]
+  };
 }
 
 /**
