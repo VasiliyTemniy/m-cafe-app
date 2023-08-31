@@ -3,9 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import { AppDispatch } from '../store';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
-import { sharedSettingsSliceBase } from '../../shared/reducers/settingsReducer';
-import type { SettingsState } from '../../shared/reducers/settingsReducer';
-import { TFunction } from 'src/shared/hooks/useTranslation';
+import { sharedSettingsSliceBase } from '../../shared/reducers';
+import type { SettingsState } from '../../shared/reducers';
+import { TFunction } from '../../shared/hooks';
 
 type UpdUiSettingAction = {
   payload: {

@@ -3,9 +3,9 @@ import { handleAxiosError } from '../../utils/errorHandler';
 import { AppDispatch } from '../store';
 import fixedLocService from '../services/fixedLoc';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
-import { sharedFixedLocSliceBase } from '../../shared/reducers/fixedLocsReducer';
-import type { FixedLocState } from '../../shared/reducers/fixedLocsReducer';
-import { TFunction } from 'src/shared/hooks/useTranslation';
+import { sharedFixedLocSliceBase } from '../../shared/reducers';
+import type { FixedLocState } from '../../shared/reducers';
+import { TFunction } from '../../shared/hooks';
 
 type UpdFixedLocAction = {
   payload: {
