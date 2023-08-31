@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import { ApplicationError } from "@m-cafe-app/utils";
-import { useAppSelector } from "../../customer/hooks/reduxHooks";
+import { useAppSelector } from "../index";
 
 export type TFunction = (locName: string) => string;
 
@@ -11,7 +10,7 @@ export const useTranslation = (): { t: TFunction } => {
   const t = useCallback((locName: string) => {
     const namespace = locName.split('.')[0];
     const translationLoc = useAppSelector(state => state.fixedLocs[namespace].find(loc => loc.name === locName));
-    if (!translationLoc) throw new ApplicationError(`No translation found for ${locName}`);
+    if (!translationLoc) return (`No translation found for ${locName}!`);
   
     const translation =
       selectedLanguage === 'alt' && translationLoc.locString.altStr ? translationLoc.locString.altStr :
