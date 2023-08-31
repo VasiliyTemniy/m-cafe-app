@@ -1,19 +1,12 @@
-import { ChangeEventHandler, FocusEventHandler, useRef, FocusEvent } from "react";
-import Container from "../Container";
+import { useRef, FocusEvent } from "react";
+import { ContainerLC } from '../ContainerLC';
+import {
+  TextAreaFieldLCProps,
+  ContainerSC,
+  TooltipSC,
+} from '@m-cafe-app/frontend-logic/src/shared/components';
 
-interface TextAreaFieldProps {
-  placeholder?: string;
-  name: string;
-  value: string;
-  onChange: ChangeEventHandler<HTMLTextAreaElement>;
-  onBlur: FocusEventHandler<HTMLTextAreaElement>;
-  className?: string;
-  errorMessage?: string;
-  disabled?: boolean;
-  maxrows: number
-}
-
-const TextAreaField = ({
+export const TextAreaFieldLC = ({
   placeholder,
   name,
   value,
@@ -22,8 +15,11 @@ const TextAreaField = ({
   className,
   errorMessage,
   disabled = false,
-  maxrows
-}: TextAreaFieldProps) => {
+  maxrows,
+  tooltip,
+  style,
+  specific
+}: TextAreaFieldLCProps) => {
 
   const areaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -57,9 +53,12 @@ const TextAreaField = ({
     }px`;
   };
 
+  const inputPlaceholder = specific?.labelAsPlaceholder
+    ? undefined
+    : placeholder;
 
   return (
-    <Container className='text-area input-wrapper'>
+    <ContainerSC classNameAddon='input-wrapper text-area' ContainerLC={ContainerLC}>
       <textarea
         id={name}
         name={name}
@@ -67,6 +66,7 @@ const TextAreaField = ({
         value={value}
         onChange={onChange}
         onBlur={handleBlur}
+        style={style}
         disabled={disabled}
         ref={areaRef}
         rows={1}
@@ -74,12 +74,26 @@ const TextAreaField = ({
         autoCorrect='off'
         autoCapitalize='off'
         spellCheck='false'
+        placeholder={inputPlaceholder}
       />
       <label htmlFor={name} className={labelBugFix}>{labelText}</label>
-      <div className='bar'/>
-    </Container>
+      <>
+        {
+          specific?.useBarBelow &&
+          <div className='bar'/>
+        }
+        {
+          !specific?.labelAsPlaceholder && errorMessage &&
+          <div className='error'>
+            {errorMessage}
+          </div>
+        }
+        {
+          tooltip &&
+          <TooltipSC text={tooltip} ContainerLC={ContainerLC}/>
+        }
+      </>
+    </ContainerSC>
   );
 
 };
-
-export default TextAreaField;
