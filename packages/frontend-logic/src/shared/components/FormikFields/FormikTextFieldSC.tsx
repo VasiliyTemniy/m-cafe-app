@@ -13,7 +13,7 @@ export interface TextFieldLCProps extends CommonFieldLCProps {
   type?: string;
 }
 
-const FormikTextFieldSC = ({ disabled = false, TextFieldLC, ...props }: FormikTextFieldProps) => {
+export const FormikTextFieldSC = ({ disabled = false, TextFieldLC, ...props }: FormikTextFieldProps) => {
   
   const [field, meta] = useField(props);
 
@@ -50,5 +50,3 @@ const FormikTextFieldSC = ({ disabled = false, TextFieldLC, ...props }: FormikTe
     />
   );
 };
-
-export default FormikTextFieldSC;
