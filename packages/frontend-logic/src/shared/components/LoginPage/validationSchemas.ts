@@ -1,4 +1,4 @@
-import type { TFunction } from '../../hooks/useTranslation';
+import type { TFunction } from '../../hooks';
 import * as yup from 'yup';
 import {
   minUsernameLen,
