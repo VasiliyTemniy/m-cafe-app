@@ -1,14 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import userService from '../services/user';
-
 import { AppDispatch } from '../store';
-
 // import { showNotification } from './notificationsReducer';
-
 import { ApplicationError, EditUserBody, isUserDT, LoginUserBody, NewUserBody, UserDT } from '@m-cafe-app/utils';
-
 import { handleAxiosError } from '../../utils/errorHandler';
-import { TFunction } from '../hooks/useTranslation';
+import { TFunction } from '../hooks';
 
 type SetUserAction = 
   | {
