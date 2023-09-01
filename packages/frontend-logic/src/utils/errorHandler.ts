@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import { TFunction } from "src/shared/hooks/useTranslation";
+import { TFunction } from "../shared/hooks";
 import { showNotification } from "../shared/reducers/notificationsReducer";
 
 export const handleAxiosError = (
