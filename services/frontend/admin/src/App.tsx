@@ -1,7 +1,7 @@
 import { useAppSelector } from '@m-cafe-app/frontend-logic/src/admin/hooks/reduxHooks';
 import AppRoutes from './AppRoutes';
 // import LoginPage from '../../shared/components/LoginPage';
-import Container from '../../shared/components/basic/Container';
+import { ContainerLC } from '../../shared/components/basic/ContainerLC';
 
 
 
@@ -16,10 +16,10 @@ const App = () => {
       <>
         {/* <Header /> */}
         {/* <Notification/> */}
-        <Container className='window-container' id='main-container'>
+        <ContainerLC className='window-container' id='main-container'>
           {/* <LoginPage/> */}
           <AppRoutes/>
-        </Container>
+        </ContainerLC>
         {/* <Footer /> */}
       </>
     );
@@ -28,10 +28,10 @@ const App = () => {
       <>
         {/* <Header /> */}
         {/* <Menu /> */}
-        <Container className='main-container' id='main-container'>
+        <ContainerLC className='main-container' id='main-container'>
           {/* <Notification/> */}
           <AppRoutes/>
-        </Container>
+        </ContainerLC>
         {/* <Footer /> */}
       </>
     );
