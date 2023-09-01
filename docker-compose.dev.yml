@@ -17,13 +17,22 @@ services:
       - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
       # Isolated frontend part to prevent reload on another target end
       # Isolated frontend-logic part to prevent reload on another target begin
-      - ./packages/frontend-logic/src/customer:/usr/src/app/packages/frontend-logic/src/customer
-      - ./packages/frontend-logic/src/shared:/usr/src/app/packages/frontend-logic/src/shared
-      - ./packages/frontend-logic/src/types:/usr/src/app/packages/frontend-logic/src/types
-      - ./packages/frontend-logic/src/utils:/usr/src/app/packages/frontend-logic/src/utils
+      - ./packages/frontend-logic/customer:/usr/src/app/packages/frontend-logic/customer
+      - ./packages/frontend-logic/shared:/usr/src/app/packages/frontend-logic/shared
+      - ./packages/frontend-logic/types:/usr/src/app/packages/frontend-logic/types
+      - ./packages/frontend-logic/utils:/usr/src/app/packages/frontend-logic/utils
       - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
       - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
       # Isolated frontend-logic part to prevent reload on another target end
+      # Isolated frontend-components part to prevent reload on another target begin
+      - ./packages/frontend-components/customer:/usr/src/app/packages/frontend-components/customer
+      - ./packages/frontend-components/shared:/usr/src/app/packages/frontend-components/shared
+      - ./packages/frontend-components/scBasic:/usr/src/app/packages/frontend-components/scBasic
+      - ./packages/frontend-components/lcWeb:/usr/src/app/packages/frontend-components/lcWeb
+      - ./packages/frontend-components/lcMobile:/usr/src/app/packages/frontend-components/lcMobile
+      - ./packages/frontend-components/package.json:/usr/src/app/packages/frontend-components/package.json
+      - ./packages/frontend-components/tsconfig.json:/usr/src/app/packages/frontend-components/tsconfig.json
+      # Isolated frontend-components part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
@@ -50,13 +59,22 @@ services:
       - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
       # Isolated frontend part to prevent reload on another target end
       # Isolated frontend-logic part to prevent reload on another target begin
-      - ./packages/frontend-logic/src/admin:/usr/src/app/packages/frontend-logic/src/admin
-      - ./packages/frontend-logic/src/shared:/usr/src/app/packages/frontend-logic/src/shared
-      - ./packages/frontend-logic/src/types:/usr/src/app/packages/frontend-logic/src/types
-      - ./packages/frontend-logic/src/utils:/usr/src/app/packages/frontend-logic/src/utils
+      - ./packages/frontend-logic/admin:/usr/src/app/packages/frontend-logic/admin
+      - ./packages/frontend-logic/shared:/usr/src/app/packages/frontend-logic/shared
+      - ./packages/frontend-logic/types:/usr/src/app/packages/frontend-logic/types
+      - ./packages/frontend-logic/utils:/usr/src/app/packages/frontend-logic/utils
       - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
       - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
       # Isolated frontend-logic part to prevent reload on another target end
+      # Isolated frontend-components part to prevent reload on another target begin
+      - ./packages/frontend-components/admin:/usr/src/app/packages/frontend-components/admin
+      - ./packages/frontend-components/shared:/usr/src/app/packages/frontend-components/shared
+      - ./packages/frontend-components/scBasic:/usr/src/app/packages/frontend-components/scBasic
+      - ./packages/frontend-components/lcWeb:/usr/src/app/packages/frontend-components/lcWeb
+      - ./packages/frontend-components/lcMobile:/usr/src/app/packages/frontend-components/lcMobile
+      - ./packages/frontend-components/package.json:/usr/src/app/packages/frontend-components/package.json
+      - ./packages/frontend-components/tsconfig.json:/usr/src/app/packages/frontend-components/tsconfig.json
+      # Isolated frontend-components part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
@@ -83,13 +101,22 @@ services:
       - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
       # Isolated frontend part to prevent reload on another target end
       # Isolated frontend-logic part to prevent reload on another target begin
-      - ./packages/frontend-logic/src/manager:/usr/src/app/packages/frontend-logic/src/manager
-      - ./packages/frontend-logic/src/shared:/usr/src/app/packages/frontend-logic/src/shared
-      - ./packages/frontend-logic/src/types:/usr/src/app/packages/frontend-logic/src/types
-      - ./packages/frontend-logic/src/utils:/usr/src/app/packages/frontend-logic/src/utils
+      - ./packages/frontend-logic/manager:/usr/src/app/packages/frontend-logic/manager
+      - ./packages/frontend-logic/shared:/usr/src/app/packages/frontend-logic/shared
+      - ./packages/frontend-logic/types:/usr/src/app/packages/frontend-logic/types
+      - ./packages/frontend-logic/utils:/usr/src/app/packages/frontend-logic/utils
       - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
       - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
       # Isolated frontend-logic part to prevent reload on another target end
+      # Isolated frontend-components part to prevent reload on another target begin
+      - ./packages/frontend-components/manager:/usr/src/app/packages/frontend-components/manager
+      - ./packages/frontend-components/shared:/usr/src/app/packages/frontend-components/shared
+      - ./packages/frontend-components/scBasic:/usr/src/app/packages/frontend-components/scBasic
+      - ./packages/frontend-components/lcWeb:/usr/src/app/packages/frontend-components/lcWeb
+      - ./packages/frontend-components/lcMobile:/usr/src/app/packages/frontend-components/lcMobile
+      - ./packages/frontend-components/package.json:/usr/src/app/packages/frontend-components/package.json
+      - ./packages/frontend-components/tsconfig.json:/usr/src/app/packages/frontend-components/tsconfig.json
+      # Isolated frontend-components part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
