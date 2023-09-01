@@ -18,20 +18,20 @@
     "expo": "^48.0.17",
     "expo-linking": "~4.0.1",
     "expo-status-bar": "~1.4.4",
-    "react-native": "0.71.8",
     "react-native-web": "~0.18.10",
     "react-router-native": "^6.14.2",
     "use-debounce": "^9.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "@babel/preset-env": "^7.22.9",
     "@m-cafe-app/shared-dev-deps": "workspace:^"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-dom": "*",
-    "typescript": "*"
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.22.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native": "0.71.8",
+    "typescript": "~5.1.6"
   },
   "private": true
 }
