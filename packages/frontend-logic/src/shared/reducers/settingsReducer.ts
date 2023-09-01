@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { AppDispatch } from '../store';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
-import { TFunction } from '../hooks/useTranslation';
+import { TFunction } from '../hooks';
 
 
 type SettingsActionSetLanguage = { payload: { language: 'main' | 'sec' | 'alt' } };
