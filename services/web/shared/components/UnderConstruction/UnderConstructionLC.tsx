@@ -1,6 +1,4 @@
-import { ContainerLC } from '../basic/ContainerLC';
-// import TextComp from '../basic/TextComp';
-import { SVGImageLC } from '../basic/SVGImageLC';
+import { ImageLC, ContainerLC } from '@m-cafe-app/frontend-components/lcWeb';
 
 interface UnderConstructionProps {
   svgUrl: string;
@@ -16,7 +14,7 @@ export const UnderConstructionLC = ({ svgUrl }: UnderConstructionProps) => {
           <TextComp text={t('underConstruction.info')} className='text-info'/> */}
         </ContainerLC>
         <ContainerLC className='container-svg'>
-          <SVGImageLC svgUrl={svgUrl} altText='Under construction' className='construction-svg'/>
+          <ImageLC src={svgUrl} altText='Under construction' className='construction-svg'/>
         </ContainerLC>
       </ContainerLC>
     </ContainerLC>
