@@ -1,7 +1,7 @@
 import { FieldHookConfig, useField } from "formik";
 import type { CommonFieldSCProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { InputLC } from "lcWeb/InputLC";
+import { InputLC } from "../../lcWeb/InputLC";
 import { ImageSC, TooltipSC } from "../../scBasic";
 import { ContainerLC } from "../../lcWeb";
 import { apiBaseUrl } from "@m-cafe-app/shared-constants";
