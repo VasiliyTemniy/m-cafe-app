@@ -23,6 +23,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@m-cafe-app/frontend-components": "workspace:^",
     "@m-cafe-app/frontend-logic": "workspace:^",
     "@m-cafe-app/shared-constants": "workspace:^",
     "@m-cafe-app/shared-frontend-deps": "workspace:^",
