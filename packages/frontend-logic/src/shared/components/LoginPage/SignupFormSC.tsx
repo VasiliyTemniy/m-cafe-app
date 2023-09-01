@@ -1,13 +1,15 @@
 import { Formik, Form } from "formik";
-import { useTranslation } from "../../index";
+import { useTranslation } from "../../hooks";
 import { signupValidationSchema } from "./validationSchemas";
 import { NewUserBody } from "@m-cafe-app/utils";
-import { FormikTextFieldSC, FormikDateFieldSC } from "../FormikFields";
-import type {
+import {
+  FormikTextFieldSC,
+  FormikDateFieldSC,
   TextFieldLCProps,
-  DateFieldLCProps,
-  CommonLCProps,
-} from "../../../types";
+  DateFieldLCProps
+} from "../FormikFields";
+import type { CommonLCProps } from "../../../types";
+import { ButtonGroupSC, ButtonLCProps, ButtonSC, ContainerLCProps, ContainerSC } from "../basic";
 
 
 export type SignupFormValues = NewUserBody & {
@@ -20,20 +22,24 @@ export interface SignupFormButtonsLCProps extends CommonLCProps {
   submitDisabled: boolean
 }
 
-export interface SignupFormLCProps extends CommonLCProps {
+interface SignupFormProps {
   onSubmit: (values: SignupFormValues) => void,
-  onCancel: () => void
+  onCancel: () => void  
 }
 
-export interface SignupFormSCProps extends SignupFormLCProps {
+export interface SignupFormLCProps extends SignupFormProps {
+}
+
+export interface SignupFormSCProps extends SignupFormProps {
   TextFieldLC: React.FC<TextFieldLCProps>,
   DateFieldLC: React.FC<DateFieldLCProps>,
-  dateSvgUrl: string,
-  SignupFormButtonsLC: React.FC<SignupFormButtonsLCProps>
+  ContainerLC: React.FC<ContainerLCProps>,
+  ButtonLC: React.FC<ButtonLCProps>,
+  dateSvgUrl: string
 }
 
 
-const SignupFormSC = ({ onSubmit, onCancel, TextFieldLC, DateFieldLC, dateSvgUrl, SignupFormButtonsLC }: SignupFormSCProps) => {
+export const SignupFormSC = ({ onSubmit, onCancel, TextFieldLC, DateFieldLC, ContainerLC, ButtonLC, dateSvgUrl }: SignupFormSCProps) => {
 
   const { t } = useTranslation();
 
@@ -55,9 +61,9 @@ const SignupFormSC = ({ onSubmit, onCancel, TextFieldLC, DateFieldLC, dateSvgUrl
       onSubmit={onSubmit}
       validationSchema={signupValidationSchema(t)}
     >
-      {({ isValid, dirty, handleSubmit }) => {
+      {({ isValid, dirty }) => {
         return (
-          <Form className='form-login'>
+          <Form className='form-signup'>
             <FormikTextFieldSC
               placeholder={t(`${tNode}.placeholder.username`)}
               label={t(`${tNode}.label.username`)}
@@ -107,35 +113,39 @@ const SignupFormSC = ({ onSubmit, onCancel, TextFieldLC, DateFieldLC, dateSvgUrl
               svgUrl={dateSvgUrl}
               DateFieldLC={DateFieldLC}
             />
-            <SignupFormButtonsLC
-              onSubmit={handleSubmit}
-              onCancel={onCancel}
-              submitDisabled={!dirty || !isValid}
-            />
-            {/*
-            Legacy code, will be transfered to LC
-            <ButtonGroup>
-              <Button
-                label={t('formsLogin.signup.label.submit')}
+            <ContainerSC ContainerLC={ContainerLC}>
+              <ButtonSC
+                label={t(`${tNode}.label.toLogin`)}
                 type='submit'
                 variant='primary'
-                className='login-form'
-                id='signup-button'
-                disabled={!dirty || !isValid}
+                classNameAddon='login-form'
+                id='login-button'
+                // onClick -> send to SignupForm
+                ButtonLC={ButtonLC}
               />
-              <Button
-                label={t('formsLogin.signup.label.cancel')}
-                variant='secondary'
-                className='login-form'
-                id='toggle-button'
-                onClick={onCancel}
-              />
-            </ButtonGroup> */}
+              <ButtonGroupSC ContainerLC={ContainerLC}>
+                <ButtonSC
+                  label={t('formsLogin.signup.label.submit')}
+                  type='submit'
+                  variant='primary'
+                  classNameAddon='login-form'
+                  id='signup-button'
+                  disabled={!dirty || !isValid}
+                  ButtonLC={ButtonLC}
+                />
+                <ButtonSC
+                  label={t('formsLogin.signup.label.cancel')}
+                  variant='secondary'
+                  classNameAddon='login-form'
+                  id='toggle-button'
+                  onClick={onCancel}
+                  ButtonLC={ButtonLC}
+                />
+              </ButtonGroupSC>
+            </ContainerSC>
           </Form>
         );
       }}
     </Formik>
   );
 };
-
-export default SignupFormSC;

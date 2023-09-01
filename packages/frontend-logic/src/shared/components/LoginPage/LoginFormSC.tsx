@@ -1,8 +1,9 @@
 import { Formik, Form } from "formik";
-import { useTranslation } from '../../index';
+import { useTranslation } from '../../hooks';
 import { loginValidationSchema } from "./validationSchemas";
-import { FormikTextFieldSC } from "../FormikFields";
-import type { CommonLCProps, TextFieldLCProps } from "../../../types";
+import { FormikTextFieldSC, TextFieldLCProps } from "../FormikFields";
+import type { CommonLCProps } from "../../../types";
+import { ButtonGroupSC, ButtonLCProps, ButtonSC, ContainerLCProps, ContainerSC } from "../basic";
 
 export type LoginFormValues = {
   credential: string,
@@ -15,18 +16,22 @@ export interface LoginFormButtonsLCProps extends CommonLCProps {
   submitDisabled: boolean
 }
 
-export interface LoginFormLCProps extends CommonLCProps {
+interface LoginFormProps {
   onSubmit: (values: LoginFormValues) => void,
-  onCancel: () => void
+  onCancel: () => void  
 }
 
-export interface LoginFormSCProps extends LoginFormLCProps {
+export interface LoginFormLCProps extends LoginFormProps {
+}
+
+export interface LoginFormSCProps extends LoginFormProps {
   TextFieldLC: React.FC<TextFieldLCProps>,
-  LoginFormButtonsLC: React.FC<LoginFormButtonsLCProps>
+  ContainerLC: React.FC<ContainerLCProps>,
+  ButtonLC: React.FC<ButtonLCProps>
 }
 
 
-const LoginFormSC = ({ onSubmit, onCancel, TextFieldLC, LoginFormButtonsLC }: LoginFormSCProps) => {
+export const LoginFormSC = ({ onSubmit, onCancel, TextFieldLC, ContainerLC, ButtonLC }: LoginFormSCProps) => {
 
   const { t } = useTranslation();
 
@@ -43,9 +48,9 @@ const LoginFormSC = ({ onSubmit, onCancel, TextFieldLC, LoginFormButtonsLC }: Lo
       onSubmit={onSubmit}
       validationSchema={loginValidationSchema(t)}
     >
-      {({ isValid, dirty, handleSubmit }) => {
+      {({ isValid, dirty }) => {
         return (
-          <Form>
+          <Form className='form-login'>
             <FormikTextFieldSC
               placeholder={t(`${tNode}.placeholder.credential`)}
               label={t(`${tNode}.label.credential`)}
@@ -60,35 +65,39 @@ const LoginFormSC = ({ onSubmit, onCancel, TextFieldLC, LoginFormButtonsLC }: Lo
               name='password'
               TextFieldLC={TextFieldLC}
             />
-            <LoginFormButtonsLC
-              onSubmit={handleSubmit}
-              onCancel={onCancel}
-              submitDisabled={!dirty || !isValid}
-            />
-            {/*
-            Legacy code, will be transfered to LC
-            <ButtonGroup>
-              <Button
-                label={t('formsLogin.login.label.submit')}
+            <ContainerSC ContainerLC={ContainerLC}>
+              <ButtonSC
+                label={t(`${tNode}.label.toSubmit`)}
                 type='submit'
                 variant='primary'
-                className='login-form'
+                classNameAddon='login-form'
                 id='login-button'
-                disabled={!dirty || !isValid}
+                // onClick -> send to SignupForm
+                ButtonLC={ButtonLC}
               />
-              <Button
-                label={t('formsLogin.login.label.cancel')}
-                variant='secondary'
-                className='login-form'
-                id='toggle-button'
-                onClick={onCancel}
-              />
-            </ButtonGroup> */}
+              <ButtonGroupSC ContainerLC={ContainerLC}>
+                <ButtonSC
+                  label={t('main.buttonLabel.submit')}
+                  type='submit'
+                  variant='primary'
+                  classNameAddon='login-form'
+                  id='login-button'
+                  disabled={!dirty || !isValid}
+                  ButtonLC={ButtonLC}
+                />
+                <ButtonSC
+                  label={t('main.buttonLabel.cancel')}
+                  variant='secondary'
+                  classNameAddon='login-form'
+                  id='toggle-button'
+                  onClick={onCancel}
+                  ButtonLC={ButtonLC}
+                />
+              </ButtonGroupSC>
+            </ContainerSC>
           </Form>
         );
       }}
     </Formik>
   );
 };
-
-export default LoginFormSC;
