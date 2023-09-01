@@ -8,21 +8,24 @@ import HtmlWebPackPlugin from 'html-webpack-plugin';
 
 import * as dotenv from "dotenv";
 
-const frontend_module = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'customer';
-const port =
-  frontend_module === 'customer' ?
-    process.env.FRONTEND_USER_PORT ? process.env.FRONTEND_USER_PORT : '4002' :
-    frontend_module === 'admin' ?
-      process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :
-      frontend_module === 'manager' ?
-        process.env.FRONTEND_MANAGER_PORT ? process.env.FRONTEND_MANAGER_PORT : '4004' :
-        '4005';
-
 const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 
 dotenv.config({
   override: isDockerized ? false : true
 });
+
+const frontendModule = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'customer';
+const port =
+  frontendModule === 'customer' ?
+    process.env.FRONTEND_USER_PORT ? process.env.FRONTEND_USER_PORT : '4002' :
+    frontendModule === 'admin' ?
+      process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :
+      frontendModule === 'manager' ?
+        process.env.FRONTEND_MANAGER_PORT ? process.env.FRONTEND_MANAGER_PORT : '4004' :
+        '4005';
+
+const backendUrl = process.env.BACKEND_URL;
+if (!backendUrl) throw new Error('Backend url not set!');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -34,20 +37,20 @@ const __dirname = path.resolve();
 
 const config: Configuration = {
   context: __dirname,
-  entry: `./${frontend_module}/src/index.tsx`,
+  entry: `./${frontendModule}/src/index.tsx`,
   output: {
-    path: isDevelopment ? path.join(__dirname, `.webpack-dev.${frontend_module}`) : path.join(__dirname, `.webpack.${frontend_module}`),
+    path: isDevelopment ? path.join(__dirname, `.webpack-dev.${frontendModule}`) : path.join(__dirname, `.webpack.${frontendModule}`),
     filename: isDevelopment ? 'build.js' : 'build.[fullhash].js'
   },
   devServer: {
-    static: `./.webpack-dev.${frontend_module}`,
+    static: `./.webpack-dev.${frontendModule}`,
     compress: true,
     port,
     allowedHosts: "all",
     hot: true,
     open: true,
     watchFiles: {
-      paths: [`${frontend_module}/src/**/*`, `${frontend_module}/public/**/*`],
+      paths: [`${frontendModule}/src/**/*`, `${frontendModule}/public/**/*`],
       options: {
         usePolling: isDockerized ? false : true
       },
@@ -62,7 +65,7 @@ const config: Configuration = {
   target: 'web',
   plugins: [
     new HtmlWebPackPlugin({
-      template: `./${frontend_module}/public/index.html`,
+      template: `./${frontendModule}/public/index.html`,
       filename: './index.html'
     }),
     ...plugins
