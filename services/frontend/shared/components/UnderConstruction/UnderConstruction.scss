@@ -1,6 +1,6 @@
-@import '../../scss_common/colors.scss';
-@import '../../scss_common/vars.scss';
-@import '../../scss_common/commonMixins.scss';
+// @import '../../scss_common/colors.scss';
+// @import '../../scss_common/vars.scss';
+// @import '../../scss_common/commonMixins.scss';
 
 .page-under-construction {
   display: flex;
@@ -10,8 +10,8 @@
   height: calc(100vh - $frame-top-height - $footer-height);
 
   .under-construction {
-    @include theme(background-color, ContFirstLayer);
-    @include theme(box-shadow, ContainerFirstShadow);
+    // @include theme(background-color, ContFirstLayer);
+    // @include theme(box-shadow, ContainerFirstShadow);
     width: $under-construction-container-width;
     min-width: $under-construction-container-min-width;
     height: $under-construction-container-height;
@@ -25,8 +25,8 @@
     position: relative;
 
     .container-title {
-      @include theme(background-color, ContSecondLayer);
-      @include theme(box-shadow, ContainerSecondShadow);
+      // @include theme(background-color, ContSecondLayer);
+      // @include theme(box-shadow, ContainerSecondShadow);
       position: absolute;
       top: 0;
       left: 0;
@@ -38,12 +38,12 @@
       align-items: center;
 
       .text-title {
-        @include header;
+        // @include header;
         padding-top: 0.7rem;
       }
 
       .text-info {
-        @include subheader;
+        // @include subheader;
         padding-top: 0.5rem;
       }
     }
@@ -53,7 +53,7 @@
       height: $under-construction-svg-scale;
 
       .construction-svg {
-        @include theme(fill, SVGFill);
+        // @include theme(fill, SVGFill);
         width: $under-construction-svg-scale;
         height: $under-construction-svg-scale;
       }
