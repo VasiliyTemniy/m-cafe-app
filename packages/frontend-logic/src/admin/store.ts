@@ -1,11 +1,13 @@
 import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { sharedReducers } from '../shared/store';
+import { managerReducers } from '../manager/store';
 import fixedLocsReducer from './reducers/fixedLocsReducer';
 import settingsReducer from './reducers/settingsReducer';
 
 const store = configureStore({
   reducer: {
     ...sharedReducers,
+    ...managerReducers,
     fixedLocs: fixedLocsReducer,
     settings: settingsReducer
   },
