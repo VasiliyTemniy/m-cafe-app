@@ -3,42 +3,42 @@ version: '3.8'
 services:
 
   frontend-customer:
-    image: m-cafe-frontend-customer
+    image: m-cafe-web-customer
     build:
       context: ./
       dockerfile: ./services/frontend/Dockerfile
       target: run-prod-front-customer
       args:
         - BACKEND_URL=http://localhost:8080/api
-    container_name: m-cafe-frontend-customer
+    container_name: m-cafe-web-customer
     env_file:
       - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - nginx
 
   frontend-admin:
-    image: m-cafe-frontend-admin
+    image: m-cafe-web-admin
     build:
       context: ./
       dockerfile: ./services/frontend/Dockerfile
       target: run-prod-front-admin
       args:
         - BACKEND_URL=http://localhost:8080/api
-    container_name: m-cafe-frontend-admin
+    container_name: m-cafe-web-admin
     env_file:
       - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - nginx
 
   frontend-manager:
-    image: m-cafe-frontend-manager
+    image: m-cafe-web-manager
     build:
       context: ./
       dockerfile: ./services/frontend/Dockerfile
       target: run-prod-front-manager
       args:
         - BACKEND_URL=http://localhost:8080/api
-    container_name: m-cafe-frontend-manager
+    container_name: m-cafe-web-manager
     env_file:
       - ./docker-envs/.docker.validation-overrides.env
     depends_on:

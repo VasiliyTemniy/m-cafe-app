@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   frontend-customer:
-    image: m-cafe-frontend-dev-customer
+    image: m-cafe-web-dev-customer
     build:
       context: ./
       dockerfile: ./services/frontend/dev.Dockerfile
@@ -30,13 +30,13 @@ services:
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-frontend-dev-customer
+    container_name: m-cafe-web-dev-customer
     env_file:
       - ./docker-envs/.dev.docker-front.env
       - ./docker-envs/.docker.validation-overrides.env
 
   frontend-admin:
-    image: m-cafe-frontend-dev-admin
+    image: m-cafe-web-dev-admin
     build:
       context: ./
       dockerfile: ./services/frontend/dev.Dockerfile
@@ -63,13 +63,13 @@ services:
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-frontend-dev-admin
+    container_name: m-cafe-web-dev-admin
     env_file:
       - ./docker-envs/.dev.docker-front.env
       - ./docker-envs/.docker.validation-overrides.env
 
   frontend-manager:
-    image: m-cafe-frontend-dev-manager
+    image: m-cafe-web-dev-manager
     build:
       context: ./
       dockerfile: ./services/frontend/dev.Dockerfile
@@ -96,7 +96,7 @@ services:
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-frontend-dev-manager
+    container_name: m-cafe-web-dev-manager
     env_file:
       - ./docker-envs/.dev.docker-front.env
       - ./docker-envs/.docker.validation-overrides.env

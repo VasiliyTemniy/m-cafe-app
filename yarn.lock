@@ -10482,9 +10482,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"m-cafe-frontend@workspace:services/frontend":
+"m-cafe-web@workspace:services/frontend":
   version: 0.0.0-use.local
-  resolution: "m-cafe-frontend@workspace:services/frontend"
+  resolution: "m-cafe-web@workspace:services/frontend"
   dependencies:
     "@m-cafe-app/frontend-logic": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"

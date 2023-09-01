@@ -39,7 +39,7 @@ RUN yarn workspaces focus @m-cafe-app/frontend-logic
 
 RUN yarn workspaces focus m-cafe-app
 
-RUN yarn workspaces focus m-cafe-frontend
+RUN yarn workspaces focus m-cafe-web
 
 
 FROM install-stage-front as copy-stage-front
