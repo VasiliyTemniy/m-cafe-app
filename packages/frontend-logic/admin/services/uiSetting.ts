@@ -5,7 +5,7 @@ import type {
   EditManyUiSettingBody,
   UiSettingDT
 } from '@m-cafe-app/utils';
-import { apiBaseUrl } from '../../utils/config';
+import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 import sharedUiSettingsService from '../../shared/services/uiSetting';
 
 /**

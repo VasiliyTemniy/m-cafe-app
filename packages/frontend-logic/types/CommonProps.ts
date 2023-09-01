@@ -17,11 +17,11 @@ export interface CommonSCProps {
   classNameAddon?: string;
   id?: string;
   tooltipTNode?: string;
+  tooltip?: string;
 }
 
 export interface CommonLCProps {
   id?: string;
-  tooltip?: string;
   className?: string;
   style?: CSSProperties;
   specific?: LCSpecificValue;
