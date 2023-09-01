@@ -1,5 +1,5 @@
 import { ApplicationError, RedisError } from "./Errors.js";
-import { isBoolean, isDate, isNumber } from "./typeParsers.js";
+import { isBoolean, isDate, isNumber, isString } from "./typeParsers.js";
 
 export type MapToUnknown<T> = {
   [Property in keyof T]: unknown
@@ -178,4 +178,22 @@ export const updateInstance = <T>(oldInstance: T, newInstanceData: MapToDT<T>) =
 
     oldInstance[key] = newInstanceData[key] as unknown as T[keyof T];
   }
+};
+
+/**
+ * Used only to map frontend form values from '' to undefined
+ */
+export const mapEmptyStringsToUndefined = <T>(data: T): T => {
+  const mappedData = {} as T;
+
+  for (const keyString in data) {
+    const key = keyString as keyof T;
+
+    const value = data[key];
+
+    if (isString(value) && value === '') mappedData[key] = undefined as unknown as T[keyof T];
+    else mappedData[key] = data[key];
+  }
+
+  return mappedData;
 };

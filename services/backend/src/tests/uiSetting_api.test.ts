@@ -142,7 +142,7 @@ describe('UiSetting requests tests', () => {
   it('UiSetting PUT /:id updates uiSetting data, can be used by admin', async () => {
 
     const updUiSetting: EditUiSettingBody = {
-      name: 'editTest',
+      name: 'editTest', // ui settings names must be unmutable, so the name does not get changed even if put for correct ui setting id
       value: 'editTestValue'
     };
 
@@ -160,11 +160,13 @@ describe('UiSetting requests tests', () => {
       }
     });
 
-    expect(response.body.name).to.equal(updUiSetting.name);
+    expect(response.body.name).to.not.equal(updUiSetting.name);
+    expect(response.body.name).to.equal(uiSettings[0].name);
     expect(response.body.value).to.equal(updUiSetting.value);
 
 
-    expect(updUiSettingInDB?.name).to.equal(updUiSetting.name);
+    expect(updUiSettingInDB?.name).to.not.equal(updUiSetting.name);
+    expect(updUiSettingInDB?.name).to.equal(uiSettings[0].name);
     expect(updUiSettingInDB?.value).to.equal(updUiSetting.value);
 
   });

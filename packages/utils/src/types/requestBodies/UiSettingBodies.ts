@@ -1,4 +1,4 @@
-import { UiSettingDT } from "../../models/UiSetting.js";
+import { isUiSettingDT, UiSettingDT } from "../../models/UiSetting.js";
 import { hasOwnProperty, MapToUnknown } from "../helpers.js";
 import { isString } from "../typeParsers.js";
 
@@ -22,3 +22,25 @@ const hasEditUiSettingBodyFields = (body: unknown): body is EditUiSettingBodyFie
   
 export const isEditUiSettingBody = (body: unknown): body is EditUiSettingBody =>
   hasEditUiSettingBodyFields(body) && isString(body.name) && isString(body.value);
+
+
+export type EditManyUiSettingBody = {
+  updUiSettings: Array<UiSettingDT>
+};
+
+type EditManyUiSettingBodyFields = MapToUnknown<EditManyUiSettingBody>;
+
+const hasEditManyUiSettingBodyFields = (body: unknown): body is EditManyUiSettingBodyFields =>
+  hasOwnProperty(body, 'updUiSettings');
+  
+export const isEditManyUiSettingBody = (body: unknown): body is EditManyUiSettingBody => {
+  if (!hasEditManyUiSettingBodyFields(body)) return false;
+
+  if (!Array.isArray(body.updUiSettings)) return false;
+
+  for (const updUiSetting of body.updUiSettings) {
+    if (!isUiSettingDT(updUiSetting)) return false;
+  }
+
+  return true;
+};

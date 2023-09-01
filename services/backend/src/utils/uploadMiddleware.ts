@@ -19,15 +19,17 @@ const createDirIfNotExists = async (dir: string) => {
 
 export const foodPicturesDir = './public/pictures/food';
 export const modulesPicturesDir = './public/pictures/modules';
+export const svgDir = './public/pictures/svg';
 export const multerTempDir = './public/multerTemp';
 
-await createDirIfNotExists('./public/pictures/food');
-await createDirIfNotExists('./public/pictures/modules');
-await createDirIfNotExists('./public/multerTemp');
+await createDirIfNotExists(foodPicturesDir);
+await createDirIfNotExists(modulesPicturesDir);
+await createDirIfNotExists(svgDir);
+await createDirIfNotExists(multerTempDir);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '../public/multerTemp');
+    cb(null, '../../public/multerTemp');
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

@@ -21,7 +21,8 @@ import {
 } from '@m-cafe-app/utils';
 import { isRequestCustom, isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
-import { User, Address, Facility, UserAddress, maxPasswordLen, minPasswordLen } from '@m-cafe-app/db';
+import { User, Address, Facility, UserAddress } from '@m-cafe-app/db';
+import { maxPasswordLen, minPasswordLen } from '@m-cafe-app/shared-constants';
 import { Session } from '../redis/Session.js';
 
 const usersRouter = Router();

@@ -14,7 +14,7 @@ import facilityRouter from './controllers/facility.js';
 import orderRouter from './controllers/order.js';
 import pictureRouter from './controllers/picture.js';
 import dynamicModuleRouter from './controllers/dynamicModule.js';
-import uiSettingRouter from './controllers/uiSettings.js';
+import uiSettingRouter from './controllers/uiSetting.js';
 import fixedLocRouter from './controllers/fixedLoc.js';
 import middleware from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';

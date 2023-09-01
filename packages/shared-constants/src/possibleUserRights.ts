@@ -1,0 +1,1 @@
+export const possibleUserRights = ['user', 'manager', 'admin', 'disabled'];

@@ -2,59 +2,131 @@ version: '3.8'
 
 services:
 
-  frontend-user:
-    image: m-cafe-frontend-dev-user
+  web-customer:
+    image: m-cafe-web-dev-customer
     build:
       context: ./
-      dockerfile: ./services/frontend/dev.Dockerfile
-      target: run-stage-front-user
+      dockerfile: ./services/web/dev.Dockerfile
+      target: run-stage-web-customer
     volumes:
-      - ./services/frontend:/usr/src/app/services/frontend
+      # Isolated frontend part to prevent reload on another target begin
+      - ./services/web/customer:/usr/src/app/services/web/customer
+      - ./services/web/shared:/usr/src/app/services/web/shared
+      - ./services/web/webpack_config:/usr/src/app/services/web/webpack_config
+      - ./services/web/package.json:/usr/src/app/services/web/package.json
+      - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
+      # Isolated frontend part to prevent reload on another target end
+      # Isolated frontend-logic part to prevent reload on another target begin
+      - ./packages/frontend-logic/customer:/usr/src/app/packages/frontend-logic/customer
+      - ./packages/frontend-logic/shared:/usr/src/app/packages/frontend-logic/shared
+      - ./packages/frontend-logic/types:/usr/src/app/packages/frontend-logic/types
+      - ./packages/frontend-logic/utils:/usr/src/app/packages/frontend-logic/utils
+      - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
+      - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
+      # Isolated frontend-logic part to prevent reload on another target end
+      # Isolated frontend-components part to prevent reload on another target begin
+      - ./packages/frontend-components/customer:/usr/src/app/packages/frontend-components/customer
+      - ./packages/frontend-components/shared:/usr/src/app/packages/frontend-components/shared
+      - ./packages/frontend-components/scBasic:/usr/src/app/packages/frontend-components/scBasic
+      - ./packages/frontend-components/lcWeb:/usr/src/app/packages/frontend-components/lcWeb
+      - ./packages/frontend-components/lcMobile:/usr/src/app/packages/frontend-components/lcMobile
+      - ./packages/frontend-components/package.json:/usr/src/app/packages/frontend-components/package.json
+      - ./packages/frontend-components/tsconfig.json:/usr/src/app/packages/frontend-components/tsconfig.json
+      # Isolated frontend-components part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
-      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-frontend-dev-user
+    container_name: m-cafe-web-dev-customer
     env_file:
       - ./docker-envs/.dev.docker-front.env
+      - ./docker-envs/.docker.validation-overrides.env
 
-  frontend-admin:
-    image: m-cafe-frontend-dev-admin
+  web-admin:
+    image: m-cafe-web-dev-admin
     build:
       context: ./
-      dockerfile: ./services/frontend/dev.Dockerfile
-      target: run-stage-front-admin
+      dockerfile: ./services/web/dev.Dockerfile
+      target: run-stage-web-admin
     volumes:
-      - ./services/frontend:/usr/src/app/services/frontend
+      # Isolated frontend part to prevent reload on another target begin
+      - ./services/web/admin:/usr/src/app/services/web/admin
+      - ./services/web/shared:/usr/src/app/services/web/shared
+      - ./services/web/webpack_config:/usr/src/app/services/web/webpack_config
+      - ./services/web/package.json:/usr/src/app/services/web/package.json
+      - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
+      # Isolated frontend part to prevent reload on another target end
+      # Isolated frontend-logic part to prevent reload on another target begin
+      - ./packages/frontend-logic/admin:/usr/src/app/packages/frontend-logic/admin
+      - ./packages/frontend-logic/shared:/usr/src/app/packages/frontend-logic/shared
+      - ./packages/frontend-logic/types:/usr/src/app/packages/frontend-logic/types
+      - ./packages/frontend-logic/utils:/usr/src/app/packages/frontend-logic/utils
+      - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
+      - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
+      # Isolated frontend-logic part to prevent reload on another target end
+      # Isolated frontend-components part to prevent reload on another target begin
+      - ./packages/frontend-components/admin:/usr/src/app/packages/frontend-components/admin
+      - ./packages/frontend-components/shared:/usr/src/app/packages/frontend-components/shared
+      - ./packages/frontend-components/scBasic:/usr/src/app/packages/frontend-components/scBasic
+      - ./packages/frontend-components/lcWeb:/usr/src/app/packages/frontend-components/lcWeb
+      - ./packages/frontend-components/lcMobile:/usr/src/app/packages/frontend-components/lcMobile
+      - ./packages/frontend-components/package.json:/usr/src/app/packages/frontend-components/package.json
+      - ./packages/frontend-components/tsconfig.json:/usr/src/app/packages/frontend-components/tsconfig.json
+      # Isolated frontend-components part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
-      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-frontend-dev-admin
+    container_name: m-cafe-web-dev-admin
     env_file:
       - ./docker-envs/.dev.docker-front.env
+      - ./docker-envs/.docker.validation-overrides.env
 
-  frontend-manager:
-    image: m-cafe-frontend-dev-manager
+  web-manager:
+    image: m-cafe-web-dev-manager
     build:
       context: ./
-      dockerfile: ./services/frontend/dev.Dockerfile
-      target: run-stage-front-manager
+      dockerfile: ./services/web/dev.Dockerfile
+      target: run-stage-web-manager
     volumes:
-      - ./services/frontend:/usr/src/app/services/frontend
+      # Isolated frontend part to prevent reload on another target begin
+      - ./services/web/manager:/usr/src/app/services/web/manager
+      - ./services/web/shared:/usr/src/app/services/web/shared
+      - ./services/web/webpack_config:/usr/src/app/services/web/webpack_config
+      - ./services/web/package.json:/usr/src/app/services/web/package.json
+      - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
+      # Isolated frontend part to prevent reload on another target end
+      # Isolated frontend-logic part to prevent reload on another target begin
+      - ./packages/frontend-logic/manager:/usr/src/app/packages/frontend-logic/manager
+      - ./packages/frontend-logic/shared:/usr/src/app/packages/frontend-logic/shared
+      - ./packages/frontend-logic/types:/usr/src/app/packages/frontend-logic/types
+      - ./packages/frontend-logic/utils:/usr/src/app/packages/frontend-logic/utils
+      - ./packages/frontend-logic/package.json:/usr/src/app/packages/frontend-logic/package.json
+      - ./packages/frontend-logic/tsconfig.json:/usr/src/app/packages/frontend-logic/tsconfig.json
+      # Isolated frontend-logic part to prevent reload on another target end
+      # Isolated frontend-components part to prevent reload on another target begin
+      - ./packages/frontend-components/manager:/usr/src/app/packages/frontend-components/manager
+      - ./packages/frontend-components/shared:/usr/src/app/packages/frontend-components/shared
+      - ./packages/frontend-components/scBasic:/usr/src/app/packages/frontend-components/scBasic
+      - ./packages/frontend-components/lcWeb:/usr/src/app/packages/frontend-components/lcWeb
+      - ./packages/frontend-components/lcMobile:/usr/src/app/packages/frontend-components/lcMobile
+      - ./packages/frontend-components/package.json:/usr/src/app/packages/frontend-components/package.json
+      - ./packages/frontend-components/tsconfig.json:/usr/src/app/packages/frontend-components/tsconfig.json
+      # Isolated frontend-components part to prevent reload on another target end
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
-      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-frontend-dev-manager
+    container_name: m-cafe-web-dev-manager
     env_file:
       - ./docker-envs/.dev.docker-front.env
+      - ./docker-envs/.docker.validation-overrides.env
 
   redis:
     image: redis:7.0.12-alpine3.18
@@ -97,11 +169,12 @@ services:
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
-      - ./packages/shared-deps:/usr/src/app/packages/shared-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
     container_name: m-cafe-backend-dev
     env_file:
       - ./docker-envs/.dev.docker-back.env
+      - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - postgres_db
       - redis

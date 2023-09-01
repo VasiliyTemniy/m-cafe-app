@@ -1,0 +1,19 @@
+{
+  "name": "@m-cafe-app/shared-constants",
+  "productName": "Modular cafe app",
+  "version": "1.0.0",
+  "description": "This package contains shared constants, for all services",
+  "main": "build/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "eslint": "eslint ./src/**/*.{ts,tsx}"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "typescript": "~5.1.6"
+  }
+}

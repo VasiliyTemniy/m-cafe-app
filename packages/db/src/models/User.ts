@@ -25,7 +25,7 @@ import {
   phonenumberRegExp,
   possibleUserRights,
   usernameRegExp
-} from '../constants.js';
+} from '@m-cafe-app/shared-constants';
 import { Op } from 'sequelize';
 
 

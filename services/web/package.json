@@ -1,0 +1,58 @@
+{
+  "name": "m-cafe-web",
+  "productName": "Modular cafe app",
+  "version": "0.1.0",
+  "description": "DIY cafe app web frontend",
+  "main": ".webpack/main",
+  "type": "module",
+  "scripts": {
+    "build": "yarn run build:customer && yarn run build:admin && yarn run build:manager",
+    "build:customer": "cross-env NODE_ENV=production FRONTEND_MODULE=customer NODE_OPTIONS=\"--loader ts-node/esm\" webpack --config webpack_config/webpack.config.ts",
+    "dev:customer": "cross-env NODE_ENV=development FRONTEND_MODULE=customer NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve --config webpack_config/webpack.config.ts",
+    "start:customer": "cross-env NODE_ENV=development FRONTEND_MODULE=customer NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve --config webpack_config/webpack.config.ts",
+    "build:admin": "cross-env NODE_ENV=production FRONTEND_MODULE=admin NODE_OPTIONS=\"--loader ts-node/esm\" webpack --config webpack_config/webpack.config.ts",
+    "dev:admin": "cross-env NODE_ENV=development FRONTEND_MODULE=admin NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve --config webpack_config/webpack.config.ts",
+    "start:admin": "cross-env NODE_ENV=development FRONTEND_MODULE=admin NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve --config webpack_config/webpack.config.ts",
+    "build:manager": "cross-env NODE_ENV=production FRONTEND_MODULE=manager NODE_OPTIONS=\"--loader ts-node/esm\" webpack --config webpack_config/webpack.config.ts",
+    "dev:manager": "cross-env NODE_ENV=development FRONTEND_MODULE=manager NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve --config webpack_config/webpack.config.ts",
+    "start:manager": "cross-env NODE_ENV=development FRONTEND_MODULE=manager NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve --config webpack_config/webpack.config.ts",
+    "eslint": "eslint ./{customer,admin,manager}/src/**/*.{ts,tsx}"
+  },
+  "repository": "https://github.com/VasiliyTemniy/m-cafe-app.git",
+  "author": "VasiliyTemniy <flash_er@mail.ru>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@m-cafe-app/frontend-components": "workspace:^",
+    "@m-cafe-app/frontend-logic": "workspace:^",
+    "@m-cafe-app/shared-constants": "workspace:^",
+    "@m-cafe-app/shared-frontend-deps": "workspace:^",
+    "@m-cafe-app/utils": "workspace:^",
+    "react-router-dom": "^6.11.2"
+  },
+  "devDependencies": {
+    "@m-cafe-app/shared-dev-deps": "workspace:^",
+    "@svgr/webpack": "^8.0.1",
+    "@types/node": "^20.2.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.7.3",
+    "fork-ts-checker-webpack-plugin": "^8.0.0",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.1",
+    "mini-css-extract-plugin": "^2.7.5",
+    "sass": "^1.62.1",
+    "sass-loader": "^13.2.2",
+    "style-loader": "^3.3.2",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "~5.1.6",
+    "webpack": "^5.83.1",
+    "webpack-cli": "^5.1.1",
+    "webpack-dev-server": "^4.15.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}

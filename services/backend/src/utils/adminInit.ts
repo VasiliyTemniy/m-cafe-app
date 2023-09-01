@@ -9,7 +9,8 @@ export const initSuperAdmin = async () => {
   const existingUser = await User.findOne({
     where: {
       phonenumber: config.SUPERADMIN_PHONENUMBER
-    }
+    },
+    logging: false
   });
   if (existingUser) {
 
@@ -44,7 +45,9 @@ export const initSuperAdmin = async () => {
     rights: 'admin'
   };
 
-  await User.create(user);
+  await User.create(user, {
+    logging: false
+  });
 
   process.env.SUPERADMIN_USERNAME = '';
   process.env.SUPERADMIN_PASSWORD = '';

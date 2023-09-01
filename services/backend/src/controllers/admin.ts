@@ -5,7 +5,7 @@ import middleware from '../utils/middleware.js';
 import { User } from '@m-cafe-app/db';
 import { Session } from '../redis/Session.js';
 import config from '../utils/config.js';
-import { possibleUserRights } from '../utils/constants.js';
+import { possibleUserRights } from '@m-cafe-app/shared-constants';
 
 const adminRouter = Router();
 

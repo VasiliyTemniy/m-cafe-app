@@ -1629,7 +1629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.19.4, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.22.11
   resolution: "@babel/runtime@npm:7.22.11"
   dependencies:
@@ -1729,10 +1729,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:^8.47.0":
-  version: 8.47.0
-  resolution: "@eslint/js@npm:8.47.0"
-  checksum: 0ef57fe27b6d4c305b33f3b2d2fee1ab397a619006f1d6f4ce5ee4746b8f03d11a4e098805a7d78601ca534cf72917d37f0ac19896c992a32e26299ecb9f9de1
+"@eslint/js@npm:8.48.0":
+  version: 8.48.0
+  resolution: "@eslint/js@npm:8.48.0"
+  checksum: b2755f9c0ee810c886eba3c50dcacb184ba5a5cd1cbc01988ee506ad7340653cae0bd55f1d95c64b56dfc6d25c2caa7825335ffd2c50165bae9996fe0f396851
   languageName: node
   linkType: hard
 
@@ -2464,25 +2464,28 @@ __metadata:
   resolution: "@m-cafe-app/db@workspace:packages/db"
   dependencies:
     "@m-cafe-app/shared-backend-deps": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     typescript: ~5.1.6
   languageName: unknown
   linkType: soft
 
-"@m-cafe-app/frontend-services@workspace:^, @m-cafe-app/frontend-services@workspace:packages/frontend-services":
+"@m-cafe-app/frontend-components@workspace:^, @m-cafe-app/frontend-components@workspace:packages/frontend-components":
   version: 0.0.0-use.local
-  resolution: "@m-cafe-app/frontend-services@workspace:packages/frontend-services"
+  resolution: "@m-cafe-app/frontend-components@workspace:packages/frontend-components"
   dependencies:
+    "@m-cafe-app/frontend-logic": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-frontend-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     typescript: ~5.1.6
   languageName: unknown
   linkType: soft
 
-"@m-cafe-app/redux-store@workspace:^, @m-cafe-app/redux-store@workspace:packages/redux-store":
+"@m-cafe-app/frontend-logic@workspace:^, @m-cafe-app/frontend-logic@workspace:packages/frontend-logic":
   version: 0.0.0-use.local
-  resolution: "@m-cafe-app/redux-store@workspace:packages/redux-store"
+  resolution: "@m-cafe-app/frontend-logic@workspace:packages/frontend-logic"
   dependencies:
-    "@m-cafe-app/frontend-services": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-frontend-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     typescript: ~5.1.6
@@ -2493,15 +2496,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/shared-backend-deps@workspace:packages/shared-backend-deps"
   dependencies:
+    glob: ^10.3.3
     sequelize: ^6.31.1
+    umzug: ^3.2.1
   languageName: unknown
   linkType: soft
 
-"@m-cafe-app/shared-deps@workspace:^, @m-cafe-app/shared-deps@workspace:packages/shared-deps":
+"@m-cafe-app/shared-constants@workspace:^, @m-cafe-app/shared-constants@workspace:packages/shared-constants":
   version: 0.0.0-use.local
-  resolution: "@m-cafe-app/shared-deps@workspace:packages/shared-deps"
+  resolution: "@m-cafe-app/shared-constants@workspace:packages/shared-constants"
   dependencies:
     dotenv: ^16.3.1
+    typescript: ~5.1.6
   languageName: unknown
   linkType: soft
 
@@ -2515,6 +2521,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/shared-frontend-deps@workspace:packages/shared-frontend-deps"
   dependencies:
+    "@babel/core": ^7.20.0
+    "@babel/preset-env": ^7.22.9
     "@reduxjs/toolkit": ^1.9.5
     "@types/react": ^18.2.6
     "@types/react-dom": ^18.2.4
@@ -2522,6 +2530,7 @@ __metadata:
     formik: ^2.2.9
     react: ^18.2.0
     react-dom: ^18.2.0
+    react-native: 0.71.8
     react-redux: ^8.0.5
     yup: ^1.1.1
   languageName: unknown
@@ -6731,9 +6740,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.477":
-  version: 1.4.502
-  resolution: "electron-to-chromium@npm:1.4.502"
-  checksum: 69b63eaed50c951c371b1bd907c6775275d170adbdc6b6091b961a78766f5e223b17823afbbc5984c843addac06a5348d3b14acbcf5a746f871ca8cdee6caeba
+  version: 1.4.503
+  resolution: "electron-to-chromium@npm:1.4.503"
+  checksum: 77198f5d4365931fb6f18670f1cc2bc6833516dfe935e69209da45ba06fd9e3bb02678216ab8c1cf7b047655559b7d591d922d9a781a1f91c7f5a32d5f51f778
   languageName: node
   linkType: hard
 
@@ -7075,13 +7084,13 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^8.40.0":
-  version: 8.47.0
-  resolution: "eslint@npm:8.47.0"
+  version: 8.48.0
+  resolution: "eslint@npm:8.48.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.6.1
     "@eslint/eslintrc": ^2.1.2
-    "@eslint/js": ^8.47.0
+    "@eslint/js": 8.48.0
     "@humanwhocodes/config-array": ^0.11.10
     "@humanwhocodes/module-importer": ^1.0.1
     "@nodelib/fs.walk": ^1.2.8
@@ -7117,7 +7126,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 1988617f703eadc5c7540468d54dc8e5171cf2bb9483f6172799cd1ff54a9a5e4470f003784e8cef92687eaa14de37172732787040e67817581a20bcb9c15970
+  checksum: f20b359a4f8123fec5c033577368cc020d42978b1b45303974acd8da7a27063168ee3fe297ab5b35327162f6a93154063e3ce6577102f70f9809aff793db9bd0
   languageName: node
   linkType: hard
 
@@ -7822,12 +7831,13 @@ __metadata:
   linkType: hard
 
 "flat-cache@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "flat-cache@npm:3.0.4"
+  version: 3.1.0
+  resolution: "flat-cache@npm:3.1.0"
   dependencies:
-    flatted: ^3.1.0
+    flatted: ^3.2.7
+    keyv: ^4.5.3
     rimraf: ^3.0.2
-  checksum: 4fdd10ecbcbf7d520f9040dd1340eb5dfe951e6f0ecf2252edeec03ee68d989ec8b9a20f4434270e71bcfd57800dc09b3344fca3966b2eb8f613072c7d9a2365
+  checksum: 99312601d5b90f44aef403f17f056dc09be7e437703740b166cdc9386d99e681f74e6b6e8bd7d010bda66904ea643c9527276b1b80308a2119741d94108a4d8f
   languageName: node
   linkType: hard
 
@@ -7840,7 +7850,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flatted@npm:^3.1.0":
+"flatted@npm:^3.2.7":
   version: 3.2.7
   resolution: "flatted@npm:3.2.7"
   checksum: 427633049d55bdb80201c68f7eb1cbd533e03eac541f97d3aecab8c5526f12a20ccecaeede08b57503e772c769e7f8680b37e8d482d1e5f8d7e2194687f9ea35
@@ -8709,15 +8719,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-parse-stringify@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "html-parse-stringify@npm:3.0.1"
-  dependencies:
-    void-elements: 3.1.0
-  checksum: 334fdebd4b5c355dba8e95284cead6f62bf865a2359da2759b039db58c805646350016d2017875718bc3c4b9bf81a0d11be5ee0cf4774a3a5a7b97cde21cfd67
-  languageName: node
-  linkType: hard
-
 "html-webpack-plugin@npm:^5.5.0, html-webpack-plugin@npm:^5.5.1":
   version: 5.5.3
   resolution: "html-webpack-plugin@npm:5.5.3"
@@ -8861,24 +8862,6 @@ __metadata:
   version: 1.0.4
   resolution: "hyphenate-style-name@npm:1.0.4"
   checksum: 4f5bf4b055089754924babebaa23c17845937bcca6aee95d5d015f8fa1e6814279002bd6a9e541e3fac2cd02519fc76305396727066c57c8e21a7e73e7a12137
-  languageName: node
-  linkType: hard
-
-"i18next-browser-languagedetector@npm:^7.0.1":
-  version: 7.1.0
-  resolution: "i18next-browser-languagedetector@npm:7.1.0"
-  dependencies:
-    "@babel/runtime": ^7.19.4
-  checksum: 36981b9a9995ed66387f3735cceffe107ed3cdb6ca278d45fa243fabc65669c0eca095ed4a55a93dac046ca1eb23fd986ec0079723be7ebb8505e6ba25f379bb
-  languageName: node
-  linkType: hard
-
-"i18next@npm:^22.4.15":
-  version: 22.5.1
-  resolution: "i18next@npm:22.5.1"
-  dependencies:
-    "@babel/runtime": ^7.20.6
-  checksum: 175f8ab7fac2abcee147b00cc2d8e7d4fa9b05cdc227f02cac841fc2fd9545ed4a6d88774f594f8ad12dc944e4d34cc8e88aa00c8b9947baef9e859d93abd305
   languageName: node
   linkType: hard
 
@@ -9925,6 +9908,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-buffer@npm:3.0.1":
+  version: 3.0.1
+  resolution: "json-buffer@npm:3.0.1"
+  checksum: 9026b03edc2847eefa2e37646c579300a1f3a4586cfb62bf857832b60c852042d0d6ae55d1afb8926163fa54c2b01d83ae24705f34990348bdac6273a29d4581
+  languageName: node
+  linkType: hard
+
 "json-diff@npm:^1.0.6":
   version: 1.0.6
   resolution: "json-diff@npm:1.0.6"
@@ -10074,6 +10064,15 @@ __metadata:
     jwa: ^1.4.1
     safe-buffer: ^5.0.1
   checksum: f0213fe5b79344c56cd443428d8f65c16bf842dc8cb8f5aed693e1e91d79c20741663ad6eff07a6d2c433d1831acc9814e8d7bada6a0471fbb91d09ceb2bf5c2
+  languageName: node
+  linkType: hard
+
+"keyv@npm:^4.5.3":
+  version: 4.5.3
+  resolution: "keyv@npm:4.5.3"
+  dependencies:
+    json-buffer: 3.0.1
+  checksum: 3ffb4d5b72b6b4b4af443bbb75ca2526b23c750fccb5ac4c267c6116888b4b65681015c2833cb20d26cf3e6e32dac6b988c77f7f022e1a571b7d90f1442257da
   languageName: node
   linkType: hard
 
@@ -10454,7 +10453,7 @@ __metadata:
   dependencies:
     "@m-cafe-app/db": "workspace:^"
     "@m-cafe-app/shared-backend-deps": "workspace:^"
-    "@m-cafe-app/shared-deps": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     "@types/bcryptjs": ^2.4.2
@@ -10479,7 +10478,6 @@ __metadata:
     express: ^4.18.2
     express-async-errors: ^3.1.1
     fast-check: ^3.11.0
-    glob: ^10.3.3
     helmet: ^7.0.0
     json-diff: ^1.0.6
     jsonwebtoken: ^9.0.0
@@ -10493,16 +10491,45 @@ __metadata:
     ts-node: ^10.9.1
     tsc-watch: ^6.0.4
     typescript: ~5.1.6
-    umzug: ^3.2.1
   languageName: unknown
   linkType: soft
 
-"m-cafe-frontend@workspace:services/frontend":
+"m-cafe-mobile@workspace:services/mobile":
   version: 0.0.0-use.local
-  resolution: "m-cafe-frontend@workspace:services/frontend"
+  resolution: "m-cafe-mobile@workspace:services/mobile"
   dependencies:
-    "@m-cafe-app/redux-store": "workspace:^"
-    "@m-cafe-app/shared-deps": "workspace:^"
+    "@expo/metro-config": ^0.10.7
+    "@expo/webpack-config": ^18.1.2
+    "@m-cafe-app/frontend-components": "workspace:^"
+    "@m-cafe-app/frontend-logic": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
+    "@m-cafe-app/shared-dev-deps": "workspace:^"
+    "@m-cafe-app/shared-frontend-deps": "workspace:^"
+    "@m-cafe-app/utils": "workspace:^"
+    "@react-native-async-storage/async-storage": 1.17.11
+    expo: ^48.0.17
+    expo-linking: ~4.0.1
+    expo-status-bar: ~1.4.4
+    react-native-web: ~0.18.10
+    react-router-native: ^6.14.2
+    use-debounce: ^9.0.4
+  peerDependencies:
+    "@babel/core": ^7.20.0
+    "@babel/preset-env": ^7.22.9
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    react-native: 0.71.8
+    typescript: ~5.1.6
+  languageName: unknown
+  linkType: soft
+
+"m-cafe-web@workspace:services/web":
+  version: 0.0.0-use.local
+  resolution: "m-cafe-web@workspace:services/web"
+  dependencies:
+    "@m-cafe-app/frontend-components": "workspace:^"
+    "@m-cafe-app/frontend-logic": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
     "@m-cafe-app/shared-frontend-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
@@ -10514,10 +10541,7 @@ __metadata:
     fork-ts-checker-webpack-plugin: ^8.0.0
     html-loader: ^4.2.0
     html-webpack-plugin: ^5.5.1
-    i18next: ^22.4.15
-    i18next-browser-languagedetector: ^7.0.1
     mini-css-extract-plugin: ^2.7.5
-    react-i18next: ^12.2.2
     react-router-dom: ^6.11.2
     sass: ^1.62.1
     sass-loader: ^13.2.2
@@ -10529,35 +10553,8 @@ __metadata:
     webpack-cli: ^5.1.1
     webpack-dev-server: ^4.15.0
   peerDependencies:
-    react: "*"
-    react-dom: "*"
-  languageName: unknown
-  linkType: soft
-
-"m-cafe-mobile@workspace:services/mobile":
-  version: 0.0.0-use.local
-  resolution: "m-cafe-mobile@workspace:services/mobile"
-  dependencies:
-    "@babel/core": ^7.20.0
-    "@babel/preset-env": ^7.22.9
-    "@expo/metro-config": ^0.10.7
-    "@expo/webpack-config": ^18.1.2
-    "@m-cafe-app/shared-deps": "workspace:^"
-    "@m-cafe-app/shared-dev-deps": "workspace:^"
-    "@m-cafe-app/shared-frontend-deps": "workspace:^"
-    "@m-cafe-app/utils": "workspace:^"
-    "@react-native-async-storage/async-storage": 1.17.11
-    expo: ^48.0.17
-    expo-linking: ~4.0.1
-    expo-status-bar: ~1.4.4
-    react-native: 0.71.8
-    react-native-web: ~0.18.10
-    react-router-native: ^6.14.2
-    use-debounce: ^9.0.4
-  peerDependencies:
-    react: "*"
-    react-dom: "*"
-    typescript: "*"
+    react: ^18.2.0
+    react-dom: ^18.2.0
   languageName: unknown
   linkType: soft
 
@@ -13424,24 +13421,6 @@ __metadata:
   version: 2.0.4
   resolution: "react-fast-compare@npm:2.0.4"
   checksum: 06046595f90a4e3e3a56f40a8078c00aa71bdb064ddb98343f577f546aa22e888831fd45f009c93b34707cc842b4c637737e956fd13d6f80607ee92fb9cf9a1c
-  languageName: node
-  linkType: hard
-
-"react-i18next@npm:^12.2.2":
-  version: 12.3.1
-  resolution: "react-i18next@npm:12.3.1"
-  dependencies:
-    "@babel/runtime": ^7.20.6
-    html-parse-stringify: ^3.0.1
-  peerDependencies:
-    i18next: ">= 19.0.0"
-    react: ">= 16.8.0"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: fe3f360e5184bc63861734e94bf625a09b9ec0d28fab41779a68758af258fd1737dde25ff7a88ddb66c1571a3e3de5b3403825a91b4949bf9832a00615acb87a
   languageName: node
   linkType: hard
 
@@ -16321,13 +16300,6 @@ __metadata:
   version: 1.0.1
   resolution: "vlq@npm:1.0.1"
   checksum: 67ab6dd35c787eaa02c0ff1a869dd07a230db08722fb6014adaaf432634808ddb070765f70958b47997e438c331790cfcf20902411b0d6453f1a2a5923522f55
-  languageName: node
-  linkType: hard
-
-"void-elements@npm:3.1.0":
-  version: 3.1.0
-  resolution: "void-elements@npm:3.1.0"
-  checksum: 0390f818107fa8fce55bb0a5c3f661056001c1d5a2a48c28d582d4d847347c2ab5b7f8272314cac58acf62345126b6b09bea623a185935f6b1c3bbce0dfd7f7f
   languageName: node
   linkType: hard
 

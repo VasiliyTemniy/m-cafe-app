@@ -28,7 +28,7 @@ import {
   minStreetLen,
   regionRegExp,
   streetRegExp
-} from '../constants.js';
+} from '@m-cafe-app/shared-constants';
 
 
 export class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {

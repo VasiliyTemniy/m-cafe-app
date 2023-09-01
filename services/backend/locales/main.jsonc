@@ -1,0 +1,45 @@
+// You can edit your locales here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for tNodePath
+{
+  "main": {
+    "cart": {
+      "mainStr": "Корзина",
+      "secStr": "Cart"
+    },
+    "buttonLabel": {
+      "cancel": {
+        "mainStr": "Отмена",
+        "secStr": "Cancel"
+      },
+      "submit": {
+        "mainStr": "Подтвердить",
+        "secStr": "Submit"
+      }
+    },
+    "languageNames": {
+      "main": {
+        "mainStr": "РУ",
+        "secStr": "RU"
+      },
+      "sec": {
+        "mainStr": "EN",
+        "secStr": "EN"
+      },
+      "alt": {
+        "mainStr": "РЕЗЕРВ",
+        "secStr": "RESERVE"
+      },
+      "mainFull": {
+        "mainStr": "Русский",
+        "secStr": "Russian"
+      },
+      "secFull": {
+        "mainStr": "Английский",
+        "secStr": "English"
+      },
+      "altFull": {
+        "mainStr": "РЕЗЕРВ",
+        "secStr": "RESERVE"
+      }
+    }
+  }
+}
