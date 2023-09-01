@@ -1,9 +1,15 @@
 import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { sharedReducers } from '../shared/store';
+import ingredientsReducer from './reducers/ingredientsReducer';
+
+export const managerReducers = {
+  ingredient: ingredientsReducer
+};
 
 const store = configureStore({
   reducer: {
-    ...sharedReducers
+    ...sharedReducers,
+    ...managerReducers
   },
 });
 
