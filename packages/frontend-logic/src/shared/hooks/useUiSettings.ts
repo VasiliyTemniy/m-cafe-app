@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { UiSettingDT } from "@m-cafe-app/utils";
-import { useAppSelector } from "../index";
+import { useAppSelector } from "../defineReduxHooks";
 
 export type UIFunction = (uiNode: string) => UiSettingDT[];
 

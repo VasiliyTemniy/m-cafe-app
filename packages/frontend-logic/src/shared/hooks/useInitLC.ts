@@ -3,7 +3,7 @@ import { ApplicationError } from "@m-cafe-app/utils";
 import { useUiSettings } from "./useUiSettings";
 import { CSSProperties } from "react";
 import { isCSSPropertyKey } from "@m-cafe-app/shared-constants";
-import { useAppSelector } from "../index";
+import { useAppSelector } from "../defineReduxHooks";
 import { useTranslation } from './useTranslation';
 import { CommonSCProps, LCSpecificValue } from '../../types';
 
