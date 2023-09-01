@@ -3,7 +3,7 @@ import { handleAxiosError } from '../../utils/errorHandler';
 import { AppDispatch } from '../store';
 import fixedLocService from '../services/fixedLoc';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
-import { TFunction } from '../hooks/useTranslation';
+import { TFunction } from '../hooks';
 
 type SetFixedLocAction = {
   payload: {
