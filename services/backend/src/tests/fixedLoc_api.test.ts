@@ -150,7 +150,7 @@ describe('FixedLoc requests tests', () => {
   it('FixedLoc PUT /:id updates fixedLoc data, can be used by admin', async () => {
 
     const updFixedLoc: EditFixedLocBody = {
-      name: 'editTest',
+      name: 'editTest', // fixed locs names must be unmutable, so the name does not get changed even if put for correct fixed loc id
       locString: {
         id: fixedLocs[0].locStringId,
         mainStr: 'Тест по изменению'
@@ -174,11 +174,13 @@ describe('FixedLoc requests tests', () => {
       ]
     });
 
-    expect(response.body.name).to.equal(updFixedLoc.name);
+    expect(response.body.name).to.not.equal(updFixedLoc.name);
+    expect(response.body.name).to.equal(fixedLocs[0].name);
     expect(response.body.locString.mainStr).to.equal(updFixedLoc.locString.mainStr);
 
 
-    expect(updFixedLocInDB?.name).to.equal(updFixedLoc.name);
+    expect(updFixedLocInDB?.name).to.not.equal(updFixedLoc.name);
+    expect(updFixedLocInDB?.name).to.equal(fixedLocs[0].name);
     expect(updFixedLocInDB?.locString?.mainStr).to.equal(updFixedLoc.locString.mainStr);
 
   });
