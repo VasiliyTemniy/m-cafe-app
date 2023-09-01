@@ -14,6 +14,7 @@ Written in typescript without 'any', but with few type assertions
 | Backend cache | Redis |
 | Web frontend | React + webpack |
 | Mobile frontend | ReactNative + expo |
+| Frontend state | reduxjs + toolkit |
 | CI / (no CD atm) | Github actions |
 
 ### Goals
