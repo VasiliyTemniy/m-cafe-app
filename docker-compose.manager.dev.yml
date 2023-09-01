@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+
+  web-manager:
+    image: m-cafe-web-dev-manager
+    build:
+      context: ./
+      dockerfile: ./services/web/dev.Dockerfile
+      target: run-stage-web-manager
+    volumes:
+      - ./services/web:/usr/src/app/services/web
+      - ./packages/frontend-logic:/usr/src/app/packages/frontend-logic
+      - ./packages/frontend-components:/usr/src/app/packages/frontend-components
+      - ./packages/utils:/usr/src/app/packages/utils
+      - ./packages/db:/usr/src/app/packages/db
+      - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
+      - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
+      - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
+    container_name: m-cafe-web-dev-manager
+    env_file:
+      - ./docker-envs/.dev.docker-front.env
+      - ./docker-envs/.docker.validation-overrides.env
+
+  redis:
+    image: redis:7.0.12-alpine3.18
+    container_name: m-cafe-redis-dev
+    restart: always
+    command: ["redis-server", "/etc/redis/redis.conf"]
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.dev.conf:/etc/redis/redis.conf:ro
+
+  postgres_db:
+    image: postgres:15.3-alpine3.18
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vasuser
+      POSTGRES_PASSWORD: crapassword
+      POSTGRES_DB: cafe
+    container_name: m-cafe-postgres_db-dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:4.8.1-standalone
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres_db
+    container_name: m-cafe-adminer-dev
+    depends_on:
+      - postgres_db
+
+  backend:
+    image: m-cafe-backend-dev
+    build:
+      context: ./
+      dockerfile: ./services/backend/dev.Dockerfile
+    volumes:
+      - ./services/backend:/usr/src/app/services/backend
+      - ./packages/utils:/usr/src/app/packages/utils
+      - ./packages/db:/usr/src/app/packages/db
+      - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
+      - ./packages/shared-constants:/usr/src/app/packages/shared-constants
+      - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
+    container_name: m-cafe-backend-dev
+    env_file:
+      - ./docker-envs/.dev.docker-back.env
+      - ./docker-envs/.docker.validation-overrides.env
+    depends_on:
+      - postgres_db
+      - redis
+
+  nginx:
+    image: nginx:1.25.1
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: m-cafe-reverse-proxy-dev
+
+volumes:
+  pgdata:
