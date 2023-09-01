@@ -2469,6 +2469,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@m-cafe-app/frontend-components@workspace:^, @m-cafe-app/frontend-components@workspace:packages/frontend-components":
+  version: 0.0.0-use.local
+  resolution: "@m-cafe-app/frontend-components@workspace:packages/frontend-components"
+  dependencies:
+    "@m-cafe-app/frontend-logic": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
+    "@m-cafe-app/shared-frontend-deps": "workspace:^"
+    "@m-cafe-app/utils": "workspace:^"
+    typescript: ~5.1.6
+  languageName: unknown
+  linkType: soft
+
 "@m-cafe-app/frontend-logic@workspace:^, @m-cafe-app/frontend-logic@workspace:packages/frontend-logic":
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/frontend-logic@workspace:packages/frontend-logic"
@@ -10488,6 +10500,8 @@ __metadata:
   dependencies:
     "@expo/metro-config": ^0.10.7
     "@expo/webpack-config": ^18.1.2
+    "@m-cafe-app/frontend-components": "workspace:^"
+    "@m-cafe-app/frontend-logic": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
     "@m-cafe-app/shared-frontend-deps": "workspace:^"
@@ -10513,6 +10527,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "m-cafe-web@workspace:services/web"
   dependencies:
+    "@m-cafe-app/frontend-components": "workspace:^"
     "@m-cafe-app/frontend-logic": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
