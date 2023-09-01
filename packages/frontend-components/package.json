@@ -1,0 +1,22 @@
+{
+  "name": "@m-cafe-app/frontend-components",
+  "productName": "Modular cafe app",
+  "version": "1.0.0",
+  "description": "This package contains most part of stateful and layout components for both web and mobile frontend",
+  "main": "build/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "eslint": "eslint ./**/*.{ts,tsx}"
+  },
+  "dependencies": {
+    "@m-cafe-app/frontend-logic": "workspace:^",
+    "@m-cafe-app/shared-constants": "workspace:^",
+    "@m-cafe-app/shared-frontend-deps": "workspace:^",
+    "@m-cafe-app/utils": "workspace:^"
+  },
+  "devDependencies": {
+    "typescript": "~5.1.6"
+  }
+}
