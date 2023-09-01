@@ -13,7 +13,7 @@ COPY --chown=node:node packages/utils/package.json packages/utils/package.json
 
 COPY --chown=node:node services/backend/package.json services/backend/package.json
 
-COPY --chown=node:node services/frontend/package.json services/frontend/package.json
+COPY --chown=node:node services/web/package.json services/web/package.json
 
 COPY --chown=node:node .eslintrc .
 COPY --chown=node:node .yarnrc.yml .
@@ -94,7 +94,7 @@ COPY --chown=node:node --from=build-stage-back usr/src/app/services/backend/publ
 COPY --chown=node:node --from=build-stage-back usr/src/app/services/backend/package.json services/backend/package.json
 
 # COPY frontend package.json
-COPY --chown=node:node services/frontend/package.json services/frontend/package.json
+COPY --chown=node:node services/web/package.json services/web/package.json
 
 # COPY main project meta
 COPY --chown=node:node .yarnrc.yml .
@@ -112,7 +112,7 @@ RUN yarn workspaces focus m-cafe-backend --production
 
 # Delete unused
 RUN rm -rf .yarn/cache
-RUN rm -rf services/frontend
+RUN rm -rf services/web
 
 RUN mkdir -p /usr/src/app/public
 RUN chown -Rh node:node /usr/src/app/public

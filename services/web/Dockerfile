@@ -1,9 +1,9 @@
-FROM node:18.16-alpine3.18 AS base-front
+FROM node:18.16-alpine3.18 AS base-web
 
 WORKDIR /usr/src/app
 
 
-FROM base-front as copy-package-files-stage-front
+FROM base-web as copy-package-files-stage-web
 
 COPY --chown=node:node packages/shared-dev-deps/package.json packages/shared-dev-deps/package.json
 # Shared backend deps are needed to build db package and infer types from there to utils package
@@ -16,7 +16,7 @@ COPY --chown=node:node packages/frontend-logic/package.json packages/frontend-lo
 
 COPY --chown=node:node services/backend/package.json services/backend/package.json
 
-COPY --chown=node:node services/frontend/package.json services/frontend/package.json
+COPY --chown=node:node services/web/package.json services/web/package.json
 
 COPY --chown=node:node .eslintrc .
 COPY --chown=node:node .yarnrc.yml .
@@ -25,7 +25,7 @@ COPY --chown=node:node package.json .
 COPY --chown=node:node yarn.lock .
 
 
-FROM copy-package-files-stage-front as install-stage-front
+FROM copy-package-files-stage-web as install-stage-web
 
 ENV NODE_ENV development
 
@@ -42,7 +42,7 @@ RUN yarn workspaces focus m-cafe-app
 RUN yarn workspaces focus m-cafe-web
 
 
-FROM install-stage-front as copy-stage-front
+FROM install-stage-web as copy-stage-web
 
 COPY --chown=node:node packages/shared-dev-deps packages/shared-dev-deps
 COPY --chown=node:node packages/shared-backend-deps packages/shared-backend-deps
@@ -51,10 +51,10 @@ COPY --chown=node:node packages/db packages/db
 COPY --chown=node:node packages/utils packages/utils
 COPY --chown=node:node packages/frontend-logic packages/frontend-logic
 
-COPY --chown=node:node services/frontend services/frontend
+COPY --chown=node:node services/web services/web
 
 
-FROM copy-stage-front as prepare-stage-front
+FROM copy-stage-web as prepare-stage-web
 
 RUN yarn run prepare:frontend
 
@@ -67,29 +67,29 @@ ENV BACKEND_URL ${BACKEND_URL?backend_url_not_set}
 ENV DOCKERIZED=true
 
 
-FROM prepare-stage-front AS build-stage-front-customer
+FROM prepare-stage-web AS build-stage-web-customer
 
 RUN yarn run build:frontend:customer
 
-FROM prepare-stage-front AS build-stage-front-admin
+FROM prepare-stage-web AS build-stage-web-admin
 
 RUN yarn run build:frontend:admin
 
-FROM prepare-stage-front AS build-stage-front-manager
+FROM prepare-stage-web AS build-stage-web-manager
 
 RUN yarn run build:frontend:manager
 
 
 # Below are different targets for docker-compose.yml
 
-FROM nginx:1.25.1-alpine-slim AS run-prod-front-customer
+FROM nginx:1.25.1-alpine-slim AS run-prod-web-customer
 
-COPY --from=build-stage-front-customer /usr/src/app/services/frontend/.webpack.customer /usr/share/nginx/html
+COPY --from=build-stage-web-customer /usr/src/app/services/web/.webpack.customer /usr/share/nginx/html
 
-FROM nginx:1.25.1-alpine-slim AS run-prod-front-admin
+FROM nginx:1.25.1-alpine-slim AS run-prod-web-admin
 
-COPY --from=build-stage-front-admin /usr/src/app/services/frontend/.webpack.admin /usr/share/nginx/html
+COPY --from=build-stage-web-admin /usr/src/app/services/web/.webpack.admin /usr/share/nginx/html
 
-FROM nginx:1.25.1-alpine-slim AS run-prod-front-manager
+FROM nginx:1.25.1-alpine-slim AS run-prod-web-manager
 
-COPY --from=build-stage-front-manager /usr/src/app/services/frontend/.webpack.manager /usr/share/nginx/html
+COPY --from=build-stage-web-manager /usr/src/app/services/web/.webpack.manager /usr/share/nginx/html

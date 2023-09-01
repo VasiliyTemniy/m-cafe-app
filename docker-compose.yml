@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
 
-  frontend-customer:
+  web-customer:
     image: m-cafe-web-customer
     build:
       context: ./
-      dockerfile: ./services/frontend/Dockerfile
-      target: run-prod-front-customer
+      dockerfile: ./services/web/Dockerfile
+      target: run-prod-web-customer
       args:
         - BACKEND_URL=http://localhost:8080/api
     container_name: m-cafe-web-customer
@@ -16,12 +16,12 @@ services:
     depends_on:
       - nginx
 
-  frontend-admin:
+  web-admin:
     image: m-cafe-web-admin
     build:
       context: ./
-      dockerfile: ./services/frontend/Dockerfile
-      target: run-prod-front-admin
+      dockerfile: ./services/web/Dockerfile
+      target: run-prod-web-admin
       args:
         - BACKEND_URL=http://localhost:8080/api
     container_name: m-cafe-web-admin
@@ -30,12 +30,12 @@ services:
     depends_on:
       - nginx
 
-  frontend-manager:
+  web-manager:
     image: m-cafe-web-manager
     build:
       context: ./
-      dockerfile: ./services/frontend/Dockerfile
-      target: run-prod-front-manager
+      dockerfile: ./services/web/Dockerfile
+      target: run-prod-web-manager
       args:
         - BACKEND_URL=http://localhost:8080/api
     container_name: m-cafe-web-manager

@@ -13,7 +13,7 @@ COPY --chown=node:node packages/utils/package.json packages/utils/package.json
 
 COPY --chown=node:node services/backend/package.json services/backend/package.json
 
-COPY --chown=node:node services/frontend/package.json services/frontend/package.json
+COPY --chown=node:node services/web/package.json services/web/package.json
 
 COPY --chown=node:node .eslintrc .
 COPY --chown=node:node .yarnrc.yml .

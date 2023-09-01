@@ -2,19 +2,19 @@ version: '3.8'
 
 services:
 
-  frontend-customer:
+  web-customer:
     image: m-cafe-web-dev-customer
     build:
       context: ./
-      dockerfile: ./services/frontend/dev.Dockerfile
-      target: run-stage-front-customer
+      dockerfile: ./services/web/dev.Dockerfile
+      target: run-stage-web-customer
     volumes:
       # Isolated frontend part to prevent reload on another target begin
-      - ./services/frontend/customer:/usr/src/app/services/frontend/customer
-      - ./services/frontend/shared:/usr/src/app/services/frontend/shared
-      - ./services/frontend/webpack_config:/usr/src/app/services/frontend/webpack_config
-      - ./services/frontend/package.json:/usr/src/app/services/frontend/package.json
-      - ./services/frontend/tsconfig.json:/usr/src/app/services/frontend/tsconfig.json
+      - ./services/web/customer:/usr/src/app/services/web/customer
+      - ./services/web/shared:/usr/src/app/services/web/shared
+      - ./services/web/webpack_config:/usr/src/app/services/web/webpack_config
+      - ./services/web/package.json:/usr/src/app/services/web/package.json
+      - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
       # Isolated frontend part to prevent reload on another target end
       # Isolated frontend-logic part to prevent reload on another target begin
       - ./packages/frontend-logic/src/customer:/usr/src/app/packages/frontend-logic/src/customer
@@ -35,19 +35,19 @@ services:
       - ./docker-envs/.dev.docker-front.env
       - ./docker-envs/.docker.validation-overrides.env
 
-  frontend-admin:
+  web-admin:
     image: m-cafe-web-dev-admin
     build:
       context: ./
-      dockerfile: ./services/frontend/dev.Dockerfile
-      target: run-stage-front-admin
+      dockerfile: ./services/web/dev.Dockerfile
+      target: run-stage-web-admin
     volumes:
       # Isolated frontend part to prevent reload on another target begin
-      - ./services/frontend/admin:/usr/src/app/services/frontend/admin
-      - ./services/frontend/shared:/usr/src/app/services/frontend/shared
-      - ./services/frontend/webpack_config:/usr/src/app/services/frontend/webpack_config
-      - ./services/frontend/package.json:/usr/src/app/services/frontend/package.json
-      - ./services/frontend/tsconfig.json:/usr/src/app/services/frontend/tsconfig.json
+      - ./services/web/admin:/usr/src/app/services/web/admin
+      - ./services/web/shared:/usr/src/app/services/web/shared
+      - ./services/web/webpack_config:/usr/src/app/services/web/webpack_config
+      - ./services/web/package.json:/usr/src/app/services/web/package.json
+      - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
       # Isolated frontend part to prevent reload on another target end
       # Isolated frontend-logic part to prevent reload on another target begin
       - ./packages/frontend-logic/src/admin:/usr/src/app/packages/frontend-logic/src/admin
@@ -68,19 +68,19 @@ services:
       - ./docker-envs/.dev.docker-front.env
       - ./docker-envs/.docker.validation-overrides.env
 
-  frontend-manager:
+  web-manager:
     image: m-cafe-web-dev-manager
     build:
       context: ./
-      dockerfile: ./services/frontend/dev.Dockerfile
-      target: run-stage-front-manager
+      dockerfile: ./services/web/dev.Dockerfile
+      target: run-stage-web-manager
     volumes:
       # Isolated frontend part to prevent reload on another target begin
-      - ./services/frontend/manager:/usr/src/app/services/frontend/manager
-      - ./services/frontend/shared:/usr/src/app/services/frontend/shared
-      - ./services/frontend/webpack_config:/usr/src/app/services/frontend/webpack_config
-      - ./services/frontend/package.json:/usr/src/app/services/frontend/package.json
-      - ./services/frontend/tsconfig.json:/usr/src/app/services/frontend/tsconfig.json
+      - ./services/web/manager:/usr/src/app/services/web/manager
+      - ./services/web/shared:/usr/src/app/services/web/shared
+      - ./services/web/webpack_config:/usr/src/app/services/web/webpack_config
+      - ./services/web/package.json:/usr/src/app/services/web/package.json
+      - ./services/web/tsconfig.json:/usr/src/app/services/web/tsconfig.json
       # Isolated frontend part to prevent reload on another target end
       # Isolated frontend-logic part to prevent reload on another target begin
       - ./packages/frontend-logic/src/manager:/usr/src/app/packages/frontend-logic/src/manager

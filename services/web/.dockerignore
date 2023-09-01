@@ -10,23 +10,23 @@ node_modules
 .git
 
 dist
-services/frontend/dist
+services/web/dist
 
 .eslintrc
 
 .eslintignore
 
-services/frontend/.eslint*
+services/web/.eslint*
 **/*/.eslint*
 
 .webpack
 .webpack-dev
 .webpack.*
 .webpack-dev.*
-services/frontend/.webpack.user
-services/frontend/.webpack.admin
-services/frontend/.webpack.manager
-services/frontend/.webpack-dev.user
-services/frontend/.webpack-dev.admin
-services/frontend/.webpack-dev.manager
-services/frontend/.webpack*.*
+services/web/.webpack.user
+services/web/.webpack.admin
+services/web/.webpack.manager
+services/web/.webpack-dev.user
+services/web/.webpack-dev.admin
+services/web/.webpack-dev.manager
+services/web/.webpack*.*
