@@ -1,6 +1,6 @@
 {
   "name": "@m-cafe-app/utils",
-  "productName": "Custom cafe DIY-app",
+  "productName": "Modular cafe app",
   "version": "1.0.0",
   "description": "This package contains common and transit for frontend and backend: types, type guards, validators, errors",
   "main": "build/index.js",

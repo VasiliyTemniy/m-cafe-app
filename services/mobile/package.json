@@ -1,6 +1,8 @@
 {
   "name": "m-cafe-mobile",
-  "version": "1.0.0",
+  "productName": "Modular cafe app",
+  "version": "0.1.0",
+  "description": "DIY cafe app mobile frontend",
   "main": "./index.js",
   "scripts": {
     "start": "expo start",

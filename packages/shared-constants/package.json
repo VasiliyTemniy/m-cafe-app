@@ -1,6 +1,6 @@
 {
   "name": "@m-cafe-app/shared-constants",
-  "productName": "Custom cafe DIY-app",
+  "productName": "Modular cafe app",
   "version": "1.0.0",
   "description": "This package contains shared constants, for all services",
   "main": "build/index.js",

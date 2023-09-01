@@ -1,8 +1,8 @@
 {
   "name": "m-cafe-web",
-  "productName": "Custom cafe DIY-app",
+  "productName": "Modular cafe app",
   "version": "0.1.0",
-  "description": "DIY cafe app frontend",
+  "description": "DIY cafe app web frontend",
   "main": ".webpack/main",
   "type": "module",
   "scripts": {

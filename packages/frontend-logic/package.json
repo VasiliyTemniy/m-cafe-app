@@ -1,6 +1,6 @@
 {
   "name": "@m-cafe-app/frontend-logic",
-  "productName": "Custom cafe DIY-app",
+  "productName": "Modular cafe app",
   "version": "1.0.0",
   "description": "This package contains redux stores, frontend services, shared stateful components for web and mobile frontend",
   "main": "build/index.js",

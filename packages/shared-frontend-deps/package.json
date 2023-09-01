@@ -1,6 +1,6 @@
 {
   "name": "@m-cafe-app/shared-frontend-deps",
-  "productName": "Custom cafe DIY-app",
+  "productName": "Modular cafe app",
   "version": "1.0.0",
   "description": "This package contains shared dependencies, specifically for frontend",
   "main": "./index.js",

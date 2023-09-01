@@ -1,6 +1,6 @@
 {
   "name": "@m-cafe-app/db",
-  "productName": "Custom cafe DIY-app",
+  "productName": "Modular cafe app",
   "version": "1.0.0",
   "description": "This package contains db model definitions",
   "main": "build/index.js",

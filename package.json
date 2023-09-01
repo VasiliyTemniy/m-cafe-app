@@ -1,6 +1,6 @@
 {
   "name": "m-cafe-app",
-  "productName": "Custom cafe DIY-app",
+  "productName": "Modular cafe app",
   "version": "0.1.0",
   "description": "Quickly deployable cafe app template with slight customization via admin ui",
   "main": "services/web/.webpack/main",
