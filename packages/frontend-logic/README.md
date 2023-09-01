@@ -1,13 +1,10 @@
 # Frontend logic package
 
-This package is divided to three stores:
+This package is divided to four parts:
 
-- User store, which has all basic user state and actions
-- Manager store, which has most of user state and actions and some more. All user actions are imported from user store to make sure that if user store src changes, manager store src changes accordingly
-- Admin store, which has all functionality from both user and manager and adds admin-specific reducers
+- Customer: contains all basic customer state, actions, customer-specific hooks
+- Manager: contains most of customer state and actions and some more. All customer actions are imported from customer store to make sure that if customer store src changes, manager store src changes accordingly
+- Admin: has all functionality from both customer and manager and adds admin-specific reducers and hooks
+- Shared: frontend services, reducers and hooks used by all frontend modules
 
-Some reducers files have the same name, this means that if such file happens to be in for example admin folder, it imports user or manager reducer base and appends it with admin-specific logic, thunks, reducers and actions
-
-Last letters in component names mean:
-  *SC - Stateful Component
-  *LC - Layout Component
+Some reducers and services files have the same name, this means that if such file happens to be in for example admin folder, it imports customer or manager reducer or service base and appends it with admin-specific logic, thunks, reducers, actions and routes
