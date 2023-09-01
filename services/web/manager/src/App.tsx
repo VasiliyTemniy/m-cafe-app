@@ -1,7 +1,7 @@
-import { useAppSelector } from '@m-cafe-app/frontend-logic/src/manager/hooks/reduxHooks';
+import { useAppSelector } from '@m-cafe-app/frontend-logic/manager';
 import AppRoutes from './AppRoutes';
 // import LoginPage from '../../shared/components/LoginPage';
-import { ContainerLC } from '../../shared/components/basic/ContainerLC';
+import { ContainerLC } from '@m-cafe-app/frontend-components/lcWeb';
 
 
 

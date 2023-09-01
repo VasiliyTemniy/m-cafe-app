@@ -2,7 +2,7 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { UnderConstructionLC } from '../../shared/components';
 
-import { apiBaseUrl } from '../../shared/utils/config';
+import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 
 const AppRoutes = () => {
   return (

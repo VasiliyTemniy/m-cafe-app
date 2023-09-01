@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
-import store from '@m-cafe-app/frontend-logic/src/manager';
+import store from '@m-cafe-app/frontend-logic/manager';
 import { HashRouter as Router } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import App from './App';
