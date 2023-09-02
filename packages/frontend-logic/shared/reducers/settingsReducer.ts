@@ -4,6 +4,7 @@ import { AppDispatch } from '../store';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { TFunction } from '../hooks';
+import { Md5 } from 'ts-md5';
 
 
 type SettingsActionSetLanguage = { payload: { language: 'main' | 'sec' | 'alt' } };
@@ -14,14 +15,22 @@ type SettingsActionSetTheme = { payload: { theme: 'dark' | 'light' } };
 
 
 export type SettingsState = {
-  uiSettings: {
+  dbUiSettings: UiSettingDT[],
+  actualUiSettings: {
     [key: string]: UiSettingDT[]
   },
+  uiSettingsHash: string,
   theme: 'dark' | 'light',
   language: 'main' | 'sec' | 'alt'
 };
 
-const initialState: SettingsState = { uiSettings: {}, theme: 'light', language: 'main' };
+const initialState: SettingsState = {
+  dbUiSettings: [],
+  actualUiSettings: {},
+  uiSettingsHash: '',
+  theme: 'light',
+  language: 'main'
+};
 
 export const sharedSettingsSliceBase = {
   name: 'settings',
@@ -31,12 +40,30 @@ export const sharedSettingsSliceBase = {
       return { ...state, language: action.payload.language };
     },
     setUiSettings: (state: SettingsState, action: SettingsActionSetUiSettings): SettingsState => {
+      return { ...state, dbUiSettings: action.payload.uiSettings };
+    },
+    /**
+     * Reads DB ui settings, splits names to namespaces ( like `${componentType}-${theme}-baseVariant` )
+     * and actual settings names ( like className if ends with -classNames or CSS property name if ends with -inlineCSS )
+     * Filters all settings with value === 'false'
+     * @example
+     * So, uiSetting = { name: 'input-dark-classNames.shadowed', value: 'true' }
+     * 
+     * gets split to:
+     * namespace === 'input-dark-classNames',
+     * uiSetting: { name: 'shadowed', value: 'true' }
+     */
+    parseUiSettings: (state: SettingsState, action: SettingsActionSetUiSettings): SettingsState => {
       const newUiSettingsState = {} as { [key: string]: UiSettingDT[] };
       for (const uiSetting of action.payload.uiSettings) {
-        const namespace = uiSetting.name.split('.')[0];
-        newUiSettingsState[namespace].push(uiSetting);
+        if (uiSetting.value === 'false') continue;
+        const nameParts = uiSetting.name.split('.');
+        const namespace = nameParts[0];
+        const uiSettingName = nameParts[1] ? nameParts[1] : '';
+        newUiSettingsState[namespace].push({ ...uiSetting, name: uiSettingName });
       }
-      return { ...state, uiSettings: newUiSettingsState };
+      const uiSettingsHash = Md5.hashStr(JSON.stringify(newUiSettingsState));
+      return { ...state, actualUiSettings: newUiSettingsState, uiSettingsHash };
     },
     setTheme: (state: SettingsState, action: SettingsActionSetTheme): SettingsState => {
       return { ...state, theme: action.payload.theme };
@@ -48,7 +75,7 @@ const settingsSlice = createSlice({
   ...sharedSettingsSliceBase
 });
 
-export const { setLanguage, setUiSettings, setTheme } = settingsSlice.actions;
+export const { setLanguage, setUiSettings, parseUiSettings, setTheme } = settingsSlice.actions;
 
 export const initUiSettings = (t: TFunction) => {
   return async (dispatch: AppDispatch) => {

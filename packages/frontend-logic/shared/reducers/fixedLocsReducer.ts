@@ -4,6 +4,7 @@ import { AppDispatch } from '../store';
 import fixedLocService from '../services/fixedLoc';
 import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
 import { TFunction } from '../hooks';
+import { Md5 } from 'ts-md5';
 
 type SetFixedLocAction = {
   payload: {
@@ -16,21 +17,25 @@ type SetFixedLocAction = {
  * key: string is namespace name
  */
 export type FixedLocState = {
-  [key: string]: FixedLocDT[]
+  locs: {
+    [key: string]: FixedLocDT[]
+  },
+  locsHash: string;
 };
 
-const initialState: FixedLocState = {};
+const initialState: FixedLocState = { locs: {}, locsHash: '' };
 
 export const sharedFixedLocSliceBase = {
   name: 'fixedLocs',
   initialState,
   reducers: {
     setFixedLocs(state: FixedLocState, action: SetFixedLocAction) {
-      const newState = {} as FixedLocState;
+      const newState = { locs: {}, locsHash: '' } as FixedLocState;
       for (const loc of action.payload.locs) {
         const namespace = loc.name.split('.')[0];
-        newState[namespace].push(loc);
+        newState.locs[namespace].push(loc);
       }
+      newState.locsHash = Md5.hashStr(JSON.stringify(newState.locs));
       return { ...newState };
     }
   }
