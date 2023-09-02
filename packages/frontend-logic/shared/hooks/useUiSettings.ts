@@ -5,23 +5,17 @@ import { useAppSelector } from "../defineReduxHooks";
 export type UIFunction = (uiNode: string) => UiSettingDT[];
 
 /**
- * Maps uiSettings from state, gives uiSetting names as second part after dot
+ * Gives memoised array of actual (non-falsy) ui settings by uiNode
  */
 export const useUiSettings = (): { ui: UIFunction } => {
 
   const theme = useAppSelector(store => store.settings.theme);
+  const actualUiSettings = useAppSelector(state => state.settings.actualUiSettings);
+  const uiSettingsHash = useAppSelector(state => state.settings.uiSettingsHash);
 
   const ui = useCallback((uiNode: string) => {
-    const stateUiSettings = useAppSelector(state => state.settings.uiSettings[uiNode]);
-    const uiSettings = stateUiSettings.map(uiSetting => {
-      const uiSettingName = uiSetting.name.split('.')[1];
-      return {
-        ...uiSetting,
-        name: uiSettingName ? uiSettingName : ''
-      };
-    });
-    return uiSettings;
-  }, [theme]);
+    return actualUiSettings[uiNode];
+  }, [theme, uiSettingsHash]);
 
   return { ui };
 };

@@ -4,11 +4,10 @@ import { useUiSettings } from "./useUiSettings";
 import { CSSProperties } from "react";
 import { isCSSPropertyKey } from "@m-cafe-app/shared-constants";
 import { useAppSelector } from "../defineReduxHooks";
-import { useTranslation } from './useTranslation';
-import { CommonSCProps, LCSpecificValue } from '../../types';
+import { CommonProps, LCSpecificValue } from '../../types';
 
 
-interface UseInitLCProps extends CommonSCProps {
+interface UseInitLCProps extends CommonProps {
   componentType:
     'input' |
     'container' |
@@ -20,6 +19,7 @@ interface UseInitLCProps extends CommonSCProps {
     'switch' |
     'dropbox' |
     'table' |
+    'image' |
     'layout',
   componentName: string,
   errorMessage?: string,
@@ -38,31 +38,41 @@ export const useInitLC = ({
   errorMessage,
   placeholder,
   label,
-  variant,
-  tooltipTNode
+  variant
 }: UseInitLCProps) => {
 
   const theme = useAppSelector(store => store.settings.theme);
 
   const { ui } = useUiSettings();
 
-  const { t } = useTranslation();
+  // uiSettingsClassnames are written by componentName instead of component type for complex (unbasic) layout components
+  const uiSettingsClassnames = componentType === 'layout'
+    ? ui(`${componentName}-${theme}-classNames`)
+    : ui(`${componentType}-${theme}-classNames`);
 
+  // baseVariant must have the most SCSS for web / inlineCSS for mobile
+  const baseVariantClassName = ui(`${componentType}-${theme}-baseVariant`)[0].value;
+
+  const uiSettingsInlineCSS = ui(`${componentType}-${theme}-inlineCSS`);
+
+  const labelAsPlaceholder = ui(`inputsPlaceholderAsLabel-${theme}`)[0].value === 'true'
+    ? true
+    : false;
+
+  const useBarBelow = ui(`inputsUseBarBelow-${theme}`)[0].value === 'true'
+    ? true
+    : false;
 
   return useMemo(() => {
+    
     /**
      * ClassName resolve block
      */
-    // uiSettingsClassnames are written by componentName instead of component type for complex (unbasic) layout components
-    const uiSettingsClassnames = componentType === 'layout'
-      ? ui(`${componentName}-${theme}-classNames`)
-      : ui(`${componentType}-${theme}-classNames`);
-
     let settingsClassNameAddon = '';
 
     // add all settings that are true
     for (const uiSetting of uiSettingsClassnames) {
-      if (uiSetting.value === 'true') settingsClassNameAddon += uiSetting.value + ' ';
+      settingsClassNameAddon += uiSetting.value + ' ';
     }
 
     settingsClassNameAddon.trim();
@@ -71,8 +81,6 @@ export const useInitLC = ({
       ? classNameOverride
       : componentName;
 
-    // baseVariant must have the most SCSS for web / inlineCSS for mobile
-    const baseVariantClassName = ui(`${componentType}-${theme}-baseVariant`)[0].value;
 
     let className = classNameBase;
 
@@ -81,13 +89,12 @@ export const useInitLC = ({
     if (classNameAddon) className = className + ' ' + classNameAddon;
     if (settingsClassNameAddon) className = className + ' ' + settingsClassNameAddon;
     if (errorMessage) className = className + ' ' + 'error';
+    className = className + ' ' + theme;
 
 
     /**
      * InlineCSS resolve block
      */
-    const uiSettingsInlineCSS = ui(`${componentType}-${theme}-inlineCSS`);
-
     const style = {} as CSSProperties;
 
     for (const uiSetting of uiSettingsInlineCSS) {
@@ -106,25 +113,8 @@ export const useInitLC = ({
     switch (componentType) {
 
       case 'input':
-        const labelAsPlaceholder = ui(`inputsPlaceholderAsLabel-${theme}`)[0].value === 'true'
-          ? true
-          : false;
-  
-        const labelText = labelAsPlaceholder
-          ? errorMessage
-            ? errorMessage
-            : placeholder
-          : label;
-
-        if (!labelText) throw new ApplicationError('input label text unresolved!', { current: { errorMessage, placeholder, label } });
-
-        const useBarBelow = ui(`inputsUseBarBelow-${theme}`)[0].value === 'true'
-          ? true
-          : false;
-
         specific = {
           labelAsPlaceholder,
-          labelText,
           useBarBelow
         };
         break;
@@ -132,11 +122,6 @@ export const useInitLC = ({
       default:
         break;
     }
-
-    /**
-     * Translations block
-     */
-    const tooltip = tooltipTNode ? t(`${tooltipTNode}`) : undefined;
 
     return {
       /**
@@ -148,11 +133,20 @@ export const useInitLC = ({
        */
       className,
       style,
-      specific,
       /**
-       * Translated tooltip text
+       * Component type-specific value
        */
-      tooltip
+      specific
     };
-  }, [theme]);
+  }, [
+    theme,
+    componentType,
+    componentName,
+    classNameAddon,
+    classNameOverride,
+    errorMessage,
+    placeholder,
+    label,
+    variant
+  ]);
 };
