@@ -11,7 +11,6 @@ services:
     volumes:
       - ./services/web:/usr/src/app/services/web
       - ./packages/frontend-logic:/usr/src/app/packages/frontend-logic
-      - ./packages/frontend-components:/usr/src/app/packages/frontend-components
       - ./packages/utils:/usr/src/app/packages/utils
       - ./packages/db:/usr/src/app/packages/db
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps

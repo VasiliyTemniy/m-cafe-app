@@ -13,7 +13,6 @@ COPY --chown=node:node packages/db/package.json packages/db/package.json
 COPY --chown=node:node packages/utils/package.json packages/utils/package.json
 COPY --chown=node:node packages/shared-frontend-deps/package.json packages/shared-frontend-deps/package.json
 COPY --chown=node:node packages/frontend-logic/package.json packages/frontend-logic/package.json
-COPY --chown=node:node packages/frontend-components/package.json packages/frontend-components/package.json
 
 COPY --chown=node:node services/backend/package.json services/backend/package.json
 
@@ -37,7 +36,6 @@ RUN yarn workspaces focus @m-cafe-app/db
 RUN yarn workspaces focus @m-cafe-app/utils
 RUN yarn workspaces focus @m-cafe-app/shared-frontend-deps
 RUN yarn workspaces focus @m-cafe-app/frontend-logic
-RUN yarn workspaces focus @m-cafe-app/frontend-components
 
 RUN yarn workspaces focus m-cafe-app
 
@@ -52,7 +50,6 @@ COPY --chown=node:node packages/shared-constants packages/shared-constants
 COPY --chown=node:node packages/db packages/db
 COPY --chown=node:node packages/utils packages/utils
 COPY --chown=node:node packages/frontend-logic packages/frontend-logic
-COPY --chown=node:node packages/frontend-components packages/frontend-components
 
 COPY --chown=node:node services/web services/web
 
@@ -66,8 +63,6 @@ RUN rm -rf services/web/admin
 RUN rm -rf services/web/manager
 RUN rm -rf packages/frontend-logic/admin
 RUN rm -rf packages/frontend-logic/manager
-RUN rm -rf packages/frontend-components/admin
-RUN rm -rf packages/frontend-components/manager
 
 RUN yarn run prepare:frontend
 
@@ -79,8 +74,6 @@ RUN rm -rf services/web/customer
 RUN rm -rf services/web/manager
 RUN rm -rf packages/frontend-logic/customer
 RUN rm -rf packages/frontend-logic/manager
-RUN rm -rf packages/frontend-components/customer
-RUN rm -rf packages/frontend-components/manager
 
 RUN yarn run prepare:frontend
 
@@ -92,8 +85,6 @@ RUN rm -rf services/web/customer
 RUN rm -rf services/web/admin
 RUN rm -rf packages/frontend-logic/customer
 RUN rm -rf packages/frontend-logic/admin
-RUN rm -rf packages/frontend-components/customer
-RUN rm -rf packages/frontend-components/admin
 
 RUN yarn run prepare:frontend
 
