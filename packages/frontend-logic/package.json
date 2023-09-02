@@ -13,7 +13,8 @@
   "dependencies": {
     "@m-cafe-app/shared-constants": "workspace:^",
     "@m-cafe-app/shared-frontend-deps": "workspace:^",
-    "@m-cafe-app/utils": "workspace:^"
+    "@m-cafe-app/utils": "workspace:^",
+    "ts-md5": "^1.3.1"
   },
   "devDependencies": {
     "typescript": "~5.1.6"
