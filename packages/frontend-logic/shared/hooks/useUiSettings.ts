@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { UiSettingDT } from "@m-cafe-app/utils";
-import { useAppSelector } from "../defineReduxHooks";
+import { useAppSelector } from "./reduxHooks";
 
 export type UIFunction = (uiNode: string) => UiSettingDT[];
 
@@ -14,7 +14,7 @@ export const useUiSettings = (): { ui: UIFunction } => {
   const uiSettingsHash = useAppSelector(state => state.settings.uiSettingsHash);
 
   const ui = useCallback((uiNode: string) => {
-    return actualUiSettings[uiNode];
+    return actualUiSettings[uiNode] ? actualUiSettings[uiNode] : [];
   }, [theme, uiSettingsHash]);
 
   return { ui };
