@@ -12,7 +12,7 @@ const createLoc = async (newLoc: NewFixedLocBody) => {
 
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true };
   const { data: fixedLoc } = await axios.post<JSON>(
-    `${apiBaseUrl}/api/fixed-loc`,
+    `${apiBaseUrl}/fixed-loc`,
     JSON.stringify(reqBody),
     config
   );
@@ -29,7 +29,7 @@ const updateLoc = async (updLoc: EditFixedLocBody, locId: number) => {
 
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true };
   const { data: fixedLoc } = await axios.put<JSON>(
-    `${apiBaseUrl}/api/fixed-loc/${locId}`,
+    `${apiBaseUrl}/fixed-loc/${locId}`,
     JSON.stringify(reqBody),
     config
   );
@@ -46,7 +46,7 @@ const updateManyLocs = async (updLocs: FixedLocDT[]) => {
 
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true };
   const { data: fixedLocs } = await axios.put<JSON>(
-    `${apiBaseUrl}/api/fixed-loc/all`,
+    `${apiBaseUrl}/fixed-loc/all`,
     JSON.stringify(reqBody),
     config
   );
@@ -61,7 +61,7 @@ const deleteLoc = async (locId: number) => {
 
   const config = { withCredentials: true };
   await axios.delete<JSON>(
-    `${apiBaseUrl}/api/fixed-loc/${locId}`,
+    `${apiBaseUrl}/fixed-loc/${locId}`,
     config
   );
 

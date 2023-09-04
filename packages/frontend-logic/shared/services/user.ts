@@ -9,7 +9,7 @@ const createUser = async (newUser: NewUserBody) => {
 
   const config = { headers: {'Content-Type': 'application/json'} };
   const { data: userInfo } = await axios.post<JSON>(
-    `${apiBaseUrl}/api/user`,
+    `${apiBaseUrl}/user`,
     JSON.stringify(reqBody),
     config
   );
@@ -23,7 +23,7 @@ const updateUser = async (updUser: EditUserBody, userId: number) => {
 
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true  };
   const { data: userInfo } = await axios.put<JSON>(
-    `${apiBaseUrl}/api/user/${userId}`,
+    `${apiBaseUrl}/user/${userId}`,
     JSON.stringify(reqBody),
     config
   );
@@ -37,7 +37,7 @@ const login = async (credentials: LoginUserBody) => {
 
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true };
   const { data: userInfo } = await axios.post<JSON>(
-    `${apiBaseUrl}/api/session`,
+    `${apiBaseUrl}/session`,
     JSON.stringify(reqBody),
     config
   );
@@ -49,7 +49,7 @@ const refreshToken = async () => {
 
   const config = { withCredentials: true };
   const { data: userInfo } = await axios.get<JSON>(
-    `${apiBaseUrl}/api/session/refresh`,
+    `${apiBaseUrl}/session/refresh`,
     config
   );
 
@@ -60,7 +60,7 @@ const logout = async () => {
 
   const config = { withCredentials: true };
   await axios.delete<JSON>(
-    `${apiBaseUrl}/api/session`,
+    `${apiBaseUrl}/session`,
     config
   );
 

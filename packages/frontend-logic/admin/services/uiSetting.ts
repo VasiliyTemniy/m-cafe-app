@@ -17,7 +17,7 @@ const createUiSetting = async (newUiSetting: NewUiSettingBody) => {
 
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true };
   const { data: fixedUiSetting } = await axios.post<JSON>(
-    `${apiBaseUrl}/api/ui-setting`,
+    `${apiBaseUrl}/ui-setting`,
     JSON.stringify(reqBody),
     config
   );
@@ -34,7 +34,7 @@ const updateUiSetting = async (updUiSetting: EditUiSettingBody, locId: number) =
 
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true };
   const { data: fixedUiSetting } = await axios.put<JSON>(
-    `${apiBaseUrl}/api/ui-setting/${locId}`,
+    `${apiBaseUrl}/ui-setting/${locId}`,
     JSON.stringify(reqBody),
     config
   );
@@ -51,7 +51,7 @@ const updateManyUiSettings = async (updUiSettings: UiSettingDT[]) => {
 
   const config = { headers: {'Content-Type': 'application/json'}, withCredentials: true };
   const { data: fixedUiSetting } = await axios.put<JSON>(
-    `${apiBaseUrl}/api/ui-setting/all`,
+    `${apiBaseUrl}/ui-setting/all`,
     JSON.stringify(reqBody),
     config
   );
@@ -66,7 +66,7 @@ const deleteUiSetting = async (locId: number) => {
 
   const config = { withCredentials: true };
   await axios.delete<JSON>(
-    `${apiBaseUrl}/api/ui-setting/${locId}`,
+    `${apiBaseUrl}/ui-setting/${locId}`,
     config
   );
 
