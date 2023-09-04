@@ -9,6 +9,9 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "paths": {
+      "shared/*": ["shared/*"]
+    },
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,

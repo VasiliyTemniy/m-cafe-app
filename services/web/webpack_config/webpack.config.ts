@@ -73,6 +73,9 @@ const config: Configuration = {
   mode: isDevelopment ? 'development' : 'production',
   devtool: isDevelopment ? 'inline-source-map' : false,
   resolve: {
+    alias: {
+      'shared': path.resolve(__dirname, 'shared')
+    },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
   //optimization, // this thing comes from import, should divide build to smaller pieces for better optimization. Does not work now, though. Performance: hints: false disables warnings now!
