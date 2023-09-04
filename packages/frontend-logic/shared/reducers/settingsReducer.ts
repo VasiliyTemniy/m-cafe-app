@@ -1,17 +1,18 @@
-import { ApplicationError, isUiSettingDT, SafeyAny, UiSettingDT } from '@m-cafe-app/utils';
+import { ApplicationError, hasOwnProperty, isUiSettingDT, SafeyAny, UiSettingDT } from '@m-cafe-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import { AppDispatch } from '../store';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { TFunction } from '../hooks';
 import { Md5 } from 'ts-md5';
+import { AllowedThemes, allowedThemes } from '@m-cafe-app/shared-constants';
 
 
 type SettingsActionSetLanguage = { payload: { language: 'main' | 'sec' | 'alt' } };
 
 type SettingsActionSetUiSettings = { payload: { uiSettings: UiSettingDT[] } };
 
-type SettingsActionSetTheme = { payload: { theme: 'dark' | 'light' } };
+type SettingsActionSetTheme = { payload: { theme: AllowedThemes } };
 
 
 export type SettingsState = {
@@ -20,7 +21,7 @@ export type SettingsState = {
     [key: string]: UiSettingDT[]
   },
   uiSettingsHash: string,
-  theme: 'dark' | 'light',
+  theme: AllowedThemes,
   language: 'main' | 'sec' | 'alt'
 };
 
@@ -60,12 +61,23 @@ export const sharedSettingsSliceBase = {
         const nameParts = uiSetting.name.split('.');
         const namespace = nameParts[0];
         const uiSettingName = nameParts[1] ? nameParts[1] : '';
-        newUiSettingsState[namespace].push({ ...uiSetting, name: uiSettingName });
+        const actualUiSetting = { ...uiSetting, name: uiSettingName };
+        if (hasOwnProperty(newUiSettingsState, namespace))
+          newUiSettingsState[namespace] = [ ...newUiSettingsState[namespace], actualUiSetting ];
+        else
+          newUiSettingsState[namespace] = [ actualUiSetting ];
       }
       const uiSettingsHash = Md5.hashStr(JSON.stringify(newUiSettingsState));
       return { ...state, actualUiSettings: newUiSettingsState, uiSettingsHash };
     },
     setTheme: (state: SettingsState, action: SettingsActionSetTheme): SettingsState => {
+      const rootElement = document.getElementsByTagName('html')[0];
+      for (const theme of allowedThemes) {
+        if (rootElement.classList.contains(theme))
+          rootElement.classList.remove(theme);
+      }
+      rootElement.classList.add(action.payload.theme);
+      window.localStorage.setItem('CafeAppTheme', JSON.stringify(action.payload.theme));
       return { ...state, theme: action.payload.theme };
     }
   },  
@@ -86,6 +98,7 @@ export const initUiSettings = (t: TFunction) => {
         if (!isUiSettingDT(uiSetting)) throw new ApplicationError('Server has sent wrong data', { all: uiSettings, current: uiSetting as SafeyAny });
       }
       dispatch(setUiSettings({ uiSettings }));
+      dispatch(parseUiSettings({ uiSettings }));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
     }
