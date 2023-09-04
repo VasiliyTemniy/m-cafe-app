@@ -1,2 +1,2 @@
 // import './UnderConstruction.scss';
-export * from './UnderConstructionLC';
+export * from './UnderConstruction';
