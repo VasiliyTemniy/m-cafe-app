@@ -1,25 +1,22 @@
-import { useAppSelector } from '@m-cafe-app/frontend-logic/admin';
-import AppRoutes from './AppRoutes';
-// import LoginPage from '../../shared/components/LoginPage';
-import { ContainerLC } from '@m-cafe-app/frontend-components/lcWeb';
+import { useAppSelector, useInitAppAdmin } from '@m-cafe-app/frontend-logic/admin/hooks';
+import { AppRoutes } from './AppRoutes';
+import { LoginPage, Container } from 'shared/components';
 
 
+export const App = () => {
 
-const App = () => {
+  useInitAppAdmin();
 
   const user = useAppSelector((state) => state.user);
-
-  // useAppInit();
 
   if (!user.phonenumber) {
     return (
       <>
         {/* <Header /> */}
         {/* <Notification/> */}
-        <ContainerLC className='window-container' id='main-container'>
-          {/* <LoginPage/> */}
-          <AppRoutes/>
-        </ContainerLC>
+        <Container className='window-container' id='main-container'>
+          <LoginPage/>
+        </Container>
         {/* <Footer /> */}
       </>
     );
@@ -28,14 +25,12 @@ const App = () => {
       <>
         {/* <Header /> */}
         {/* <Menu /> */}
-        <ContainerLC className='main-container' id='main-container'>
+        <Container className='main-container' id='main-container'>
           {/* <Notification/> */}
           <AppRoutes/>
-        </ContainerLC>
+        </Container>
         {/* <Footer /> */}
       </>
     );
   }
 };
-
-export default App;
