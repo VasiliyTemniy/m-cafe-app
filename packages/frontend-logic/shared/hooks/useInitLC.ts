@@ -3,9 +3,8 @@ import { ApplicationError } from "@m-cafe-app/utils";
 import { useUiSettings } from "./useUiSettings";
 import { CSSProperties } from "react";
 import { isCSSPropertyKey } from "@m-cafe-app/shared-constants";
-import { useAppSelector } from "../defineReduxHooks";
+import { useAppSelector } from "./reduxHooks";
 import { CommonProps, LCSpecificValue } from '../../types';
-
 
 interface UseInitLCProps extends CommonProps {
   componentType:
@@ -42,6 +41,7 @@ export const useInitLC = ({
 }: UseInitLCProps) => {
 
   const theme = useAppSelector(store => store.settings.theme);
+  const uiSettingsHash = useAppSelector(store => store.settings.uiSettingsHash);
 
   const { ui } = useUiSettings();
 
@@ -51,17 +51,11 @@ export const useInitLC = ({
     : ui(`${componentType}-${theme}-classNames`);
 
   // baseVariant must have the most SCSS for web / inlineCSS for mobile
-  const baseVariantClassName = ui(`${componentType}-${theme}-baseVariant`)[0].value;
+  const baseVariantClassName = ui(`${componentType}-${theme}-baseVariant`);
 
   const uiSettingsInlineCSS = ui(`${componentType}-${theme}-inlineCSS`);
 
-  const labelAsPlaceholder = ui(`inputsPlaceholderAsLabel-${theme}`)[0].value === 'true'
-    ? true
-    : false;
-
-  const useBarBelow = ui(`inputsUseBarBelow-${theme}`)[0].value === 'true'
-    ? true
-    : false;
+  const specialUiSettingsSet = new Set([ ...ui(`${componentType}-${theme}-special`).map(uiSetting => uiSetting.name) ]);
 
   return useMemo(() => {
     
@@ -85,12 +79,10 @@ export const useInitLC = ({
     let className = classNameBase;
 
     if (variant) className = className + `-${variant}`;
-    if (baseVariantClassName) className = className + ' ' + baseVariantClassName;
+    if (baseVariantClassName.length > 0) className = className + ' ' + baseVariantClassName[0].value;
     if (classNameAddon) className = className + ' ' + classNameAddon;
     if (settingsClassNameAddon) className = className + ' ' + settingsClassNameAddon;
     if (errorMessage) className = className + ' ' + 'error';
-    className = className + ' ' + theme;
-
 
     /**
      * InlineCSS resolve block
@@ -114,8 +106,8 @@ export const useInitLC = ({
 
       case 'input':
         specific = {
-          labelAsPlaceholder,
-          useBarBelow
+          labelAsPlaceholder: specialUiSettingsSet.has('labelAsPlaceholder'),
+          useBarBelow: specialUiSettingsSet.has('useBarBelow')
         };
         break;
 
@@ -147,6 +139,7 @@ export const useInitLC = ({
     errorMessage,
     placeholder,
     label,
-    variant
+    variant,
+    uiSettingsHash
   ]);
 };
