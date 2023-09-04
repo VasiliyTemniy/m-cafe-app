@@ -49,7 +49,7 @@ export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) =>
             />
             <Container className="login-form-buttons-wrapper">
               <Button
-                label={t(`${tNode}.label.toSubmit`)}
+                label={t(`${tNode}.label.toSignup`)}
                 type='submit'
                 variant='primary'
                 // classNameAddon='login-form'

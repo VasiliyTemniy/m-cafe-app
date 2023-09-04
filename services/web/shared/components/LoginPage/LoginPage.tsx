@@ -1,4 +1,4 @@
-import { useAppDispatch } from '@m-cafe-app/frontend-logic/shared/defineReduxHooks';
+import { useAppDispatch } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { sendLogin, sendNewUser } from '@m-cafe-app/frontend-logic/shared/reducers';
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { useState } from "react";
@@ -17,6 +17,8 @@ export const LoginPage = () => {
 
   const [ signupPage, setSignupPage ] = useState(false);
   const { t } = useTranslation();
+
+  const tNode = 'loginPage';
 
   const handleLogin = ({ credential, password }: LoginFormValues) => {
     const username = usernameRegExp.test(credential) ? credential : undefined;
@@ -37,8 +39,8 @@ export const LoginPage = () => {
     <Modal
       classNameAddon='login'
       active={true}
-      title={t('formsLogin.login.title')}
-      subtitle={t('formsLogin.login.welcome')}
+      title={t(`${tNode}.loginForm.title`)}
+      subtitle={t(`${tNode}.loginForm.welcome`)}
       wrapper={false}
     >
       <LoginForm
@@ -52,8 +54,8 @@ export const LoginPage = () => {
     <Modal
       classNameAddon='login'
       active={true}
-      title={t('formsLogin.signup.title')}
-      subtitle={t('formsLogin.signup.welcome')}
+      title={t(`${tNode}.signupForm.title`)}
+      subtitle={t(`${tNode}.signupForm.welcome`)}
       wrapper={false}
     >
       <SignupForm

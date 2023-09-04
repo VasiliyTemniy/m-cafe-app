@@ -91,7 +91,7 @@ export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) 
               />
               <ButtonGroup>
                 <Button
-                  label={t('formsLogin.signup.label.submit')}
+                  label={t('main.buttonLabel.submit')}
                   type='submit'
                   variant='primary'
                   // classNameAddon='login-form'
@@ -99,7 +99,7 @@ export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) 
                   disabled={!dirty || !isValid}
                 />
                 <Button
-                  label={t('formsLogin.signup.label.cancel')}
+                  label={t('main.buttonLabel.cancel')}
                   variant='secondary'
                   // classNameAddon='login-form'
                   id='cancel-button'
