@@ -1,7 +1,9 @@
 // Maybe will be updated
 const allowedCSSPropertiesKeys = [
   'backgroundColor',
-  'borderRadius'
+  'borderRadius',
+  'height',
+  'width'
 ] as const;
 
 export type AllowedCSSPropertiesKeys = typeof allowedCSSPropertiesKeys[number];
