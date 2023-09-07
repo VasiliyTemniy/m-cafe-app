@@ -1,27 +1,21 @@
 // You can edit your ui settings here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for uiNodePath
-// By default, first level of nesting gets applied to all allowed themes by adding example "input-${theme}-baseVariant"
+// By default, first level of nesting gets applied to all allowed themes by adding example "svg-image-${theme}-baseVariant"
 {
-  "input-special": {
-    "useBarBelow": {
-      "value": "true"
-    },
-    "labelAsPlaceholder": {
-      "value": "true"
-    }
-  },
-  // "input-classNames": {
+  // "svg-image-special": {
   // },
-  "input-baseColorVariant": {
+  // "svg-image-classNames": {
+  // },
+  "svg-image-baseColorVariant": {
     "variant": {
       "value": "alpha-color"
     }
   },
-  "input-baseVariant": {
+  "svg-image-baseVariant": {
     "variant": {
       "value": "alpha"
     }
   },
-  "input-inlineCSS": {
+  "svg-image-inlineCSS": {
     "height": {
       "value": "false"
     },

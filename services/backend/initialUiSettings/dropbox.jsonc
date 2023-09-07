@@ -1,27 +1,21 @@
 // You can edit your ui settings here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for uiNodePath
-// By default, first level of nesting gets applied to all allowed themes by adding example "input-${theme}-baseVariant"
+// By default, first level of nesting gets applied to all allowed themes by adding example "dropbox-${theme}-baseVariant"
 {
-  "input-special": {
-    "useBarBelow": {
-      "value": "true"
-    },
-    "labelAsPlaceholder": {
-      "value": "true"
-    }
-  },
-  // "input-classNames": {
+  // "dropbox-special": {
   // },
-  "input-baseColorVariant": {
+  // "dropbox-classNames": {
+  // },
+  "dropbox-baseColorVariant": {
     "variant": {
       "value": "alpha-color"
     }
   },
-  "input-baseVariant": {
+  "dropbox-baseVariant": {
     "variant": {
       "value": "alpha"
     }
   },
-  "input-inlineCSS": {
+  "dropbox-inlineCSS": {
     "height": {
       "value": "false"
     },
