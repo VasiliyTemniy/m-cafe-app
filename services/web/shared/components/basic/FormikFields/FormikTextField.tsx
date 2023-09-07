@@ -17,7 +17,7 @@ export const FormikTextField = ({ disabled = false, ...props }: FormikTextFieldP
     ? meta.error
     : '';
 
-  const { className, style, specific } = useInitLC({
+  const { className, style, specific, baseVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-text',
     classNameAddon: props.classNameAddon,
@@ -38,7 +38,7 @@ export const FormikTextField = ({ disabled = false, ...props }: FormikTextFieldP
     : props.label;
 
   return(
-    <Container className='input-wrapper text-plain'>
+    <Container className={`input-wrapper text ${baseVariant}`}>
       <input
         type={props.type}
         id={field.name}

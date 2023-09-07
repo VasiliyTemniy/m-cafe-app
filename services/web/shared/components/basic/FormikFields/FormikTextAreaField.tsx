@@ -22,7 +22,7 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
     ? meta.error
     : '';
 
-  const { className, style, specific } = useInitLC({
+  const { className, style, specific, baseVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-textarea',
     classNameAddon: props.classNameAddon,
@@ -63,7 +63,7 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
   };
 
   return(
-    <Container className='input-wrapper text-area'>
+    <Container className={`input-wrapper textarea ${baseVariant}`}>
       <textarea
         id={field.name}
         name={field.name}

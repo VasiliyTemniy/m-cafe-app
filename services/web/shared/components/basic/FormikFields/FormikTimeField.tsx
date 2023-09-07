@@ -16,7 +16,7 @@ export const FormikTimeField = ({ disabled = false, ...props }: FormikTimeFieldP
     ? meta.error
     : '';
 
-  const { className, style, specific } = useInitLC({
+  const { className, style, specific, baseVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-time',
     classNameAddon: props.classNameAddon,
@@ -37,7 +37,7 @@ export const FormikTimeField = ({ disabled = false, ...props }: FormikTimeFieldP
     : props.label;
 
   return(
-    <Container className='input-wrapper time'>
+    <Container className={`input-wrapper time ${baseVariant}${specific?.firefoxFix ? ' firefox-fix' : ''}`}>
       <input
         type='time'
         id={field.name}
@@ -52,7 +52,7 @@ export const FormikTimeField = ({ disabled = false, ...props }: FormikTimeFieldP
         step={1}
       />
       <label htmlFor={props.name}>{labelText}</label>
-      <Image src={`${apiBaseUrl}/public/pictures/svg/time.svg`}/>
+      <Image src={`${apiBaseUrl}/public/pictures/svg/time.svg`} classNameAddon='svg'/>
       <>
         {specific?.useBarBelow &&
           <div className='bar'/>

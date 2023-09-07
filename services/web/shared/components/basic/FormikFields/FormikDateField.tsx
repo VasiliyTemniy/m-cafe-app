@@ -16,7 +16,7 @@ export const FormikDateField = ({ disabled = false, ...props }: FormikDateFieldP
     ? meta.error
     : '';
 
-  const { className, style, specific } = useInitLC({
+  const { className, style, specific, baseVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-date',
     classNameAddon: props.classNameAddon,
@@ -37,7 +37,7 @@ export const FormikDateField = ({ disabled = false, ...props }: FormikDateFieldP
     : props.label;
 
   return(
-    <Container className='input-wrapper date'>
+    <Container className={`input-wrapper date ${baseVariant}${specific?.firefoxFix ? ' firefox-fix' : ''}`}>
       <input
         type='date'
         id={field.name}
@@ -52,7 +52,7 @@ export const FormikDateField = ({ disabled = false, ...props }: FormikDateFieldP
         step={1}
       />
       <label htmlFor={props.name}>{labelText}</label>
-      <Image src={`${apiBaseUrl}/public/pictures/svg/calendar.svg`}/>
+      <Image src={`${apiBaseUrl}/public/pictures/svg/calendar.svg`} classNameAddon='svg'/>
       <>
         {specific?.useBarBelow &&
           <div className='bar'/>

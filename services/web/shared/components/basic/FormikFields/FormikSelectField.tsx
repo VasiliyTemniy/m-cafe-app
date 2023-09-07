@@ -9,6 +9,7 @@ import {
 import { Container } from "../Container";
 import { Image } from "../Image";
 import { Tooltip } from "../Tooltip";
+import { apiBaseUrl } from "@m-cafe-app/shared-constants";
 
 type FormikSelectFieldProps = FieldHookConfig<string> & CommonFieldProps & {
   options: string[],
@@ -27,7 +28,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
     ? meta.error
     : '';
 
-  const { className, style, specific } = useInitLC({
+  const { className, style, specific, baseVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-select',
     classNameAddon: props.classNameAddon,
@@ -60,7 +61,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
     : autoCompleteArray(props.options, field.value);
 
   return(
-    <Container className='input-wrapper select'>
+    <Container className={`input-wrapper select ${baseVariant}`}>
       <input
         type='text'
         id={field.name}
@@ -78,7 +79,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
         placeholder={inputPlaceholder}
       />
       <label htmlFor={field.name}>{labelText}</label>
-      <Image src={props.svgUrl}/>
+      <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`} classNameAddon='svg'/>
       <Container className='dropdown-wrapper'>
         <Container className='options-wrapper'>
           {displayedOptions.map(option => 
