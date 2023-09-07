@@ -6,6 +6,7 @@ interface SwitchProps extends CommonProps {
   textRight?: string;
   checked: boolean;
   id: string;
+  disabled?: boolean;
 }
 
 export const Switch = ({
@@ -14,7 +15,8 @@ export const Switch = ({
   textLeft,
   textRight,
   checked,
-  id
+  id,
+  disabled = false
 }: SwitchProps) => {
   
   const { className } = useInitLC({
@@ -33,6 +35,7 @@ export const Switch = ({
         id={id}
         checked={checked}
         readOnly={true}
+        disabled={disabled}
       />
       <label className="switch-label" htmlFor={id}>
         <span className="switch-inner" data-textleft={textLeft} data-textright={textRight} />
