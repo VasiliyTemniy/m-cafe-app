@@ -4,17 +4,17 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import webpack from "webpack";
 
 const frontendModule = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'customer';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const plugins = [
   new ForkTsCheckerWebpackPlugin({
     logger: 'webpack-infrastructure',
   }),
   new CleanWebpackPlugin(),
-  new MiniCssExtractPlugin({
+  !isDevelopment && new MiniCssExtractPlugin({
     filename: '[name].[fullhash].css',
     chunkFilename: '[id].[fullhash].css'
   }),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   new webpack.EnvironmentPlugin({
     NODE_ENV: 'production',
     BACKEND_URL: 'must_be_provided',
