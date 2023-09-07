@@ -11,3 +11,5 @@ export * from './TextComp';
 export * from './Switch';
 export * from './Tooltip';
 export * from './FormikFields';
+export * from './Loading';
+export * from './Scrollable';
