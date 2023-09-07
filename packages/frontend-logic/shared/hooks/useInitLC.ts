@@ -19,6 +19,7 @@ interface UseInitLCProps extends CommonProps {
     'dropbox' |
     'table' |
     'image' |
+    'scrollbar' |
     'layout',
   componentName: string,
   errorMessage?: string,
@@ -51,7 +52,11 @@ export const useInitLC = ({
     : ui(`${componentType}-${theme}-classNames`);
 
   // baseVariant must have the most SCSS for web / inlineCSS for mobile
-  const baseVariantClassName = ui(`${componentType}-${theme}-baseVariant`);
+  const baseVariant = ui(`${componentType}-${theme}-baseVariant`);
+
+  const baseVariantClassName = baseVariant.length > 0
+    ? baseVariant[0].value
+    : '';
 
   const uiSettingsInlineCSS = ui(`${componentType}-${theme}-inlineCSS`);
 
@@ -79,7 +84,7 @@ export const useInitLC = ({
     let className = classNameBase;
 
     if (variant) className = className + `-${variant}`;
-    if (baseVariantClassName.length > 0) className = className + ' ' + baseVariantClassName[0].value;
+    if (baseVariantClassName) className = className + ' ' + baseVariantClassName;
     if (classNameAddon) className = className + ' ' + classNameAddon;
     if (settingsClassNameAddon) className = className + ' ' + settingsClassNameAddon;
     if (errorMessage) className = className + ' ' + 'error';
@@ -105,9 +110,18 @@ export const useInitLC = ({
     switch (componentType) {
 
       case 'input':
+        const userAgent = navigator.userAgent;
+        const regex = /Firefox\/(\d+(\.\d+)?)/;
+        const match = userAgent.match(regex);
+        const firefoxVersion = match ? Number(match[1]) : null;
+        const firefoxFix = firefoxVersion
+          ? firefoxVersion > 108
+          : false;
+
         specific = {
           labelAsPlaceholder: specialUiSettingsSet.has('labelAsPlaceholder'),
-          useBarBelow: specialUiSettingsSet.has('useBarBelow')
+          useBarBelow: specialUiSettingsSet.has('useBarBelow'),
+          firefoxFix
         };
         break;
 
@@ -128,7 +142,11 @@ export const useInitLC = ({
       /**
        * Component type-specific value
        */
-      specific
+      specific,
+      /**
+       * Base variant class name
+       */
+      baseVariant: baseVariantClassName
     };
   }, [
     theme,
