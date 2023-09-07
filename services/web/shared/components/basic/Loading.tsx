@@ -1,0 +1,18 @@
+import { Container } from "./Container";
+
+interface LoadingProps {
+  text?: string,
+  size?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large'
+}
+
+export const Loading = ({
+  text,
+  size = 'small'
+}: LoadingProps) => (
+  <Container className='loading-wrapper'>
+    <div className={`loading ${size}`}>
+      <div className='loading-spinner'></div>
+      {text && <div className="text" id='loading-text'>{text}</div>}
+    </div>
+  </Container>
+);
