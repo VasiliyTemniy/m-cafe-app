@@ -1,6 +1,6 @@
 import type { CSSProperties, MouseEventHandler, Ref } from "react";
 
-interface ContainerProps {
+export interface ContainerProps {
   className?: string;
   id?: string;
   style?: CSSProperties;
