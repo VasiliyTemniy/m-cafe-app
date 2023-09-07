@@ -6,9 +6,8 @@ import { HashRouter as Router } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import { App } from './App';
 
-// import './i18n';
-
-// import './scss_common/main.scss';
+import 'shared/styles/main.scss';
+import { Loading } from 'shared/components';
 
 document.getElementsByTagName('html')[0].classList.add('light'); // init default theme - light
 document.getElementsByTagName('html')[0].classList.add('trebuchet'); // init default theme - font_trebuchet
@@ -19,7 +18,7 @@ if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      <Suspense fallback={<div>Loading...</div>}> {/* change this to rolling circle! */}
+      <Suspense fallback={<Loading size='medium'/>}>
         <Provider store={store}>
           <Router>
             <Routes>

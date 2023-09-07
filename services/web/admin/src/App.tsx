@@ -1,13 +1,18 @@
 import { useAppSelector, useInitAppAdmin } from '@m-cafe-app/frontend-logic/admin/hooks';
 import { AppRoutes } from './AppRoutes';
-import { LoginPage, Container } from 'shared/components';
+import { LoginPage, Container, Loading } from 'shared/components';
 
 
 export const App = () => {
 
   useInitAppAdmin();
 
-  const user = useAppSelector((state) => state.user);
+  const uiSettingsHash = useAppSelector(state => state.settings.uiSettingsHash);
+  const fixedLocsHash = useAppSelector(state => state.fixedLocs.locsHash);
+  const user = useAppSelector(state => state.user);
+
+  if (!uiSettingsHash || !fixedLocsHash)
+    return <Loading size='medium'/>;
 
   if (!user.phonenumber) {
     return (
