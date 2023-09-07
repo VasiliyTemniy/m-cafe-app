@@ -58,6 +58,13 @@ export const useInitLC = ({
     ? baseVariant[0].value
     : '';
 
+  // same as baseVariant, but for color scheme
+  const baseColorVariant = ui(`${componentType}-${theme}-baseColorVariant`);
+
+  const baseColorVariantClassName = baseColorVariant.length > 0
+    ? baseColorVariant[0].value
+    : '';
+
   const uiSettingsInlineCSS = ui(`${componentType}-${theme}-inlineCSS`);
 
   const specialUiSettingsSet = new Set([ ...ui(`${componentType}-${theme}-special`).map(uiSetting => uiSetting.name) ]);
@@ -85,6 +92,7 @@ export const useInitLC = ({
 
     if (variant) className = className + `-${variant}`;
     if (baseVariantClassName) className = className + ' ' + baseVariantClassName;
+    if (baseColorVariantClassName) className = className + ' ' + baseColorVariantClassName;
     if (classNameAddon) className = className + ' ' + classNameAddon;
     if (settingsClassNameAddon) className = className + ' ' + settingsClassNameAddon;
     if (errorMessage) className = className + ' ' + 'error';

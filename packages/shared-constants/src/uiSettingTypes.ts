@@ -3,6 +3,7 @@ const uiSettingTypesConst = [
   'classNames',
   'special',
   'baseVariant',
+  'baseColorVariant',
   'inlineCSS'
 ] as const;
 
