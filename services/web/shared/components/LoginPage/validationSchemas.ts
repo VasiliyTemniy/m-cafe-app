@@ -76,7 +76,7 @@ export const signupValidationSchema = (t: TFunction) => {
     phonenumber: yup
       .string()
       .trim()
-      .required()
+      .required(t(`${tNode}.required.phonenumber`))
       .min(minPhonenumberLen, t(`${tNode}.invalid.phonenumber`))
       .max(maxPhonenumberLen, t(`${tNode}.invalid.phonenumber`))
       .matches(phonenumberRegExp, t(`${tNode}.invalid.phonenumber`)),
