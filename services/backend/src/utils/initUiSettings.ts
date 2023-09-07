@@ -2,7 +2,7 @@ import { UiSetting } from '@m-cafe-app/db';
 import { ApplicationError, isString } from '@m-cafe-app/utils';
 import logger from './logger.js';
 import { getFileReadPromises } from './getFileReadPromises.js';
-import { allowedThemes } from '@m-cafe-app/shared-constants';
+import { allowedThemes, isUiSettingType } from '@m-cafe-app/shared-constants';
 
 /**
  * Look for all jsonc files in initialUiSettings folder
@@ -79,12 +79,17 @@ const addUiSettingToDB = async (uiNodePath: string, value: string) => {
 
     const uiNodes = uiNodePath.split('.');
 
-    // Inject theme to upperUiNode
+    // Inject theme to upperUiNode. Last part of upperUiNodeParts must be one of uiSettingTypes
     const upperUiNode = uiNodes[0];
     const upperUiNodeParts = upperUiNode.split('-');
-    let themedUpperUiNode: string = upperUiNodeParts[0] + '-' + theme;
-    for (let i = 1; i < upperUiNodeParts.length; i++) {
-      themedUpperUiNode = themedUpperUiNode + '-' + upperUiNodeParts[i];
+    const uiSettingType = upperUiNodeParts.pop();
+    if (!isString(uiSettingType) || !isUiSettingType(uiSettingType)) {
+      logger.shout('Wrong ui setting type! Check ui settings. Setting ignored', uiNodePath);
+      continue;
+    }
+    let themedUpperUiNode: string = theme + '-' + uiSettingType;
+    for (let i = upperUiNodeParts.length - 1; i > -1; i--) {
+      themedUpperUiNode = upperUiNodeParts[i] + '-' + themedUpperUiNode;
     }
 
     uiSettingName = themedUpperUiNode;
