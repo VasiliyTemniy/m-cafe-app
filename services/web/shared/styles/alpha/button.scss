@@ -1,0 +1,129 @@
+@use '../colors' as *;
+@use './alpha_vars' as v-v; // variant-vars
+@use '../vars' as g-v; // global-vars
+@use '../theming' as *;
+
+
+%button-disabled-common {
+  pointer-events: none;
+  &::before {
+    display: none;
+  }
+}
+
+%button-common {
+  z-index: g-v.$button-z-index;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+/**
+ * Properties for 'alpha' basevariant class buttons
+ */
+button.alpha {
+  @extend %button-common;
+
+  padding: v-v.$button-padding-v v-v.$button-padding-h;
+  border-radius: v-v.$button-border-radius;
+  min-width: v-v.$button-min-width;
+  border: 0;
+  height: 2.5rem;
+  font-weight: 700;
+  transition: all v-v.$button-animation-speed ease-in-out;
+
+  &:hover, &:focus-visible {
+    border-radius: v-v.$button-border-radius-hover;
+  }
+
+  &:active {
+    border-radius: v-v.$button-border-radius;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: v-v.$button-border-radius;
+    @include theme(border, ButtonBorderColor, v-v.$button-border-thickness solid);
+    transition: top, left, right, bottom, v-v.$button-animation-speed ease-in-out;
+  }
+
+  &:hover::before, &:focus-visible::before {
+    @include theme(box-shadow, ButtonShadowHighlightIn);
+    inset: v-v.$button-hover-offset;
+  }
+
+  &:active::before {
+    inset: 0;
+  }
+
+  /**
+   * Primary, secondary and delete differ mostly in colors
+   */
+  &.button {
+
+    &-primary {
+      @include theme(background-color, ButtonPrimaryBG);
+      @include theme(color, ButtonPrimaryText);
+      &:hover {
+        @include theme(background-color, ButtonPrimaryHighlight);
+      }
+      &:active {
+        @include theme(background-color, ButtonPrimaryActive);
+      }
+      &:disabled {
+        @include theme(background-color, ButtonDisabledBG);
+        @extend %button-disabled-common;
+      }
+    }
+
+    &-secondary {
+      @include theme(background-color, ButtonSecondaryBG);
+      @include theme(color, ButtonSecondaryText);
+      &:hover {
+        @include theme(background-color, ButtonSecondaryHighlight);
+      }
+      &:active {
+        @include theme(background-color, ButtonSecondaryActive);
+      }
+      &:disabled {
+        @include theme(background-color, ButtonDisabledBG);
+        @include theme(color, ButtonPrimaryText);
+        @extend %button-disabled-common;
+      }
+    }
+
+    &-delete {
+      @include theme(background-color, ButtonDeleteBG);
+      @include theme(color, ButtonPrimaryText);
+      &:hover {
+        @include theme(background-color, ButtonDeleteHighlight);
+      }
+      &:active {
+        @include theme(background-color, ButtonDeleteActive);
+      }
+      &:disabled {
+        @include theme(background-color, ButtonDisabledBG);
+        @include theme(color, ButtonPrimaryText);
+        @extend %button-disabled-common;
+      }
+
+      &::before {
+        @include theme(border, ButtonDeleteBorderColor, v-v.$button-border-thickness solid);
+      }
+
+      &:hover::before, &:focus-visible::before {
+        @include theme(box-shadow, ButtonShadowDeleteIn);
+      }
+    }
+
+  }
+}
+
+
+

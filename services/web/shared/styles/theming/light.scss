@@ -1,0 +1,87 @@
+@use './functions' as *;
+
+$light: (
+  BG:                       color(lightBG),
+  Text:                     color(lightText),
+
+  ContFirstLayer:           color(lightContFirstLayer),
+  ContFirstLayerHighlight:  color(lightContFirstLayerHighlight),
+  ContSecondLayer:          color(lightContSecondLayer),
+  ContSecondLayerHighlight: color(lightContSecondLayerHighlight),
+
+  Border:                   color(lightBorder),
+
+  FrameTopBG:               color(lightFrameTopBG),
+  FrameTopHighlight:        color(lightFrameTopHighlight),
+  FrameTopClose:            color(lightFrameTopClose),
+
+  InputError:               color(lightInputError),
+  InputHighlight:           color(lightInputHighlight),
+  InputBorderHighlight:     color(lightInputBorderHighlight),
+  InputDisabled:            color(lightDisabledBG),
+
+  MenuBG:                   color(lightMenuBG),
+  MenuItems:                color(lightMenuItems),
+  MenuItemsHighlight:       color(lightMenuItemsHighlight),
+  MenuItemsActive:          color(lightMenuItemsActive),
+
+  ButtonPrimaryBG:          color(lightButtonPrimaryBG),
+  ButtonPrimaryHighlight:   color(lightButtonPrimaryHighlight),
+  ButtonPrimaryActive:      color(lightButtonPrimaryActive),
+
+  ButtonSecondaryBG:        color(lightButtonSecondaryBG),
+  ButtonSecondaryHighlight: color(lightButtonSecondaryHighlight),
+  ButtonSecondaryActive:    color(lightButtonSecondaryActive),
+
+  ButtonDeleteBG:           color(lightButtonDeleteBG),
+  ButtonDeleteHighlight:    color(lightButtonDeleteHighlight),
+  ButtonDeleteActive:       color(lightButtonDeleteActive),
+  ButtonDeleteDisabled:     color(lightButtonDeleteDisabled),
+  ButtonDeleteBorderColor:  color(lightButtonDeleteBorderColor),
+
+  ButtonPrimaryText:        color(lightButtonPrimaryText),
+  ButtonSecondaryText:      color(lightButtonSecondaryText),
+  ButtonBorderColor:        color(lightButtonBorderColor),
+  ButtonDisabledBG:         color(lightDisabledBG),
+
+  TooltipBG:                color(lightTooltipBG),
+  TooltipBorder:            color(lightTooltipBorder),
+
+  NotificatorSuccess:       color(lightNotificatorSuccess),
+  NotificatorError:         color(lightNotificatorError),
+  NotificatorInfo:          color(lightNotificatorInfo),
+
+  SwitchUncheckedBG:        color(lightSwitchUncheckedBG),
+  SwitchCheckedBG:          color(lightSwitchCheckedBG),
+  SwitchDot:                color(lightSwitchDot),
+  SwitchDisabled:           color(lightSwitchDisabled),
+
+  TransactHighlight:        color(lightMenuItemsHighlight),
+  TransactDouble:           color(lightButtonDeleteBG),
+  TransactDoubleHighlight:  color(lightButtonDeleteHighlight),
+
+  SVGFill:                  color(lightSVGFill),
+
+  GlassBG:                  linear-gradient(to right bottom, color(lightGlassBGStart), color(lightGlassBGFinish)),
+  GlassBorder:              color(lightGlassBorder),
+
+
+  ScrollerShadow:           inset 0 0 6px color(lightScrollerShadow),
+  ScrollerColor:            color(lightScrollerShadow),
+
+  InputShadowHighlight:     0 0 4px color(lightInputBorderHighlight),
+  InputErrorShadow:         0 0 4px color(lightInputError),
+  InputDisabledShadow:      0 0 4px color(lightDisabledBG),
+
+  ButtonShadowHighlightIn:  inset 0 0 6px color(lightButtonBorderColor),
+  ButtonShadowHighlightOut: 0 0 6px color(lightButtonBorderColor),
+
+  ButtonDeleteShadowIn:     inset 0 0 6px color(lightButtonDeleteBorderColor),
+  ButtonDeleteShadowOut:    0 0 6px color(lightButtonDeleteBorderColor),
+
+  ContainerFirstShadow:     0 0 8px color(lightCommonShadow),
+  ContainerSecondShadow:    0 0 6px color(lightCommonShadow),
+
+  MenuShadow:               inset 10px 0 5px -6px color(lightCommonShadow),
+
+);

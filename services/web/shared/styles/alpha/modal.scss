@@ -1,0 +1,72 @@
+@use '../colors' as *;
+@use '../vars' as g-v; // global-vars
+@use '../common' as *;
+@use '../theming' as *;
+@use './alpha_vars' as v-v; // variant-vars
+
+
+.alpha.modal {
+  @include theme(background-color, ContFirstLayer);
+  @include theme(box-shadow, ContainerFirstShadow);
+  border-radius: v-v.$modal-container-border-radius;
+  width: fit-content;
+  min-width: v-v.$modal-min-width;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: v-v.$modal-gap;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: g-v.$modal-wrapper-z-index + 1;
+
+  .modal-title {
+    @include theme(background-color, ContSecondLayer);
+    @include theme(box-shadow, ContainerSecondShadow);
+    width: 100%;
+    min-width: v-v.$modal-min-width;
+    height: fit-content;
+    position: relative;
+    top: 0;
+    left: 0;
+    border-radius: v-v.$modal-container-border-radius v-v.$modal-container-border-radius 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .text.title {
+      @extend %header;
+      padding-top: v-v.$modal-title-padding;
+      text-align: center;
+      white-space: pre-line;
+    }
+
+    .text.subtitle {
+      @extend %subheader;
+      padding: v-v.$modal-subtitle-padding;
+      text-align: center;
+      white-space: pre-line;
+    }
+  }
+
+  .modal-main {
+    height: 100%;
+    width: 100%;
+    padding: v-v.$modal-main-padding;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: v-v.$modal-gap;
+
+    .input-wrapper {
+      width: v-v.$modal-input-width;
+    }
+  }
+
+  // .button-group {
+  //   padding: v-v.$modal-button-group-padding;
+  // }
+}

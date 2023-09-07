@@ -1,0 +1,85 @@
+@use './vars' as *;
+@use './colors' as *;
+@use './theming' as *;
+
+
+%reset-std {
+  margin: 0;
+  padding: 0;
+}
+
+// %scrollbar-custom {
+//   overflow-x: hidden;
+//   overflow-y: overlay;
+
+//   color: #00000000;
+
+//   transition: color $hover-animation-speed ease-in-out;
+
+//   &::-webkit-scrollbar {
+//     width: 16px;
+//     border: 5px solid transparent;
+//     border-radius: 8px;
+//   }
+ 
+//   &::-webkit-scrollbar-track {
+//     display: none;
+//   }
+ 
+//   &::-webkit-scrollbar-thumb {
+//     width: 16px;
+//     border: 5px solid transparent;
+//     border-radius: 8px;
+//   }
+
+//   &:hover {
+//     @include theme(color, ScrollerColor);
+//     &::-webkit-scrollbar-thumb {
+//       box-shadow: inset 0 0 0 10px;
+//     }
+//   }
+// }
+
+%scrollbar-custom {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar, &::-webkit-scrollbar-track, &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+}
+
+%form-overflow-control {
+  height: 100%;
+  margin: -1rem 0 -2px;
+  padding: 1rem 0 2px;
+  overflow-x: visible;
+}
+
+%header {
+  font-size: $header-font-size;
+  font-weight: $header-font-weight;
+  user-select: none;
+};
+
+%subheader {
+  font-size: $subheader-font-size;
+  font-weight: $subheader-font-weight;
+  user-select: none;
+};
+
+%bigtext {
+  font-size: $bigtext-font-size;
+  font-weight: $bigtext-font-weight;
+};
+
+%numerics-big {
+  font-size: $numerics-big-font-size;
+  font-weight: $numerics-big-font-weight;
+}
+
+%numerics-small {
+  font-size: $numerics-small-font-size;
+  font-weight: $numerics-small-font-weight;
+}

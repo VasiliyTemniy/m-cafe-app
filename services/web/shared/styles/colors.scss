@@ -1,0 +1,13 @@
+@use './theming/themingMixins' as *;
+@use './theming/light' as lightTheme;
+@use './theming/dark' as darkTheme;
+
+/** this section generates a theme map for each theme **/
+$themes: ();
+$themeValues: ();
+
+
+@include generateThemeMappings(light, lightTheme.$light);
+
+@include generateThemeMappings(dark, darkTheme.$dark);
+/** end theme generation **/

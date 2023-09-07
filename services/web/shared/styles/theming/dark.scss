@@ -1,0 +1,87 @@
+@use './functions.scss' as *;
+
+$dark: (
+  BG:                       color(darkBG),
+  Text:                     color(darkText),
+
+  ContFirstLayer:           color(darkContFirstLayer),
+  ContFirstLayerHighlight:  color(darkContFirstLayerHighlight),
+  ContSecondLayer:          color(darkContSecondLayer),
+  ContSecondLayerHighlight: color(darkContSecondLayerHighlight),
+
+  Border:                   color(darkBorder),
+
+  FrameTopBG:               color(darkFrameTopBG),
+  FrameTopHighlight:        color(darkFrameTopHighlight),
+  FrameTopClose:            color(darkFrameTopClose),
+
+  InputError:               color(darkInputError),
+  InputHighlight:           color(darkInputHighlight),
+  InputBorderHighlight:     color(darkInputBorderHighlight),
+  InputDisabled:            color(darkDisabledBG),
+
+  MenuBG:                   color(darkMenuBG),
+  MenuItems:                color(darkMenuItems),
+  MenuItemsHighlight:       color(darkMenuItemsHighlight),
+  MenuItemsActive:          color(darkMenuItemsActive),
+
+  ButtonPrimaryBG:          color(darkButtonPrimaryBG),
+  ButtonPrimaryHighlight:   color(darkButtonPrimaryHighlight),
+  ButtonPrimaryActive:      color(darkButtonPrimaryActive),
+
+  ButtonSecondaryBG:        color(darkButtonSecondaryBG),
+  ButtonSecondaryHighlight: color(darkButtonSecondaryHighlight),
+  ButtonSecondaryActive:    color(darkButtonSecondaryActive),
+
+  ButtonDeleteBG:           color(darkButtonDeleteBG),
+  ButtonDeleteHighlight:    color(darkButtonDeleteHighlight),
+  ButtonDeleteActive:       color(darkButtonDeleteActive),
+  ButtonDeleteDisabled:     color(darkButtonDeleteDisabled),
+  ButtonDeleteBorderColor:  color(darkButtonDeleteBorderColor),
+
+  ButtonPrimaryText:        color(darkButtonPrimaryText),
+  ButtonSecondaryText:      color(darkButtonSecondaryText),
+  ButtonBorderColor:        color(darkButtonBorderColor),
+  ButtonDisabledBG:         color(darkDisabledBG),
+
+  TooltipBG:                color(darkTooltipBG),
+  TooltipBorder:            color(darkTooltipBorder),
+
+  NotificatorSuccess:       color(darkNotificatorSuccess),
+  NotificatorError:         color(darkNotificatorError),
+  NotificatorInfo:          color(darkNotificatorInfo),
+
+  SwitchUncheckedBG:        color(darkSwitchUncheckedBG),
+  SwitchCheckedBG:          color(darkSwitchCheckedBG),
+  SwitchDot:                color(darkSwitchDot),
+  SwitchDisabled:           color(darkSwitchDisabled),
+
+  TransactHighlight:        color(darkMenuItemsHighlight),
+  TransactDouble:           color(darkButtonDeleteBG),
+  TransactDoubleHighlight:  color(darkButtonDeleteHighlight),
+
+  SVGFill:                  color(darkSVGFill),
+
+  GlassBG:                  linear-gradient(to right bottom, color(darkGlassBGStart), color(darkGlassBGFinish)),
+  GlassBorder:              color(darkGlassBorder),
+
+
+  ScrollerShadow:           inset 0 0 6px color(darkScrollerShadow),
+  ScrollerColor:            color(darkScrollerShadow),
+
+  InputShadowHighlight:     0 0 4px color(darkInputBorderHighlight),
+  InputErrorShadow:         0 0 4px color(darkInputError),
+  InputDisabledShadow:      0 0 4px color(darkDisabledBG),
+
+  ButtonShadowHighlightIn:  inset 0 0 6px color(darkButtonBorderColor),
+  ButtonShadowHighlightOut: 0 0 6px color(darkButtonBorderColor),
+
+  ButtonDeleteShadowIn:     inset 0 0 6px color(darkButtonDeleteBorderColor),
+  ButtonDeleteShadowOut:    0 0 6px color(darkButtonDeleteBorderColor),
+
+  ContainerFirstShadow:     0 0 8px color(darkCommonShadow),
+  ContainerSecondShadow:    0 0 6px color(darkCommonShadow),
+
+  MenuShadow:               inset 10px 0 5px -6px color(darkCommonShadow),
+  
+);

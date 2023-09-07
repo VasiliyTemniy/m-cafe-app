@@ -1,0 +1,53 @@
+@use './alpha_vars' as v-v; // variant-vars
+@use '../vars' as g-v; // global-vars
+@use '../common' as *;
+
+.scrollable-wrapper {
+
+  .alpha.scrollbar.invisible {
+    width: 0;
+    .scrollbar-track,
+    .scrollbar-thumb {
+      width: 0;
+    }
+  }
+
+  .alpha.scrollbar {
+    top: 0;
+    right: 0;
+    position: absolute;
+    width: v-v.$scrollbar-width;
+    height: 100%;
+
+    .scrollbar-track {
+      width: v-v.$scrollbar-width;
+      height: 100%;
+      border-radius: calc(v-v.$scrollbar-width / 2);
+      background-color: rgba(0, 0, 0, 5%);
+      position: absolute;
+      top: 0;
+      transition: background-color g-v.$hover-animation-speed ease-in-out;
+    }
+
+    .scrollbar-thumb {
+      width: v-v.$scrollbar-width;
+      border-radius: calc(v-v.$scrollbar-width / 2);
+      background-color: rgba(0, 0, 0, 30%);
+      position: absolute;
+      transition: background-color g-v.$hover-animation-speed ease-in-out;
+    }
+  }
+
+  &:hover {
+    .alpha.scrollbar {
+
+      .scrollbar-track {
+        background-color: rgba(0, 0, 0, 35%);
+      }
+  
+      .scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 80%);
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+@use './alpha_vars' as v-v; // variant-vars
+@use '../theming' as *;
+
+
+%button-group-common {
+  display: flex;
+  gap: 0;
+}
+
+/**
+ * Properties for 'alpha' basevariant class button groups
+ */
+.alpha.button-group {
+  @extend %button-group-common;
+
+  button {
+    margin: 0;
+    border-radius: v-v.$button-border-radius 0 0 v-v.$button-border-radius;
+
+    &:hover, &:focus-visible {
+      border-radius: v-v.$button-border-radius-hover 0 0 v-v.$button-border-radius-hover;
+    }
+
+    &:active {
+      border-radius: v-v.$button-border-radius 0 0 v-v.$button-border-radius;
+    }
+
+    &::before {
+      border-radius: v-v.$button-border-radius 0 0 v-v.$button-border-radius;
+    }
+
+    &:hover::before, &:focus-visible::before {
+      inset: v-v.$button-hover-offset 0 v-v.$button-hover-offset v-v.$button-hover-offset;
+    }
+
+    &:active::before {
+      inset: 0;
+    }
+
+  }
+
+  button+button {
+    border-radius: 0 v-v.$button-border-radius v-v.$button-border-radius 0;
+
+    &:hover, &:focus-visible {
+      border-radius: 0 v-v.$button-border-radius-hover v-v.$button-border-radius-hover 0;
+    }
+
+    &:active {
+      border-radius: 0 v-v.$button-border-radius v-v.$button-border-radius 0;
+    }
+
+    &::before {
+      border-radius: 0 v-v.$button-border-radius v-v.$button-border-radius 0;
+    }
+
+    &:hover::before, &:focus-visible::before {
+      inset: v-v.$button-hover-offset v-v.$button-hover-offset v-v.$button-hover-offset 0;
+    }
+
+    &:active::before {
+      inset: 0;
+    }
+
+  }
+}
