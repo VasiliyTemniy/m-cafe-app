@@ -5,6 +5,7 @@ import { Container } from "./Container";
 import { TextComp } from "./TextComp";
 import { Image } from "./Image";
 import { Switch } from "./Switch";
+import { apiBaseUrl } from "@m-cafe-app/shared-constants";
 
 
 interface FiltersboxProps extends CommonProps {
@@ -14,7 +15,6 @@ interface FiltersboxProps extends CommonProps {
   }>;
   onClick: MouseEventHandler;
   onChoose: MouseEventHandler;
-  svgUrl?: string;
   label: string;
   tNode?: string
 }
@@ -28,14 +28,13 @@ export const Filtersbox = ({
   onClick,
   onChoose,
   tNode,
-  svgUrl,
   label
 }: FiltersboxProps) => {
 
   const { t } = useTranslation();
 
   const { className, style, specific } = useInitLC({
-    componentType: 'input',
+    componentType: 'dropbox',
     componentName: 'filtersbox',
     classNameAddon,
     classNameOverride,
@@ -51,18 +50,18 @@ export const Filtersbox = ({
     : options;
 
   return (
-    <Container className={className} id={id} style={style}>
-      <Container className='chosen-wrapper' onClick={onClick}>
+    <Container classNameAddon={className} id={id} style={style}>
+      <Container classNameAddon='chosen-wrapper' onClick={onClick}>
         <TextComp text={label}/>
+        <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`}/>
         <>
-          {svgUrl && <Image src={svgUrl}/>}
           {specific?.useBarBelow &&
           <div className='bar'/>
           }
         </>
       </Container>
-      <Container className='dropdown-wrapper'>
-        <Container className='options-wrapper filters'>
+      <Container classNameAddon='dropdown-wrapper'>
+        <Container classNameAddon='options-wrapper filters'>
           {translatedOptions.map(option =>
             <Container key={`${option.name} filter-option`} onClick={onChoose} className='option' id={option.name}>
               <Container text={option.name}/>

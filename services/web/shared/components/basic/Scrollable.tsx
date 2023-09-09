@@ -9,9 +9,9 @@ import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { ContainerProps } from './Container';
 
 export const Scrollable = ({
-  className,
+  classNameOverride,
+  classNameAddon,
   id,
-  style,
   children,
   onClick,
   onMouseEnter,
@@ -19,7 +19,8 @@ export const Scrollable = ({
   onMouseDown,
   onMouseLeave,
   onMouseUp,
-  text
+  text,
+  style
 }: ContainerProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const scrollTrackRef = useRef<HTMLDivElement>(null);
@@ -35,6 +36,13 @@ export const Scrollable = ({
   const { className: scrollbarClassName, style: scrollbarStyle } = useInitLC({
     componentType: 'scrollbar',
     componentName: 'scrollbar'
+  });
+
+  const { className: containerClassName, style: containerSettingsStyle } = useInitLC({
+    componentType: 'container',
+    componentName: 'container',
+    classNameAddon,
+    classNameOverride,
   });
 
   function handleResize(ref: HTMLDivElement) {
@@ -164,9 +172,9 @@ export const Scrollable = ({
     <div className={`scrollable-wrapper`}>
       <div
         ref={contentRef}
-        className={`${className} scrollable`}
+        className={`${containerClassName} scrollable`}
         id={id}
-        style={style}
+        style={{ ...style, ...containerSettingsStyle}}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMove}

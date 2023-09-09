@@ -37,7 +37,7 @@ export const FormikTimeField = ({ disabled = false, ...props }: FormikTimeFieldP
     : props.label;
 
   return(
-    <Container className={`input-wrapper time ${baseVariant}${specific?.firefoxFix ? ' firefox-fix' : ''}`}>
+    <Container classNameAddon={`input-wrapper time ${baseVariant}${specific?.firefoxFix ? ' firefox-fix' : ''}`}>
       <input
         type='time'
         id={field.name}

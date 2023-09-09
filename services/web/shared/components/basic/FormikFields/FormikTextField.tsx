@@ -38,7 +38,7 @@ export const FormikTextField = ({ disabled = false, ...props }: FormikTextFieldP
     : props.label;
 
   return(
-    <Container className={`input-wrapper text ${baseVariant}`}>
+    <Container classNameAddon={`input-wrapper text ${baseVariant}`}>
       <input
         type={props.type}
         id={field.name}

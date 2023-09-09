@@ -4,13 +4,13 @@ import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hoo
 import { Container } from "./Container";
 import { TextComp } from "./TextComp";
 import { Image } from "./Image";
+import { apiBaseUrl } from "@m-cafe-app/shared-constants";
 
 interface DropboxProps extends CommonProps {
   options: string[];
   currentOption: string;
   onClick: MouseEventHandler;
   onChoose: MouseEventHandler;
-  svgUrl?: string;
   label: string;
   tNode?: string;
 }
@@ -25,14 +25,13 @@ export const Dropbox = ({
   onClick,
   onChoose,
   tNode,
-  label,
-  svgUrl
+  label
 }: DropboxProps) => {
 
   const { t } = useTranslation();
 
   const { className, style, specific } = useInitLC({
-    componentType: 'input',
+    componentType: 'dropbox',
     componentName: 'dropbox',
     classNameAddon,
     classNameOverride,
@@ -47,19 +46,19 @@ export const Dropbox = ({
     : currentOption;
 
   return (
-    <Container className={className} id={id} style={style}>
-      <Container className='chosen-wrapper' onClick={onClick}>
+    <Container classNameAddon={className} id={id} style={style}>
+      <Container classNameAddon='chosen-wrapper' onClick={onClick}>
         <TextComp text={translatedCurrentOption}/>
         <label htmlFor={id}>{label}</label>
+        <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`}/>
         <>
-          {svgUrl && <Image src={svgUrl}/>}
           {specific?.useBarBelow &&
             <div className='bar'/>
           }
         </>
       </Container>
-      <Container className='dropdown-wrapper'>
-        <Container className='options-wrapper'>
+      <Container classNameAddon='dropdown-wrapper'>
+        <Container classNameAddon='options-wrapper'>
           {translatedOptions.map(option => 
             <Container key={option} onClick={onChoose} id={option} className='option' text={option}/>)
           }

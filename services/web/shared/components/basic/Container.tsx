@@ -1,9 +1,9 @@
-import type { CSSProperties, MouseEventHandler, Ref } from "react";
+import { useInitLC } from "@m-cafe-app/frontend-logic/shared/hooks";
+import { CommonProps } from "@m-cafe-app/frontend-logic/types";
+import type { MouseEventHandler, Ref, MouseEvent, CSSProperties } from "react";
 
-export interface ContainerProps {
-  className?: string;
-  id?: string;
-  style?: CSSProperties;
+export interface ContainerProps extends CommonProps {
+  style?: CSSProperties
   children?: JSX.Element[] | JSX.Element;
   onClick?: MouseEventHandler;
   onMouseEnter?: MouseEventHandler;
@@ -16,9 +16,9 @@ export interface ContainerProps {
 }
 
 export const Container = ({
-  className,
+  classNameOverride,
+  classNameAddon,
   id,
-  style,
   children,
   onClick,
   onMouseEnter,
@@ -27,24 +27,44 @@ export const Container = ({
   onMouseLeave,
   onMouseUp,
   ref,
-  text
+  text,
+  style
 }: ContainerProps) => {
 
-  const classNameSum = className
-    ? `container ${className}`
-    : `container`;
+  const { className, style: settingsStyle } = useInitLC({
+    componentType: 'container',
+    componentName: 'container',
+    classNameAddon,
+    classNameOverride,
+  });
+
+  const handleMouseOver = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+  };
+
+  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+    if (onClick) onClick(e);
+  };
 
   return (
     <div
       ref={ref}
-      className={classNameSum}
+      className={className}
       id={id}
-      style={style}
-      onClick={onClick}
+      style={{ ...style, ...settingsStyle }}
+      onClick={handleClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseDown={onMouseDown}
       onMouseLeave={onMouseLeave}
+      onMouseOver={handleMouseOver}
       onMouseUp={onMouseUp}
     >
       {text}

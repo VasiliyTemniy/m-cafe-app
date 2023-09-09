@@ -37,7 +37,7 @@ export const FormikDateField = ({ disabled = false, ...props }: FormikDateFieldP
     : props.label;
 
   return(
-    <Container className={`input-wrapper date ${baseVariant}${specific?.firefoxFix ? ' firefox-fix' : ''}`}>
+    <Container classNameAddon={`input-wrapper date ${baseVariant}${specific?.firefoxFix ? ' firefox-fix' : ''}`}>
       <input
         type='date'
         id={field.name}

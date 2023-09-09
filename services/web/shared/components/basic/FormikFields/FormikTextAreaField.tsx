@@ -1,4 +1,4 @@
-import { ChangeEventHandler, FocusEventHandler, FocusEvent } from 'react';
+import { FocusEvent } from 'react';
 import { FieldHookConfig, useField } from "formik";
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
@@ -7,8 +7,6 @@ import { Tooltip } from '../Tooltip';
 import { useRef } from "react";
 
 type FormikTextAreaFieldProps = FieldHookConfig<string> & CommonFieldProps & {
-  onChange: ChangeEventHandler<HTMLTextAreaElement>;
-  onBlur: FocusEventHandler<HTMLTextAreaElement>;
   maxrows: number
 };
 
@@ -49,21 +47,20 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
   const handleBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
     field.onBlur(e);
     if (areaRef.current) {
-      areaRef.current.style.height = "inherit";
       areaRef.current.style.height = `${
         Math.min(
           Math.max(
             areaRef.current?.scrollHeight,
             32
           ),
-          32 * props.maxrows + 7
+          32 * (props.maxrows - 1) + 15
         )
       }px`;
     }
   };
 
   return(
-    <Container className={`input-wrapper textarea ${baseVariant}`}>
+    <Container classNameAddon={`input-wrapper textarea ${baseVariant}`}>
       <textarea
         id={field.name}
         name={field.name}

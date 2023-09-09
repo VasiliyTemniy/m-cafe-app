@@ -14,7 +14,6 @@ import { apiBaseUrl } from "@m-cafe-app/shared-constants";
 type FormikSelectFieldProps = FieldHookConfig<string> & CommonFieldProps & {
   options: string[],
   tNode?: string,
-  svgUrl: string,
 };
 
 
@@ -61,7 +60,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
     : autoCompleteArray(props.options, field.value);
 
   return(
-    <Container className={`input-wrapper select ${baseVariant}`}>
+    <Container classNameAddon={`input-wrapper select ${baseVariant}`}>
       <input
         type='text'
         id={field.name}
@@ -80,8 +79,13 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
       />
       <label htmlFor={field.name}>{labelText}</label>
       <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`} classNameAddon='svg'/>
-      <Container className='dropdown-wrapper'>
-        <Container className='options-wrapper'>
+      <>
+        {specific?.useBarBelow &&
+          <div className='bar'/>
+        }
+      </>
+      <Container classNameAddon='dropdown-wrapper'>
+        <Container classNameAddon='options-wrapper'>
           {displayedOptions.map(option => 
             <Container key={option} onMouseDown={handleChooseOption} id={option} text={option}/>)
           }

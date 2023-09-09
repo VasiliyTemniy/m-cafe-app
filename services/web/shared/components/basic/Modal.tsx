@@ -31,13 +31,13 @@ export const Modal = ({
 
   if (active && wrapper) {
     return (
-      <Container className='modal-blur-wrapper'>
-        <Container className={className} style={style} id={id}>
-          <Container className='modal-title'>
+      <Container classNameAddon='modal-blur-wrapper'>
+        <Container classNameAddon={className} style={style} id={id}>
+          <Container classNameAddon='modal-title'>
             <TextComp text={title} classNameAddon='title'/>
             <TextComp text={subtitle} classNameAddon='subtitle'/>
           </Container>
-          <Container className='modal-main'>
+          <Container classNameAddon='modal-main'>
             {children}
           </Container>
         </Container>
@@ -45,12 +45,12 @@ export const Modal = ({
     );
   } else if (active) {
     return (
-      <Container className={className} style={style} id={id}>
-        <Container className='modal-title'>
+      <Container classNameAddon={className} style={style} id={id}>
+        <Container classNameAddon='modal-title'>
           <TextComp text={title} classNameAddon='title'/>
           <TextComp text={subtitle} classNameAddon='subtitle'/>
         </Container>
-        <Container className='modal-main'>
+        <Container classNameAddon='modal-main'>
           {children}
         </Container>
       </Container>
