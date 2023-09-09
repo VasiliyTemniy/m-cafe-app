@@ -1,6 +1,7 @@
 import { useAppSelector, useInitAppAdmin } from '@m-cafe-app/frontend-logic/admin/hooks';
 import { AppRoutes } from './AppRoutes';
 import { LoginPage, Container, Loading } from 'shared/components';
+// import { Container, Loading, ColorTestPage } from 'shared/components';
 
 
 export const App = () => {
@@ -19,7 +20,8 @@ export const App = () => {
       <>
         {/* <Header /> */}
         {/* <Notification/> */}
-        <Container className='window-container' id='main-container'>
+        <Container classNameAddon='window-container' id='main-container'>
+          {/* <ColorTestPage/> */}
           <LoginPage/>
         </Container>
         {/* <Footer /> */}
@@ -30,7 +32,7 @@ export const App = () => {
       <>
         {/* <Header /> */}
         {/* <Menu /> */}
-        <Container className='main-container' id='main-container'>
+        <Container classNameAddon='main-container' id='main-container'>
           {/* <Notification/> */}
           <AppRoutes/>
         </Container>

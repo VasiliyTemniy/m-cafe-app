@@ -16,7 +16,7 @@ const App = () => {
       <>
         {/* <Header /> */}
         {/* <Notification/> */}
-        <Container className='window-container' id='main-container'>
+        <Container classNameAddon='window-container' id='main-container'>
           <AppRoutes/>
         </Container>
         {/* <Footer /> */}
@@ -27,7 +27,7 @@ const App = () => {
       <>
         {/* <Header /> */}
         {/* <Menu /> */}
-        <Container className='main-container' id='main-container'>
+        <Container classNameAddon='main-container' id='main-container'>
           {/* <Notification/> */}
           <AppRoutes/>
         </Container>
