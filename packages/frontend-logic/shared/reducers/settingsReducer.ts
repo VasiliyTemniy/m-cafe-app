@@ -8,11 +8,11 @@ import { Md5 } from 'ts-md5';
 import { AllowedThemes, allowedThemes } from '@m-cafe-app/shared-constants';
 
 
-type SettingsActionSetLanguage = { payload: { language: 'main' | 'sec' | 'alt' } };
+type SettingsActionSetLanguage = { payload: 'main' | 'sec' | 'alt' };
 
 type SettingsActionSetUiSettings = { payload: { uiSettings: UiSettingDT[] } };
 
-type SettingsActionSetTheme = { payload: { theme: AllowedThemes } };
+type SettingsActionSetTheme = { payload: AllowedThemes };
 
 
 export type SettingsState = {
@@ -38,7 +38,7 @@ export const sharedSettingsSliceBase = {
   initialState,
   reducers: {
     setLanguage: (state: SettingsState, action: SettingsActionSetLanguage): SettingsState => {
-      return { ...state, language: action.payload.language };
+      return { ...state, language: action.payload };
     },
     setUiSettings: (state: SettingsState, action: SettingsActionSetUiSettings): SettingsState => {
       return { ...state, dbUiSettings: action.payload.uiSettings };
@@ -76,9 +76,9 @@ export const sharedSettingsSliceBase = {
         if (rootElement.classList.contains(theme))
           rootElement.classList.remove(theme);
       }
-      rootElement.classList.add(action.payload.theme);
-      window.localStorage.setItem('CafeAppTheme', JSON.stringify(action.payload.theme));
-      return { ...state, theme: action.payload.theme };
+      rootElement.classList.add(action.payload);
+      window.localStorage.setItem('CafeAppTheme', JSON.stringify(action.payload));
+      return { ...state, theme: action.payload };
     }
   },  
 };
