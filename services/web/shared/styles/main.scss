@@ -10,6 +10,7 @@
 @use './alpha/switch' as *;
 @use './alpha/dropbox' as *;
 @use './alpha/scrollbar' as *;
+@use './alpha/container' as *;
 @use './vars' as g-v; // global-vars
 
 html {
@@ -19,41 +20,14 @@ html {
 
 body {
   @extend %reset-std;
-  @include theme(background-color, BG);
-  // @extend %scrollbar-custom;
+  @include theme(background-color, AlphaBGMain);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 div {
   @extend %reset-std;
 }
-
-.text {
-  @include theme(color, Text);
-  @include theme(-webkit-text-fill-color, Text);
-}
-
-.draggable {
-  -webkit-app-region: drag;
-}
-
-// Common container props
-.container.first-layer {
-  @include theme(background-color, ContFirstLayer);
-  @include theme(box-shadow, ContainerFirstShadow);
-  border-radius: g-v.$main-area-container-border-radius;
-  padding: g-v.$main-area-container-padding;
-  margin: g-v.$main-area-container-first-layer-margin;
-}
-
-.container.second-layer {
-  @include theme(background-color, ContSecondLayer);
-  @include theme(box-shadow, ContainerSecondShadow);
-  @extend %scrollbar-custom;
-  border-radius: g-v.$main-area-container-border-radius;
-  padding: g-v.$main-area-container-padding;
-}
-
-// Common container props
 
 // Main window
 // .window-container-divider {
@@ -79,38 +53,3 @@ div {
 //   height: calc(100vh - g-v.$frame-top-height - g-v.$footer-height);
 // }
 // Main window
-
-
-// Glass containers
-.glass {
-  @include theme(box-shadow, ContainerFirstShadow);
-  @include theme(border, GlassBorder, g-v.$glass-container-border-thickness solid);
-  @include theme(background, GlassBG);
-  padding: g-v.$glass-container-padding;
-  background: #d8ecdb30;
-  border-radius: g-v.$glass-container-border-radius;
-  backdrop-filter: blur(2px);
-  // -webkit-backdrop-filter: blur(2px);
-}
-// Glass containers
-
-// Modal blur wrapper
-.modal-blur-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000000cc;
-  z-index: g-v.$modal-wrapper-z-index;
-}
-// Modal blur wrapper
-
-// Scrollable
-.scrollable-wrapper {
-  position: relative;
-  .scrollable {
-    @extend %scrollbar-custom;
-  }
-}
-// Scrollable

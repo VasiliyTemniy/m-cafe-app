@@ -1,0 +1,54 @@
+@use '../colors' as *;
+@use '../vars' as g-v; // global-vars
+@use './alpha_vars' as v-v; // variant-vars
+@use '../theming' as *;
+
+
+.container.first-layer {
+  @include theme(background-color, AlphaBGFirst);
+  @include theme(box-shadow, Shadow, 0 0 8px);
+  border-radius: v-v.$main-area-container-border-radius;
+  padding: v-v.$main-area-container-padding;
+  margin: v-v.$main-area-container-first-layer-margin;
+  transition: background-color g-v.$hover-animation-speed ease-in-out;
+
+  &.clickable:hover {
+    @include theme(background-color, AlphaBGFirstHighlight);
+  }
+
+  &.clickable:active {
+    @include theme(background-color, AlphaBGFirstActive);
+  }
+}
+
+.container.second-layer {
+  @include theme(background-color, AlphaBGSecond);
+  @include theme(box-shadow, Shadow, 0 0 6px);
+  border-radius: v-v.$main-area-container-border-radius;
+  padding: v-v.$main-area-container-padding;
+  transition: background-color g-v.$hover-animation-speed ease-in-out;
+
+  &.clickable:hover {
+    @include theme(background-color, AlphaBGSecondHighlight);
+  }
+
+  &.clickable:active {
+    @include theme(background-color, AlphaBGSecondActive);
+  }
+}
+
+.container.third-layer {
+  @include theme(background-color, AlphaBGThird);
+  @include theme(box-shadow, Shadow, 0 0 6px);
+  border-radius: v-v.$main-area-container-border-radius;
+  padding: v-v.$main-area-container-padding;
+  transition: background-color g-v.$hover-animation-speed ease-in-out;
+
+  &.clickable:hover {
+    @include theme(background-color, AlphaBGThirdHighlight);
+  }
+
+  &.clickable:active {
+    @include theme(background-color, AlphaBGThirdActive);
+  }
+}

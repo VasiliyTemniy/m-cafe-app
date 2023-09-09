@@ -6,26 +6,20 @@
 
 
 %hover-common {
-  @include theme(background-color, InputHighlight);
   outline: none;
 
   & ~ .bar {
-    @include theme(box-shadow, InputShadowHighlight);
     height: v-v.$input-border-thickness-highlight;
     pointer-events: none;
   }
 }
 
-%dropbox-common {
-  position: relative;
-  width: 100%;
-}
-
 /**
- * Properties for 'alpha' basevariant class buttons
+ * Properties for 'alpha' basevariant class dropboxes
  */
 .alpha.dropbox {
-  @extend %dropbox-common;
+  position: relative;
+  width: 100%;
 
   .text {
     font-size: v-v.$input-font-size;
@@ -50,7 +44,6 @@
   };
 
   .text+label {
-    @include theme(color, Text);
     position: absolute;
     // font-size: v-v.$input-font-size;
     font-weight: normal;
@@ -62,7 +55,6 @@
   }
 
   .bar {
-    @include theme(background-color, InputBorderHighlight);
     position: absolute;
     width: calc(100% + v-v.$input-padding-left);
     bottom: 0;
@@ -79,7 +71,6 @@
 
     .options-wrapper {
       @extend %scrollbar-custom;
-      @include theme(background-color, MenuItems);
       position: relative;
       z-index: g-v.$modal-wrapper-z-index + 2;
       box-shadow: 0 10px 20px rgba(0,0,0,19%), 0 6px 6px rgba(0,0,0,23%);
@@ -87,7 +78,6 @@
       transition: max-height v-v.$input-animation-speed ease-in-out;
   
       .option {
-        @include theme(color, Text);
         display: flex;
         align-items: center;
         height: v-v.$input-height;
@@ -96,10 +86,6 @@
         cursor: pointer;
         position: relative;
         z-index: g-v.$modal-wrapper-z-index + 3;
-  
-        &:hover {
-          @include theme(background-color, InputHighlight);
-        }
       }
     }
 
@@ -135,8 +121,6 @@
     }
   
     .bar-after {
-      @include theme(background-color, InputBorderHighlight);
-      @include theme(box-shadow, InputShadowHighlight);
       height: v-v.$input-border-thickness-highlight;
       position: relative;
       z-index: g-v.$modal-wrapper-z-index + 5;
@@ -145,17 +129,9 @@
         max-height v-v.$input-animation-speed ease-in-out,
         height v-v.$input-animation-speed ease-in-out;
     }
-
-    &:disabled {
-      ~ .image.svg {
-        @include theme(fill, InputDisabled);
-      }
-    }
-
   }
 
   .image.svg {
-    @include theme(fill, SVGFill);
     position: absolute;
     height: v-v.$input-svg-scale;
     width: v-v.$input-svg-scale;
@@ -182,6 +158,70 @@
     }
     .image.svg {
       transform: translateY(-50%) rotate(180deg);
+    }
+  }
+}
+
+
+%hover-color-common {
+  @include theme(background-color, AlphaBGThird);
+
+  & ~ .bar {
+    @include theme(box-shadow, AlphaPrimary, 0 0 4px);
+  }
+}
+
+
+/**
+ * Alpha color scheme for alpha style dropboxes
+ */
+.alpha.alpha-color.dropbox {
+  .text:hover {
+      @extend %hover-color-common;
+  }
+
+  .text+label {
+    @include theme(color, AlphaText);
+  }
+
+  .bar {
+    @include theme(background-color, AlphaPrimaryHighlight);
+  }
+
+
+  .dropdown-wrapper {
+    .options-wrapper {
+      @include theme(background-color, AlphaBGSecond);
+  
+      .option {
+        @include theme(color, AlphaText);
+  
+        &:hover {
+          @include theme(background-color, AlphaBGThird);
+        }
+      }
+    }
+
+    .bar-after {
+      @include theme(background-color, AlphaPrimaryHighlight);
+      @include theme(box-shadow, AlphaPrimary, 0 0 4px);
+    }
+
+    &:disabled {
+      ~ .image.svg {
+        @include theme(filter, SVGFilter);
+      }
+    }
+
+  }
+
+  .image.svg {
+    @include theme(filter, SVGFilter);
+  }
+
+  &.expanded {
+    .text {
+      @extend %hover-color-common;
     }
   }
 }

@@ -5,9 +5,10 @@
 @use './alpha_vars' as v-v; // variant-vars
 
 
+/**
+ * Properties for 'alpha' basevariant class modals
+ */
 .alpha.modal {
-  @include theme(background-color, ContFirstLayer);
-  @include theme(box-shadow, ContainerFirstShadow);
   border-radius: v-v.$modal-container-border-radius;
   width: fit-content;
   min-width: v-v.$modal-min-width;
@@ -23,8 +24,6 @@
   z-index: g-v.$modal-wrapper-z-index + 1;
 
   .modal-title {
-    @include theme(background-color, ContSecondLayer);
-    @include theme(box-shadow, ContainerSecondShadow);
     width: 100%;
     min-width: v-v.$modal-min-width;
     height: fit-content;
@@ -69,4 +68,18 @@
   // .button-group {
   //   padding: v-v.$modal-button-group-padding;
   // }
+}
+
+
+/**
+ * Alpha color scheme for alpha style modals
+ */
+.alpha.alpha-color.modal {
+  @include theme(background-color, AlphaBGFirst);
+  @include theme(box-shadow, Shadow, 0 0 8px);
+
+  .modal-title {
+    @include theme(background-color, AlphaBGSecond);
+    @include theme(box-shadow, Shadow, 0 0 6px);
+  }
 }

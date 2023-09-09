@@ -1,87 +1,51 @@
 @use './functions' as *;
+@use 'sass:color';
 
 $light: (
-  BG:                       color(lightBG),
-  Text:                     color(lightText),
 
-  ContFirstLayer:           color(lightContFirstLayer),
-  ContFirstLayerHighlight:  color(lightContFirstLayerHighlight),
-  ContSecondLayer:          color(lightContSecondLayer),
-  ContSecondLayerHighlight: color(lightContSecondLayerHighlight),
+  GlassBG:                        linear-gradient(
+                                    to right bottom,
+                                    color.scale(getColor(lightGlass), $alpha: -60%),
+                                    color.scale(getColor(lightGlass), $lightness: -10%, $alpha: -90%),
+                                  ),
+  GlassBorder:                    color.scale(getColor(lightGlass), $lightness: -10%, $alpha: -40%),
 
-  Border:                   color(lightBorder),
+  Border:                         getColor(lightBorder),
+  Shadow:                         getColor(lightShadow),
+  SVGFilter:                      getColor(lightSVGFilter),
 
-  FrameTopBG:               color(lightFrameTopBG),
-  FrameTopHighlight:        color(lightFrameTopHighlight),
-  FrameTopClose:            color(lightFrameTopClose),
+  // Alpha base color variant
+  AlphaBGMain:                    getColor(alphaLightBG),
+  AlphaBGFirst:                   color.scale(getColor(alphaLightBG), $lightness: -10%),
+  AlphaBGFirstHighlight:          color.scale(getColor(alphaLightBG), $lightness: -15%),
+  AlphaBGFirstActive:             color.scale(getColor(alphaLightBG), $lightness: -20%),
+  AlphaBGSecond:                  color.scale(getColor(alphaLightBG), $lightness: -5%),
+  AlphaBGSecondHighlight:         color.scale(getColor(alphaLightBG), $lightness: -10%),
+  AlphaBGSecondActive:            color.scale(getColor(alphaLightBG), $lightness: -15%),
+  AlphaBGThird:                   getColor(alphaLightBG),
+  AlphaBGThirdHighlight:          color.scale(getColor(alphaLightBG), $lightness: -10%),
+  AlphaBGThirdActive:             color.scale(getColor(alphaLightBG), $lightness: -20%),
+  
+  AlphaText:                      getColor(alphaLightText),
+  AlphaTextButtonLabel:           getColor(alphaLightBG),
 
-  InputError:               color(lightInputError),
-  InputHighlight:           color(lightInputHighlight),
-  InputBorderHighlight:     color(lightInputBorderHighlight),
-  InputDisabled:            color(lightDisabledBG),
+  AlphaDisabled:                  getColor(alphaDisabled),
 
-  MenuBG:                   color(lightMenuBG),
-  MenuItems:                color(lightMenuItems),
-  MenuItemsHighlight:       color(lightMenuItemsHighlight),
-  MenuItemsActive:          color(lightMenuItemsActive),
+  AlphaPrimary:                   color.scale(getColor(alphaPrimary), $lightness: -10%),
+  AlphaPrimaryHighlight:          getColor(alphaPrimary),
+  AlphaPrimaryActive:             color.scale(getColor(alphaPrimary), $lightness: 10%),
 
-  ButtonPrimaryBG:          color(lightButtonPrimaryBG),
-  ButtonPrimaryHighlight:   color(lightButtonPrimaryHighlight),
-  ButtonPrimaryActive:      color(lightButtonPrimaryActive),
+  AlphaAccent:                    color.scale(getColor(alphaAccent), $lightness: -10%),
+  AlphaAccentHighlight:           getColor(alphaAccent),
+  AlphaAccentActive:              color.scale(getColor(alphaAccent), $lightness: 10%),
 
-  ButtonSecondaryBG:        color(lightButtonSecondaryBG),
-  ButtonSecondaryHighlight: color(lightButtonSecondaryHighlight),
-  ButtonSecondaryActive:    color(lightButtonSecondaryActive),
+  AlphaSuccess:                   color.scale(getColor(alphaSuccess), $lightness: -10%),
+  AlphaSuccessHighlight:          getColor(alphaSuccess),
+  AlphaSuccessActive:             color.scale(getColor(alphaSuccess), $lightness: 10%),
 
-  ButtonDeleteBG:           color(lightButtonDeleteBG),
-  ButtonDeleteHighlight:    color(lightButtonDeleteHighlight),
-  ButtonDeleteActive:       color(lightButtonDeleteActive),
-  ButtonDeleteDisabled:     color(lightButtonDeleteDisabled),
-  ButtonDeleteBorderColor:  color(lightButtonDeleteBorderColor),
-
-  ButtonPrimaryText:        color(lightButtonPrimaryText),
-  ButtonSecondaryText:      color(lightButtonSecondaryText),
-  ButtonBorderColor:        color(lightButtonBorderColor),
-  ButtonDisabledBG:         color(lightDisabledBG),
-
-  TooltipBG:                color(lightTooltipBG),
-  TooltipBorder:            color(lightTooltipBorder),
-
-  NotificatorSuccess:       color(lightNotificatorSuccess),
-  NotificatorError:         color(lightNotificatorError),
-  NotificatorInfo:          color(lightNotificatorInfo),
-
-  SwitchUncheckedBG:        color(lightSwitchUncheckedBG),
-  SwitchCheckedBG:          color(lightSwitchCheckedBG),
-  SwitchDot:                color(lightSwitchDot),
-  SwitchDisabled:           color(lightSwitchDisabled),
-
-  TransactHighlight:        color(lightMenuItemsHighlight),
-  TransactDouble:           color(lightButtonDeleteBG),
-  TransactDoubleHighlight:  color(lightButtonDeleteHighlight),
-
-  SVGFill:                  color(lightSVGFill),
-
-  GlassBG:                  linear-gradient(to right bottom, color(lightGlassBGStart), color(lightGlassBGFinish)),
-  GlassBorder:              color(lightGlassBorder),
-
-
-  ScrollerShadow:           inset 0 0 6px color(lightScrollerShadow),
-  ScrollerColor:            color(lightScrollerShadow),
-
-  InputShadowHighlight:     0 0 4px color(lightInputBorderHighlight),
-  InputErrorShadow:         0 0 4px color(lightInputError),
-  InputDisabledShadow:      0 0 4px color(lightDisabledBG),
-
-  ButtonShadowHighlightIn:  inset 0 0 6px color(lightButtonBorderColor),
-  ButtonShadowHighlightOut: 0 0 6px color(lightButtonBorderColor),
-
-  ButtonDeleteShadowIn:     inset 0 0 6px color(lightButtonDeleteBorderColor),
-  ButtonDeleteShadowOut:    0 0 6px color(lightButtonDeleteBorderColor),
-
-  ContainerFirstShadow:     0 0 8px color(lightCommonShadow),
-  ContainerSecondShadow:    0 0 6px color(lightCommonShadow),
-
-  MenuShadow:               inset 10px 0 5px -6px color(lightCommonShadow),
+  AlphaReject:                    color.scale(getColor(alphaReject), $saturation: -30%, $lightness: 10%),
+  AlphaRejectHighlight:           color.scale(getColor(alphaReject), $lightness: -10%),
+  AlphaRejectActive:              color.scale(getColor(alphaReject), $lightness: -20%),
+  // Alpha base color variant
 
 );

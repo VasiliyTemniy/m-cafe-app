@@ -1,7 +1,7 @@
 @use './colorDefinitions' as *;
 
 // gets a color value from color map, defined in colorDefinitions
-@function color($colorName) {
+@function getColor($colorName) {
   @return map-get($colors, $colorName);
 }
 

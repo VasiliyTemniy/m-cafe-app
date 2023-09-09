@@ -1,87 +1,51 @@
 @use './functions.scss' as *;
+@use 'sass:color';
 
 $dark: (
-  BG:                       color(darkBG),
-  Text:                     color(darkText),
 
-  ContFirstLayer:           color(darkContFirstLayer),
-  ContFirstLayerHighlight:  color(darkContFirstLayerHighlight),
-  ContSecondLayer:          color(darkContSecondLayer),
-  ContSecondLayerHighlight: color(darkContSecondLayerHighlight),
+  GlassBG:                        linear-gradient(
+                                    to right bottom,
+                                    color.scale(getColor(darkGlass), $alpha: -60%),
+                                    color.scale(getColor(darkGlass), $lightness: 10%, $alpha: -90%),
+                                  ),
+  GlassBorder:                    color.scale(getColor(darkGlass), $lightness: 10%, $alpha: -40%),
 
-  Border:                   color(darkBorder),
+  Border:                         getColor(darkBorder),
+  Shadow:                         getColor(darkShadow),
+  SVGFilter:                      getColor(darkSVGFilter),
 
-  FrameTopBG:               color(darkFrameTopBG),
-  FrameTopHighlight:        color(darkFrameTopHighlight),
-  FrameTopClose:            color(darkFrameTopClose),
+  // Alpha base color variant
+  AlphaBGMain:                    getColor(alphaDarkBG),
+  AlphaBGFirst:                   color.scale(getColor(alphaDarkBG), $lightness: 5%),
+  AlphaBGFirstHighlight:          color.scale(getColor(alphaDarkBG), $lightness: 20%),
+  AlphaBGFirstActive:             color.scale(getColor(alphaDarkBG), $lightness: 30%),
+  AlphaBGSecond:                  color.adjust(color.scale(getColor(alphaDarkBG), $lightness: 10%), $blue: 5%),
+  AlphaBGSecondHighlight:         color.adjust(color.scale(getColor(alphaDarkBG), $lightness: 20%), $blue: 5%),
+  AlphaBGSecondActive:            color.adjust(color.scale(getColor(alphaDarkBG), $lightness: 30%), $blue: 5%),
+  AlphaBGThird:                   color.scale(getColor(alphaDarkBG), $lightness: 20%),
+  AlphaBGThirdHighlight:          color.scale(getColor(alphaDarkBG), $lightness: 30%),
+  AlphaBGThirdActive:             color.scale(getColor(alphaDarkBG), $lightness: 40%),
 
-  InputError:               color(darkInputError),
-  InputHighlight:           color(darkInputHighlight),
-  InputBorderHighlight:     color(darkInputBorderHighlight),
-  InputDisabled:            color(darkDisabledBG),
+  AlphaText:                      color.scale(getColor(alphaDarkText), $alpha: -5%),
+  AlphaTextButtonLabel:           color.scale(getColor(alphaDarkText), $alpha: -5%),
 
-  MenuBG:                   color(darkMenuBG),
-  MenuItems:                color(darkMenuItems),
-  MenuItemsHighlight:       color(darkMenuItemsHighlight),
-  MenuItemsActive:          color(darkMenuItemsActive),
+  AlphaDisabled:                  getColor(alphaDisabled),
 
-  ButtonPrimaryBG:          color(darkButtonPrimaryBG),
-  ButtonPrimaryHighlight:   color(darkButtonPrimaryHighlight),
-  ButtonPrimaryActive:      color(darkButtonPrimaryActive),
+  AlphaPrimary:                   getColor(alphaPrimary),
+  AlphaPrimaryHighlight:          color.scale(getColor(alphaPrimary), $lightness: 10%),
+  AlphaPrimaryActive:             color.scale(getColor(alphaPrimary), $lightness: 20%),
 
-  ButtonSecondaryBG:        color(darkButtonSecondaryBG),
-  ButtonSecondaryHighlight: color(darkButtonSecondaryHighlight),
-  ButtonSecondaryActive:    color(darkButtonSecondaryActive),
+  AlphaAccent:                    getColor(alphaAccent),
+  AlphaAccentHighlight:           color.scale(getColor(alphaAccent), $lightness: 10%),
+  AlphaAccentActive:              color.scale(getColor(alphaAccent), $lightness: 20%),
 
-  ButtonDeleteBG:           color(darkButtonDeleteBG),
-  ButtonDeleteHighlight:    color(darkButtonDeleteHighlight),
-  ButtonDeleteActive:       color(darkButtonDeleteActive),
-  ButtonDeleteDisabled:     color(darkButtonDeleteDisabled),
-  ButtonDeleteBorderColor:  color(darkButtonDeleteBorderColor),
+  AlphaSuccess:                   getColor(alphaSuccess),
+  AlphaSuccessHighlight:          color.scale(getColor(alphaSuccess), $lightness: 10%),
+  AlphaSuccessActive:             color.scale(getColor(alphaSuccess), $lightness: 20%),
 
-  ButtonPrimaryText:        color(darkButtonPrimaryText),
-  ButtonSecondaryText:      color(darkButtonSecondaryText),
-  ButtonBorderColor:        color(darkButtonBorderColor),
-  ButtonDisabledBG:         color(darkDisabledBG),
-
-  TooltipBG:                color(darkTooltipBG),
-  TooltipBorder:            color(darkTooltipBorder),
-
-  NotificatorSuccess:       color(darkNotificatorSuccess),
-  NotificatorError:         color(darkNotificatorError),
-  NotificatorInfo:          color(darkNotificatorInfo),
-
-  SwitchUncheckedBG:        color(darkSwitchUncheckedBG),
-  SwitchCheckedBG:          color(darkSwitchCheckedBG),
-  SwitchDot:                color(darkSwitchDot),
-  SwitchDisabled:           color(darkSwitchDisabled),
-
-  TransactHighlight:        color(darkMenuItemsHighlight),
-  TransactDouble:           color(darkButtonDeleteBG),
-  TransactDoubleHighlight:  color(darkButtonDeleteHighlight),
-
-  SVGFill:                  color(darkSVGFill),
-
-  GlassBG:                  linear-gradient(to right bottom, color(darkGlassBGStart), color(darkGlassBGFinish)),
-  GlassBorder:              color(darkGlassBorder),
-
-
-  ScrollerShadow:           inset 0 0 6px color(darkScrollerShadow),
-  ScrollerColor:            color(darkScrollerShadow),
-
-  InputShadowHighlight:     0 0 4px color(darkInputBorderHighlight),
-  InputErrorShadow:         0 0 4px color(darkInputError),
-  InputDisabledShadow:      0 0 4px color(darkDisabledBG),
-
-  ButtonShadowHighlightIn:  inset 0 0 6px color(darkButtonBorderColor),
-  ButtonShadowHighlightOut: 0 0 6px color(darkButtonBorderColor),
-
-  ButtonDeleteShadowIn:     inset 0 0 6px color(darkButtonDeleteBorderColor),
-  ButtonDeleteShadowOut:    0 0 6px color(darkButtonDeleteBorderColor),
-
-  ContainerFirstShadow:     0 0 8px color(darkCommonShadow),
-  ContainerSecondShadow:    0 0 6px color(darkCommonShadow),
-
-  MenuShadow:               inset 10px 0 5px -6px color(darkCommonShadow),
+  AlphaReject:                    color.scale(getColor(alphaReject), $lightness: -30%),
+  AlphaRejectHighlight:           getColor(alphaReject),
+  AlphaRejectActive:              color.scale(getColor(alphaReject), $lightness: 10%),
+  // Alpha base color variant
   
 );

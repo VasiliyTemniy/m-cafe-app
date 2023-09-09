@@ -64,10 +64,9 @@
       $value: getThemeValue($key, $theme);
 
       @at-root .#{$theme} #{&} {
-        #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; // fallback for browsers that shouldn't exist anymore
         #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
       }
-    } @else if $theme != 'default' and $theme != 'light' and $theme != 'dark' { // check for legacy references, don't error on those
+    } @else if $theme != 'default' and $theme != 'light' and $theme != 'dark' {
       @error "Property #{$key} doesn't exist in #{$theme}";
     }
   }

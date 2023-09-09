@@ -1,136 +1,30 @@
 $colors: (
-  white: #FFFFFF,
-  black: #000000,
 
-  darkBG: #1E1E1E,
-  darkText: #d3d3d3c1,
-
-  darkContFirstLayer: #252526,
-  darkContFirstLayerHighlight: #313132,
-  darkContSecondLayer: #37373D,
-  darkContSecondLayerHighlight: #48484f,
+  darkGlass: #5e5c5c,
+  lightGlass: #f9fcf9,
 
   darkBorder: #707070,
-
-  darkFrameTopBG: #3e3e3f,
-  darkFrameTopHighlight: #525353,
-  darkFrameTopClose: #D71526,
-
-  darkInputError: #a30137,
-  // darkInputHighlight: #707070,
-  darkInputHighlight: #5a5a5a,
-  darkInputBorderHighlight: #007FD4,
-
-  darkMenuBG: #323233,
-  darkMenuItems: #2d2d2f,
-  darkMenuItemsHighlight: #3F4040,
-  darkMenuItemsActive: #505151,
-
-  darkButtonPrimaryBG: #2368bd,
-  darkButtonPrimaryHighlight: #007FD4,
-  darkButtonPrimaryActive: #4b7ebd,
-
-  darkButtonSecondaryBG: #323233,
-  darkButtonSecondaryHighlight: #3F4040,
-  darkButtonSecondaryActive: #5b5e5e,
-
-  darkButtonDeleteBG: #46091d,
-  darkButtonDeleteHighlight: #720c2e,
-  darkButtonDeleteActive: #a30137,
-  darkButtonDeleteDisabled: #B3CFF1,
-  darkButtonDeleteBorderColor: #46091d,
-
-  darkButtonPrimaryText: #D3D3D3,
-  darkButtonSecondaryText: #D3D3D3,
-  darkButtonBorderColor: #2368bd,
-
-  darkTooltipBG: #252526,
-  darkTooltipBorder: #454545,
-
-  darkNotificatorSuccess: #01cf46d2,
-  darkNotificatorError: #a30137d2,
-  darkNotificatorInfo: #2368bdd2,
-
-  darkSwitchUncheckedBG: #999999,
-  darkSwitchCheckedBG: #007FD4,
-  darkSwitchDot: #FFFFFF,
-  darkSwitchDisabled: #FFFFFF,
-
-  darkScrollerShadow: #ffffff3b,
-
-  darkSVGFill: #b6b4b4,
-
-  darkCommonShadow: #0000004d,
-
-  darkGlassBGStart: #5e5c5c89,
-  darkGlassBGFinish: #5d5b5b1a,
-  darkGlassBorder: #70707053,
-
-  darkDisabledBG: #3F4040,
-
-  lightBG: #efefef,
-  lightText: #2F2F2F,
-  
-  lightContFirstLayer: #dbdada,
-  lightContFirstLayerHighlight: #cccaca,
-  lightContSecondLayer: #e8e6e6,
-  lightContSecondLayerHighlight: #d7d6d6,
-
   lightBorder: #474849,
 
-  lightFrameTopBG: #dedfdf,
-  lightFrameTopHighlight: #FFFFFF,
-  lightFrameTopClose: #D71526,
+  darkShadow: #0000004d,
+  lightShadow: #00000060,
 
-  lightInputError: #a30137,
-  lightInputHighlight: #F3F5F8,
-  lightInputBorderHighlight: #305C9F,
+  darkSVGFilter: invert(75%),
+  lightSVGFilter: invert(10%),
 
-  lightMenuBG: #dadddd,
-  lightMenuItems: #e5e7ea,
-  lightMenuItemsHighlight: #FFFFFF,
-  lightMenuItemsActive: #e9e7e7,
+  // Alpha base color variant
+  alphaDarkBG: #1E1E1E,
+  alphaDarkText: #d3d3d3,
 
-  lightButtonPrimaryBG: #305C9F,
-  lightButtonPrimaryHighlight: #2067B5,
-  lightButtonPrimaryActive: #2067B5,
+  alphaLightBG: #efefef,
+  alphaLightText: #2F2F2F,
 
-  lightButtonSecondaryBG: #E5E5E7,
-  lightButtonSecondaryHighlight: #F3F5F8,
-  lightButtonSecondaryActive: #F3F5F8,
-
-  lightButtonDeleteBG: #b0414b,
-  lightButtonDeleteHighlight: #D71526,
-  lightButtonDeleteActive: #f40051,
-  lightButtonDeleteDisabled: #B3CFF1,
-  lightButtonDeleteBorderColor: #b0414b,
-
-  lightButtonPrimaryText: #ffffff,
-  lightButtonSecondaryText: #262626,
-  lightButtonBorderColor: #305C9F,
-
-  lightTooltipBG: #FFFFFF,
-  lightTooltipBorder: #E7E9EC,
-
-  lightNotificatorSuccess: #3FD100d2,
-  lightNotificatorError: #a30137d2,
-  lightNotificatorInfo: #2368bdd2,
-
-  lightSwitchUncheckedBG: #c2bfbf,
-  lightSwitchCheckedBG: #007FD4,
-  lightSwitchDot: #FFFFFF,
-  lightSwitchDisabled: #FFFFFF,
-
-  lightScrollerShadow: #0000004d,
-
-  lightSVGFill: #474849,
-
-  lightCommonShadow: #0000004d,
-
-  lightGlassBGStart: #f9fcf971,
-  lightGlassBGFinish: #c8cbc81a,
-  lightGlassBorder: #76797742,
-
-  lightDisabledBG: #3F4040,
-
+  alphaDisabled: #3F4040,
+  alphaShadow: #000000,
+  alphaPrimary: #2368bd,
+  alphaAccent: #bd24b5,
+  alphaSuccess: #01cf46,
+  alphaReject: #a30137,
+  // Alpha base color variant
+  
 );
