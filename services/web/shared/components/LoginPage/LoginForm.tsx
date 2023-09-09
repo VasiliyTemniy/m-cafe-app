@@ -1,8 +1,7 @@
 import { Formik, Form } from "formik";
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { loginValidationSchema } from "./validationSchemas";
-import { Container, ButtonGroup, Button, FormikTextField } from "../basic";
-import { Scrollable } from "../basic/Scrollable";
+import { Container, ButtonGroup, Button, FormikTextField, Scrollable } from "../basic";
 
 
 export type LoginFormValues = {
@@ -36,7 +35,7 @@ export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) =>
       {({ isValid, dirty }) => {
         return (
           <Form className='login-form'>
-            <Scrollable className="login-form-inputs-wrapper">
+            <Scrollable classNameAddon="login-form-inputs-wrapper">
               <FormikTextField
                 placeholder={t(`${tNode}.placeholder.credential`)}
                 label={t(`${tNode}.label.credential`)}
@@ -50,7 +49,7 @@ export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) =>
                 name='password'
               />
             </Scrollable>
-            <Container className="login-form-buttons-wrapper">
+            <Container classNameAddon="login-form-buttons-wrapper">
               <Button
                 label={t(`${tNode}.label.toSignup`)}
                 type='submit'
