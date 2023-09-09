@@ -73,6 +73,7 @@ export const sendLogin = (credentials: LoginUserBody, t: TFunction) => {
     try {
       const user = await userService.login(credentials);
       if (!isUserDT(user)) throw new ApplicationError('Server has sent wrong data', { current: user });
+      window.localStorage.setItem('CafeAppUserRegistered', JSON.stringify('true'));
       dispatch(setUser(user));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
@@ -84,6 +85,7 @@ export const sendLogout = (t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       await userService.logout();
+      window.localStorage.setItem('CafeAppUserRegistered', JSON.stringify('false'));
       dispatch(logout);
       window.location.reload();
     } catch (e: unknown) {
