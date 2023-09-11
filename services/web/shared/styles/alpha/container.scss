@@ -4,13 +4,29 @@
 @use '../theming' as *;
 
 
-.container.first-layer {
-  @include theme(background-color, AlphaBGFirst);
-  @include theme(box-shadow, Shadow, 0 0 8px);
+.alpha.container.first-layer {
   border-radius: v-v.$main-area-container-border-radius;
   padding: v-v.$main-area-container-padding;
   margin: v-v.$main-area-container-first-layer-margin;
   transition: background-color g-v.$hover-animation-speed ease-in-out;
+}
+
+.alpha.container.second-layer {
+  border-radius: v-v.$main-area-container-border-radius;
+  padding: v-v.$main-area-container-padding;
+  transition: background-color g-v.$hover-animation-speed ease-in-out;
+}
+
+.alpha.container.third-layer {
+  border-radius: v-v.$main-area-container-border-radius;
+  padding: v-v.$main-area-container-padding;
+  transition: background-color g-v.$hover-animation-speed ease-in-out;
+}
+
+
+.alpha.alpha-color.container.first-layer {
+  @include theme(background-color, AlphaBGFirst);
+  @include theme(box-shadow, Shadow, 0 0 8px);
 
   &.clickable:hover {
     @include theme(background-color, AlphaBGFirstHighlight);
@@ -21,12 +37,9 @@
   }
 }
 
-.container.second-layer {
+.alpha.alpha-color.container.second-layer {
   @include theme(background-color, AlphaBGSecond);
   @include theme(box-shadow, Shadow, 0 0 6px);
-  border-radius: v-v.$main-area-container-border-radius;
-  padding: v-v.$main-area-container-padding;
-  transition: background-color g-v.$hover-animation-speed ease-in-out;
 
   &.clickable:hover {
     @include theme(background-color, AlphaBGSecondHighlight);
@@ -37,12 +50,9 @@
   }
 }
 
-.container.third-layer {
+.alpha.alpha-color.container.third-layer {
   @include theme(background-color, AlphaBGThird);
   @include theme(box-shadow, Shadow, 0 0 6px);
-  border-radius: v-v.$main-area-container-border-radius;
-  padding: v-v.$main-area-container-padding;
-  transition: background-color g-v.$hover-animation-speed ease-in-out;
 
   &.clickable:hover {
     @include theme(background-color, AlphaBGThirdHighlight);
