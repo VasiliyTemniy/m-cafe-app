@@ -11368,6 +11368,7 @@ __metadata:
     html-webpack-plugin: ^5.5.1
     mini-css-extract-plugin: ^2.7.5
     postcss: ^8.4.29
+    postcss-combine-duplicated-selectors: ^10.0.3
     postcss-loader: ^7.3.3
     postcss-preset-env: ^9.1.3
     react-router-dom: ^6.11.2
@@ -13696,6 +13697,17 @@ __metadata:
   peerDependencies:
     postcss: ^8.2.15
   checksum: e5778baab30877cd1f51e7dc9d2242a162aeca6360a52956acd7f668c5bc235c2ccb7e4df0370a804d65ebe00c5642366f061db53aa823f9ed99972cebd16024
+  languageName: node
+  linkType: hard
+
+"postcss-combine-duplicated-selectors@npm:^10.0.3":
+  version: 10.0.3
+  resolution: "postcss-combine-duplicated-selectors@npm:10.0.3"
+  dependencies:
+    postcss-selector-parser: ^6.0.4
+  peerDependencies:
+    postcss: ^8.1.0
+  checksum: 45c3dff41d0cddb510752ed92fe8c7fc66e5cf88f4988314655419d3ecdf1dc66f484a25ee73f4f292da5da851a0fdba0ec4d59bdedeee935d05b26d31d997ed
   languageName: node
   linkType: hard
 
