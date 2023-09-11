@@ -40,10 +40,12 @@ export const rules: Required<ModuleOptions>['rules'] = [
             plugins: [
               [
                 "postcss-preset-env",
-                {
-                  // Options
-                },
+                { /* Options*/ },
               ],
+              [
+                "postcss-combine-duplicated-selectors",
+                { removeDuplicatedValues: true }
+              ]
             ],
           },
         },
