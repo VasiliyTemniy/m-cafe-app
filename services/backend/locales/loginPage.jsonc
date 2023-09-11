@@ -134,7 +134,7 @@
       },
       "required": {
         "credential": {
-          "mainStr": "Требуется номер телефона или имя пользователя",
+          "mainStr": "Требуется телефон или имя пользователя",
           "secStr": "Phone number or username required"
         },
         "username": {

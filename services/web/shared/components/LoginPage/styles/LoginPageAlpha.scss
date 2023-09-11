@@ -1,0 +1,96 @@
+@use '../../../styles/alpha/alpha_vars' as v-v; // variant-vars
+@use '../../../styles/common' as *;
+
+$modal-login-width: 30rem;
+$modal-login-main-height: 28rem;
+// To remove total height change while changing to login / signup forms
+$modal-login-title-height: 5.2rem;
+
+.alpha.modal.login {
+  width: $modal-login-width;
+
+  .modal-title {
+    height: $modal-login-title-height;
+  }
+
+  .modal-main {
+    height: $modal-login-main-height;
+    
+    .login-form, .signup-form {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+
+      &-inputs-wrapper {
+        @extend %form-overflow-control;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: calc(v-v.$modal-gap / 1.5);
+        min-height: calc(v-v.$input-height * 3 + (v-v.$modal-gap * 2) / 1.5);
+      }
+
+      &-buttons-wrapper {
+        width: 100%;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        padding-top: 1rem;
+        gap: calc(v-v.$modal-gap / 2);
+      }
+
+      .scrollable-wrapper {
+        height: 100%;
+        .scrollbar {
+          right: -1rem;
+        }
+      }
+    }
+  }
+}
+
+
+@media (height < 570px) {
+  .alpha.modal.login {
+    .modal-main {
+      height: 70vh;
+      .login-form, .signup-form {
+        
+        &-inputs-wrapper {
+          height: calc(70vh - 6rem);
+        }
+      }
+    }
+  }
+}
+
+@media (pointer:none), (pointer:coarse) and (orientation: landscape) {
+  .alpha.modal.login {
+    .modal-main {
+      height: 60vh;
+      .login-form, .signup-form {
+        
+        &-inputs-wrapper {
+          height: calc(70vh - 6rem);
+        }
+      }
+    }
+  }
+}
+
+@media (pointer:none), (pointer:coarse) and (orientation: portrait) {
+  .alpha.modal.login {
+    // height: 80vh;
+    .modal-main {
+      .login-form, .signup-form {
+        &-buttons-wrapper {
+          display: grid;
+        }
+      }
+    }
+  }
+}

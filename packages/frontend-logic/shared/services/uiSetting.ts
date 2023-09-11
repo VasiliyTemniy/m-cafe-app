@@ -5,7 +5,7 @@ import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 const getUiSettings = async () => {
 
   const { data: fixedUiSettings } = await axios.get<JSON>(
-    `${apiBaseUrl}/api/ui-setting`
+    `${apiBaseUrl}/ui-setting`
   );
 
   return fixedUiSettings;

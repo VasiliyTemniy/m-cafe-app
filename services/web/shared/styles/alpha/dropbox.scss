@@ -1,0 +1,227 @@
+@use '../colors' as *;
+@use './alpha_vars' as v-v; // variant-vars
+@use '../vars' as g-v; // global-vars
+@use '../common' as *;
+@use '../theming' as *;
+
+
+%hover-common {
+  outline: none;
+
+  & ~ .bar {
+    height: v-v.$input-border-thickness-highlight;
+    pointer-events: none;
+  }
+}
+
+/**
+ * Properties for 'alpha' basevariant class dropboxes
+ */
+.alpha.dropbox {
+  position: relative;
+  width: 100%;
+
+  .text {
+    font-size: v-v.$input-font-size;
+    font-weight: v-v.$input-font-weight;
+    padding: 0 0 v-v.$input-border-thickness-highlight v-v.$input-padding-left;
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 0;
+    height: v-v.$input-height;
+    width: 100%;
+    background-color: inherit;
+    cursor: pointer;
+    user-select: none;
+    transition:
+      background-color v-v.$input-animation-speed ease-in-out,
+      box-shadow v-v.$input-animation-speed ease-in-out;
+
+    &:hover {
+      @extend %hover-common;
+    }
+  };
+
+  .text+label {
+    position: absolute;
+    // font-size: v-v.$input-font-size;
+    font-weight: normal;
+    pointer-events: none;
+    top: v-v.$input-label-lift-amount;
+    font-size: v-v.$input-label-lifted-font-size;
+    cursor: text;
+    transition: .25s ease;
+  }
+
+  .bar {
+    position: absolute;
+    width: calc(100% + v-v.$input-padding-left);
+    bottom: 0;
+    height: v-v.$input-border-thickness;
+    transition:
+      background-color v-v.$input-animation-speed ease-in-out,
+      height v-v.$input-animation-speed ease-in-out;
+  }
+
+
+  .dropdown-wrapper {
+    position: absolute;
+    width: calc(100% + v-v.$input-padding-left);
+
+    .options-wrapper {
+      @extend %scrollbar-custom;
+      position: relative;
+      z-index: g-v.$modal-wrapper-z-index + 2;
+      box-shadow: 0 10px 20px rgba(0,0,0,19%), 0 6px 6px rgba(0,0,0,23%);
+      max-height: 0;
+      transition: max-height v-v.$input-animation-speed ease-in-out;
+  
+      .option {
+        display: flex;
+        align-items: center;
+        height: v-v.$input-height;
+        padding-left: 0.5rem;
+        user-select: none;
+        cursor: pointer;
+        position: relative;
+        z-index: g-v.$modal-wrapper-z-index + 3;
+      }
+    }
+
+    .options-wrapper.filters {
+      // .option {
+      //   display: flex;
+      //   justify-content: space-between;
+      //   align-items: center;
+      // }
+
+      .switch {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 0.5rem;
+        width: 2rem;
+        &-label {
+          width: 2rem;
+        }
+        &-switch {
+          right: 0.9rem;
+        }
+
+        &-checkbox:checked + .switch-label {
+          .switch-inner {
+            margin-left: 0;
+          }
+          .switch-switch {
+            right: 0;
+          }
+        }
+      }
+    }
+  
+    .bar-after {
+      height: v-v.$input-border-thickness-highlight;
+      position: relative;
+      z-index: g-v.$modal-wrapper-z-index + 5;
+      max-height: 0;
+      transition:
+        max-height v-v.$input-animation-speed ease-in-out,
+        height v-v.$input-animation-speed ease-in-out;
+    }
+  }
+
+  .image.svg {
+    position: absolute;
+    height: v-v.$input-svg-scale;
+    width: v-v.$input-svg-scale;
+    top: 50%;
+    right: 0.3rem;
+    transform: translateY(-50%) rotate(0deg);
+    transition: transform v-v.$input-animation-speed ease-in-out;
+    pointer-events: none;
+  }
+
+  &.expanded {
+
+    .text {
+      @extend %hover-common;
+    }
+
+    .dropdown-wrapper {
+      .options-wrapper {
+        max-height: 50vh;
+      }
+      .bar-after {
+        max-height: v-v.$input-border-thickness-highlight;
+      }
+    }
+    .image.svg {
+      transform: translateY(-50%) rotate(180deg);
+    }
+  }
+}
+
+
+%hover-color-common {
+  @include theme(background-color, AlphaBGThird);
+
+  & ~ .bar {
+    @include theme(box-shadow, AlphaPrimary, 0 0 4px);
+  }
+}
+
+
+/**
+ * Alpha color scheme for alpha style dropboxes
+ */
+.alpha.alpha-color.dropbox {
+  .text:hover {
+      @extend %hover-color-common;
+  }
+
+  .text+label {
+    @include theme(color, AlphaText);
+  }
+
+  .bar {
+    @include theme(background-color, AlphaPrimaryHighlight);
+  }
+
+
+  .dropdown-wrapper {
+    .options-wrapper {
+      @include theme(background-color, AlphaBGSecond);
+  
+      .option {
+        @include theme(color, AlphaText);
+  
+        &:hover {
+          @include theme(background-color, AlphaBGThird);
+        }
+      }
+    }
+
+    .bar-after {
+      @include theme(background-color, AlphaPrimaryHighlight);
+      @include theme(box-shadow, AlphaPrimary, 0 0 4px);
+    }
+
+    &:disabled {
+      ~ .image.svg {
+        @include theme(filter, SVGFilter);
+      }
+    }
+
+  }
+
+  .image.svg {
+    @include theme(filter, SVGFilter);
+  }
+
+  &.expanded {
+    .text {
+      @extend %hover-color-common;
+    }
+  }
+}

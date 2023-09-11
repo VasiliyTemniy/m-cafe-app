@@ -6,6 +6,7 @@ import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-ap
 import { sharedFixedLocSliceBase } from '../../shared/reducers';
 import type { FixedLocState } from '../../shared/reducers';
 import { TFunction } from '../../shared/hooks';
+import { Md5 } from 'ts-md5';
 
 type UpdFixedLocAction = {
   payload: {
@@ -23,12 +24,15 @@ const fixedLocSlice = createSlice({
   reducers: {
     updFixedLoc(state: FixedLocState, action: UpdFixedLocAction) {
       const namespace = action.payload.loc.name.split('.')[0];
-      const newNamespaceState = state[namespace].map(loc => loc.id === action.payload.loc.id ? action.payload.loc : loc);
+      const newNamespaceState = state.locs[namespace].map(loc => loc.id === action.payload.loc.id ? action.payload.loc : loc);
       const newState = {
-        ...state,
-        [namespace]: newNamespaceState,
+        locs: {
+          ...state.locs,
+          [namespace]: newNamespaceState
+        },
       };
-      return { ...newState };
+      const locsHash = Md5.hashStr(JSON.stringify(newState.locs));
+      return { ...newState, locsHash };
     },
     ...sharedFixedLocSliceBase.reducers
   }
@@ -43,8 +47,8 @@ export const sendUpdFixedLocs = (updLocsState: FixedLocState, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       const updLocs = [] as FixedLocDT[];
-      for (const namespace in updLocsState) {
-        for (const loc of updLocsState[namespace]) {
+      for (const namespace in updLocsState.locs) {
+        for (const loc of updLocsState.locs[namespace]) {
           updLocs.push(loc);
         }
       }

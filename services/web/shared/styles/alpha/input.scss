@@ -1,0 +1,422 @@
+@use '../colors' as *;
+@use '../vars' as g-v; // global-vars
+@use './alpha_vars' as v-v; // variant-vars
+@use '../common' as *;
+@use '../theming' as *;
+
+
+%alpha-hover-common {
+  outline: none;
+
+  & ~ .bar {
+    height: v-v.$input-border-thickness-highlight;
+    pointer-events: none;
+  }
+}
+
+/**
+ * Properties for 'alpha' basevariant class inputs
+ */
+.alpha.input-wrapper {
+  position: relative;
+
+  input {
+    font-size: v-v.$input-font-size;
+    font-weight: v-v.$input-font-weight;
+    padding: 0 0 v-v.$input-border-thickness-highlight v-v.$input-padding-left;
+    display: block;
+    border: none;
+    border-radius: 0;
+    height: v-v.$input-height;
+    width: 100%;
+    background-color: inherit;
+    transition:
+      background-color v-v.$input-animation-speed ease-in-out,
+      box-shadow v-v.$input-animation-speed ease-in-out;
+
+    &:hover, &:focus-visible,
+    &:focus, &:active {
+      @extend %alpha-hover-common;
+    }
+
+    &:focus ~ label,
+    &[value='']:focus ~ label,
+    &:not([value='']) ~ label {
+      top: v-v.$input-label-lift-amount;
+      font-size: v-v.$input-label-lifted-font-size;
+    }
+
+    &[value=''] ~ label {
+      top: v-v.$input-label-top;
+      font-size: v-v.$input-font-size;
+    }
+  }
+
+  input[type="password"] {
+    letter-spacing: 0.2rem;
+  }
+  
+  input+label {
+    position: absolute;
+    font-size: v-v.$input-font-size;
+    font-weight: normal;
+    pointer-events: none;
+    left: v-v.$input-label-left;
+    top: v-v.$input-label-top;
+    cursor: text;
+    transition: v-v.$input-animation-speed ease;
+  }
+
+  .bar {
+    position: absolute;
+    width: calc(100% + v-v.$input-padding-left);
+    bottom: 0;
+    height: v-v.$input-border-thickness;
+    transition:
+      background-color v-v.$input-animation-speed ease-in-out,
+      height v-v.$input-animation-speed ease-in-out;
+  }
+}
+
+.alpha.select.input-wrapper {
+
+  .dropdown-wrapper {
+    position: absolute;
+    width: calc(100% + v-v.$input-padding-left);
+
+    .options-wrapper {
+      @extend %scrollbar-custom;
+      position: relative;
+      z-index: g-v.$modal-wrapper-z-index + 2;
+      box-shadow: 0 10px 20px rgba(0,0,0,19%), 0 6px 6px rgba(0,0,0,23%);
+      max-height: 0;
+      transition: max-height v-v.$input-animation-speed ease-in-out;
+  
+      div {
+        display: flex;
+        align-items: center;
+        height: v-v.$input-height;
+        padding-left: 0.5rem;
+        user-select: none;
+        cursor: pointer;
+        position: relative;
+        z-index: g-v.$modal-wrapper-z-index + 3;
+      }
+    }
+  
+    .bar-after {
+      height: v-v.$input-border-thickness-highlight;
+      position: relative;
+      z-index: g-v.$modal-wrapper-z-index + 5;
+      max-height: 0;
+      transition: max-height v-v.$input-animation-speed ease-in-out;
+    }
+  }
+
+  .image.svg {
+    position: absolute;
+    height: v-v.$input-svg-scale;
+    width: v-v.$input-svg-scale;
+    top: 50%;
+    right: 0.3rem;
+    transform: translateY(-50%) rotate(0deg);
+    transition: transform v-v.$input-animation-speed ease-in-out;
+    pointer-events: none;
+  }
+
+  &:focus-visible,
+  &:focus-within {
+    .dropdown-wrapper {
+      .options-wrapper {
+        max-height: 50vh;
+      }
+      .bar-after {
+        max-height: v-v.$input-border-thickness-highlight;
+      }
+    }
+    .image.svg {
+      transform: translateY(-50%) rotate(180deg);
+    }
+  }
+}
+
+.alpha.textarea.input-wrapper {
+
+  textarea {
+    @extend %scrollbar-custom;
+    font-size: v-v.$input-font-size;
+    font-weight: v-v.$input-font-weight;
+    padding: 0 0 v-v.$input-border-thickness-highlight v-v.$input-padding-left;
+    display: block;
+    border: none;
+    border-radius: 0;
+    height: v-v.$input-height;
+    width: 100%;
+    background-color: inherit;
+    transition:
+      background-color v-v.$input-animation-speed ease-in-out,
+      box-shadow v-v.$input-animation-speed ease-in-out;
+    resize: none;
+    font-family: inherit;
+    line-height: v-v.$input-height;
+
+
+    &:hover, &:focus-visible,
+    &:focus, &:active:not(:disabled) {
+      @extend %alpha-hover-common;
+    }
+
+    &:focus ~ label {
+      top: v-v.$input-label-lift-amount;
+      font-size: v-v.$input-label-lifted-font-size;
+    }
+  }
+
+  textarea.rows-3 {
+    &:focus-visible,
+    &:focus,
+    &:active:not(:disabled) {
+      height: calc(2 * v-v.$input-height + 1 * v-v.$modal-gap + 1 * v-v.$input-border-thickness-highlight) !important;
+    }
+  }
+
+  textarea.rows-5 {
+    &:focus-visible,
+    &:focus,
+    &:active:not(:disabled) {
+      height: calc(3 * v-v.$input-height + 2 * v-v.$modal-gap + 2 * v-v.$input-border-thickness-highlight) !important;
+    }
+  }
+
+  textarea.rows-7 {
+    &:focus-visible,
+    &:focus,
+    &:active:not(:disabled) {
+      height: calc(4 * v-v.$input-height + 3 * v-v.$modal-gap + 3 * v-v.$input-border-thickness-highlight) !important;
+    }
+  }
+
+  textarea.rows-9 {
+    &:focus-visible,
+    &:focus,
+    &:active:not(:disabled) {
+      height: calc(5 * v-v.$input-height + 4 * v-v.$modal-gap + 4 * v-v.$input-border-thickness-highlight) !important;
+    }
+  }
+
+  textarea+label {
+    position: absolute;
+    font-weight: normal;
+    pointer-events: none;
+    left: v-v.$input-label-left;
+    cursor: text;
+    transition: v-v.$input-animation-speed ease;
+  }
+
+  label.bugfix {
+    top: v-v.$input-label-top;
+    font-size: v-v.$input-font-size;
+  }
+
+  label {
+    top: v-v.$input-label-lift-amount;
+    font-size: v-v.$input-label-lifted-font-size;
+  }
+}
+
+
+.alpha.date.input-wrapper,
+.alpha.time.input-wrapper {
+
+  input[value=""]:not(:focus)::-webkit-datetime-edit {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  input {
+    // font-weight: 700;
+    font-family: inherit;
+
+    &::-webkit-calendar-picker-indicator {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0.3rem;
+      cursor: pointer;
+      opacity: 0;
+    }
+  }
+
+  .image.svg {
+    position: absolute;
+    height: v-v.$input-datetime-svg-scale;
+    width: v-v.$input-datetime-svg-scale;
+    top: 45%;
+    right: 0.3rem;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
+.alpha.date.input-wrapper.firefox-fix,
+.alpha.time.input-wrapper.firefox-fix {
+  input[value=""]:not(:focus) {
+    color: transparent;
+  }
+  .image.svg {
+    right: 0;
+  }
+}
+
+
+/**
+ * Alpha color scheme for alpha style inputs
+ */
+%alpha-hover-color-common {
+  @include theme(background-color, AlphaBGThird);
+
+  & ~ .bar {
+    @include theme(box-shadow, AlphaPrimary, 0 0 4px);
+  }
+}
+
+.alpha.alpha-color.input-wrapper {
+      
+  input {
+    @include theme(color, AlphaText);
+
+    &.error {
+      ~ .bar {
+        @include theme(background-color, AlphaRejectHighlight);
+        @include theme(box-shadow, AlphaReject, 0 0 4px);
+      }
+      ~ label {
+        @include theme(color, AlphaRejectHighlight);
+      }
+    }
+
+    &:hover, &:focus-visible,
+    &:focus, &:active {
+      @extend %alpha-hover-color-common;
+    }
+
+
+    &:disabled {
+      ~ label {
+        @include theme(color, AlphaDisabled);
+        @include theme(-webkit-text-fill-color, AlphaDisabled);
+      }
+      ~ .bar {
+        @include theme(background-color, AlphaDisabled);
+        @include theme(box-shadow, Shadow, 0 0 4px);
+      }
+    }
+
+  };
+
+
+  input+label {
+    @include theme(color, AlphaText);
+  }
+
+  .bar {
+    @include theme(background-color, AlphaPrimaryHighlight);
+  }
+}
+
+.alpha.alpha-color.select.input-wrapper {
+
+  .dropdown-wrapper {
+
+    .options-wrapper {
+      @include theme(background-color, AlphaBGSecond);
+  
+      div {
+        @include theme(color, AlphaText);
+  
+        &:hover {
+          @include theme(background-color, AlphaBGThird);
+        }
+      }
+    }
+  
+    .bar-after {
+      @include theme(background-color, AlphaPrimaryHighlight);
+      @include theme(box-shadow, AlphaPrimary, 0 0 4px);
+    }
+
+    &:disabled {
+      ~ .image.svg {
+        @include theme(filter, SVGFilter);
+      }
+    }
+
+  }
+
+  .image.svg {
+    @include theme(filter, SVGFilter);
+  }
+
+}
+
+.alpha.alpha-color.textarea.input-wrapper {
+
+  textarea {
+    @include theme(color, AlphaText);
+    @include theme(-webkit-text-fill-color, AlphaText);
+
+    &.error {
+      ~ .bar {
+        @include theme(background-color, AlphaRejectHighlight);
+        @include theme(box-shadow, AlphaReject, 0 0 4px);
+      }
+      ~ label {
+        @include theme(color, AlphaRejectHighlight);
+      }
+    }
+
+    &:hover, &:focus-visible,
+    &:focus, &:active:not(:disabled) {
+      @extend %alpha-hover-color-common;
+    }
+
+
+    &:disabled {
+      ~ label {
+        @include theme(color, AlphaDisabled);
+        @include theme(-webkit-text-fill-color, AlphaDisabled);
+      }
+      ~ .bar {
+        @include theme(background-color, AlphaDisabled);
+        @include theme(box-shadow, Shadow, 0 0 4px);
+      }
+    }
+  };
+
+     
+  textarea+label {
+    @include theme(color, AlphaText);
+  }
+
+}
+
+
+%alpha-alpha-color-date-time-common {
+  input {
+
+    &:disabled {
+      ~ .image.svg {
+        @include theme(filter, SVGFilter);
+      }
+    }
+  }
+
+  .image.svg {
+    @include theme(filter, SVGFilter);
+  }
+}
+
+.alpha.alpha-color.date.input-wrapper,
+.alpha.alpha-color.time.input-wrapper {
+  @extend %alpha-alpha-color-date-time-common;
+}

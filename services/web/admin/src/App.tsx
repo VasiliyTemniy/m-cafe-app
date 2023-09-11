@@ -1,25 +1,30 @@
-import { useAppSelector } from '@m-cafe-app/frontend-logic/admin';
-import AppRoutes from './AppRoutes';
-// import LoginPage from '../../shared/components/LoginPage';
-import { ContainerLC } from '@m-cafe-app/frontend-components/lcWeb';
+import { useAppSelector, useInitAppAdmin } from '@m-cafe-app/frontend-logic/admin/hooks';
+import { AppRoutes } from './AppRoutes';
+import { LoginPage, Loading, Scrollable, Container } from 'shared/components';
 
 
+export const App = () => {
 
-const App = () => {
+  useInitAppAdmin();
 
-  const user = useAppSelector((state) => state.user);
+  const uiSettingsHash = useAppSelector(state => state.settings.uiSettingsHash);
+  const fixedLocsHash = useAppSelector(state => state.fixedLocs.locsHash);
+  const user = useAppSelector(state => state.user);
 
-  // useAppInit();
+  if (!uiSettingsHash || !fixedLocsHash)
+    return <Loading size='medium'/>;
 
   if (!user.phonenumber) {
     return (
       <>
         {/* <Header /> */}
         {/* <Notification/> */}
-        <ContainerLC className='window-container' id='main-container'>
-          {/* <LoginPage/> */}
-          <AppRoutes/>
-        </ContainerLC>
+        <Container id='app-wrapper'>
+          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content'>
+            {/* <ColorTestPage/> */}
+            <LoginPage/>
+          </Scrollable>
+        </Container>
         {/* <Footer /> */}
       </>
     );
@@ -28,14 +33,14 @@ const App = () => {
       <>
         {/* <Header /> */}
         {/* <Menu /> */}
-        <ContainerLC className='main-container' id='main-container'>
-          {/* <Notification/> */}
-          <AppRoutes/>
-        </ContainerLC>
+        <Container id='app-wrapper'>
+          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content'>
+            {/* <Notification/> */}
+            <AppRoutes/>
+          </Scrollable>
+        </Container>
         {/* <Footer /> */}
       </>
     );
   }
 };
-
-export default App;

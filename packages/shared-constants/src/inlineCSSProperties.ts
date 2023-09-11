@@ -1,13 +1,19 @@
 // Maybe will be updated
-const possibleCSSPropertiesKeys = [
+const allowedCSSPropertiesKeys = [
   'backgroundColor',
-  'borderRadius'
+  'borderRadius',
+  'height',
+  'width'
 ] as const;
 
-export type PossibleCSSPropertiesKeys = typeof possibleCSSPropertiesKeys[number];
+export type AllowedCSSPropertiesKeys = typeof allowedCSSPropertiesKeys[number];
 
-const possibleCSSPropertiesKeysSet = new Set([ ...possibleCSSPropertiesKeys as readonly string[] ]);
+export type AllowedCSSProperties = {
+  [key in AllowedCSSPropertiesKeys]: string | number;
+};
 
-export const isCSSPropertyKey = (key: string): key is PossibleCSSPropertiesKeys => {
-  return possibleCSSPropertiesKeysSet.has(key);
+const allowedCSSPropertiesKeysSet = new Set([ ...allowedCSSPropertiesKeys as readonly string[] ]);
+
+export const isCSSPropertyKey = (key: string): key is AllowedCSSPropertiesKeys => {
+  return allowedCSSPropertiesKeysSet.has(key);
 };

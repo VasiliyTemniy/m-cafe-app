@@ -31,7 +31,8 @@ app.use(helmet());
 
 if (!isDockerized)
   app.use(cors({
-    origin: config.ALLOWED_ORIGIN
+    origin: config.ALLOWED_ORIGIN,
+    credentials: true
   }));
 
 app.use(express.json());

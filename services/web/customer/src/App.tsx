@@ -1,8 +1,7 @@
-import { useAppSelector } from '@m-cafe-app/frontend-logic/customer';
+import { useAppSelector } from '@m-cafe-app/frontend-logic/customer/hooks';
 import AppRoutes from './AppRoutes';
 // import LoginPage from '../../shared/components/LoginPage';
-import { ContainerLC } from '@m-cafe-app/frontend-components/lcWeb';
-
+import { Container } from 'shared/components';
 
 
 const App = () => {
@@ -10,16 +9,16 @@ const App = () => {
   const user = useAppSelector((state) => state.user);
 
   // useAppInit();
+  console.log(process.env.FRONTEND_TARGET_WEB);
 
   if (!user.phonenumber) {
     return (
       <>
         {/* <Header /> */}
         {/* <Notification/> */}
-        <ContainerLC className='window-container' id='main-container'>
-          {/* <LoginPage/> */}
+        <Container classNameAddon='window-container' id='main-container'>
           <AppRoutes/>
-        </ContainerLC>
+        </Container>
         {/* <Footer /> */}
       </>
     );
@@ -28,10 +27,10 @@ const App = () => {
       <>
         {/* <Header /> */}
         {/* <Menu /> */}
-        <ContainerLC className='main-container' id='main-container'>
+        <Container classNameAddon='main-container' id='main-container'>
           {/* <Notification/> */}
           <AppRoutes/>
-        </ContainerLC>
+        </Container>
         {/* <Footer /> */}
       </>
     );

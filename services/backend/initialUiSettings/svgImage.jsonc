@@ -1,0 +1,26 @@
+// You can edit your ui settings here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for uiNodePath
+// By default, first level of nesting gets applied to all allowed themes by adding example "svg-image-${theme}-baseVariant"
+{
+  // "svg-image-special": {
+  // },
+  // "svg-image-classNames": {
+  // },
+  "svg-image-baseColorVariant": {
+    "variant": {
+      "value": "alpha-color"
+    }
+  },
+  "svg-image-baseVariant": {
+    "variant": {
+      "value": "alpha"
+    }
+  },
+  "svg-image-inlineCSS": {
+    "height": {
+      "value": "false"
+    },
+    "width": {
+      "value": "false"
+    }
+  }
+}

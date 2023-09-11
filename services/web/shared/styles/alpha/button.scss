@@ -1,0 +1,127 @@
+@use '../colors' as *;
+@use './alpha_vars' as v-v; // variant-vars
+@use '../vars' as g-v; // global-vars
+@use '../theming' as *;
+
+
+/**
+ * Properties for 'alpha' basevariant class buttons
+ */
+button.alpha {
+  z-index: g-v.$button-z-index;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  padding: v-v.$button-padding-v v-v.$button-padding-h;
+  border-radius: v-v.$button-border-radius;
+  min-width: v-v.$button-min-width;
+  border: 0;
+  height: 2.5rem;
+  font-weight: 700;
+  transition: all v-v.$button-animation-speed ease-in-out;
+
+  &:hover, &:focus-visible {
+    border-radius: v-v.$button-border-radius-hover;
+  }
+
+  &:active {
+    border-radius: v-v.$button-border-radius;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: v-v.$button-border-radius;
+    transition: top, left, right, bottom, v-v.$button-animation-speed ease-in-out;
+  }
+
+  &:hover::before, &:focus-visible::before {
+    inset: v-v.$button-hover-offset;
+  }
+
+  &:active::before {
+    inset: 0;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    &::before {
+      display: none;
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+
+/**
+ * Alpha color scheme for alpha style buttons
+ */
+button.alpha.alpha-color {
+
+  &::before {
+    @include theme(border, AlphaPrimary, v-v.$button-border-thickness solid);
+  }
+
+  &:hover::before, &:focus-visible::before {
+    @include theme(box-shadow, AlphaPrimary, inset 0 0 6px);
+  }
+
+  &.button {
+
+    &-primary {
+      @include theme(background-color, AlphaPrimary);
+      @include theme(color, AlphaTextButtonLabel);
+      &:hover {
+        @include theme(background-color, AlphaPrimaryHighlight);
+      }
+      &:active {
+        @include theme(background-color, AlphaPrimaryActive);
+      }
+      &:disabled {
+        @include theme(background-color, AlphaDisabled);
+      }
+    }
+
+    &-secondary {
+      @include theme(background-color, AlphaBGFirst);
+      @include theme(color, AlphaText);
+      &:hover {
+        @include theme(background-color, AlphaBGThird);
+      }
+      &:active {
+        @include theme(background-color, AlphaBGFirstActive);
+      }
+      &:disabled {
+        @include theme(background-color, AlphaDisabled);
+        @include theme(color, AlphaTextButtonLabel);
+      }
+    }
+
+    &-delete {
+      @include theme(background-color, AlphaReject);
+      @include theme(color, AlphaTextButtonLabel);
+      &:hover {
+        @include theme(background-color, AlphaRejectHighlight);
+      }
+      &:active {
+        @include theme(background-color, AlphaRejectActive);
+      }
+      &:disabled {
+        @include theme(background-color, AlphaDisabled);
+      }
+    
+      &::before {
+        @include theme(border, AlphaReject, v-v.$button-border-thickness solid);
+      }
+    
+      &:hover::before, &:focus-visible::before {
+        @include theme(box-shadow, AlphaRejectShadowIn);
+      }
+    }
+
+  }
+}

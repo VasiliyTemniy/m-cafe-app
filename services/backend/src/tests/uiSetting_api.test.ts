@@ -44,7 +44,8 @@ describe('UiSetting requests tests', () => {
 
     await UiSetting.destroy({ where: {} });
 
-    uiSettings = await initUiSettings();
+    await initUiSettings();
+    uiSettings = await UiSetting.findAll({});
   });
 
   it('UiSetting GET routes work without authorization', async () => {

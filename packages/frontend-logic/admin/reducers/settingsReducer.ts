@@ -6,6 +6,7 @@ import { handleAxiosError } from '../../utils/errorHandler';
 import { sharedSettingsSliceBase } from '../../shared/reducers';
 import type { SettingsState } from '../../shared/reducers';
 import { TFunction } from '../../shared/hooks';
+import { Md5 } from 'ts-md5';
 
 type UpdUiSettingAction = {
   payload: {
@@ -21,17 +22,33 @@ export type { SettingsState };
 const settingsSlice = createSlice({
   ...sharedSettingsSliceBase,
   reducers: {
+    /**
+     * @param {UpdUiSettingAction} action
+     * payload UiSettingDT with full name without separation to namespace
+     */
     updUiSetting(state: SettingsState, action: UpdUiSettingAction) {
-      const namespace = action.payload.uiSetting.name.split('.')[0];
-      const newNamespaceState = state.uiSettings[namespace].map(
+      const nameParts = action.payload.uiSetting.name.split('.');
+      const namespace = nameParts[0];
+      const uiSettingName = nameParts[1] ? nameParts[1] : '';
+      const actualUiSetting: UiSettingDT = {
+        ...action.payload.uiSetting,
+        name: uiSettingName
+      };
+      const newActualUiSettingsState = state.actualUiSettings[namespace].map(
+        uiSetting => uiSetting.id === action.payload.uiSetting.id ? actualUiSetting : uiSetting
+      );
+      const newDbUiSettingsState = state.dbUiSettings.map(
         uiSetting => uiSetting.id === action.payload.uiSetting.id ? action.payload.uiSetting : uiSetting
       );
+      const uiSettingsHash = Md5.hashStr(JSON.stringify(newActualUiSettingsState));
       const newState = {
         ...state,
-        uiSettings: {
-          [namespace]: newNamespaceState,
-          ...state.uiSettings
+        dbUiSettings: newDbUiSettingsState,
+        actualUiSettings: {
+          [namespace]: newActualUiSettingsState,
+          ...state.actualUiSettings
         },
+        uiSettingsHash
       };
       return { ...newState };
     },
@@ -39,7 +56,7 @@ const settingsSlice = createSlice({
   }
 });
 
-export const { setLanguage, setUiSettings, updUiSetting } = settingsSlice.actions;
+export const { setLanguage, setUiSettings, updUiSetting, parseUiSettings, setTheme } = settingsSlice.actions;
 
 /**
  * Updates many ui settings in DB
@@ -53,6 +70,7 @@ export const sendUpdUiSettings = (updUiSettings: UiSettingDT[], t: TFunction) =>
         if (!isUiSettingDT(uiSetting)) throw new ApplicationError('Server has sent wrong data', { all: uiSettings, current: uiSetting as SafeyAny });
       }
       dispatch(setUiSettings({ uiSettings }));
+      dispatch(parseUiSettings({ uiSettings }));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
     }

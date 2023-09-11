@@ -3,12 +3,10 @@ import { ApplicationError } from "@m-cafe-app/utils";
 import { useUiSettings } from "./useUiSettings";
 import { CSSProperties } from "react";
 import { isCSSPropertyKey } from "@m-cafe-app/shared-constants";
-import { useAppSelector } from "../defineReduxHooks";
-import { useTranslation } from './useTranslation';
-import { CommonSCProps, LCSpecificValue } from '../../types';
+import { useAppSelector } from "./reduxHooks";
+import { CommonProps, LCSpecificValue } from '../../types';
 
-
-interface UseInitLCProps extends CommonSCProps {
+interface UseInitLCProps extends CommonProps {
   componentType:
     'input' |
     'container' |
@@ -20,6 +18,8 @@ interface UseInitLCProps extends CommonSCProps {
     'switch' |
     'dropbox' |
     'table' |
+    'image' |
+    'scrollbar' |
     'layout',
   componentName: string,
   errorMessage?: string,
@@ -38,31 +38,47 @@ export const useInitLC = ({
   errorMessage,
   placeholder,
   label,
-  variant,
-  tooltipTNode
+  variant
 }: UseInitLCProps) => {
 
   const theme = useAppSelector(store => store.settings.theme);
+  const uiSettingsHash = useAppSelector(store => store.settings.uiSettingsHash);
 
   const { ui } = useUiSettings();
 
-  const { t } = useTranslation();
+  // uiSettingsClassnames are written by componentName instead of component type for complex (unbasic) layout components
+  const uiSettingsClassnames = componentType === 'layout'
+    ? ui(`${componentName}-${theme}-classNames`)
+    : ui(`${componentType}-${theme}-classNames`);
 
+  // baseVariant must have the most SCSS for web / inlineCSS for mobile
+  const baseVariant = ui(`${componentType}-${theme}-baseVariant`);
+
+  const baseVariantClassName = baseVariant.length > 0
+    ? baseVariant[0].value
+    : '';
+
+  // same as baseVariant, but for color scheme
+  const baseColorVariant = ui(`${componentType}-${theme}-baseColorVariant`);
+
+  const baseColorVariantClassName = baseColorVariant.length > 0
+    ? baseColorVariant[0].value
+    : '';
+
+  const uiSettingsInlineCSS = ui(`${componentType}-${theme}-inlineCSS`);
+
+  const specialUiSettingsSet = new Set([ ...ui(`${componentType}-${theme}-special`).map(uiSetting => uiSetting.name) ]);
 
   return useMemo(() => {
+    
     /**
      * ClassName resolve block
      */
-    // uiSettingsClassnames are written by componentName instead of component type for complex (unbasic) layout components
-    const uiSettingsClassnames = componentType === 'layout'
-      ? ui(`${componentName}-${theme}-classNames`)
-      : ui(`${componentType}-${theme}-classNames`);
-
     let settingsClassNameAddon = '';
 
     // add all settings that are true
     for (const uiSetting of uiSettingsClassnames) {
-      if (uiSetting.value === 'true') settingsClassNameAddon += uiSetting.value + ' ';
+      settingsClassNameAddon += uiSetting.value + ' ';
     }
 
     settingsClassNameAddon.trim();
@@ -71,23 +87,19 @@ export const useInitLC = ({
       ? classNameOverride
       : componentName;
 
-    // baseVariant must have the most SCSS for web / inlineCSS for mobile
-    const baseVariantClassName = ui(`${componentType}-${theme}-baseVariant`)[0].value;
 
     let className = classNameBase;
 
     if (variant) className = className + `-${variant}`;
     if (baseVariantClassName) className = className + ' ' + baseVariantClassName;
+    if (baseColorVariantClassName) className = className + ' ' + baseColorVariantClassName;
     if (classNameAddon) className = className + ' ' + classNameAddon;
     if (settingsClassNameAddon) className = className + ' ' + settingsClassNameAddon;
     if (errorMessage) className = className + ' ' + 'error';
 
-
     /**
      * InlineCSS resolve block
      */
-    const uiSettingsInlineCSS = ui(`${componentType}-${theme}-inlineCSS`);
-
     const style = {} as CSSProperties;
 
     for (const uiSetting of uiSettingsInlineCSS) {
@@ -106,37 +118,24 @@ export const useInitLC = ({
     switch (componentType) {
 
       case 'input':
-        const labelAsPlaceholder = ui(`inputsPlaceholderAsLabel-${theme}`)[0].value === 'true'
-          ? true
-          : false;
-  
-        const labelText = labelAsPlaceholder
-          ? errorMessage
-            ? errorMessage
-            : placeholder
-          : label;
-
-        if (!labelText) throw new ApplicationError('input label text unresolved!', { current: { errorMessage, placeholder, label } });
-
-        const useBarBelow = ui(`inputsUseBarBelow-${theme}`)[0].value === 'true'
-          ? true
+        const userAgent = navigator.userAgent;
+        const regex = /Firefox\/(\d+(\.\d+)?)/;
+        const match = userAgent.match(regex);
+        const firefoxVersion = match ? Number(match[1]) : null;
+        const firefoxFix = firefoxVersion
+          ? firefoxVersion > 108
           : false;
 
         specific = {
-          labelAsPlaceholder,
-          labelText,
-          useBarBelow
+          labelAsPlaceholder: specialUiSettingsSet.has('labelAsPlaceholder'),
+          useBarBelow: specialUiSettingsSet.has('useBarBelow'),
+          firefoxFix
         };
         break;
 
       default:
         break;
     }
-
-    /**
-     * Translations block
-     */
-    const tooltip = tooltipTNode ? t(`${tooltipTNode}`) : undefined;
 
     return {
       /**
@@ -148,11 +147,25 @@ export const useInitLC = ({
        */
       className,
       style,
+      /**
+       * Component type-specific value
+       */
       specific,
       /**
-       * Translated tooltip text
+       * Base variant class name
        */
-      tooltip
+      baseVariant: baseVariantClassName
     };
-  }, [theme]);
+  }, [
+    theme,
+    componentType,
+    componentName,
+    classNameAddon,
+    classNameOverride,
+    errorMessage,
+    placeholder,
+    label,
+    variant,
+    uiSettingsHash
+  ]);
 };

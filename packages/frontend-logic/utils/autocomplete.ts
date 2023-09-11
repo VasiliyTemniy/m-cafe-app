@@ -7,7 +7,7 @@ export const autoCompleteTranslatedArray = (
   tNode: string
 ) => {
 
-  if (strToCheck === '') return options;
+  if (!strToCheck) return options;
 
   const result: string[] = [];
 
@@ -35,7 +35,7 @@ export const autoCompleteArray = (
   strToCheck: string
 ) => {
 
-  if (strToCheck === '') return options;
+  if (!strToCheck) return options;
 
   const result: string[] = [];
 

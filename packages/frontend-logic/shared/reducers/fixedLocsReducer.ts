@@ -2,8 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { AppDispatch } from '../store';
 import fixedLocService from '../services/fixedLoc';
-import { ApplicationError, FixedLocDT, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
+import { ApplicationError, FixedLocDT, hasOwnProperty, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
 import { TFunction } from '../hooks';
+import { Md5 } from 'ts-md5';
 
 type SetFixedLocAction = {
   payload: {
@@ -16,22 +17,29 @@ type SetFixedLocAction = {
  * key: string is namespace name
  */
 export type FixedLocState = {
-  [key: string]: FixedLocDT[]
+  locs: {
+    [key: string]: FixedLocDT[]
+  },
+  locsHash: string;
 };
 
-const initialState: FixedLocState = {};
+const initialState: FixedLocState = { locs: {}, locsHash: '' };
 
 export const sharedFixedLocSliceBase = {
   name: 'fixedLocs',
   initialState,
   reducers: {
     setFixedLocs(state: FixedLocState, action: SetFixedLocAction) {
-      const newState = {} as FixedLocState;
+      const newState = { locs: {}, locsHash: '' } as FixedLocState;
       for (const loc of action.payload.locs) {
         const namespace = loc.name.split('.')[0];
-        newState[namespace].push(loc);
+        if (hasOwnProperty(newState.locs, namespace))
+          newState.locs = { ...newState.locs, [namespace]: [...newState.locs[namespace], loc] };
+        else
+          newState.locs = { ...newState.locs, [namespace]: [loc] };
       }
-      return { ...newState };
+      const locsHash = Md5.hashStr(JSON.stringify(newState.locs));
+      return { ...newState, locsHash };
     }
   }
 };
