@@ -8,10 +8,17 @@ import {
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { ContainerProps } from './Container';
 
+interface ScrollableProps extends ContainerProps {
+  wrapperClassNameAddon?: string;
+  wrapperId?: string;
+}
+
 export const Scrollable = ({
   classNameOverride,
   classNameAddon,
+  wrapperClassNameAddon,
   id,
+  wrapperId,
   children,
   onClick,
   onMouseEnter,
@@ -21,10 +28,11 @@ export const Scrollable = ({
   onMouseUp,
   text,
   style
-}: ContainerProps) => {
+}: ScrollableProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const scrollTrackRef = useRef<HTMLDivElement>(null);
   const scrollThumbRef = useRef<HTMLDivElement>(null);
+  const scrollbarWrapperTrackRef = useRef<HTMLDivElement>(null);
   const observer = useRef<ResizeObserver | null>(null);
   const [thumbHeight, setThumbHeight] = useState(20);
   const [trackHeight, setTrackHeight] = useState(20);
@@ -166,10 +174,31 @@ export const Scrollable = ({
     };
   }, [handleThumbMousemove, handleThumbMouseup]);
 
-  // console.log(scrollbarVisible ? `scrollbar` : `scrollbar invisible`);
+  const handleWrapperMouseEnter = (e: ReactMouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (scrollbarWrapperTrackRef.current) {
+      if (!scrollbarWrapperTrackRef.current.classList.contains('hovered'))
+        scrollbarWrapperTrackRef.current.classList.add('hovered');
+    }
+  };
+
+  const handleWrapperMouseLeave = (e: ReactMouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (scrollbarWrapperTrackRef.current) {
+      if (scrollbarWrapperTrackRef.current.classList.contains('hovered'))
+        scrollbarWrapperTrackRef.current.classList.remove('hovered');
+    }
+  };
 
   return (
-    <div className={`scrollable-wrapper`}>
+    <div
+      className={`scrollable-wrapper${wrapperClassNameAddon ? ' ' + wrapperClassNameAddon : ''}`}
+      id={wrapperId}
+      onMouseEnter={handleWrapperMouseEnter}
+      onMouseLeave={handleWrapperMouseLeave}
+    >
       <div
         ref={contentRef}
         className={`${containerClassName} scrollable`}
@@ -189,6 +218,7 @@ export const Scrollable = ({
         className={scrollbarVisible
           ? `${scrollbarClassName}`
           : `${scrollbarClassName} invisible`}
+        ref={scrollbarWrapperTrackRef}
         style={scrollbarStyle}
       >
         <div
