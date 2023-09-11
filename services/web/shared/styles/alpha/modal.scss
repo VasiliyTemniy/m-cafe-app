@@ -25,7 +25,6 @@
 
   .modal-title {
     width: 100%;
-    min-width: v-v.$modal-min-width;
     height: fit-content;
     position: relative;
     top: 0;
@@ -64,10 +63,23 @@
       width: v-v.$modal-input-width;
     }
   }
+}
 
-  // .button-group {
-  //   padding: v-v.$modal-button-group-padding;
-  // }
+
+@media (pointer:none), (pointer:coarse) {
+  .alpha.modal {
+    min-width: 0;
+    max-width: calc(100vw - 2rem);
+
+    .modal-main {
+      .input-wrapper {
+        width: v-v.$modal-input-width - 4rem;
+        label {
+          font-size: small;
+        }
+      }
+    }
+  }
 }
 
 
