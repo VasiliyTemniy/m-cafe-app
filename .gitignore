@@ -34,6 +34,7 @@ redis.conf
 # playground
 my_new*.js
 my_new*.mjs
+ColorTestPage
 
 # React native + expo specific
 
