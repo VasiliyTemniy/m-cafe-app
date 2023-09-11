@@ -15,18 +15,33 @@
 
 html {
   @include generateThemeVariables;
-  height: 100%;
 }
 
 body {
   @extend %reset-std;
-  @include theme(background-color, AlphaBGMain);
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 
 div {
   @extend %reset-std;
+}
+
+#app-wrapper {
+  width: 100vw;
+  height: 100vh;
+
+  .app-content-wrapper.scrollable-wrapper {
+    @extend %scrollbar-custom;
+    max-height: 100vh;
+    height: 100%;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.alpha.alpha-color#app-wrapper {
+  @include theme(background-color, AlphaBGMain);
 }
 
 // Main window
