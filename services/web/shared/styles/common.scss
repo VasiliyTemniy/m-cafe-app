@@ -9,38 +9,6 @@
   padding: 0;
 }
 
-// %scrollbar-custom {
-//   overflow-x: hidden;
-//   overflow-y: overlay;
-
-//   color: #00000000;
-
-//   transition: color $hover-animation-speed ease-in-out;
-
-//   &::-webkit-scrollbar {
-//     width: 16px;
-//     border: 5px solid transparent;
-//     border-radius: 8px;
-//   }
- 
-//   &::-webkit-scrollbar-track {
-//     display: none;
-//   }
- 
-//   &::-webkit-scrollbar-thumb {
-//     width: 16px;
-//     border: 5px solid transparent;
-//     border-radius: 8px;
-//   }
-
-//   &:hover {
-//     @include theme(color, ScrollerColor);
-//     &::-webkit-scrollbar-thumb {
-//       box-shadow: inset 0 0 0 10px;
-//     }
-//   }
-// }
-
 %scrollbar-custom {
   overflow-x: hidden;
   overflow-y: auto;
@@ -114,6 +82,17 @@
   position: relative;
   .scrollable {
     @extend %scrollbar-custom;
+    width: 100%;
+    height: 100%;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1rem;
+    left: -1rem;
+    height: calc(100% + 1rem);
+    width: calc(100% + 3rem);
   }
 }
 // Scrollable common
