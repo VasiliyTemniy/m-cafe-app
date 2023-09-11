@@ -2,10 +2,16 @@
 @use '../../../styles/common' as *;
 
 $modal-login-width: 30rem;
-$modal-login-main-height: 26rem;
+$modal-login-main-height: 28rem;
+// To remove total height change while changing to login / signup forms
+$modal-login-title-height: 5.2rem;
 
 .alpha.modal.login {
   width: $modal-login-width;
+
+  .modal-title {
+    height: $modal-login-title-height;
+  }
 
   .modal-main {
     height: $modal-login-main-height;
@@ -56,6 +62,33 @@ $modal-login-main-height: 26rem;
         
         &-inputs-wrapper {
           height: calc(70vh - 6rem);
+        }
+      }
+    }
+  }
+}
+
+@media (pointer:none), (pointer:coarse) and (orientation: landscape) {
+  .alpha.modal.login {
+    .modal-main {
+      height: 60vh;
+      .login-form, .signup-form {
+        
+        &-inputs-wrapper {
+          height: calc(70vh - 6rem);
+        }
+      }
+    }
+  }
+}
+
+@media (pointer:none), (pointer:coarse) and (orientation: portrait) {
+  .alpha.modal.login {
+    // height: 80vh;
+    .modal-main {
+      .login-form, .signup-form {
+        &-buttons-wrapper {
+          display: grid;
         }
       }
     }
