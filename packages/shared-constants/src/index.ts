@@ -4,3 +4,4 @@ export * from './possibleUserRights.js';
 export * from './apiBaseUrl.js';
 export * from './allowedThemes.js';
 export * from './uiSettingTypes.js';
+export * from './filtrationConstants.js';
