@@ -1,12 +1,8 @@
-import { MouseEvent } from "react";
+import { MouseEvent, useMemo } from "react";
 import { FieldHookConfig, useField } from "formik";
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import {
-  autoCompleteTranslatedArray,
-  autoCompleteArray
-} from '@m-cafe-app/frontend-logic/utils';
-import { Container } from "../Container";
+import { autoCompleteArray } from '@m-cafe-app/frontend-logic/utils';
 import { Image } from "../Image";
 import { Tooltip } from "../Tooltip";
 import { apiBaseUrl } from "@m-cafe-app/shared-constants";
@@ -27,7 +23,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
     ? meta.error
     : '';
 
-  const { className, style, specific, baseVariant } = useInitLC({
+  const { className, style, specific, baseVariant, baseColorVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-select',
     classNameAddon: props.classNameAddon,
@@ -51,16 +47,13 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
     void helpers.setValue(e.currentTarget.innerText, false);
   };
 
-  const translatedOptions = props.tNode
-    ? props.options.map(option => t(`${props.tNode}.${option}`))
-    : undefined;
-
-  const displayedOptions = props.tNode && translatedOptions
-    ? autoCompleteTranslatedArray(translatedOptions, field.value, t, props.tNode)
-    : autoCompleteArray(props.options, field.value);
+  const displayedOptions = useMemo(
+    () => autoCompleteArray(props.options, field.value, t, props.tNode),
+    [props.options, field.value]
+  );
 
   return(
-    <Container classNameAddon={`input-wrapper select ${baseVariant}`}>
+    <div className={`input-wrapper select ${baseVariant} ${baseColorVariant}`}>
       <input
         type='text'
         id={field.name}
@@ -84,12 +77,14 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
           <div className='bar'/>
         }
       </>
-      <Container classNameAddon='dropdown-wrapper'>
-        <Container classNameAddon='options-wrapper'>
+      <div className='dropdown-wrapper'>
+        <div className='options-wrapper'>
           {displayedOptions.map(option => 
-            <Container key={option} onMouseDown={handleChooseOption} id={option} text={option}/>)
+            <div key={option} onMouseDown={handleChooseOption} id={option}>
+              { props.tNode ? t(`${props.tNode}.${option}`) : option }
+            </div>)
           }
-        </Container>
+        </div>
         <>
           {displayedOptions.length > 0 && specific?.useBarBelow &&
             <div className='bar-after'/>
@@ -98,7 +93,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
             <Tooltip text={props.tooltip}/>
           }
         </>
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 };
