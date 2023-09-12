@@ -46,28 +46,30 @@ export const useInitLC = ({
 
   const { ui } = useUiSettings();
 
-  // uiSettingsClassnames are written by componentName instead of component type for complex (unbasic) layout components
-  const uiSettingsClassnames = componentType === 'layout'
-    ? ui(`${componentName}-${theme}-classNames`)
-    : ui(`${componentType}-${theme}-classNames`);
+  // define ui node - componentName for layout components, componentType for basic components
+  const uiNode = componentType === 'layout'
+    ? componentName
+    : componentType;
+
+  const uiSettingsClassnames = ui(`${uiNode}-${theme}-classNames`);
 
   // baseVariant must have the most SCSS for web / inlineCSS for mobile
-  const baseVariant = ui(`${componentType}-${theme}-baseVariant`);
+  const baseVariant = ui(`${uiNode}-${theme}-baseVariant`);
 
   const baseVariantClassName = baseVariant.length > 0
     ? baseVariant[0].value
     : '';
 
   // same as baseVariant, but for color scheme
-  const baseColorVariant = ui(`${componentType}-${theme}-baseColorVariant`);
+  const baseColorVariant = ui(`${uiNode}-${theme}-baseColorVariant`);
 
   const baseColorVariantClassName = baseColorVariant.length > 0
     ? baseColorVariant[0].value
     : '';
 
-  const uiSettingsInlineCSS = ui(`${componentType}-${theme}-inlineCSS`);
+  const uiSettingsInlineCSS = ui(`${uiNode}-${theme}-inlineCSS`);
 
-  const specialUiSettingsSet = new Set([ ...ui(`${componentType}-${theme}-special`).map(uiSetting => uiSetting.name) ]);
+  const specialUiSettingsSet = new Set([ ...ui(`${uiNode}-${theme}-special`).map(uiSetting => uiSetting.name) ]);
 
   return useMemo(() => {
     
@@ -118,6 +120,7 @@ export const useInitLC = ({
     switch (componentType) {
 
       case 'input':
+      case 'dropbox':
         const userAgent = navigator.userAgent;
         const regex = /Firefox\/(\d+(\.\d+)?)/;
         const match = userAgent.match(regex);
