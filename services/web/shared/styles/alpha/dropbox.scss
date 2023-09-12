@@ -6,8 +6,6 @@
 
 
 %hover-common {
-  outline: none;
-
   & ~ .bar {
     height: v-v.$input-border-thickness-highlight;
     pointer-events: none;
@@ -21,47 +19,59 @@
   position: relative;
   width: 100%;
 
-  .text {
-    font-size: v-v.$input-font-size;
-    font-weight: v-v.$input-font-weight;
-    padding: 0 0 v-v.$input-border-thickness-highlight v-v.$input-padding-left;
-    display: flex;
-    align-items: center;
-    border: none;
-    border-radius: 0;
-    height: v-v.$input-height;
-    width: 100%;
-    background-color: inherit;
-    cursor: pointer;
-    user-select: none;
-    transition:
-      background-color v-v.$input-animation-speed ease-in-out,
-      box-shadow v-v.$input-animation-speed ease-in-out;
+  .chosen-wrapper {
+    .chosen-option {
+      font-size: v-v.$input-font-size;
+      font-weight: v-v.$input-font-weight;
+      padding: 0 0 v-v.$input-border-thickness-highlight v-v.$input-padding-left;
+      display: flex;
+      align-items: center;
+      border: none;
+      border-radius: 0;
+      height: v-v.$input-height;
+      width: 100%;
+      background-color: inherit;
+      cursor: pointer;
+      user-select: none;
+      transition:
+        background-color v-v.$input-animation-speed ease-in-out,
+        box-shadow v-v.$input-animation-speed ease-in-out;
 
-    &:hover {
-      @extend %hover-common;
+      &:hover {
+        @extend %hover-common;
+      }
+    };
+
+    label {
+      position: absolute;
+      font-weight: normal;
+      pointer-events: none;
+      top: v-v.$input-label-lift-amount;
+      font-size: v-v.$input-label-lifted-font-size;
+      cursor: text;
+      transition: v-v.$input-animation-speed ease;
     }
-  };
 
-  .text+label {
-    position: absolute;
-    // font-size: v-v.$input-font-size;
-    font-weight: normal;
-    pointer-events: none;
-    top: v-v.$input-label-lift-amount;
-    font-size: v-v.$input-label-lifted-font-size;
-    cursor: text;
-    transition: .25s ease;
-  }
+    .bar {
+      position: absolute;
+      width: calc(100% + v-v.$input-padding-left);
+      bottom: 0;
+      height: v-v.$input-border-thickness;
+      transition:
+        background-color v-v.$input-animation-speed ease-in-out,
+        height v-v.$input-animation-speed ease-in-out;
+    }
 
-  .bar {
-    position: absolute;
-    width: calc(100% + v-v.$input-padding-left);
-    bottom: 0;
-    height: v-v.$input-border-thickness;
-    transition:
-      background-color v-v.$input-animation-speed ease-in-out,
-      height v-v.$input-animation-speed ease-in-out;
+    .image.svg {
+      position: absolute;
+      height: v-v.$input-svg-scale;
+      width: v-v.$input-svg-scale;
+      top: 50%;
+      right: 2px;
+      transform: translateY(-50%) rotate(0deg);
+      transition: transform v-v.$input-animation-speed ease-in-out;
+      pointer-events: none;
+    }
   }
 
 
@@ -69,52 +79,62 @@
     position: absolute;
     width: calc(100% + v-v.$input-padding-left);
 
-    .options-wrapper {
-      @extend %scrollbar-custom;
-      position: relative;
-      z-index: g-v.$modal-wrapper-z-index + 2;
-      box-shadow: 0 10px 20px rgba(0,0,0,19%), 0 6px 6px rgba(0,0,0,23%);
-      max-height: 0;
-      transition: max-height v-v.$input-animation-speed ease-in-out;
-  
-      .option {
-        display: flex;
-        align-items: center;
-        height: v-v.$input-height;
-        padding-left: 0.5rem;
-        user-select: none;
-        cursor: pointer;
-        position: relative;
-        z-index: g-v.$modal-wrapper-z-index + 3;
+    .scrollable-wrapper {
+      &::before {
+        display: none;
       }
-    }
+      .scrollbar {
+        display: none;
+      }
 
-    .options-wrapper.filters {
-      // .option {
-      //   display: flex;
-      //   justify-content: space-between;
-      //   align-items: center;
-      // }
+      .options-wrapper {
+        position: relative;
+        z-index: g-v.$modal-wrapper-z-index + 2;
+        box-shadow: 0 10px 20px rgba(0,0,0,19%), 0 6px 6px rgba(0,0,0,23%);
+        max-height: 0;
+        transition: max-height v-v.$dropbox-slide-speed ease-in-out;
+  
+        .option {
+          display: flex;
+          align-items: center;
+          height: v-v.$input-height;
+          font-size: v-v.$input-font-size;
+          padding-left: 0.5rem;
+          user-select: none;
+          cursor: pointer;
+          position: relative;
+          z-index: g-v.$modal-wrapper-z-index + 3;
+          transition: background-color v-v.$input-animation-speed ease-in-out;
+        }
+      }
 
-      .switch {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 0.5rem;
-        width: 2rem;
-        &-label {
+      .options-wrapper.filters {
+        // .option {
+        //   display: flex;
+        //   justify-content: space-between;
+        //   align-items: center;
+        // }
+  
+        .switch {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          right: 0.5rem;
           width: 2rem;
-        }
-        &-switch {
-          right: 0.9rem;
-        }
-
-        &-checkbox:checked + .switch-label {
-          .switch-inner {
-            margin-left: 0;
+          &-label {
+            width: 2rem;
           }
-          .switch-switch {
-            right: 0;
+          &-switch {
+            right: 0.9rem;
+          }
+  
+          &-checkbox:checked + .switch-label {
+            .switch-inner {
+              margin-left: 0;
+            }
+            .switch-switch {
+              right: 0;
+            }
           }
         }
       }
@@ -126,31 +146,27 @@
       z-index: g-v.$modal-wrapper-z-index + 5;
       max-height: 0;
       transition:
-        max-height v-v.$input-animation-speed ease-in-out,
-        height v-v.$input-animation-speed ease-in-out;
+        max-height v-v.$dropbox-slide-speed ease-in-out,
+        height v-v.$dropbox-slide-speed ease-in-out;
     }
-  }
-
-  .image.svg {
-    position: absolute;
-    height: v-v.$input-svg-scale;
-    width: v-v.$input-svg-scale;
-    top: 50%;
-    right: 0.3rem;
-    transform: translateY(-50%) rotate(0deg);
-    transition: transform v-v.$input-animation-speed ease-in-out;
-    pointer-events: none;
   }
 
   &.expanded {
 
-    .text {
-      @extend %hover-common;
+    .chosen-wrapper {
+      .chosen-option {
+        @extend %hover-common;
+      }
     }
 
     .dropdown-wrapper {
-      .options-wrapper {
-        max-height: 50vh;
+      .scrollable-wrapper {
+        .scrollbar {
+          display: block;
+        }
+        .options-wrapper {
+          max-height: v-v.$dropbox-options-max-height;
+        }
       }
       .bar-after {
         max-height: v-v.$input-border-thickness-highlight;
@@ -163,11 +179,29 @@
 }
 
 
-%hover-color-common {
-  @include theme(background-color, AlphaBGThird);
+.alpha.dropbox.small {
+  .chosen-wrapper {
+    .chosen-option {
+      height: calc(v-v.$input-height * 0.8);
+      font-size: calc(v-v.$input-font-size * 0.8);
+    }
+    label {
+      top: calc(v-v.$input-label-lift-amount * 0.8);
+      font-size: calc(v-v.$input-label-lifted-font-size * 0.8);
+    }
+    .image.svg {
+      height: calc(v-v.$input-svg-scale * 0.8);
+      width: calc(v-v.$input-svg-scale * 0.8);
+    }
+  }
 
-  & ~ .bar {
-    @include theme(box-shadow, AlphaPrimary, 0 0 4px);
+  .dropdown-wrapper {
+    .options-wrapper {
+      .option {
+        height: calc(v-v.$input-height * 0.8);
+        font-size: calc(v-v.$input-font-size * 0.8);
+      }
+    }
   }
 }
 
@@ -175,17 +209,32 @@
 /**
  * Alpha color scheme for alpha style dropboxes
  */
+%hover-color-common {
+  @include theme(background-color, AlphaBGThirdHighlight);
+
+  & ~ .bar {
+    @include theme(box-shadow, AlphaPrimary, 0 0 4px);
+  }
+}
+
 .alpha.alpha-color.dropbox {
-  .text:hover {
+  .chosen-wrapper {
+
+    .chosen-option {
+      @include theme(color, AlphaText);
+    }
+
+    .chosen-option:hover {
       @extend %hover-color-common;
-  }
+    }
 
-  .text+label {
-    @include theme(color, AlphaText);
-  }
+    label {
+      @include theme(color, AlphaText);
+    }
 
-  .bar {
-    @include theme(background-color, AlphaPrimaryHighlight);
+    .bar {
+      @include theme(background-color, AlphaPrimaryHighlight);
+    }
   }
 
 
@@ -220,7 +269,7 @@
   }
 
   &.expanded {
-    .text {
+    .chosen-option {
       @extend %hover-color-common;
     }
   }
