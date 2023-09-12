@@ -7,10 +7,13 @@ import {
 } from 'react';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { ContainerProps } from './Container';
+import { debounceResizeObserver } from '@m-cafe-app/frontend-logic/utils';
 
 interface ScrollableProps extends ContainerProps {
   wrapperClassNameAddon?: string;
   wrapperId?: string;
+  highlightScrollbarOnContentHover?: boolean;
+  heightTweak?: number;
 }
 
 export const Scrollable = ({
@@ -27,7 +30,9 @@ export const Scrollable = ({
   onMouseLeave,
   onMouseUp,
   text,
-  style
+  style,
+  highlightScrollbarOnContentHover = true,
+  heightTweak = 0
 }: ScrollableProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const scrollTrackRef = useRef<HTMLDivElement>(null);
@@ -53,11 +58,24 @@ export const Scrollable = ({
     classNameOverride,
   });
 
-  function handleResize(ref: HTMLDivElement) {
-    const { clientHeight, scrollHeight, offsetTop } = ref;
-    setThumbHeight(Math.max(((clientHeight + (offsetTop / 2)) / scrollHeight) * (clientHeight + (offsetTop / 2)), 20));
-    setTrackHeight(clientHeight + offsetTop);
-    setScrollbarVisible(ref.clientHeight < ref.scrollHeight);
+  function handleResize(ref: HTMLDivElement, scrollbarOffsetTop: number) {
+    const { clientHeight, scrollHeight, offsetTop: contentOffsetTop } = ref;
+    /** 
+     * Below is result of hand-picked params, offsets are usually not in calculations for scrollbars,
+     * But in this case - contentOffsetTop is a result of content's css margin, if margin is zero, contentOffsetTop is zero
+     * scrollbarOffsetTop is result of scrollbar's css 'top' parameter for position: absolute
+     * heightTweak is a correction workaround for some edge-cases
+     * Please, do not ask me why there is division and multiplication by two. It works
+     */
+    setThumbHeight(
+      Math.max(
+        ((clientHeight - scrollbarOffsetTop - heightTweak + (contentOffsetTop / 2)) / scrollHeight) *
+        (clientHeight - scrollbarOffsetTop - heightTweak + (contentOffsetTop / 2)),
+        20
+      )
+    );
+    setTrackHeight(clientHeight - 2 * scrollbarOffsetTop - 2 * heightTweak + contentOffsetTop);
+    setScrollbarVisible((ref.clientHeight < ref.scrollHeight) && (ref.clientHeight > 20));
   }
 
   const handleTrackClick = useCallback(
@@ -108,18 +126,23 @@ export const Scrollable = ({
     e.stopPropagation();
     setScrollStartPosition(e.clientY);
     if (contentRef.current) setInitialScrollTop(contentRef.current.scrollTop);
+    if (scrollThumbRef.current && !scrollThumbRef.current.classList.contains('clicked')) {
+      scrollThumbRef.current.classList.add('clicked');
+    }
     setIsDragging(true);
   }, []);
 
-  const handleThumbMouseup = useCallback(
-    (e: MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (isDragging) {
-        setIsDragging(false);
-      }
-    },
-    [isDragging]
+  const handleThumbMouseup = useCallback((e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (scrollThumbRef.current && scrollThumbRef.current.classList.contains('clicked')) {
+      scrollThumbRef.current.classList.remove('clicked');
+    }
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  },
+  [isDragging]
   );
 
   const handleThumbMousemove = useCallback(
@@ -148,11 +171,12 @@ export const Scrollable = ({
 
   // If the content and the scrollbar track exist, use a ResizeObserver to adjust height of thumb and listen for scroll event to move the thumb
   useEffect(() => {
-    if (contentRef.current && scrollTrackRef.current) {
+    if (contentRef.current && scrollTrackRef.current && scrollbarWrapperTrackRef.current) {
       const ref = contentRef.current;
-      observer.current = new ResizeObserver(() => {
-        handleResize(ref);
-      });
+      const scrollbarOffsetTop = scrollbarWrapperTrackRef.current.offsetTop;
+      observer.current = new ResizeObserver(debounceResizeObserver(() => {
+        handleResize(ref, scrollbarOffsetTop);
+      }, 30));
       observer.current.observe(ref);
       ref.addEventListener('scroll', handleThumbPosition);
       return () => {
@@ -196,8 +220,8 @@ export const Scrollable = ({
     <div
       className={`scrollable-wrapper${wrapperClassNameAddon ? ' ' + wrapperClassNameAddon : ''}`}
       id={wrapperId}
-      onMouseEnter={handleWrapperMouseEnter}
-      onMouseLeave={handleWrapperMouseLeave}
+      onMouseEnter={highlightScrollbarOnContentHover ? handleWrapperMouseEnter : () => null}
+      onMouseLeave={highlightScrollbarOnContentHover ? handleWrapperMouseLeave : () => null}
     >
       <div
         ref={contentRef}
@@ -220,6 +244,8 @@ export const Scrollable = ({
           : `${scrollbarClassName} invisible`}
         ref={scrollbarWrapperTrackRef}
         style={scrollbarStyle}
+        onMouseEnter={highlightScrollbarOnContentHover ? () => null : handleWrapperMouseEnter}
+        onMouseLeave={highlightScrollbarOnContentHover ? () => null : handleWrapperMouseLeave}
       >
         <div
           className="scrollbar-track"
