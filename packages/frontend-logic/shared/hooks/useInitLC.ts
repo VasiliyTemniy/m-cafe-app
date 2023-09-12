@@ -157,7 +157,11 @@ export const useInitLC = ({
       /**
        * Base variant class name
        */
-      baseVariant: baseVariantClassName
+      baseVariant: baseVariantClassName,
+      /**
+       * Base color variant class name
+       */
+      baseColorVariant: baseColorVariantClassName
     };
   }, [
     theme,
