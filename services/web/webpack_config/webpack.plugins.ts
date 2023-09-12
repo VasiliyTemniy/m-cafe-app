@@ -23,6 +23,7 @@ export const plugins = [
     FRONTEND_MODULE_MANAGER: frontendModule === 'manager',
     FRONTEND_MODULE_CUSTOMER: frontendModule === 'customer',
     FRONTEND_TARGET_WEB: true,
+    FIXED_LOC_FILTER: '',
     USERNAME_REGEXP: '',
     USERNAME_MINLEN: '',
     USERNAME_MAXLEN: '',

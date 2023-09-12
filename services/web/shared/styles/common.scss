@@ -94,6 +94,16 @@
     height: calc(100% + 1rem);
     width: calc(100% + 3rem);
   }
+
+  .scrollbar {
+    z-index: g-v.$modal-wrapper-z-index + 10;
+    .scrollbar-track {
+      transition: height g-v.$hover-animation-speed ease-in-out;
+    }
+    .scrollbar-thumb {
+      transition: height g-v.$hover-animation-speed ease-in-out;
+    }
+  }
 }
 // Scrollable common
 

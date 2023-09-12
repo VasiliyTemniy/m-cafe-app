@@ -1,0 +1,36 @@
+@use '../../../styles/vars' as g-v; // global-vars
+@use '../../../styles/theming' as *;
+@use '../../../styles/colors' as *;
+
+$header-gap: 1rem;
+$header-dropbox-width: 5.2rem;
+$header-padding: 1rem;
+
+header.alpha {
+  position: sticky;
+  top: 0;
+  z-index: g-v.$header-z-index;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: g-v.$header-height;
+
+  .header-right {
+    padding: $header-padding;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $header-gap;
+
+    .dropbox {
+      width: $header-dropbox-width;
+    }
+  }
+}
+
+
+header.alpha.alpha-color {
+  @include theme(background-color, AlphaBGThird);
+  @include theme(box-shadow, Shadow, 0 0 6px);
+}

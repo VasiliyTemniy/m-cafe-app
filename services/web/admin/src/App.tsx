@@ -1,6 +1,6 @@
 import { useAppSelector, useInitAppAdmin } from '@m-cafe-app/frontend-logic/admin/hooks';
 import { AppRoutes } from './AppRoutes';
-import { LoginPage, Loading, Scrollable, Container } from 'shared/components';
+import { LoginPage, Loading, Scrollable, Container, Header } from 'shared/components';
 
 
 export const App = () => {
@@ -17,10 +17,10 @@ export const App = () => {
   if (!user.phonenumber) {
     return (
       <>
-        {/* <Header /> */}
         {/* <Notification/> */}
         <Container id='app-wrapper'>
-          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content'>
+          <Header />
+          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content' highlightScrollbarOnContentHover={false}>
             {/* <ColorTestPage/> */}
             <LoginPage/>
           </Scrollable>
@@ -34,7 +34,7 @@ export const App = () => {
         {/* <Header /> */}
         {/* <Menu /> */}
         <Container id='app-wrapper'>
-          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content'>
+          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content' highlightScrollbarOnContentHover={false}>
             {/* <Notification/> */}
             <AppRoutes/>
           </Scrollable>

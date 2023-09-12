@@ -1,3 +1,4 @@
+import { MouseEventHandler } from 'react';
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 
@@ -6,6 +7,7 @@ interface SwitchProps extends CommonProps {
   textRight?: string;
   checked: boolean;
   id: string;
+  onClick: MouseEventHandler;
   disabled?: boolean;
 }
 
@@ -15,6 +17,7 @@ export const Switch = ({
   textLeft,
   textRight,
   checked,
+  onClick,
   id,
   disabled = false
 }: SwitchProps) => {
@@ -27,7 +30,7 @@ export const Switch = ({
   });
   
   return (
-    <div className={className}>
+    <div className={className} onClick={onClick}>
       <input
         type="checkbox"
         className="switch-checkbox"

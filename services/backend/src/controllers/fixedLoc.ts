@@ -1,4 +1,5 @@
 import {
+  ApplicationError,
   DatabaseError,
   FixedLocDT,
   isEditFixedLocBody,
@@ -12,6 +13,7 @@ import { Router, RequestHandler } from 'express';
 import { FixedLoc, LocString } from '@m-cafe-app/db';
 import middleware from '../utils/middleware.js';
 import { includeLocStringNoTimestamps } from '../utils/sequelizeHelpers.js';
+import { fixedLocFilter } from '@m-cafe-app/shared-constants';
 
 
 const fixedLocRouter = Router();
@@ -187,8 +189,18 @@ fixedLocRouter.delete(
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    await FixedLoc.destroy({ where: { id: req.params.id } });
-    await LocString.destroy({ where: { id: req.params.id } });
+    const fixedLoc = await FixedLoc.findByPk(req.params.id);
+    if (!fixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
+
+    const locString = await LocString.findByPk(fixedLoc.locStringId);
+    if (!locString) throw new ApplicationError(`No loc string entry for existing fixed loc! fixed loc id: ${req.params.id}, loc string id: ${fixedLoc.locStringId}`);
+
+    // Instead of deleting a fixed loc, it is assigned a filter value
+    locString.mainStr = fixedLocFilter;
+    locString.secStr = fixedLocFilter;
+    locString.altStr = fixedLocFilter;
+
+    await locString.save();
 
     res.status(204).end();
 

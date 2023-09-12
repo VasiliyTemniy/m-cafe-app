@@ -1,7 +1,6 @@
 import { FieldHookConfig, useField } from "formik";
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Container } from "../Container";
 import { Image } from "../Image";
 import { Tooltip } from "../Tooltip";
 import { apiBaseUrl } from "@m-cafe-app/shared-constants";
@@ -16,7 +15,7 @@ export const FormikDateField = ({ disabled = false, ...props }: FormikDateFieldP
     ? meta.error
     : '';
 
-  const { className, style, specific, baseVariant } = useInitLC({
+  const { className, style, specific, baseVariant, baseColorVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-date',
     classNameAddon: props.classNameAddon,
@@ -37,7 +36,7 @@ export const FormikDateField = ({ disabled = false, ...props }: FormikDateFieldP
     : props.label;
 
   return(
-    <Container classNameAddon={`input-wrapper date ${baseVariant}${specific?.firefoxFix ? ' firefox-fix' : ''}`}>
+    <div className={`input-wrapper date ${baseVariant} ${baseColorVariant}${specific?.firefoxFix ? ' firefox-fix' : ''}`}>
       <input
         type='date'
         id={field.name}
@@ -66,6 +65,6 @@ export const FormikDateField = ({ disabled = false, ...props }: FormikDateFieldP
           <Tooltip text={props.tooltip}/>
         }
       </>
-    </Container>
+    </div>
   );
 };

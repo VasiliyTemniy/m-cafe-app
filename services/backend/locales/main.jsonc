@@ -26,19 +26,31 @@
       },
       "alt": {
         "mainStr": "РЕЗЕРВ",
-        "secStr": "RESERVE"
-      },
-      "mainFull": {
+        "secStr": "РЕЗЕРВ"
+      }
+    },
+    "fullLanguageNames": {
+      "main": {
         "mainStr": "Русский",
         "secStr": "Russian"
       },
-      "secFull": {
+      "sec": {
         "mainStr": "Английский",
         "secStr": "English"
       },
-      "altFull": {
+      "alt": {
         "mainStr": "РЕЗЕРВ",
-        "secStr": "RESERVE"
+        "secStr": "РЕЗЕРВ"
+      }
+    },
+    "theme": {
+      "light": {
+        "mainStr": "Св",
+        "secStr": "Li"
+      },
+      "dark": {
+        "mainStr": "Тм",
+        "secStr": "Dk"
       }
     }
   }

@@ -13,11 +13,10 @@
 }
 
 .alpha.scrollbar {
-  top: 0;
-  right: 0;
+  top: v-v.$scrollbar-offset;
+  right: v-v.$scrollbar-offset;
   position: absolute;
   width: v-v.$scrollbar-width;
-  height: 100%;
 
   .scrollbar-track {
     width: v-v.$scrollbar-width;
@@ -50,5 +49,9 @@
     .scrollbar-thumb {
       @include theme(box-shadow, AlphaText, inset 0 0 4px);
     }
+  }
+
+  .scrollbar-thumb.clicked {
+    @include theme(box-shadow, AlphaText, inset 0 0 9px);
   }
 }
