@@ -2,7 +2,6 @@ import { FocusEvent } from 'react';
 import { FieldHookConfig, useField } from "formik";
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Container } from '../Container';
 import { Tooltip } from '../Tooltip';
 import { useRef } from "react";
 
@@ -20,7 +19,7 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
     ? meta.error
     : '';
 
-  const { className, style, specific, baseVariant } = useInitLC({
+  const { className, style, specific, baseVariant, baseColorVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-textarea',
     classNameAddon: props.classNameAddon,
@@ -60,7 +59,7 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
   };
 
   return(
-    <Container classNameAddon={`input-wrapper textarea ${baseVariant}`}>
+    <div className={`input-wrapper textarea ${baseVariant} ${baseColorVariant}`}>
       <textarea
         id={field.name}
         name={field.name}
@@ -92,6 +91,6 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
           <Tooltip text={props.tooltip}/>
         }
       </>
-    </Container>
+    </div>
   );
 };

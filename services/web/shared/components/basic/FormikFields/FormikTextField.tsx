@@ -1,7 +1,6 @@
 import { FieldHookConfig, useField } from "formik";
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Container } from "../Container";
 import { Tooltip } from "../Tooltip";
 
 type FormikTextFieldProps = FieldHookConfig<string> & CommonFieldProps & {
@@ -17,7 +16,7 @@ export const FormikTextField = ({ disabled = false, ...props }: FormikTextFieldP
     ? meta.error
     : '';
 
-  const { className, style, specific, baseVariant } = useInitLC({
+  const { className, style, specific, baseVariant, baseColorVariant } = useInitLC({
     componentType: 'input',
     componentName: 'input-text',
     classNameAddon: props.classNameAddon,
@@ -38,7 +37,7 @@ export const FormikTextField = ({ disabled = false, ...props }: FormikTextFieldP
     : props.label;
 
   return(
-    <Container classNameAddon={`input-wrapper text ${baseVariant}`}>
+    <div className={`input-wrapper text ${baseVariant} ${baseColorVariant}`}>
       <input
         type={props.type}
         id={field.name}
@@ -65,25 +64,10 @@ export const FormikTextField = ({ disabled = false, ...props }: FormikTextFieldP
             {errorMessage}
           </div>
         }
-      </>
-      {/* <Input
-        placeholder={props.placeholder}
-        type={props.type}
-        name={field.name}
-        value={field.value}
-        onChange={field.onChange}
-        onBlur={field.onBlur}
-        className={className}
-        errorMessage={errorMessage}
-        disabled={disabled}
-        style={style}
-        specific={specific}
-      /> */}
-      <>
         {props.tooltip &&
           <Tooltip text={props.tooltip}/>
         }
       </>
-    </Container>
+    </div>
   );
 };
