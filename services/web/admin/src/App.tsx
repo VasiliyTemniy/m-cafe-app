@@ -20,7 +20,7 @@ export const App = () => {
         {/* <Notification/> */}
         <Container id='app-wrapper'>
           <Header />
-          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content'>
+          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content' highlightScrollbarOnContentHover={false}>
             {/* <ColorTestPage/> */}
             <LoginPage/>
           </Scrollable>
@@ -34,7 +34,7 @@ export const App = () => {
         {/* <Header /> */}
         {/* <Menu /> */}
         <Container id='app-wrapper'>
-          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content'>
+          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content' highlightScrollbarOnContentHover={false}>
             {/* <Notification/> */}
             <AppRoutes/>
           </Scrollable>
