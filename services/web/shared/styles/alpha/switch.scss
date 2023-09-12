@@ -74,6 +74,7 @@
 
   .switch-switch {
     display: block;
+    height: v-v.$switch-height * 0.71;
     width: v-v.$switch-height * 0.71;
     margin: v-v.$switch-height * 0.15;
     position: absolute;
@@ -113,7 +114,7 @@
 
     &::before,
     &::after {
-      @include theme(color, AlphaText);
+      @include theme(color, AlphaLabelText);
     }
 
     &::before {
