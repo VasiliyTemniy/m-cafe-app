@@ -1,20 +1,18 @@
-import type { MouseEventHandler } from "react";
+import type { MouseEventHandler, MouseEvent } from "react";
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Container } from "./Container";
-import { TextComp } from "./TextComp";
 import { Image } from "./Image";
 import { apiBaseUrl } from "@m-cafe-app/shared-constants";
+import { collapseExpanded } from "@m-cafe-app/frontend-logic/utils";
+import { Scrollable } from "./Scrollable";
 
 interface DropboxProps extends CommonProps {
   options: string[];
   currentOption: string;
-  onClick: MouseEventHandler;
   onChoose: MouseEventHandler;
   label: string;
   tNode?: string;
 }
-
 
 export const Dropbox = ({
   classNameOverride,
@@ -22,7 +20,6 @@ export const Dropbox = ({
   id,
   options,
   currentOption,
-  onClick,
   onChoose,
   tNode,
   label
@@ -37,38 +34,44 @@ export const Dropbox = ({
     classNameOverride,
   });
 
-  const translatedOptions = tNode
-    ? options.map(option => t(`${tNode}.${option}`))
-    : options;
-  
-  const translatedCurrentOption = tNode
-    ? t(`${tNode}.${currentOption}`)
-    : currentOption;
+  const handleDropboxClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (e.currentTarget.parentElement)
+      if (!e.currentTarget.parentElement.classList.contains('expanded')) {
+        e.stopPropagation();
+        collapseExpanded();
+        e.currentTarget.parentElement.classList.add('expanded');
+      } else {
+        e.stopPropagation();
+        e.currentTarget.parentElement.classList.remove('expanded');
+      }
+  };
 
   return (
-    <Container classNameAddon={className} id={id} style={style}>
-      <Container classNameAddon='chosen-wrapper' onClick={onClick}>
-        <TextComp text={translatedCurrentOption}/>
-        <label htmlFor={id}>{label}</label>
-        <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`}/>
+    <div className={className} id={id} style={style}>
+      <div className='chosen-wrapper' onClick={handleDropboxClick}>
+        <div className='chosen-option'>{tNode ? t(`${tNode}.${currentOption}`) : currentOption}</div>
         <>
+          {!!label && <label htmlFor={id}>{label}</label>}
+          <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`} classNameAddon='svg'/>
           {specific?.useBarBelow &&
             <div className='bar'/>
           }
         </>
-      </Container>
-      <Container classNameAddon='dropdown-wrapper'>
-        <Container classNameAddon='options-wrapper'>
-          {translatedOptions.map(option => 
-            <Container key={option} onClick={onChoose} id={option} className='option' text={option}/>)
+      </div>
+      <div className='dropdown-wrapper'>
+        <Scrollable classNameOverride='options-wrapper' heightTweak={4} highlightScrollbarOnContentHover={false}>
+          {options.map(option => 
+            <div key={option} onClick={onChoose} id={option} className='option'>
+              { tNode ? t(`${tNode}.${option}`) : option }
+            </div>)
           }
-        </Container>
+        </Scrollable>
         <>
-          {translatedOptions.length > 0 && specific?.useBarBelow &&
+          {options.length > 0 && specific?.useBarBelow &&
             <div className='bar-after'/>
           }
         </>
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 };

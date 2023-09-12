@@ -1,11 +1,12 @@
-import type { MouseEventHandler } from "react";
+import type { MouseEventHandler, MouseEvent } from "react";
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Container } from "./Container";
 import { TextComp } from "./TextComp";
 import { Image } from "./Image";
 import { Switch } from "./Switch";
 import { apiBaseUrl } from "@m-cafe-app/shared-constants";
+import { collapseExpanded } from "@m-cafe-app/frontend-logic/utils";
+import { Scrollable } from "./Scrollable";
 
 
 interface FiltersboxProps extends CommonProps {
@@ -13,7 +14,6 @@ interface FiltersboxProps extends CommonProps {
     name: string,
     checked: boolean
   }>;
-  onClick: MouseEventHandler;
   onChoose: MouseEventHandler;
   label: string;
   tNode?: string
@@ -25,7 +25,6 @@ export const Filtersbox = ({
   classNameAddon,
   id,
   options,
-  onClick,
   onChoose,
   tNode,
   label
@@ -40,41 +39,46 @@ export const Filtersbox = ({
     classNameOverride,
   });
 
-  const translatedOptions = tNode
-    ? options.map(option => {
-      return {
-        checked: option.checked,
-        name: t(`${tNode}.${option.name}`)
-      };
-    })
-    : options;
+  const handleFiltersboxClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (e.currentTarget.parentElement)
+      if (!e.currentTarget.parentElement.classList.contains('expanded')) {
+        e.stopPropagation();
+        collapseExpanded();
+        e.currentTarget.parentElement.classList.add('expanded');
+      } else {
+        e.stopPropagation();
+        e.currentTarget.parentElement.classList.remove('expanded');
+      }
+  };
 
   return (
-    <Container classNameAddon={className} id={id} style={style}>
-      <Container classNameAddon='chosen-wrapper' onClick={onClick}>
+    <div className={className} id={id} style={style}>
+      <div className='chosen-wrapper' onClick={handleFiltersboxClick}>
         <TextComp text={label}/>
         <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`}/>
         <>
           {specific?.useBarBelow &&
-          <div className='bar'/>
+            <div className='bar'/>
           }
         </>
-      </Container>
-      <Container classNameAddon='dropdown-wrapper'>
-        <Container classNameAddon='options-wrapper filters'>
-          {translatedOptions.map(option =>
-            <Container key={`${option.name} filter-option`} onClick={onChoose} className='option' id={option.name}>
-              <Container text={option.name}/>
-              <Switch checked={option.checked} id={option.name}/>
-            </Container>
+      </div>
+      <div className='dropdown-wrapper'>
+        <Scrollable classNameOverride='options-wrapper filters'>
+          {options.map(option =>
+            <div key={`${option.name} filter-option`} onClick={onChoose} className='option' id={option.name}>
+              <div>
+                { tNode ? t(`${tNode}.${option.name}`) : option.name }
+              </div>
+              <Switch checked={option.checked} id={`${option.name}-switch`} onClick={() => null}/>
+            </div>
           )}
-        </Container>
+        </Scrollable>
         <>
-          {translatedOptions.length > 0 && specific?.useBarBelow &&
+          {options.length > 0 && specific?.useBarBelow &&
           <div className='bar-after'/>
           }
         </>
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 };
