@@ -30,7 +30,8 @@ export const Header = () => {
     collapseExpanded();
   };
 
-  const handleThemeSwitchClick = () => {
+  const handleThemeSwitchClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     if (selectedTheme === 'light') dispatch(setTheme('dark'));
     else dispatch(setTheme('light'));
   };
