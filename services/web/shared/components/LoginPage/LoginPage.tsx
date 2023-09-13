@@ -9,11 +9,19 @@ import { phonenumberRegExp, usernameRegExp } from "@m-cafe-app/shared-constants"
 import { Modal } from "../basic";
 
 
-export const LoginPage = () => {
+interface LoginPageProps {
+  modalActive: boolean;
+  modalWrapper?: boolean;
+  onCancel: () => void;
+}
+
+export const LoginPage = ({
+  modalActive,
+  modalWrapper = true,
+  onCancel
+}: LoginPageProps) => {
 
   const dispatch = useAppDispatch();
-
-  // const user = useAppSelector(state => state.user);
 
   const [ signupPage, setSignupPage ] = useState(false);
   const { t } = useTranslation();
@@ -38,30 +46,30 @@ export const LoginPage = () => {
   if (!signupPage) return (
     <Modal
       classNameAddon='login'
-      active={true}
+      active={modalActive}
       title={t(`${tNode}.loginForm.title`)}
       subtitle={t(`${tNode}.loginForm.welcome`)}
-      wrapper={false}
+      wrapper={modalWrapper}
     >
       <LoginForm
         onSubmit={handleLogin}
         changePage={() => setSignupPage(prev => !prev)}
-        onCancel={() => setSignupPage(prev => !prev)} // CHANGEME! CLOSE PAGE HERE
+        onCancel={onCancel}
       />
     </Modal>
   );
   else return (
     <Modal
       classNameAddon='login'
-      active={true}
+      active={modalActive}
       title={t(`${tNode}.signupForm.title`)}
       subtitle={t(`${tNode}.signupForm.welcome`)}
-      wrapper={false}
+      wrapper={modalWrapper}
     >
       <SignupForm
         onSubmit={handleSignup}
         changePage={() => setSignupPage(prev => !prev)}
-        onCancel={() => setSignupPage(prev => !prev)} // CHANGEME! CLOSE PAGE HERE
+        onCancel={onCancel}
       />
     </Modal>
   );
