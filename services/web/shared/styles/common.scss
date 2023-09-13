@@ -2,6 +2,7 @@
 @use './colors' as *;
 @use './theming' as *;
 @use './vars' as g-v; // global-vars
+@use 'sass:color';
 
 
 %reset-std {
@@ -26,33 +27,6 @@
   overflow-x: visible;
 }
 
-%header {
-  font-size: $header-font-size;
-  font-weight: $header-font-weight;
-  user-select: none;
-};
-
-%subheader {
-  font-size: $subheader-font-size;
-  font-weight: $subheader-font-weight;
-  user-select: none;
-};
-
-%bigtext {
-  font-size: $bigtext-font-size;
-  font-weight: $bigtext-font-weight;
-};
-
-%numerics-big {
-  font-size: $numerics-big-font-size;
-  font-weight: $numerics-big-font-weight;
-}
-
-%numerics-small {
-  font-size: $numerics-small-font-size;
-  font-weight: $numerics-small-font-weight;
-}
-
 
 // Glass containers common
 .glass {
@@ -67,12 +41,12 @@
 
 // Modal blur wrapper common
 .modal-blur-wrapper {
+  @include theme(background-color, Shadow);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #000000cc;
   z-index: g-v.$modal-wrapper-z-index;
 }
 // Modal blur wrapper common
@@ -111,7 +85,10 @@
   -webkit-app-region: drag;
 }
 
-.text.alpha-color {
-  @include theme(color, AlphaText);
-  @include theme(-webkit-text-fill-color, AlphaText);
+.tooltip {
+  position: absolute;
+
+  &.invisible {
+    display: none;
+  }
 }
