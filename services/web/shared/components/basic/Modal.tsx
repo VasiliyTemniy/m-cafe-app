@@ -1,6 +1,5 @@
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Container } from './Container';
 import { TextComp } from './TextComp';
 
 interface ModalProps extends CommonProps {
@@ -31,29 +30,29 @@ export const Modal = ({
 
   if (active && wrapper) {
     return (
-      <Container classNameAddon='modal-blur-wrapper'>
-        <Container classNameAddon={className} style={style} id={id}>
-          <Container classNameAddon='modal-title'>
-            <TextComp text={title} classNameAddon='title'/>
-            <TextComp text={subtitle} classNameAddon='subtitle'/>
-          </Container>
-          <Container classNameAddon='modal-main'>
+      <div className='modal-blur-wrapper'>
+        <div className={className} style={style} id={id}>
+          <div className='modal-title'>
+            <TextComp text={title} classNameAddon='title' htmlEl='h3'/>
+            <TextComp text={subtitle} classNameAddon='subtitle' htmlEl='h4'/>
+          </div>
+          <div className='modal-main'>
             {children}
-          </Container>
-        </Container>
-      </Container>
+          </div>
+        </div>
+      </div>
     );
   } else if (active) {
     return (
-      <Container classNameAddon={className} style={style} id={id}>
-        <Container classNameAddon='modal-title'>
-          <TextComp text={title} classNameAddon='title'/>
-          <TextComp text={subtitle} classNameAddon='subtitle'/>
-        </Container>
-        <Container classNameAddon='modal-main'>
+      <div className={className} style={style} id={id}>
+        <div className='modal-title'>
+          <TextComp text={title} classNameAddon='title' htmlEl='h3'/>
+          <TextComp text={subtitle} classNameAddon='subtitle' htmlEl='h4'/>
+        </div>
+        <div className='modal-main'>
           {children}
-        </Container>
-      </Container>
+        </div>
+      </div>
     );
   } else {
     return null;
