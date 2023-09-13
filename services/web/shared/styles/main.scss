@@ -11,6 +11,9 @@
 @use './alpha/dropbox' as *;
 @use './alpha/scrollbar' as *;
 @use './alpha/container' as *;
+@use './alpha/textcomp' as *;
+@use './alpha/tooltip' as *;
+@use './additions/textcomp' as *;
 @use './vars' as g-v; // global-vars
 
 html {
