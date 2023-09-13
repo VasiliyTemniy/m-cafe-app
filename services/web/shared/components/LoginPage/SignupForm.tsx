@@ -87,7 +87,6 @@ export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) 
               <Button
                 label={t(`${tNode}.label.toLogin`)}
                 variant='primary'
-                // classNameAddon='login-form'
                 id='toggle-button'
                 onClick={changePage}
               />
@@ -96,14 +95,12 @@ export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) 
                   label={t('main.buttonLabel.submit')}
                   type='submit'
                   variant='primary'
-                  // classNameAddon='login-form'
                   id='signup-button'
                   disabled={!dirty || !isValid}
                 />
                 <Button
                   label={t('main.buttonLabel.cancel')}
                   variant='secondary'
-                  // classNameAddon='login-form'
                   id='cancel-button'
                   onClick={onCancel}
                 />

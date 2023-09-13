@@ -52,9 +52,7 @@ export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) =>
             <Container classNameAddon="login-form-buttons-wrapper">
               <Button
                 label={t(`${tNode}.label.toSignup`)}
-                type='submit'
                 variant='primary'
-                // classNameAddon='login-form'
                 id='toggle-button'
                 onClick={changePage}
               />
@@ -63,14 +61,12 @@ export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) =>
                   label={t('main.buttonLabel.submit')}
                   type='submit'
                   variant='primary'
-                  // classNameAddon='login-form'
                   id='login-button'
                   disabled={!dirty || !isValid}
                 />
                 <Button
                   label={t('main.buttonLabel.cancel')}
                   variant='secondary'
-                  // classNameAddon='login-form'
                   id='cancel-button'
                   onClick={onCancel}
                 />
