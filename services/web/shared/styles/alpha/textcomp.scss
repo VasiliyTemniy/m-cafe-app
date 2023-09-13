@@ -1,0 +1,23 @@
+@use '../colors' as *;
+@use './alpha_vars' as v-v; // variant-vars
+@use '../vars' as g-v; // global-vars
+@use '../theming' as *;
+@use '../common' as *;
+
+
+/**
+ * Properties for 'alpha' basevariant class text components
+ */
+.alpha.text {
+  @extend %reset-std;
+  font-weight: normal;
+}
+
+
+/**
+ * Alpha color scheme for alpha style text
+ */
+.alpha.alpha-color.text {
+  @include theme(color, AlphaText);
+  @include theme(-webkit-text-fill-color, AlphaText);
+}
