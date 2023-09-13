@@ -1,6 +1,6 @@
 import { useInitLC } from "@m-cafe-app/frontend-logic/shared/hooks";
 import { CommonProps } from "@m-cafe-app/frontend-logic/types";
-import type { MouseEventHandler, Ref, MouseEvent, CSSProperties } from "react";
+import type { MouseEventHandler, Ref, CSSProperties } from "react";
 
 export interface ContainerProps extends CommonProps {
   style?: CSSProperties
@@ -38,33 +38,17 @@ export const Container = ({
     classNameOverride,
   });
 
-  const handleMouseOver = (e: MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
-  };
-
-  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
-    if (onClick) onClick(e);
-  };
-
   return (
     <div
       ref={ref}
       className={className}
       id={id}
       style={{ ...style, ...settingsStyle }}
-      onClick={handleClick}
+      onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseDown={onMouseDown}
       onMouseLeave={onMouseLeave}
-      onMouseOver={handleMouseOver}
       onMouseUp={onMouseUp}
     >
       {text}
