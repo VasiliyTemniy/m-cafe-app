@@ -10,6 +10,7 @@ interface UseInitLCProps extends CommonProps {
   componentType:
     'input' |
     'container' |
+    'text' |
     'button' |
     'button-group' |
     'modal' |
