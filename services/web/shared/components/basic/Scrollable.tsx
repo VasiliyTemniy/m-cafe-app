@@ -78,31 +78,28 @@ export const Scrollable = ({
     setScrollbarVisible((ref.clientHeight < ref.scrollHeight) && (ref.clientHeight > 20));
   }
 
-  const handleTrackClick = useCallback(
-    (e: ReactMouseEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const { current: trackCurrent } = scrollTrackRef;
-      const { current: contentCurrent } = contentRef;
-      if (trackCurrent && contentCurrent) {
-        const { clientY } = e;
-        const target = e.target as HTMLDivElement;
-        const rect = target.getBoundingClientRect();
-        const trackTop = rect.top;
-        const thumbOffset = -(thumbHeight / 2);
-        const clickRatio =
+  const handleTrackClick = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const { current: trackCurrent } = scrollTrackRef;
+    const { current: contentCurrent } = contentRef;
+    if (trackCurrent && contentCurrent) {
+      const { clientY } = e;
+      const target = e.target as HTMLDivElement;
+      const rect = target.getBoundingClientRect();
+      const trackTop = rect.top;
+      const thumbOffset = -(thumbHeight / 2);
+      const clickRatio =
           (clientY - trackTop + thumbOffset) / trackCurrent.clientHeight;
-        const scrollAmount = Math.floor(
-          clickRatio * contentCurrent.scrollHeight
-        );
-        contentCurrent.scrollTo({
-          top: scrollAmount,
-          behavior: 'smooth',
-        });
-      }
-    },
-    [thumbHeight]
-  );
+      const scrollAmount = Math.floor(
+        clickRatio * contentCurrent.scrollHeight
+      );
+      contentCurrent.scrollTo({
+        top: scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  }, [thumbHeight]);
 
   const handleThumbPosition = useCallback(() => {
     if (
@@ -133,41 +130,36 @@ export const Scrollable = ({
   }, []);
 
   const handleThumbMouseup = useCallback((e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (scrollThumbRef.current && scrollThumbRef.current.classList.contains('clicked')) {
-      scrollThumbRef.current.classList.remove('clicked');
-    }
     if (isDragging) {
-      setIsDragging(false);
-    }
-  },
-  [isDragging]
-  );
-
-  const handleThumbMousemove = useCallback(
-    (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      if (isDragging && contentRef.current && scrollStartPosition) {
-        const {
-          scrollHeight: contentScrollHeight,
-          clientHeight: contentClientHeight,
-        } = contentRef.current;
+      if (scrollThumbRef.current && scrollThumbRef.current.classList.contains('clicked')) {
+        scrollThumbRef.current.classList.remove('clicked');
+      }
+      setIsDragging(false);
+    }
+  }, [isDragging]);
 
-        const deltaY =
+  const handleThumbMousemove = useCallback((e: MouseEvent) => {
+    if (isDragging && contentRef.current && scrollStartPosition) {
+      e.preventDefault();
+      e.stopPropagation();
+      const {
+        scrollHeight: contentScrollHeight,
+        clientHeight: contentClientHeight,
+      } = contentRef.current;
+
+      const deltaY =
           (e.clientY - scrollStartPosition) *
           (contentClientHeight / thumbHeight);
-        const newScrollTop = Math.min(
-          initialScrollTop + deltaY,
-          contentScrollHeight - contentClientHeight
-        );
+      const newScrollTop = Math.min(
+        initialScrollTop + deltaY,
+        contentScrollHeight - contentClientHeight
+      );
 
-        contentRef.current.scrollTop = newScrollTop;
-      }
-    },
-    [isDragging, scrollStartPosition, thumbHeight]
-  );
+      contentRef.current.scrollTop = newScrollTop;
+    }
+  }, [isDragging, scrollStartPosition, thumbHeight]);
 
   // If the content and the scrollbar track exist, use a ResizeObserver to adjust height of thumb and listen for scroll event to move the thumb
   useEffect(() => {
