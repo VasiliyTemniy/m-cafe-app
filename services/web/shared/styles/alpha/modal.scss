@@ -1,6 +1,5 @@
 @use '../colors' as *;
 @use '../vars' as g-v; // global-vars
-@use '../common' as *;
 @use '../theming' as *;
 @use './alpha_vars' as v-v; // variant-vars
 
@@ -35,14 +34,12 @@
     align-items: center;
 
     .text.title {
-      @extend %header;
       padding-top: v-v.$modal-title-padding;
       text-align: center;
       white-space: pre-line;
     }
 
     .text.subtitle {
-      @extend %subheader;
       padding: v-v.$modal-subtitle-padding;
       text-align: center;
       white-space: pre-line;
