@@ -52,6 +52,16 @@
         "mainStr": "Тм",
         "secStr": "Dk"
       }
+    },
+    "underConstruction": {
+      "title": {
+        "mainStr": "Страница в разработке",
+        "secStr": "Page under construction"
+      },
+      "info": {
+        "mainStr": "Скоро здесь будет контент",
+        "secStr": "Content soon will be here"
+      }
     }
   }
 }
