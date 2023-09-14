@@ -98,3 +98,16 @@
     display: none;
   }
 }
+
+
+.svg-button {
+  position: relative;
+  .svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.svg {
+  @include theme(filter, SVGFilter);
+}
