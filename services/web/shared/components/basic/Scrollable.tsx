@@ -14,6 +14,7 @@ interface ScrollableProps extends ContainerProps {
   wrapperId?: string;
   highlightScrollbarOnContentHover?: boolean;
   heightTweak?: number;
+  wrapperHeight?: number;
 }
 
 export const Scrollable = ({
@@ -32,8 +33,10 @@ export const Scrollable = ({
   text,
   style,
   highlightScrollbarOnContentHover = true,
-  heightTweak = 0
+  heightTweak = 0,
+  wrapperHeight
 }: ScrollableProps) => {
+
   const contentRef = useRef<HTMLDivElement>(null);
   const scrollTrackRef = useRef<HTMLDivElement>(null);
   const scrollThumbRef = useRef<HTMLDivElement>(null);
@@ -218,12 +221,13 @@ export const Scrollable = ({
       id={wrapperId}
       onMouseEnter={highlightScrollbarOnContentHover ? handleWrapperMouseEnter : () => null}
       onMouseLeave={highlightScrollbarOnContentHover ? handleWrapperMouseLeave : () => null}
+      style={ wrapperHeight ? {height: `${wrapperHeight}px`} : {}}
     >
       <div
         ref={contentRef}
         className={`${containerClassName} scrollable`}
         id={id}
-        style={{ ...style, ...containerSettingsStyle}}
+        style={{ ...style, ...containerSettingsStyle }}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMove}
