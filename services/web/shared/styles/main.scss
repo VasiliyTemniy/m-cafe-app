@@ -32,6 +32,7 @@ div {
 #app-wrapper {
   width: 100vw;
   height: 100vh;
+  position: relative;
 
   .app-content-wrapper.scrollable-wrapper {
     @extend %scrollbar-custom;
