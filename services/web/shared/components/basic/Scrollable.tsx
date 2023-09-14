@@ -208,9 +208,13 @@ export const Scrollable = ({
     }
   };
 
+  let wrapperClassNameSum = 'scrollable-wrapper';
+  wrapperClassNameSum += wrapperClassNameAddon ? ' ' + wrapperClassNameAddon : '';
+  wrapperClassNameSum += !highlightScrollbarOnContentHover ? ' without-before' : '';
+
   return (
     <div
-      className={`scrollable-wrapper${wrapperClassNameAddon ? ' ' + wrapperClassNameAddon : ''}`}
+      className={wrapperClassNameSum}
       id={wrapperId}
       onMouseEnter={highlightScrollbarOnContentHover ? handleWrapperMouseEnter : () => null}
       onMouseLeave={highlightScrollbarOnContentHover ? handleWrapperMouseLeave : () => null}
