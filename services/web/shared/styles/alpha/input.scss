@@ -119,7 +119,7 @@
     width: v-v.$input-svg-scale;
     top: 50%;
     right: 0.3rem;
-    transform: translateY(-50%) rotate(0deg);
+    transform: translateY(-50%) rotate(-90deg);
     transition: transform v-v.$input-animation-speed ease-in-out;
     pointer-events: none;
   }
@@ -135,7 +135,7 @@
       }
     }
     .image.svg {
-      transform: translateY(-50%) rotate(180deg);
+      transform: translateY(-50%) rotate(90deg);
     }
   }
 }

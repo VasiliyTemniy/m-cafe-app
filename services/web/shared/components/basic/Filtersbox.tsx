@@ -55,7 +55,7 @@ export const Filtersbox = ({
     <div className={className} id={id} style={style}>
       <div className='chosen-wrapper' onClick={handleFiltersboxClick}>
         <TextComp text={label}/>
-        <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`}/>
+        <Image src={`${apiBaseUrl}/public/pictures/svg/arrow.svg`}/>
         <>
           {specific?.useBarBelow &&
             <div className='bar'/>
