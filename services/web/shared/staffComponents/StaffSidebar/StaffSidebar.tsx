@@ -1,7 +1,6 @@
 import { apiBaseUrl } from "@m-cafe-app/shared-constants";
 import { useEffect, useState } from "react";
-import { Scrollable, SVGButton } from "../basic";
-import { NavItem } from "../NavItem";
+import { Scrollable, SVGButton, NavItem } from "../../components";
 
 export const StaffSidebar = () => {
 
