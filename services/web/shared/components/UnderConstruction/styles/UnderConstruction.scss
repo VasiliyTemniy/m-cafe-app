@@ -1,11 +1,8 @@
-// @import '../../scss_common/colors.scss';
 @use '../../../styles/vars' as g-v;
-// @import '../../scss_common/commonMixins.scss';
 
 $under-construction-container-width: 40vw;
 $under-construction-container-min-width: 25rem;
 $under-construction-container-height: 36rem;
-$under-construction-container-gap: 2rem;
 $under-construction-title-height: 4.5rem;
 $under-construction-svg-scale: 25rem;
 
@@ -20,8 +17,6 @@ $under-construction-svg-scale: 25rem;
   position: relative;
 
   &-title {
-    // @include theme(background-color, ContSecondLayer);
-    // @include theme(box-shadow, ContainerSecondShadow);
     position: absolute;
     top: 0;
     left: 0;

@@ -15,7 +15,7 @@ export const UnderConstruction = ({ svgUrl }: UnderConstructionProps) => {
         <TextComp text={t('main.underConstruction.title')} htmlEl='h3'/>
         <TextComp text={t('main.underConstruction.info')} htmlEl='h4'/>
       </Container>
-      <Image src={svgUrl} altText='Under construction'/>
+      <Image src={svgUrl} altText='Under construction' classNameAddon='svg'/>
     </Container>
   );
 };
