@@ -29,7 +29,7 @@ export const Header = () => {
   };
 
   return (
-    <header className={className} style={style}>
+    <header className={className} style={style} id='app-header'>
       <div className='header-left'>
 
       </div>
