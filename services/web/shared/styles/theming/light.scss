@@ -11,6 +11,7 @@ $light: (
   GlassBorder:                    color.scale(getColor(lightGlass), $lightness: -10%, $alpha: -40%),
 
   Border:                         getColor(lightBorder),
+  Special:                        color.scale(getColor(lightBorder), $lightness: -10%, $alpha: -70%),
   Shadow:                         getColor(lightShadow),
   SVGFilter:                      getColor(lightSVGFilter),
 
