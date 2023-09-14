@@ -1,4 +1,3 @@
-// import { Link, useNavigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 interface NavItemProps {
@@ -16,9 +15,7 @@ export const NavItem = ({ path, label }: NavItemProps) => {
 
   return (
     <li className='nav-item' onClick={handleNavigate}>
-      {/* <Link to={path}> */}
       {label}
-      {/* </Link> */}
     </li>
   );
 };
