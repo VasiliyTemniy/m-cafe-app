@@ -1,16 +1,15 @@
 import { MouseEvent } from "react";
 import { useAppDispatch, useAppSelector, useInitLC, useTranslation } from "@m-cafe-app/frontend-logic/shared/hooks";
-import { setLanguage, setTheme } from "@m-cafe-app/frontend-logic/shared/reducers";
-import { Dropbox, Switch, Container } from "../basic";
-import { collapseExpanded } from "@m-cafe-app/frontend-logic/utils";
+import { setTheme } from "@m-cafe-app/frontend-logic/shared/reducers";
+import { Switch } from "../basic";
 import { fixedLocFilter } from "@m-cafe-app/shared-constants";
+import { LanguageBox } from "./LanguageBox";
 
 export const Header = () => {
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const selectedLanguage = useAppSelector(state => state.settings.language);
   const selectedTheme = useAppSelector(state => state.settings.theme);
 
   const { className, style } = useInitLC({
@@ -23,32 +22,21 @@ export const Header = () => {
   if (t(`${languagesTNode}.sec`) !== fixedLocFilter) languages.push('sec');
   if (t(`${languagesTNode}.alt`) !== fixedLocFilter) languages.push('alt');
 
-  const handleChooseLanguage = (e: MouseEvent<HTMLDivElement>) => {
-    const chosenLanguage = e.currentTarget.id;
-    if (chosenLanguage !== 'main' && chosenLanguage !== 'sec' && chosenLanguage !== 'alt') return;
-    dispatch(setLanguage(chosenLanguage));
-    collapseExpanded();
-  };
-
-  const handleThemeSwitchClick = () => {
+  const handleThemeSwitchClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     if (selectedTheme === 'light') dispatch(setTheme('dark'));
     else dispatch(setTheme('light'));
   };
 
   return (
-    <header className={className} style={style}>
-      <Container classNameAddon='header-left'>
+    <header className={className} style={style} id='app-header'>
+      <div className='header-left'>
 
-      </Container>
-      <Container classNameAddon='header-right'>
-        <Dropbox
-          tNode={languagesTNode}
-          options={languages}
-          currentOption={selectedLanguage}
-          onChoose={handleChooseLanguage}
-          classNameAddon='small'
-          label=''
-        />
+      </div>
+      <div className='header-right'>
+        {languages.length > 1 && 
+          <LanguageBox languages={languages} languagesTNode={languagesTNode}/>
+        }
         <Switch
           checked={selectedTheme === 'light'}
           id='theme-selector'
@@ -56,7 +44,7 @@ export const Header = () => {
           textLeft={t('main.theme.light')}
           textRight={t('main.theme.dark')}
         />
-      </Container>
+      </div>
     </header>
   );
 };

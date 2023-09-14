@@ -32,20 +32,18 @@ export const Button = ({
   });
 
   return (
-    <>
-      <button
-        className={className}
-        id={id}
-        style={style}
-        onClick={onClick}
-        disabled={disabled}
-        type={type}
-      >
-        {label}
-      </button>
+    <button
+      className={className}
+      id={id}
+      style={style}
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+    >
+      {label}
       {tooltip &&
-        <Tooltip text={tooltip}/>
+          <Tooltip text={tooltip}/>
       }
-    </>
+    </button>
   );
 };

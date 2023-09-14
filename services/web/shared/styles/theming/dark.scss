@@ -11,6 +11,7 @@ $dark: (
   GlassBorder:                    color.scale(getColor(darkGlass), $lightness: 10%, $alpha: -40%),
 
   Border:                         getColor(darkBorder),
+  Special:                        color.scale(getColor(darkBorder), $lightness: 10%, $alpha: -70%),
   Shadow:                         getColor(darkShadow),
   SVGFilter:                      getColor(darkSVGFilter),
 

@@ -26,7 +26,7 @@ export const SVGButton = ({
 
   return (
     <div className={className} id={id} style={style} onClick={onClick}>
-      <img className={`${className}-svg`} src={svgUrl} alt={altText} />
+      <img className='svg' src={svgUrl} alt={altText} />
     </div>
   );
 };

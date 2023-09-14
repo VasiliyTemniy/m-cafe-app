@@ -10,6 +10,8 @@ interface UseInitLCProps extends CommonProps {
   componentType:
     'input' |
     'container' |
+    'tooltip' |
+    'text' |
     'button' |
     'button-group' |
     'modal' |
@@ -58,14 +60,14 @@ export const useInitLC = ({
 
   const baseVariantClassName = baseVariant.length > 0
     ? baseVariant[0].value
-    : '';
+    : 'alpha';
 
   // same as baseVariant, but for color scheme
   const baseColorVariant = ui(`${uiNode}-${theme}-baseColorVariant`);
 
   const baseColorVariantClassName = baseColorVariant.length > 0
     ? baseColorVariant[0].value
-    : '';
+    : 'alpha-color';
 
   const uiSettingsInlineCSS = ui(`${uiNode}-${theme}-inlineCSS`);
 

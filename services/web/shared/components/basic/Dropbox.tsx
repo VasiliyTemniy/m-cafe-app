@@ -52,7 +52,7 @@ export const Dropbox = ({
         <div className='chosen-option'>{tNode ? t(`${tNode}.${currentOption}`) : currentOption}</div>
         <>
           {!!label && <label htmlFor={id}>{label}</label>}
-          <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`} classNameAddon='svg'/>
+          <Image src={`${apiBaseUrl}/public/pictures/svg/arrow.svg`} classNameAddon='svg'/>
           {specific?.useBarBelow &&
             <div className='bar'/>
           }

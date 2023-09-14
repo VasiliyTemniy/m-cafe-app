@@ -71,7 +71,7 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
         placeholder={inputPlaceholder}
       />
       <label htmlFor={field.name}>{labelText}</label>
-      <Image src={`${apiBaseUrl}/public/pictures/svg/notificationdown.svg`} classNameAddon='svg'/>
+      <Image src={`${apiBaseUrl}/public/pictures/svg/arrow.svg`} classNameAddon='svg'/>
       <>
         {specific?.useBarBelow &&
           <div className='bar'/>

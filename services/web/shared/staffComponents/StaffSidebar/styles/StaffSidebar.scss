@@ -1,0 +1,73 @@
+@use '../../../styles/vars' as g-v; // global-vars
+@use '../../../styles/common' as *;
+@use '../../../styles/colors' as *;
+@use '../../../styles/theming' as *;
+
+// Staff-sidebar must be basevariant-independent, so padding-top is computed and applied inline
+$staff-sidebar-padding: 0 1rem 1rem;
+$staff-sidebar-ul-padding: 1rem 1rem 1rem 0;
+$staff-sidebar-toggler-size: 0.8rem;
+
+nav#staff-sidebar {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  padding: $staff-sidebar-padding;
+  width: fit-content;
+  border-radius: 0;
+
+  &.collapsed {
+    width: 0;
+    padding: 0;
+    .scrollable-wrapper {
+      display: none;
+    }
+    #staff-sidebar-toggler {
+      .svg {
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+
+  .scrollable-wrapper {
+    .scrollable {
+      ul {
+        @extend %reset-std;
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: $staff-sidebar-ul-padding;
+
+        li {
+          border: 1px solid black;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  #staff-sidebar-toggler {
+    position: absolute;
+    // some strange alignment for 'left' but fits perfectly
+    left: calc(-3 * $staff-sidebar-toggler-size - 3px);
+    border-radius: 6px 0 0 6px;
+    width: $staff-sidebar-toggler-size;
+    height: $staff-sidebar-toggler-size;
+    padding: $staff-sidebar-toggler-size;
+    transition: background-color g-v.$hover-animation-speed ease-in-out;
+    
+    .svg {
+      position: relative;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(180deg);
+      transition: transform g-v.$hover-animation-speed ease-in-out;
+    }
+
+    &:hover {
+      @include theme(background-color, Special);
+    }
+  }
+}
