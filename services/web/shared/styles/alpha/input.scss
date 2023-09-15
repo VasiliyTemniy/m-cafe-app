@@ -292,6 +292,7 @@
       }
       ~ label {
         @include theme(color, AlphaRejectHighlight);
+        @include theme(-webkit-text-fill-color, AlphaRejectHighlight);
       }
     }
 
@@ -372,6 +373,7 @@
       }
       ~ label {
         @include theme(color, AlphaRejectHighlight);
+        @include theme(-webkit-text-fill-color, AlphaRejectHighlight);
       }
     }
 
