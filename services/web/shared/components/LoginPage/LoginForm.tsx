@@ -1,5 +1,6 @@
 import { Formik, Form } from "formik";
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { FormikPersist } from '@m-cafe-app/frontend-logic/shared/components';
 import { loginValidationSchema } from "./validationSchemas";
 import { ButtonGroup, Button, FormikTextField, Scrollable } from "../basic";
 
@@ -48,6 +49,7 @@ export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) =>
                 type='password'
                 name='password'
               />
+              <FormikPersist formName='login-form'/>
             </Scrollable>
             <div className="login-form-buttons-wrapper">
               <Button

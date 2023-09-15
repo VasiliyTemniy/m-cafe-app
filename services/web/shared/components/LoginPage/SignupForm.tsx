@@ -1,5 +1,6 @@
 import { Formik, Form } from "formik";
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { FormikPersist } from '@m-cafe-app/frontend-logic/shared/components';
 import { signupValidationSchema } from "./validationSchemas";
 import { NewUserBody } from "@m-cafe-app/utils";
 import { ButtonGroup, Button, FormikTextField, FormikDateField, Scrollable } from "../basic";
@@ -40,7 +41,7 @@ export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) 
       {({ isValid, dirty }) => {
         return (
           <Form className='signup-form'>
-            <Scrollable classNameAddon="login-form-inputs-wrapper">
+            <Scrollable classNameAddon="signup-form-inputs-wrapper">
               <FormikTextField
                 placeholder={t(`${tNode}.placeholder.username`)}
                 label={t(`${tNode}.label.username`)}
@@ -82,8 +83,9 @@ export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) 
                 label={t(`${tNode}.label.birthdate`)}
                 name='birthdate'
               />
+              <FormikPersist formName='signup-form'/>
             </Scrollable>
-            <div className="login-form-buttons-wrapper">
+            <div className="signup-form-buttons-wrapper">
               <Button
                 label={t(`${tNode}.label.toLogin`)}
                 variant='primary'
