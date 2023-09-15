@@ -54,20 +54,6 @@ $modal-login-title-height: 5.2rem;
 }
 
 
-@media (height < 660px) {
-  .alpha.modal.login {
-    .modal-main {
-      height: 60vh;
-      .login-form, .signup-form {
-        
-        &-inputs-wrapper {
-          height: calc(70vh - 6rem);
-        }
-      }
-    }
-  }
-}
-
 @media (pointer:none), (pointer:coarse) and (orientation: landscape) {
   .alpha.modal.login {
     .modal-main {
