@@ -116,7 +116,7 @@ sessionRouter.get(
       }
     });
 
-    if (!activeSession) throw new SessionError('Invalid login request body');
+    if (!activeSession) throw new SessionError('Session is not active. Please, relogin');
 
     const token = jwt.sign({
       id: req.userId,
