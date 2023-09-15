@@ -63,7 +63,7 @@ export const Filtersbox = ({
         </>
       </div>
       <div className='dropdown-wrapper'>
-        <Scrollable classNameOverride='options-wrapper filters'>
+        <Scrollable classNameAddon='options-wrapper filters'>
           {options.map(option =>
             <div key={`${option.name} filter-option`} onClick={onChoose} className='option' id={option.name}>
               <div>

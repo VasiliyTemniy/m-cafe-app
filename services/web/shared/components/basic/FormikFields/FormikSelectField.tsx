@@ -6,12 +6,13 @@ import { autoCompleteArray } from '@m-cafe-app/frontend-logic/utils';
 import { Image } from "../Image";
 import { Tooltip } from "../Tooltip";
 import { apiBaseUrl } from "@m-cafe-app/shared-constants";
+import { Scrollable } from "../Scrollable";
+
 
 type FormikSelectFieldProps = FieldHookConfig<string> & CommonFieldProps & {
   options: string[],
   tNode?: string,
 };
-
 
 export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFieldProps) => {
   
@@ -78,13 +79,13 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
         }
       </>
       <div className='dropdown-wrapper'>
-        <div className='options-wrapper'>
+        <Scrollable classNameAddon='options-wrapper' heightTweak={4} highlightScrollbarOnContentHover={false}>
           {displayedOptions.map(option => 
             <div key={option} onMouseDown={handleChooseOption} id={option}>
               { props.tNode ? t(`${props.tNode}.${option}`) : option }
             </div>)
           }
-        </div>
+        </Scrollable>
         <>
           {displayedOptions.length > 0 && specific?.useBarBelow &&
             <div className='bar-after'/>

@@ -59,7 +59,7 @@ export const Dropbox = ({
         </>
       </div>
       <div className='dropdown-wrapper'>
-        <Scrollable classNameOverride='options-wrapper' heightTweak={4} highlightScrollbarOnContentHover={false}>
+        <Scrollable classNameAddon='options-wrapper' heightTweak={4} highlightScrollbarOnContentHover={false}>
           {options.map(option => 
             <div key={option} onClick={onChoose} id={option} className='option'>
               { tNode ? t(`${tNode}.${option}`) : option }

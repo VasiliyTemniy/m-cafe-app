@@ -54,9 +54,9 @@ export const Scrollable = ({
     componentName: 'scrollbar'
   });
 
-  const { className: containerClassName, style: containerSettingsStyle } = useInitLC({
+  const { className: contentClassName, style: contentSettingsStyle } = useInitLC({
     componentType: 'container',
-    componentName: 'container',
+    componentName: 'scrollable',
     classNameAddon,
     classNameOverride,
   });
@@ -225,9 +225,9 @@ export const Scrollable = ({
     >
       <div
         ref={contentRef}
-        className={`${containerClassName} scrollable`}
+        className={contentClassName}
         id={id}
-        style={{ ...style, ...containerSettingsStyle }}
+        style={{ ...style, ...contentSettingsStyle }}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMove}
