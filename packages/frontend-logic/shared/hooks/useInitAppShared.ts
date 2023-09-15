@@ -22,7 +22,6 @@ export const useInitAppShared = () => {
     else { 
       const parsedTheme = JSON.parse(storedTheme) as unknown;
       if (isString(parsedTheme) && parsedTheme !== theme && (isAllowedTheme(parsedTheme))) {
-        console.log('SETTING');
         void dispatch(setTheme(parsedTheme));
       }
     }
