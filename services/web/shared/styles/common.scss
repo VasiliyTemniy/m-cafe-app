@@ -39,23 +39,32 @@
 }
 // Glass containers common
 
-// Modal blur wrapper common
-.modal-blur-wrapper {
-  @include theme(background-color, Shadow);
+// Modal wrapper common
+.modal-wrapper.scrollable-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  // height handled by js
   z-index: g-v.$modal-wrapper-z-index;
+
+  .scrollbar {
+    right: 12px;
+  }
+
+  &.blur {
+    @include theme(background-color, Shadow);
+    backdrop-filter: blur(1px);
+  }
 }
-// Modal blur wrapper common
+// Modal wrapper common
 
 // Scrollable common
 .scrollable-wrapper {
   position: relative;
   .scrollable {
     @extend %scrollbar-custom;
+    position: relative;
     width: 100%;
     height: 100%;
   }
