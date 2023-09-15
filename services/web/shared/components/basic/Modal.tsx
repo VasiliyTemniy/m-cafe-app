@@ -12,6 +12,10 @@ interface ModalProps extends CommonProps {
   subtitle?: string;
   active: boolean;
   withBlur?: boolean;
+  wrapperExcludeTop?: number;
+  wrapperExcludeRight?: number;
+  wrapperExcludeBottom?: number;
+  wrapperExcludeLeft?: number;
 }
 
 export const Modal = ({
@@ -22,13 +26,19 @@ export const Modal = ({
   title,
   subtitle,
   active,
-  withBlur = true
+  withBlur = true,
+  wrapperExcludeTop = 0,
+  wrapperExcludeRight = 0,
+  wrapperExcludeBottom = 0,
+  wrapperExcludeLeft = 0
 }: ModalProps) => {
 
   const modalRef = useRef<HTMLDivElement>(null);
   const observer = useRef<ResizeObserver | null>(null);
   const [wrapperHeight, setWrapperHeight] = useState(0);
+  const [wrapperWidth, setWrapperWidth] = useState(0);
   const [wrapperTop, setWrapperTop] = useState(0);
+  const [wrapperLeft, setWrapperLeft] = useState(0);
   const [modalTop, setModalTop] = useState(10);
 
   const { className, style } = useInitLC({
@@ -38,36 +48,43 @@ export const Modal = ({
     classNameOverride,
   });
 
-  const handleResize = (parent: HTMLElement, modal: HTMLDivElement, header: HTMLElement) => {
-    const newWrapperHeight = (parent.clientHeight - header.clientHeight) < modal.clientHeight
-      ? parent.scrollHeight - header.clientHeight
-      : parent.clientHeight - header.clientHeight;
+  const handleResize = (parent: HTMLElement, modal: HTMLDivElement) => {
+    const newWrapperHeight = (parent.clientHeight - wrapperExcludeTop - wrapperExcludeBottom) < modal.clientHeight
+      ? parent.scrollHeight - wrapperExcludeTop - wrapperExcludeBottom
+      : parent.clientHeight - wrapperExcludeTop - wrapperExcludeBottom;
     setWrapperHeight(newWrapperHeight);
-    setWrapperTop(header.clientHeight);
+    setWrapperTop(wrapperExcludeTop);
+    // Width must not be overflowing anyway
+    const newWrapperWidth = parent.clientWidth - wrapperExcludeLeft - wrapperExcludeRight;
+    setWrapperWidth(newWrapperWidth);
+    setWrapperLeft(wrapperExcludeLeft);
     const newModalTop = Math.max((newWrapperHeight - modal.clientHeight) / 2 , 0);
     setModalTop(newModalTop);
   };
 
   useEffect(() => {
-    const header = document.getElementById('app-header');
-    if (modalRef.current && header) {
-      const parent = document.body;
-      const modal = modalRef.current;
-      observer.current = new ResizeObserver(() => {
-        handleResize(parent, modal, header);
-      });
-      observer.current.observe(parent);
-      return () => {
-        observer.current?.unobserve(parent);
-      };
-    }
-  }, []);
+    if (!modalRef.current) return;
+    const parent = document.body;
+    const modal = modalRef.current;
+    observer.current = new ResizeObserver(() => {
+      handleResize(parent, modal);
+    });
+    observer.current.observe(parent);
+    return () => {
+      observer.current?.unobserve(parent);
+    };
+  }, [wrapperExcludeTop, wrapperExcludeRight, wrapperExcludeBottom, wrapperExcludeLeft]);
 
   if (active) {
     return ReactDOM.createPortal(
       <Scrollable
         wrapperClassNameAddon={`modal-wrapper${withBlur ? ' blur' : ''}`}
-        wrapperStyle={{ height: `${wrapperHeight}px`, top: `${wrapperTop}px` }}
+        wrapperStyle={{
+          height: `${wrapperHeight}px`,
+          top: `${wrapperTop}px`,
+          width: `${wrapperWidth}px`,
+          left: `${wrapperLeft}px`
+        }}
         highlightScrollbarOnContentHover={false}
       >
         <div

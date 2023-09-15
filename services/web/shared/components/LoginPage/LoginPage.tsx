@@ -1,7 +1,7 @@
 import { useAppDispatch } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { sendLogin, sendNewUser } from '@m-cafe-app/frontend-logic/shared/reducers';
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { LoginForm, LoginFormValues } from "./LoginForm";
 import { SignupForm, SignupFormValues } from "./SignupForm";
 import { ApplicationError, LoginUserBody, mapEmptyStringsToUndefined, NewUserBody } from '@m-cafe-app/utils';
@@ -23,7 +23,9 @@ export const LoginPage = ({
 
   const dispatch = useAppDispatch();
 
-  const [ signupPage, setSignupPage ] = useState(false);
+  const observer = useRef<ResizeObserver | null>(null);
+  const [signupPage, setSignupPage] = useState(false);
+  const [modalWrapperExcludeTop, setModalWrapperExcludeTop] = useState(0);
   const { t } = useTranslation();
 
   const tNode = 'loginPage';
@@ -43,6 +45,22 @@ export const LoginPage = ({
     setSignupPage(prev => !prev);
   };
 
+  const handleResize = (header: HTMLElement) => {
+    setModalWrapperExcludeTop(header.clientHeight);
+  };
+
+  useEffect(() => {
+    const header = document.getElementById('app-header');
+    if (!header) return;
+    observer.current = new ResizeObserver(() => {
+      handleResize(header);
+    });
+    observer.current.observe(header);
+    return () => {
+      observer.current?.unobserve(header);
+    };
+  }, []);
+
   if (!signupPage) return (
     <Modal
       classNameAddon='login'
@@ -50,6 +68,7 @@ export const LoginPage = ({
       title={t(`${tNode}.loginForm.title`)}
       subtitle={t(`${tNode}.loginForm.welcome`)}
       withBlur={modalWithBlur}
+      wrapperExcludeTop={modalWrapperExcludeTop}
     >
       <LoginForm
         onSubmit={handleLogin}
@@ -65,6 +84,7 @@ export const LoginPage = ({
       title={t(`${tNode}.signupForm.title`)}
       subtitle={t(`${tNode}.signupForm.welcome`)}
       withBlur={modalWithBlur}
+      wrapperExcludeTop={modalWrapperExcludeTop}
     >
       <SignupForm
         onSubmit={handleSignup}
