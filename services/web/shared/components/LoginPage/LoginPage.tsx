@@ -11,13 +11,13 @@ import { Modal } from "../basic";
 
 interface LoginPageProps {
   modalActive: boolean;
-  modalWrapper?: boolean;
+  modalWithBlur?: boolean;
   onCancel: () => void;
 }
 
 export const LoginPage = ({
   modalActive,
-  modalWrapper = true,
+  modalWithBlur = true,
   onCancel
 }: LoginPageProps) => {
 
@@ -49,7 +49,7 @@ export const LoginPage = ({
       active={modalActive}
       title={t(`${tNode}.loginForm.title`)}
       subtitle={t(`${tNode}.loginForm.welcome`)}
-      wrapper={modalWrapper}
+      withBlur={modalWithBlur}
     >
       <LoginForm
         onSubmit={handleLogin}
@@ -64,7 +64,7 @@ export const LoginPage = ({
       active={modalActive}
       title={t(`${tNode}.signupForm.title`)}
       subtitle={t(`${tNode}.signupForm.welcome`)}
-      wrapper={modalWrapper}
+      withBlur={modalWithBlur}
     >
       <SignupForm
         onSubmit={handleSignup}
