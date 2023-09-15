@@ -36,7 +36,6 @@ div {
 
   .app-content-wrapper.scrollable-wrapper {
     @extend %scrollbar-custom;
-    height: calc(100% - g-v.$header-height);
   }
 }
 
