@@ -6,10 +6,10 @@ import {
   MouseEvent as ReactMouseEvent
 } from 'react';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { ContainerProps } from './Container';
+import { WrapperProps } from './Wrapper';
 import { debounceResizeObserver } from '@m-cafe-app/frontend-logic/utils';
 
-interface ScrollableProps extends ContainerProps {
+interface ScrollableProps extends WrapperProps {
   wrapperClassNameAddon?: string;
   wrapperId?: string;
   highlightScrollbarOnContentHover?: boolean;
@@ -55,7 +55,7 @@ export const Scrollable = ({
   });
 
   const { className: contentClassName, style: contentSettingsStyle } = useInitLC({
-    componentType: 'container',
+    componentType: 'wrapper',
     componentName: 'scrollable',
     classNameAddon,
     classNameOverride,
