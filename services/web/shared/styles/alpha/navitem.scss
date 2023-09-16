@@ -1,0 +1,65 @@
+@use './alpha_vars' as v-v; // variant-vars
+@use '../vars' as g-v; // global-vars
+@use '../common' as *;
+@use '../theming' as *;
+
+
+/**
+ * Properties for 'alpha' basevariant class nav-items
+ */
+.alpha.nav-item {
+
+  overflow: hidden;
+  position: relative;
+  padding: v-v.$nav-item-padding-v v-v.$nav-item-padding-h;
+  transition: background-color, text-shadow, color, v-v.$nav-item-animation-speed ease-in-out;
+  text-align: center;
+  min-width: v-v.$nav-item-min-width;
+
+  &::after,
+  &::before {
+    content: '';
+    display: block;
+    height: 100%;
+    position: absolute;
+    transform: skewX(-45deg);
+    width: 0;
+    z-index: -1;
+    transition: right, left, v-v.$nav-item-animation-speed ease-in-out;
+  }
+
+  &::after {
+    bottom: 0;
+    right: -20%;
+  }
+
+  &::before {
+    top: 0;
+    left: -20%;
+  }
+
+  &:hover::after,
+  &:hover::before {
+    width: 150%;
+  }
+}
+
+.alpha.alpha-color.nav-item {
+  @include theme(background-color, AlphaAccentTransparent);
+  @include theme(color, AlphaText);
+  @include theme(-webkit-text-fill-color, AlphaText);
+
+  &::after,
+  &::before {
+    @include theme(background-color, AlphaAccentTransparentHighlight);
+  }
+
+  &:active {
+    @include theme(background-color, AlphaAccentTransparentActive);
+  }
+
+  &:hover {
+    @include theme(box-shadow, Shadow, inset 0 4px 6px);
+
+  }
+}
