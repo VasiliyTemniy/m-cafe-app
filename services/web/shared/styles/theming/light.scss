@@ -15,6 +15,14 @@ $light: (
   Shadow:                         getColor(lightShadow),
   SVGFilter:                      getColor(lightSVGFilter),
 
+  Success:                        color.scale(getColor(success), $lightness: -10%),
+  SuccessHighlight:               getColor(success),
+  SuccessActive:                  color.scale(getColor(success), $lightness: 10%),
+
+  Reject:                         color.scale(getColor(reject), $saturation: -30%, $lightness: 10%),
+  RejectHighlight:                color.scale(getColor(reject), $lightness: -10%),
+  RejectActive:                   color.scale(getColor(reject), $lightness: -20%),
+
   // Alpha base color variant
   AlphaBGMain:                    getColor(alphaLightBG),
   AlphaBGFirst:                   color.scale(getColor(alphaLightBG), $lightness: -10%),
@@ -40,13 +48,9 @@ $light: (
   AlphaAccentHighlight:           getColor(alphaAccent),
   AlphaAccentActive:              color.scale(getColor(alphaAccent), $lightness: 10%),
 
-  AlphaSuccess:                   color.scale(getColor(alphaSuccess), $lightness: -10%),
-  AlphaSuccessHighlight:          getColor(alphaSuccess),
-  AlphaSuccessActive:             color.scale(getColor(alphaSuccess), $lightness: 10%),
-
-  AlphaReject:                    color.scale(getColor(alphaReject), $saturation: -30%, $lightness: 10%),
-  AlphaRejectHighlight:           color.scale(getColor(alphaReject), $lightness: -10%),
-  AlphaRejectActive:              color.scale(getColor(alphaReject), $lightness: -20%),
+  AlphaAccentTransparent:         color.scale(getColor(alphaAccent), $lightness: -10%, $alpha: -80%),
+  AlphaAccentTransparentHighlight:color.scale(getColor(alphaAccent), $alpha: -70%),
+  AlphaAccentTransparentActive:   color.scale(getColor(alphaAccent), $lightness: -10%, $alpha: -50%),
   // Alpha base color variant
 
 );
