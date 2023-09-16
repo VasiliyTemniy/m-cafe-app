@@ -14,3 +14,4 @@ export * from './FormikFields';
 export * from './Loading';
 export * from './Scrollable';
 export * from './Wrapper';
+export * from './NavItem';
