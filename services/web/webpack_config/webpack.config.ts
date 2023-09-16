@@ -17,7 +17,7 @@ dotenv.config({
 const frontendModule = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'customer';
 const port =
   frontendModule === 'customer' ?
-    process.env.FRONTEND_USER_PORT ? process.env.FRONTEND_USER_PORT : '4002' :
+    process.env.FRONTEND_CUSTOMER_PORT ? process.env.FRONTEND_CUSTOMER_PORT : '4002' :
     frontendModule === 'admin' ?
       process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :
       frontendModule === 'manager' ?
