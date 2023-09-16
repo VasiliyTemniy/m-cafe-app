@@ -40,7 +40,8 @@ const config: Configuration = {
   entry: `./${frontendModule}/src/index.tsx`,
   output: {
     path: isDevelopment ? path.join(__dirname, `.webpack-dev.${frontendModule}`) : path.join(__dirname, `.webpack.${frontendModule}`),
-    filename: isDevelopment ? 'build.js' : 'build.[fullhash].js'
+    filename: isDevelopment ? 'build.js' : 'build.[fullhash].js',
+    publicPath: '/'
   },
   devServer: {
     static: `./.webpack-dev.${frontendModule}`,
@@ -49,6 +50,7 @@ const config: Configuration = {
     allowedHosts: "all",
     hot: true,
     open: true,
+    historyApiFallback: true,
     watchFiles: {
       paths: [`${frontendModule}/src/**/*`, `${frontendModule}/public/**/*`],
       options: {
