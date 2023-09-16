@@ -18,7 +18,7 @@ button.alpha {
   border: 0;
   height: 2.5rem;
   font-weight: 700;
-  transition: all v-v.$button-animation-speed ease-in-out;
+  transition: background-color, color, border-radius, v-v.$button-animation-speed ease-in-out;
 
   &:hover, &:focus-visible {
     border-radius: v-v.$button-border-radius-hover;

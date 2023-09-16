@@ -82,7 +82,7 @@
     bottom: 0;
     right: v-v.$switch-width * 0.53;
     border-radius: v-v.$switch-height * 0.6;
-    transition: all v-v.$switch-control-speed ease-in 0s;
+    transition: right v-v.$switch-control-speed ease-in;
   }
 
   .switch-checkbox:checked + .switch-label {
