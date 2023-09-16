@@ -62,8 +62,10 @@ ENV NODE_ENV production
 
 # RUN CI=true yarn run test
 ARG BACKEND_URL
+ARG DOMAIN_URL
 
 ENV BACKEND_URL ${BACKEND_URL?backend_url_not_set}
+ENV DOMAIN_URL ${DOMAIN_URL?domain_url_not_set}
 ENV DOCKERIZED=true
 
 

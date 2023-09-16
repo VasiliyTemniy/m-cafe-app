@@ -18,6 +18,7 @@ export const plugins = [
   new webpack.EnvironmentPlugin({
     NODE_ENV: 'production',
     BACKEND_URL: 'must_be_provided',
+    DOMAIN_URL: 'must_be_provided',
     FRONTEND_MODULE: frontendModule,
     FRONTEND_MODULE_ADMIN: frontendModule === 'admin',
     FRONTEND_MODULE_MANAGER: frontendModule === 'manager',
