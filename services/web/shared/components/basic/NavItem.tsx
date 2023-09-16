@@ -1,11 +1,26 @@
+import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useNavigate } from 'react-router-dom';
 
-interface NavItemProps {
+interface NavItemProps extends CommonProps {
   path: string;
   label: string;
 }
 
-export const NavItem = ({ path, label }: NavItemProps) => {
+export const NavItem = ({
+  classNameOverride,
+  classNameAddon,
+  path,
+  id,
+  label
+}: NavItemProps) => {
+
+  const { className } = useInitLC({
+    componentType: 'nav-item',
+    componentName: 'nav-item',
+    classNameAddon,
+    classNameOverride,
+  });
 
   const navigate = useNavigate();
 
@@ -14,7 +29,7 @@ export const NavItem = ({ path, label }: NavItemProps) => {
   };
 
   return (
-    <li className='nav-item' onClick={handleNavigate}>
+    <li className={className} id={id} onClick={handleNavigate}>
       {label}
     </li>
   );
