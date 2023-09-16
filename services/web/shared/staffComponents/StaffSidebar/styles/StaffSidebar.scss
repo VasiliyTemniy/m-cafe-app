@@ -39,11 +39,6 @@ nav#staff-sidebar {
         flex-direction: column;
         gap: 1rem;
         padding: $staff-sidebar-ul-padding;
-
-        li {
-          border: 1px solid black;
-          cursor: pointer;
-        }
       }
     }
   }
