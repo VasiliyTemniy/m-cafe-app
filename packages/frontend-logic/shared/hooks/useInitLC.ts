@@ -15,6 +15,7 @@ interface UseInitLCProps extends CommonProps {
     'text' |
     'button' |
     'button-group' |
+    'nav-item' |
     'modal' |
     'svg-image' |
     'svg-button' |
