@@ -102,24 +102,24 @@ button.alpha.alpha-color {
     }
 
     &-delete {
-      @include theme(background-color, AlphaReject);
+      @include theme(background-color, Reject);
       @include theme(color, AlphaTextButtonLabel);
       &:hover {
-        @include theme(background-color, AlphaRejectHighlight);
+        @include theme(background-color, RejectHighlight);
       }
       &:active {
-        @include theme(background-color, AlphaRejectActive);
+        @include theme(background-color, RejectActive);
       }
       &:disabled {
         @include theme(background-color, AlphaDisabled);
       }
     
       &::before {
-        @include theme(border, AlphaReject, v-v.$button-border-thickness solid);
+        @include theme(border, Reject, v-v.$button-border-thickness solid);
       }
     
       &:hover::before, &:focus-visible::before {
-        @include theme(box-shadow, AlphaRejectShadowIn);
+        @include theme(box-shadow, RejectShadowIn);
       }
     }
 
