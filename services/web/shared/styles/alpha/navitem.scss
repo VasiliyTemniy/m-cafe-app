@@ -15,6 +15,7 @@
   transition: background-color, text-shadow, color, v-v.$nav-item-animation-speed ease-in-out;
   text-align: center;
   min-width: v-v.$nav-item-min-width;
+  cursor: pointer;
 
   &::after,
   &::before {
