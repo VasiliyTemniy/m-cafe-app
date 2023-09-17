@@ -16,9 +16,6 @@ export const App = () => {
   if (!uiSettingsHash || !fixedLocsHash)
     return <Loading size='medium'/>;
 
-  const header = document.getElementById('app-header');
-  if (header) console.log(getComputedStyle(header).position);
-
   if (!user.phonenumber) {
     return (
       <>
