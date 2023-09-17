@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
 
-  web-customer:
+  web:
     image: m-cafe-web-dev-customer
     build:
       context: ./
