@@ -28,7 +28,7 @@ import { Op } from 'sequelize';
 import { Session } from "../redis/Session";
 import { initLogin, userAgent } from "./sessions_api_helper";
 import { apiBaseUrl } from "./test_helper";
-import { initialUsers, initialUsersPassword, validAddresses, validUserInDB } from "./users_api_helper";
+import { initialUsers, initialUsersPassword, validAddresses, validUserInDB } from "./user_api_helper";
 import { initFacilities } from "./facility_api_helper";
 import { initFoods } from "./food_api_helper";
 import { includeNameLocNoTimestamps } from "../utils/sequelizeHelpers";

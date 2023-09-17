@@ -16,10 +16,11 @@
   flex-direction: column;
   align-items: center;
   gap: v-v.$modal-gap;
-  position: absolute;
-  top: 50%;
+  position: relative;
+  // top handled by js
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
+  margin: 10px 0;
   z-index: g-v.$modal-wrapper-z-index + 1;
 
   .modal-title {

@@ -14,7 +14,7 @@ import { Op } from 'sequelize';
 import { Session } from "../redis/Session";
 import { initLogin, userAgent } from "./sessions_api_helper";
 import { apiBaseUrl } from "./test_helper";
-import { validUserInDB } from "./users_api_helper";
+import { validUserInDB } from "./user_api_helper";
 import { initUiSettings } from "../utils/initUiSettings";
 
 

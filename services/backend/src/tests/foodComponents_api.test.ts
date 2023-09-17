@@ -16,7 +16,7 @@ import { Op } from 'sequelize';
 import { Session } from "../redis/Session";
 import { initLogin, userAgent } from "./sessions_api_helper";
 import { apiBaseUrl } from "./test_helper";
-import { validUserInDB } from "./users_api_helper";
+import { validUserInDB } from "./user_api_helper";
 import { initFoodComponents } from "./foodComponents_api_helper";
 import { AddFoodComponentsBody, EditFoodComponentBody, timestampsKeys } from "@m-cafe-app/utils";
 import { initIngredients } from "./ingredient_api_helper";

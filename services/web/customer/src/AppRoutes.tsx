@@ -4,7 +4,7 @@ import { UnderConstruction } from 'shared/components';
 
 import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 
-const AppRoutes = () => {
+export const AppRoutes = () => {
   return (
     <>
       <Outlet />
@@ -15,5 +15,3 @@ const AppRoutes = () => {
     </>
   );
 };
-
-export default AppRoutes;

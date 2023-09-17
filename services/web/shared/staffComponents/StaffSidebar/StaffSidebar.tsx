@@ -33,7 +33,7 @@ export const StaffSidebar = () => {
         onClick={handleToggleSidebar} altText=''
         classNameAddon='glass'
       />
-      <Scrollable highlightScrollbarOnContentHover={false} wrapperHeight={sidebarScrollableHeight}>
+      <Scrollable highlightScrollbarOnContentHover={false} wrapperStyle={{ height: `${sidebarScrollableHeight}px` }}>
         <ul>
           <NavItem path='/under-construction' label='FIRST NAV YAY'/>
           <NavItem path='/' label='SECOND NAV YAY'/>

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
 
-  web-manager:
+  web:
     image: m-cafe-web-dev-manager
     build:
       context: ./

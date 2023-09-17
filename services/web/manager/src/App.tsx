@@ -1,40 +1,50 @@
-import { useAppSelector } from '@m-cafe-app/frontend-logic/manager/hooks';
-import AppRoutes from './AppRoutes';
-// import LoginPage from '../../shared/components/LoginPage';
-import { Container } from 'shared/components';
+import { useAppSelector, useInitAppManager } from '@m-cafe-app/frontend-logic/manager/hooks';
+import { AppRoutes } from './AppRoutes';
+import { LoginPage, AppContent, Wrapper, Header, Loading } from 'shared/components';
+import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
+import { StaffSidebar } from 'shared/staffComponents';
 
 
-const App = () => {
+export const App = () => {
 
-  const user = useAppSelector((state) => state.user);
+  useInitAppManager();
 
-  // useAppInit();
-  console.log(process.env.FRONTEND_TARGET_WEB);
+  console.log('You actually see JS from manager module executed');
+
+  const uiSettingsHash = useAppSelector(state => state.settings.uiSettingsHash);
+  const fixedLocsHash = useAppSelector(state => state.fixedLocs.locsHash);
+  const user = useAppSelector(state => state.user);
+
+  if (!uiSettingsHash || !fixedLocsHash)
+    return <Loading size='medium'/>;
 
   if (!user.phonenumber) {
     return (
       <>
-        {/* <Header /> */}
         {/* <Notification/> */}
-        <Container classNameAddon='window-container' id='main-container'>
-          <AppRoutes/>
-        </Container>
-        {/* <Footer /> */}
+        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
+          <Header />
+          <AppContent>
+            <LoginPage
+              modalActive={true}
+              onCancel={() => null}
+            />
+          </AppContent>
+        </Wrapper>
       </>
     );
   } else {
     return (
       <>
-        {/* <Header /> */}
-        {/* <Menu /> */}
-        <Container classNameAddon='main-container' id='main-container'>
-          {/* <Notification/> */}
-          <AppRoutes/>
-        </Container>
-        {/* <Footer /> */}
+        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
+          <Header />
+          <AppContent>
+            {/* <Notification/> */}
+            <AppRoutes/>
+          </AppContent>
+          <StaffSidebar/>
+        </Wrapper>
       </>
     );
   }
 };
-
-export default App;

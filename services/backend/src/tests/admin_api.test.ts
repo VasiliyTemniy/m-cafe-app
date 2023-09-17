@@ -7,7 +7,7 @@ import { connectToDatabase, User } from '@m-cafe-app/db';
 import { Session } from '../redis/Session';
 import { initSuperAdmin } from "../utils/adminInit";
 import { initLogin, userAgent } from "./sessions_api_helper";
-import { initialUsers, validNewUser, validUserInDB } from './users_api_helper';
+import { initialUsers, validNewUser, validUserInDB } from './user_api_helper';
 import config from "../utils/config";
 import { validAdminInDB } from "./admin_api_helper";
 import { Op } from 'sequelize';
@@ -102,7 +102,7 @@ describe('Admin router basics', () => {
     const tokenCookie1 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     const response1 = await api
-      .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .put(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
       .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send({ rights: 'admin' })
@@ -115,7 +115,7 @@ describe('Admin router basics', () => {
     const tokenCookie2 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const response2 = await api
-      .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
+      .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'user' })
@@ -126,7 +126,7 @@ describe('Admin router basics', () => {
     expect(response2.body.rights).to.equal('user');
 
     const response3 = await api
-      .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
+      .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
@@ -140,7 +140,7 @@ describe('Admin router basics', () => {
     expect(disabledUsers3[0].id).to.be.equal(response3.body.id);
 
     await api
-      .put(`${apiBaseUrl}/admin/users/${validAdminInDBID}`)
+      .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'user' })
@@ -166,7 +166,7 @@ describe('Admin router basics', () => {
     const tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     const response = await api
-      .put(`${apiBaseUrl}/admin/users/${superadmin.id}`)
+      .put(`${apiBaseUrl}/admin/user/${superadmin.id}`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
@@ -183,7 +183,7 @@ describe('Admin router basics', () => {
     const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const response1 = await api
-      .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .put(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ admin: true })
@@ -195,7 +195,7 @@ describe('Admin router basics', () => {
 
     // Check admin route for getting user data
     const response2 = await api
-      .get(`${apiBaseUrl}/admin/users/`)
+      .get(`${apiBaseUrl}/admin/user/`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
@@ -221,7 +221,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
 
     // Check that user's token is valid
     await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [validUsersTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
@@ -232,7 +232,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
 
     // Admin disables the user
     await api
-      .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .put(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
@@ -262,7 +262,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
 
     // Check that user's previously valid token is now invalid
     const response2 = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [validUsersTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
@@ -287,7 +287,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     const tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     const response = await api
-      .delete(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .delete(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
@@ -303,7 +303,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     await api
-      .delete(`${apiBaseUrl}/users`)
+      .delete(`${apiBaseUrl}/user`)
       .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .expect(200)
@@ -312,7 +312,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     const tokenCookie2 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     await api
-      .delete(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .delete(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .expect(204);
@@ -328,7 +328,7 @@ if they did not request to make permanent deletion', async () => {
     const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     await api
-      .delete(`${apiBaseUrl}/users`)
+      .delete(`${apiBaseUrl}/user`)
       .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .expect(200)
@@ -337,7 +337,7 @@ if they did not request to make permanent deletion', async () => {
     const tokenCookie2 = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
     await api
-      .put(`${apiBaseUrl}/admin/users/${validUserInDBID}`)
+      .put(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ restore: true })
@@ -360,7 +360,7 @@ if they did not request to make permanent deletion', async () => {
     expect(newUserTriesToBeAdmin.rights).to.equal('admin');
 
     const response = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUserTriesToBeAdmin)
       .expect(418)
       .expect('Content-Type', /application\/json/);

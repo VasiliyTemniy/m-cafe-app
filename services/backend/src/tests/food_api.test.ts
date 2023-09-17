@@ -30,7 +30,7 @@ import { Session } from "../redis/Session";
 import { initLogin, userAgent } from "./sessions_api_helper";
 import { apiBaseUrl } from "./test_helper";
 import { initFoods, initFoodTypes } from "./food_api_helper";
-import { validUserInDB } from "./users_api_helper";
+import { validUserInDB } from "./user_api_helper";
 import {
   includeNameDescriptionLocNoTimestamps,
   includeNameDescriptionLocNoTimestampsSecondLayer

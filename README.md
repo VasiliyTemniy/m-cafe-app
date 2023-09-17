@@ -2,9 +2,7 @@
 
 ## modular cafe app
 
-Project motto atm is 'hardcode as least frontend as I can'
-
-Written in typescript without 'any', but with few type assertions
+Written in typescript almost without 'any', but with few type assertions
 
 ### Stack
 | Field | Tools |

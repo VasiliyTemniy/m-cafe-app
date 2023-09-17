@@ -3,6 +3,7 @@ import { useLayoutEffect } from "react";
 import { useTranslation } from "./useTranslation";
 import { initFixedLocs, initUiSettings, setTheme, sendRefreshToken } from "../reducers";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
+import { isString } from "@m-cafe-app/utils";
 
 export const useInitAppShared = () => {
 
@@ -18,13 +19,18 @@ export const useInitAppShared = () => {
     void dispatch(initUiSettings(t));
     const storedTheme = window.localStorage.getItem('CafeAppTheme');
     if (!storedTheme) window.localStorage.setItem('CafeAppTheme', JSON.stringify(theme));
-    else if (JSON.parse(storedTheme) !== theme && (isAllowedTheme(storedTheme))) {
-      void dispatch(setTheme(storedTheme));
+    else { 
+      const parsedTheme = JSON.parse(storedTheme) as unknown;
+      if (isString(parsedTheme) && parsedTheme !== theme && (isAllowedTheme(parsedTheme))) {
+        void dispatch(setTheme(parsedTheme));
+      }
     }
     const userRegistered = window.localStorage.getItem('CafeAppUserRegistered');
     if (!user.phonenumber && userRegistered && JSON.parse(userRegistered) === 'true') {
       void dispatch(sendRefreshToken(t));
     }
   }, []);
+
+  return { user };
   
 };

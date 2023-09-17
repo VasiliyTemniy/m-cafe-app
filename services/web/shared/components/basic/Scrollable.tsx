@@ -3,18 +3,21 @@ import {
   useEffect,
   useRef,
   useCallback,
-  MouseEvent as ReactMouseEvent
+  MouseEvent as ReactMouseEvent,
+  RefObject,
+  CSSProperties
 } from 'react';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { ContainerProps } from './Container';
+import { WrapperProps } from './Wrapper';
 import { debounceResizeObserver } from '@m-cafe-app/frontend-logic/utils';
 
-interface ScrollableProps extends ContainerProps {
+interface ScrollableProps extends WrapperProps {
   wrapperClassNameAddon?: string;
   wrapperId?: string;
+  wrapperRef?: RefObject<HTMLDivElement>;
+  wrapperStyle?: CSSProperties;
   highlightScrollbarOnContentHover?: boolean;
   heightTweak?: number;
-  wrapperHeight?: number;
 }
 
 export const Scrollable = ({
@@ -23,6 +26,8 @@ export const Scrollable = ({
   wrapperClassNameAddon,
   id,
   wrapperId,
+  wrapperRef,
+  wrapperStyle,
   children,
   onClick,
   onMouseEnter,
@@ -33,8 +38,7 @@ export const Scrollable = ({
   text,
   style,
   highlightScrollbarOnContentHover = true,
-  heightTweak = 0,
-  wrapperHeight
+  heightTweak = 0
 }: ScrollableProps) => {
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -54,14 +58,14 @@ export const Scrollable = ({
     componentName: 'scrollbar'
   });
 
-  const { className: containerClassName, style: containerSettingsStyle } = useInitLC({
-    componentType: 'container',
-    componentName: 'container',
+  const { className: contentClassName, style: contentSettingsStyle } = useInitLC({
+    componentType: 'wrapper',
+    componentName: 'scrollable',
     classNameAddon,
     classNameOverride,
   });
 
-  function handleResize(ref: HTMLDivElement, scrollbarOffsetTop: number) {
+  const handleResize = (ref: HTMLDivElement, scrollbarOffsetTop: number) => {
     const { clientHeight, scrollHeight, offsetTop: contentOffsetTop } = ref;
     /** 
      * Below is result of hand-picked params, offsets are usually not in calculations for scrollbars,
@@ -78,8 +82,8 @@ export const Scrollable = ({
       )
     );
     setTrackHeight(clientHeight - 2 * scrollbarOffsetTop - 2 * heightTweak + contentOffsetTop);
-    setScrollbarVisible((ref.clientHeight < ref.scrollHeight) && (ref.clientHeight > 20));
-  }
+    setScrollbarVisible((clientHeight < scrollHeight) && (clientHeight > 20));
+  };
 
   const handleTrackClick = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -217,17 +221,18 @@ export const Scrollable = ({
 
   return (
     <div
+      ref={wrapperRef}
       className={wrapperClassNameSum}
       id={wrapperId}
       onMouseEnter={highlightScrollbarOnContentHover ? handleWrapperMouseEnter : () => null}
       onMouseLeave={highlightScrollbarOnContentHover ? handleWrapperMouseLeave : () => null}
-      style={ wrapperHeight ? {height: `${wrapperHeight}px`} : {}}
+      style={wrapperStyle}
     >
       <div
         ref={contentRef}
-        className={`${containerClassName} scrollable`}
+        className={contentClassName}
         id={id}
-        style={{ ...style, ...containerSettingsStyle }}
+        style={{ ...style, ...contentSettingsStyle }}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMove}

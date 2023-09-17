@@ -287,11 +287,12 @@
 
     &.error {
       ~ .bar {
-        @include theme(background-color, AlphaRejectHighlight);
-        @include theme(box-shadow, AlphaReject, 0 0 4px);
+        @include theme(background-color, RejectHighlight);
+        @include theme(box-shadow, Reject, 0 0 4px);
       }
       ~ label {
-        @include theme(color, AlphaRejectHighlight);
+        @include theme(color, RejectHighlight);
+        @include theme(-webkit-text-fill-color, RejectHighlight);
       }
     }
 
@@ -367,11 +368,12 @@
 
     &.error {
       ~ .bar {
-        @include theme(background-color, AlphaRejectHighlight);
-        @include theme(box-shadow, AlphaReject, 0 0 4px);
+        @include theme(background-color, RejectHighlight);
+        @include theme(box-shadow, Reject, 0 0 4px);
       }
       ~ label {
-        @include theme(color, AlphaRejectHighlight);
+        @include theme(color, RejectHighlight);
+        @include theme(-webkit-text-fill-color, RejectHighlight);
       }
     }
 

@@ -56,40 +56,26 @@ COPY --chown=node:node services/web services/web
 
 FROM copy-stage-web as prepare-stage-web
 
-RUN yarn run prepare:frontend
+RUN yarn run prepare:web
 
 ENV NODE_ENV production
 
 # RUN CI=true yarn run test
 ARG BACKEND_URL
+ARG DOMAIN_URL
 
 ENV BACKEND_URL ${BACKEND_URL?backend_url_not_set}
+ENV DOMAIN_URL ${DOMAIN_URL?domain_url_not_set}
 ENV DOCKERIZED=true
 
 
-FROM prepare-stage-web AS build-stage-web-customer
+FROM prepare-stage-web AS build-stage-web
 
-RUN yarn run build:frontend:customer
-
-FROM prepare-stage-web AS build-stage-web-admin
-
-RUN yarn run build:frontend:admin
-
-FROM prepare-stage-web AS build-stage-web-manager
-
-RUN yarn run build:frontend:manager
+RUN yarn run build:web
 
 
-# Below are different targets for docker-compose.yml
+FROM nginx:1.25.1-alpine-slim AS run-prod-web
 
-FROM nginx:1.25.1-alpine-slim AS run-prod-web-customer
-
-COPY --from=build-stage-web-customer /usr/src/app/services/web/.webpack.customer /usr/share/nginx/html
-
-FROM nginx:1.25.1-alpine-slim AS run-prod-web-admin
-
-COPY --from=build-stage-web-admin /usr/src/app/services/web/.webpack.admin /usr/share/nginx/html
-
-FROM nginx:1.25.1-alpine-slim AS run-prod-web-manager
-
-COPY --from=build-stage-web-manager /usr/src/app/services/web/.webpack.manager /usr/share/nginx/html
+COPY --from=build-stage-web /usr/src/app/services/web/.webpack.customer /usr/share/nginx/html
+COPY --from=build-stage-web /usr/src/app/services/web/.webpack.admin /usr/share/nginx/html/admin
+COPY --from=build-stage-web /usr/src/app/services/web/.webpack.manager /usr/share/nginx/html/manager

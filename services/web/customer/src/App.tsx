@@ -1,40 +1,25 @@
-import { useAppSelector } from '@m-cafe-app/frontend-logic/customer/hooks';
-import AppRoutes from './AppRoutes';
-// import LoginPage from '../../shared/components/LoginPage';
-import { Container } from 'shared/components';
+import { useInitAppCustomer } from '@m-cafe-app/frontend-logic/customer/hooks';
+import { AppRoutes } from './AppRoutes';
+import { AppContent, Wrapper, Header } from 'shared/components';
+import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
 
 
-const App = () => {
+export const App = () => {
 
-  const user = useAppSelector((state) => state.user);
+  useInitAppCustomer();
 
-  // useAppInit();
-  console.log(process.env.FRONTEND_TARGET_WEB);
+  console.log('You actually see JS from customer module executed');
 
-  if (!user.phonenumber) {
-    return (
-      <>
-        {/* <Header /> */}
-        {/* <Notification/> */}
-        <Container classNameAddon='window-container' id='main-container'>
-          <AppRoutes/>
-        </Container>
-        {/* <Footer /> */}
-      </>
-    );
-  } else {
-    return (
-      <>
-        {/* <Header /> */}
-        {/* <Menu /> */}
-        <Container classNameAddon='main-container' id='main-container'>
+
+  return (
+    <>
+      <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
+        <Header />
+        <AppContent>
           {/* <Notification/> */}
           <AppRoutes/>
-        </Container>
-        {/* <Footer /> */}
-      </>
-    );
-  }
+        </AppContent>
+      </Wrapper>
+    </>
+  );
 };
-
-export default App;

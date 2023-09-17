@@ -15,14 +15,11 @@ dotenv.config({
 });
 
 const frontendModule = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'customer';
-const port =
-  frontendModule === 'customer' ?
-    process.env.FRONTEND_USER_PORT ? process.env.FRONTEND_USER_PORT : '4002' :
-    frontendModule === 'admin' ?
-      process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :
-      frontendModule === 'manager' ?
-        process.env.FRONTEND_MANAGER_PORT ? process.env.FRONTEND_MANAGER_PORT : '4004' :
-        '4005';
+const port = process.env.FRONTEND_WEB_PORT ? process.env.FRONTEND_WEB_PORT : '4002';
+
+const outputPublicPath = frontendModule === 'admin' ? '/admin/' :
+  frontendModule === 'manager' ? '/manager/' :
+  '/';
 
 const backendUrl = process.env.BACKEND_URL;
 if (!backendUrl) throw new Error('Backend url not set!');
@@ -40,7 +37,8 @@ const config: Configuration = {
   entry: `./${frontendModule}/src/index.tsx`,
   output: {
     path: isDevelopment ? path.join(__dirname, `.webpack-dev.${frontendModule}`) : path.join(__dirname, `.webpack.${frontendModule}`),
-    filename: isDevelopment ? 'build.js' : 'build.[fullhash].js'
+    filename: isDevelopment ? 'build.js' : 'build.[fullhash].js',
+    publicPath: outputPublicPath
   },
   devServer: {
     static: `./.webpack-dev.${frontendModule}`,
@@ -48,7 +46,8 @@ const config: Configuration = {
     port,
     allowedHosts: "all",
     hot: true,
-    open: true,
+    open: [ outputPublicPath ],
+    historyApiFallback: true,
     watchFiles: {
       paths: [`${frontendModule}/src/**/*`, `${frontendModule}/public/**/*`],
       options: {

@@ -1,6 +1,6 @@
 import { useAppSelector, useInitAppAdmin } from '@m-cafe-app/frontend-logic/admin/hooks';
 import { AppRoutes } from './AppRoutes';
-import { LoginPage, Loading, Scrollable, Container, Header } from 'shared/components';
+import { LoginPage, Loading, AppContent, Wrapper, Header } from 'shared/components';
 import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
 import { StaffSidebar } from 'shared/staffComponents';
 
@@ -20,33 +20,28 @@ export const App = () => {
     return (
       <>
         {/* <Notification/> */}
-        <Container id='app-wrapper' onClick={() => collapseExpanded()}>
+        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
           <Header />
-          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content' highlightScrollbarOnContentHover={false}>
-            {/* <ColorTestPage/> */}
+          <AppContent>
             <LoginPage
               modalActive={true}
               onCancel={() => null}
             />
-          </Scrollable>
-        </Container>
-        {/* <Footer /> */}
+          </AppContent>
+        </Wrapper>
       </>
     );
   } else {
     return (
       <>
-        {/* <Header /> */}
-        {/* <Menu /> */}
-        <Container id='app-wrapper' onClick={() => collapseExpanded()}>
+        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
           <Header />
-          <Scrollable wrapperClassNameAddon='app-content-wrapper' id='app-content' highlightScrollbarOnContentHover={false}>
+          <AppContent>
             {/* <Notification/> */}
             <AppRoutes/>
-          </Scrollable>
+          </AppContent>
           <StaffSidebar/>
-        </Container>
-        {/* <Footer /> */}
+        </Wrapper>
       </>
     );
   }
