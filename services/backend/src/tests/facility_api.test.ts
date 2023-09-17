@@ -27,7 +27,7 @@ import { Op } from 'sequelize';
 import { Session } from "../redis/Session";
 import { initLogin, userAgent } from "./sessions_api_helper";
 import { apiBaseUrl } from "./test_helper";
-import { initialUsers, initialUsersPassword, validUserInDB } from "./users_api_helper";
+import { initialUsers, initialUsersPassword, validUserInDB } from "./user_api_helper";
 import {
   includeNameDescriptionLocNoTimestamps
 } from "../utils/sequelizeHelpers";
@@ -215,7 +215,7 @@ describe('Facility requests tests', () => {
 
     // User adds doubleUserAddress
     await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [userTokenCookie])
       .set('User-Agent', userAgent)
       .send(doubleUsedAddress)
@@ -282,7 +282,7 @@ describe('Facility requests tests', () => {
 
     // User moves out
     await api
-      .delete(`${apiBaseUrl}/users/address/${addressExists2!.id}`)
+      .delete(`${apiBaseUrl}/user/address/${addressExists2!.id}`)
       .set("Cookie", [userTokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
@@ -342,7 +342,7 @@ describe('Facility requests tests', () => {
 
     // User moves to new facility location
     await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [userTokenCookie])
       .set('User-Agent', userAgent)
       .send(newFacilityAddress)
@@ -354,7 +354,7 @@ describe('Facility requests tests', () => {
 
     // User moves out again, but the address stays
     await api
-      .delete(`${apiBaseUrl}/users/address/${addressExists6!.id}`)
+      .delete(`${apiBaseUrl}/user/address/${addressExists6!.id}`)
       .set("Cookie", [userTokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);

@@ -4,7 +4,7 @@ import { NewOrderBody, NewOrderFood, OrderDT } from '@m-cafe-app/utils';
 import supertest from 'supertest';
 import { userAgent } from './sessions_api_helper';
 import { apiBaseUrl } from './test_helper';
-import { genCorrectName, genCorrectPhonenumber, validAddresses } from './users_api_helper';
+import { genCorrectName, genCorrectPhonenumber, validAddresses } from './user_api_helper';
 
 export const initOrders = async (
   api: supertest.SuperTest<supertest.Test>,

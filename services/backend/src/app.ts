@@ -3,7 +3,7 @@ import express from 'express';
 import 'express-async-errors';
 const app = express();
 import cors from 'cors';
-import usersRouter from './controllers/user.js';
+import userRouter from './controllers/user.js';
 import sessionRouter from './controllers/session.js';
 import adminRouter from './controllers/admin.js';
 import foodRouter from './controllers/food.js';
@@ -43,7 +43,7 @@ app.use(cookieParser());
 app.use(middleware.requestLogger);
 
 app.use('/session', sessionRouter);
-app.use('/users', usersRouter);
+app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 app.use('/food', foodRouter);
 app.use('/food', foodComponentRouter);

@@ -14,7 +14,7 @@ import {
   validNewUser,
   validAddresses,
   initialUsersPassword
-} from './users_api_helper';
+} from './user_api_helper';
 import { User } from '@m-cafe-app/db';
 import { Session } from "../redis/Session";
 import { ValidationError } from 'sequelize';
@@ -70,13 +70,13 @@ describe('User POST request tests', () => {
     };
 
     await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(validNewUser)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -106,7 +106,7 @@ describe('User POST request tests', () => {
     };
 
     const response = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUser)
       .expect(400);
 
@@ -125,7 +125,7 @@ describe('User POST request tests', () => {
     };
 
     await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -148,7 +148,7 @@ describe('User POST request tests', () => {
     };
 
     const response = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUser)
       .expect(409);
 
@@ -171,7 +171,7 @@ describe('User POST request tests', () => {
     };
 
     const response = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUser)
       .expect(409);
 
@@ -195,7 +195,7 @@ describe('User POST request tests', () => {
     };
 
     const response = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUser)
       .expect(409);
 
@@ -221,7 +221,7 @@ describe('User POST request tests', () => {
     };
 
     const response1 = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUserFail1)
       .expect(400);
 
@@ -253,7 +253,7 @@ describe('User POST request tests', () => {
     };
 
     const response2 = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUserFail2)
       .expect(400);
 
@@ -282,7 +282,7 @@ describe('User POST request tests', () => {
     };
 
     const response3 = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUserFail3)
       .expect(400);
 
@@ -320,7 +320,7 @@ describe('User POST request tests', () => {
     };
 
     const response = await api
-      .post(`${apiBaseUrl}/users`)
+      .post(`${apiBaseUrl}/user`)
       .send(newUser)
       .expect(400);
 
@@ -362,7 +362,7 @@ describe('User POST request tests', () => {
       ) {
 
         const response = await api
-          .post(`${apiBaseUrl}/users`)
+          .post(`${apiBaseUrl}/user`)
           .send(newUser)
           .expect(409);
 
@@ -372,7 +372,7 @@ describe('User POST request tests', () => {
       } else {
 
         await api
-          .post(`${apiBaseUrl}/users`)
+          .post(`${apiBaseUrl}/user`)
           .send(newUser)
           .expect(201)
           .expect('Content-Type', /application\/json/);
@@ -422,7 +422,7 @@ describe('User POST request tests', () => {
       ]);
 
       const response = await api
-        .post(`${apiBaseUrl}/users`)
+        .post(`${apiBaseUrl}/user`)
         .send(newUserIncorrect)
         .expect(400);
 
@@ -479,7 +479,7 @@ describe('User PUT request tests', () => {
     };
 
     await api
-      .put(`${apiBaseUrl}/users/${validUserInDBID}`)
+      .put(`${apiBaseUrl}/user/${validUserInDBID}`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
@@ -515,7 +515,7 @@ describe('User PUT request tests', () => {
     };
 
     const responseNonExisting = await api
-      .put(`${apiBaseUrl}/users/100500`) // not existing user
+      .put(`${apiBaseUrl}/user/100500`) // not existing user
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
@@ -526,7 +526,7 @@ describe('User PUT request tests', () => {
     expect(responseNonExisting.body.error.message).to.equal('User attempts to change another users data or invalid user id');
 
     const responseAnotherUser = await api
-      .put(`${apiBaseUrl}/users/1`) // InitialUsers[0] ? should be
+      .put(`${apiBaseUrl}/user/1`) // InitialUsers[0] ? should be
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
@@ -552,7 +552,7 @@ describe('User PUT request tests', () => {
     };
 
     const response = await api
-      .put(`${apiBaseUrl}/users/${validUserInDBID}`)
+      .put(`${apiBaseUrl}/user/${validUserInDBID}`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
@@ -588,7 +588,7 @@ describe('User GET request tests', () => {
     const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     const response = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
@@ -606,7 +606,7 @@ describe('User GET request tests', () => {
   it('A users/me path requires authorization', async () => {
 
     const response = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set('User-Agent', userAgent)
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -646,7 +646,7 @@ User marked as deleted gets appropriate message when trying to login', async () 
     expect(!userBeforeDeletion.deletedAt).to.equal(true);
 
     const response1 = await api
-      .delete(`${apiBaseUrl}/users`)
+      .delete(`${apiBaseUrl}/user`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
@@ -664,7 +664,7 @@ User marked as deleted gets appropriate message when trying to login', async () 
     expect(!deletedUser.deletedAt).to.equal(false);
 
     const response2 = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
@@ -707,7 +707,7 @@ describe('User addresses requests tests', () => {
 
     for (const address of validAddresses) {
       const response = await api
-        .post(`${apiBaseUrl}/users/address`)
+        .post(`${apiBaseUrl}/user/address`)
         .set("Cookie", [tokenCookie])
         .set('User-Agent', userAgent)
         .send(address)
@@ -742,7 +742,7 @@ If another user adds the same address, the address does not get created, instead
     const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
 
     await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
@@ -750,7 +750,7 @@ If another user adds the same address, the address does not get created, instead
       .expect('Content-Type', /application\/json/);
 
     await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
@@ -760,7 +760,7 @@ If another user adds the same address, the address does not get created, instead
     const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
 
     await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
@@ -785,7 +785,7 @@ adds only a new junction if it was existing', async () => {
     const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
 
     const response1 = await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
@@ -793,7 +793,7 @@ adds only a new junction if it was existing', async () => {
       .expect('Content-Type', /application\/json/);
 
     const response2 = await api
-      .put(`${apiBaseUrl}/users/address/${response1.body.id}`)
+      .put(`${apiBaseUrl}/user/address/${response1.body.id}`)
       .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[1])
@@ -816,7 +816,7 @@ adds only a new junction if it was existing', async () => {
     expect(junctions1).to.be.lengthOf(1);
 
     await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[1])    // The same address as the one that first user changed to 
@@ -824,7 +824,7 @@ adds only a new junction if it was existing', async () => {
       .expect('Content-Type', /application\/json/);
 
     const response4 = await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])    // The previously deleted by first user address
@@ -835,7 +835,7 @@ adds only a new junction if it was existing', async () => {
     // He should have just deleted the address validAdresses[0], but he is kind of dumb
     // So, this attempt gives 409 and does nothing
     await api
-      .put(`${apiBaseUrl}/users/address/${response4.body.id}`)
+      .put(`${apiBaseUrl}/user/address/${response4.body.id}`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[1])
@@ -858,7 +858,7 @@ adds only a new junction if it was existing', async () => {
     const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
 
     const response1 = await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie1])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
@@ -867,7 +867,7 @@ adds only a new junction if it was existing', async () => {
 
     // Second user adds first address as his own. Maybe, they live together
     const response2 = await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[0])
@@ -876,7 +876,7 @@ adds only a new junction if it was existing', async () => {
 
     // Second user lives in two apartments
     const response3 = await api
-      .post(`${apiBaseUrl}/users/address`)
+      .post(`${apiBaseUrl}/user/address`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .send(validAddresses[1])
@@ -895,14 +895,14 @@ adds only a new junction if it was existing', async () => {
 
     // Appears that... They break up :\
     await api
-      .delete(`${apiBaseUrl}/users/address/${response2.body.id}`)
+      .delete(`${apiBaseUrl}/user/address/${response2.body.id}`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .expect(204);
 
     // Also appears that the second user does not live anywhere anymore...
     await api
-      .delete(`${apiBaseUrl}/users/address/${response3.body.id}`)
+      .delete(`${apiBaseUrl}/user/address/${response3.body.id}`)
       .set("Cookie", [tokenCookie2])
       .set('User-Agent', userAgent)
       .expect(204);

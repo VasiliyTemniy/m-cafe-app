@@ -6,7 +6,7 @@ import { apiBaseUrl } from './test_helper';
 import {
   initialUsers,
   validUserInDB,
-} from './users_api_helper';
+} from './user_api_helper';
 import { connectToDatabase, User } from '@m-cafe-app/db';
 import { Session } from "../redis/Session";
 import jwt from 'jsonwebtoken';
@@ -91,7 +91,7 @@ succeds and gives token + id (userId) as response', async () => {
     const token = cookieParts[0].substring(6);
 
     const response2 = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set({ Authorization: `bearer ${token}` })
       .set('User-Agent', userAgent)
       .expect(401)
@@ -101,7 +101,7 @@ succeds and gives token + id (userId) as response', async () => {
     expect(response2.body.error.message).to.equal('Authorization required');
 
     const response3 = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [response1.headers['set-cookie'][0] as string])
       .set('User-Agent', userAgent)
       .expect(200)
@@ -222,7 +222,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
     const tokenCookie = `token=${token}; HttpOnly`;
 
     const response = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [tokenCookie])
       .set('User-Agent', 'SUPERTEST')
       .expect(401)
@@ -242,7 +242,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
     const invalidTokenCookie = `token=IAmALittleToken; HttpOnly`;
 
     const responseInvToken = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [invalidTokenCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -259,7 +259,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
     const tokenInvSecretCookie = `token=${tokenInvSecret}; HttpOnly`;
 
     const responseInvSecret = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [tokenInvSecretCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -275,7 +275,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
     const tokenInvPayloadCookie = `token=${tokenInvPayload}; HttpOnly`;
 
     const responseInvPayload = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [tokenInvPayloadCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -295,7 +295,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
     const tokenValidCookie = `token=${tokenValid}; HttpOnly`;
 
     const response = await api
-      .get(`${apiBaseUrl}/users/me`)
+      .get(`${apiBaseUrl}/user/me`)
       .set("Cookie", [tokenValidCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);

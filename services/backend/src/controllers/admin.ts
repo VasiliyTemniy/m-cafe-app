@@ -10,7 +10,7 @@ import { possibleUserRights } from '@m-cafe-app/shared-constants';
 const adminRouter = Router();
 
 adminRouter.get(
-  '/users/',
+  '/user/',
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
@@ -41,7 +41,7 @@ adminRouter.get(
 );
 
 adminRouter.get(
-  '/users/:id',
+  '/user/:id',
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
@@ -60,7 +60,7 @@ adminRouter.get(
 );
 
 adminRouter.put(
-  '/users/:id',
+  '/user/:id',
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
@@ -100,7 +100,7 @@ adminRouter.put(
 );
 
 adminRouter.delete(
-  '/users/:id',
+  '/user/:id',
   middleware.verifyToken,
   middleware.adminCheck,
   middleware.sessionCheck,
