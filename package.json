@@ -76,8 +76,6 @@
     "//C80": "C8",
     "//Comment8": "Docker related scripts",
     "//C81": "C8",
-    "docker:dev:up": "docker compose -f docker-compose.dev.yml -p m_cafe_dev up --detach",
-    "docker:dev:down": "docker compose -f docker-compose.dev.yml -p m_cafe_dev down",
     "docker:dev:customer:up": "docker compose -f docker-compose.customer.dev.yml -p m_cafe_dev up --detach",
     "docker:dev:customer:down": "docker compose -f docker-compose.customer.dev.yml -p m_cafe_dev down",
     "docker:dev:admin:up": "docker compose -f docker-compose.admin.dev.yml -p m_cafe_dev up --detach",
