@@ -55,7 +55,7 @@ COPY --chown=node:node services/web services/web
 
 
 
-# Below are different targets for docker-compose.dev.yml
+# Below are different targets for docker-compose.${target}.dev.yml
 
 FROM copy-stage-web as run-stage-web-customer
 
@@ -64,9 +64,9 @@ RUN rm -rf services/web/manager
 RUN rm -rf packages/frontend-logic/admin
 RUN rm -rf packages/frontend-logic/manager
 
-RUN yarn run prepare:frontend
+RUN yarn run prepare:web
 
-CMD ["yarn", "run", "dev:frontend:customer"]
+CMD ["yarn", "run", "dev:web:customer"]
 
 FROM copy-stage-web as run-stage-web-admin
 
@@ -75,9 +75,9 @@ RUN rm -rf services/web/manager
 RUN rm -rf packages/frontend-logic/customer
 RUN rm -rf packages/frontend-logic/manager
 
-RUN yarn run prepare:frontend
+RUN yarn run prepare:web
 
-CMD ["yarn", "run", "dev:frontend:admin"]
+CMD ["yarn", "run", "dev:web:admin"]
 
 FROM copy-stage-web as run-stage-web-manager
 
@@ -86,6 +86,6 @@ RUN rm -rf services/web/admin
 RUN rm -rf packages/frontend-logic/customer
 RUN rm -rf packages/frontend-logic/admin
 
-RUN yarn run prepare:frontend
+RUN yarn run prepare:web
 
-CMD ["yarn", "run", "dev:frontend:manager"]
+CMD ["yarn", "run", "dev:web:manager"]
