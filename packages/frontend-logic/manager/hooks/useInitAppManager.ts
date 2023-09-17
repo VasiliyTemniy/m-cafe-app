@@ -5,6 +5,6 @@ export const useInitAppManager = () => {
 
   const { user } = useInitAppShared();
 
-  if (user.phonenumber && user.rights !== 'manager') window.location.replace(`${domainBaseUrl}/`);
+  if (user.phonenumber && (user.rights !== 'manager' && user.rights !== 'admin')) window.location.replace(`${domainBaseUrl}/`);
 
 };
