@@ -30,5 +30,7 @@ export const useInitAppShared = () => {
       void dispatch(sendRefreshToken(t));
     }
   }, []);
+
+  return { user };
   
 };
