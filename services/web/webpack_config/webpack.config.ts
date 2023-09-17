@@ -15,14 +15,7 @@ dotenv.config({
 });
 
 const frontendModule = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'customer';
-const port = '4002';
-// frontendModule === 'customer' ?
-//   process.env.FRONTEND_CUSTOMER_PORT ? process.env.FRONTEND_CUSTOMER_PORT : '4002' :
-//   frontendModule === 'admin' ?
-//     process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :
-//     frontendModule === 'manager' ?
-//       process.env.FRONTEND_MANAGER_PORT ? process.env.FRONTEND_MANAGER_PORT : '4004' :
-//       '4005';
+const port = process.env.FRONTEND_WEB_PORT ? process.env.FRONTEND_WEB_PORT : '4002';
 
 const outputPublicPath = frontendModule === 'admin' ? '/admin/' :
   frontendModule === 'manager' ? '/manager/' :
@@ -53,7 +46,7 @@ const config: Configuration = {
     port,
     allowedHosts: "all",
     hot: true,
-    open: true,
+    open: [ outputPublicPath ],
     historyApiFallback: true,
     watchFiles: {
       paths: [`${frontendModule}/src/**/*`, `${frontendModule}/public/**/*`],
