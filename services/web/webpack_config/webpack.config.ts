@@ -15,14 +15,18 @@ dotenv.config({
 });
 
 const frontendModule = process.env.FRONTEND_MODULE ? process.env.FRONTEND_MODULE : 'customer';
-const port =
-  frontendModule === 'customer' ?
-    process.env.FRONTEND_CUSTOMER_PORT ? process.env.FRONTEND_CUSTOMER_PORT : '4002' :
-    frontendModule === 'admin' ?
-      process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :
-      frontendModule === 'manager' ?
-        process.env.FRONTEND_MANAGER_PORT ? process.env.FRONTEND_MANAGER_PORT : '4004' :
-        '4005';
+const port = '4002';
+// frontendModule === 'customer' ?
+//   process.env.FRONTEND_CUSTOMER_PORT ? process.env.FRONTEND_CUSTOMER_PORT : '4002' :
+//   frontendModule === 'admin' ?
+//     process.env.FRONTEND_ADMIN_PORT ? process.env.FRONTEND_ADMIN_PORT : '4003' :
+//     frontendModule === 'manager' ?
+//       process.env.FRONTEND_MANAGER_PORT ? process.env.FRONTEND_MANAGER_PORT : '4004' :
+//       '4005';
+
+const outputPublicPath = frontendModule === 'admin' ? '/admin/' :
+  frontendModule === 'manager' ? '/manager/' :
+  '/';
 
 const backendUrl = process.env.BACKEND_URL;
 if (!backendUrl) throw new Error('Backend url not set!');
@@ -41,7 +45,7 @@ const config: Configuration = {
   output: {
     path: isDevelopment ? path.join(__dirname, `.webpack-dev.${frontendModule}`) : path.join(__dirname, `.webpack.${frontendModule}`),
     filename: isDevelopment ? 'build.js' : 'build.[fullhash].js',
-    publicPath: '/'
+    publicPath: outputPublicPath
   },
   devServer: {
     static: `./.webpack-dev.${frontendModule}`,
