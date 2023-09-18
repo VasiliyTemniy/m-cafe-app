@@ -1,0 +1,56 @@
+@use './functions.scss' as *;
+@use 'sass:color';
+
+$dark: (
+
+  GlassBG:                        linear-gradient(
+                                    to right bottom,
+                                    color.scale(getColor(darkGlass), $alpha: -60%),
+                                    color.scale(getColor(darkGlass), $lightness: 10%, $alpha: -90%),
+                                  ),
+  GlassBorder:                    color.scale(getColor(darkGlass), $lightness: 10%, $alpha: -40%),
+
+  Border:                         getColor(darkBorder),
+  Special:                        color.scale(getColor(darkBorder), $lightness: 10%, $alpha: -70%),
+  Shadow:                         getColor(darkShadow),
+  SVGFilter:                      getColor(darkSVGFilter),
+
+  Success:                        getColor(success),
+  SuccessHighlight:               color.scale(getColor(success), $lightness: 10%),
+  SuccessActive:                  color.scale(getColor(success), $lightness: 20%),
+
+  Reject:                         color.scale(getColor(reject), $lightness: -30%),
+  RejectHighlight:                getColor(reject),
+  RejectActive:                   color.scale(getColor(reject), $lightness: 10%),
+
+  // Alpha base color variant
+  AlphaBGMain:                    getColor(alphaDarkBG),
+  AlphaBGFirst:                   color.scale(getColor(alphaDarkBG), $lightness: 5%),
+  AlphaBGFirstHighlight:          color.scale(getColor(alphaDarkBG), $lightness: 20%),
+  AlphaBGFirstActive:             color.scale(getColor(alphaDarkBG), $lightness: 30%),
+  AlphaBGSecond:                  color.adjust(color.scale(getColor(alphaDarkBG), $lightness: 10%), $blue: 5%),
+  AlphaBGSecondHighlight:         color.adjust(color.scale(getColor(alphaDarkBG), $lightness: 20%), $blue: 5%),
+  AlphaBGSecondActive:            color.adjust(color.scale(getColor(alphaDarkBG), $lightness: 30%), $blue: 5%),
+  AlphaBGThird:                   color.scale(getColor(alphaDarkBG), $lightness: 20%),
+  AlphaBGThirdHighlight:          color.scale(getColor(alphaDarkBG), $lightness: 30%),
+  AlphaBGThirdActive:             color.scale(getColor(alphaDarkBG), $lightness: 40%),
+
+  AlphaText:                      color.scale(getColor(alphaDarkText), $alpha: -5%),
+  AlphaTextButtonLabel:           color.scale(getColor(alphaDarkText), $alpha: -5%),
+
+  AlphaDisabled:                  getColor(alphaDisabled),
+
+  AlphaPrimary:                   getColor(alphaPrimary),
+  AlphaPrimaryHighlight:          color.scale(getColor(alphaPrimary), $lightness: 10%),
+  AlphaPrimaryActive:             color.scale(getColor(alphaPrimary), $lightness: 20%),
+
+  AlphaAccent:                    getColor(alphaAccent),
+  AlphaAccentHighlight:           color.scale(getColor(alphaAccent), $lightness: 10%),
+  AlphaAccentActive:              color.scale(getColor(alphaAccent), $lightness: 20%),
+
+  AlphaAccentTransparent:         color.scale(getColor(alphaAccent), $alpha: -90%),
+  AlphaAccentTransparentHighlight:color.scale(getColor(alphaAccent), $lightness: 10%, $alpha: -70%),
+  AlphaAccentTransparentActive:   color.scale(getColor(alphaAccent), $lightness: 20%, $alpha: -60%),
+  // Alpha base color variant
+  
+);

@@ -1,0 +1,95 @@
+@use '../colors' as *;
+@use '../vars' as g-v; // global-vars
+@use '../theming' as *;
+@use './alpha_vars' as v-v; // variant-vars
+
+
+/**
+ * Properties for 'alpha' basevariant class modals
+ */
+.alpha.modal {
+  border-radius: v-v.$modal-container-border-radius;
+  width: fit-content;
+  min-width: v-v.$modal-min-width;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: v-v.$modal-gap;
+  position: relative;
+  // top handled by js
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 10px 0;
+  z-index: g-v.$modal-wrapper-z-index + 1;
+
+  .modal-title {
+    width: 100%;
+    height: fit-content;
+    position: relative;
+    top: 0;
+    left: 0;
+    border-radius: v-v.$modal-container-border-radius v-v.$modal-container-border-radius 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .text.title {
+      padding-top: v-v.$modal-title-padding;
+      text-align: center;
+      white-space: pre-line;
+    }
+
+    .text.subtitle {
+      padding: v-v.$modal-subtitle-padding;
+      text-align: center;
+      white-space: pre-line;
+    }
+  }
+
+  .modal-main {
+    height: 100%;
+    width: 100%;
+    padding: v-v.$modal-main-padding;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: v-v.$modal-gap;
+
+    .input-wrapper {
+      width: v-v.$modal-input-width;
+    }
+  }
+}
+
+
+@media (pointer:none), (pointer:coarse) {
+  .alpha.modal {
+    min-width: 0;
+    max-width: calc(100vw - 2rem);
+
+    .modal-main {
+      .input-wrapper {
+        width: v-v.$modal-input-width - 4rem;
+        label {
+          font-size: small;
+        }
+      }
+    }
+  }
+}
+
+
+/**
+ * Alpha color scheme for alpha style modals
+ */
+.alpha.alpha-color.modal {
+  @include theme(background-color, AlphaBGFirst);
+  @include theme(box-shadow, Shadow, 0 0 8px);
+
+  .modal-title {
+    @include theme(background-color, AlphaBGSecond);
+    @include theme(box-shadow, Shadow, 0 0 6px);
+  }
+}

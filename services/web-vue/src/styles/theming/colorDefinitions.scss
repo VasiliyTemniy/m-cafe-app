@@ -1,0 +1,30 @@
+$colors: (
+
+  darkGlass: #5e5c5c,
+  lightGlass: #f9fcf9,
+
+  darkBorder: #707070,
+  lightBorder: #474849,
+
+  darkShadow: #0000004d,
+  lightShadow: #00000060,
+
+  darkSVGFilter: invert(75%),
+  lightSVGFilter: invert(10%),
+
+  success: #01cf46,
+  reject: #a30137,
+
+  // Alpha base color variant
+  alphaDarkBG: #1E1E1E,
+  alphaDarkText: #d3d3d3,
+
+  alphaLightBG: #efefef,
+  alphaLightText: #2F2F2F,
+
+  alphaDisabled: #3F4040,
+  alphaPrimary: #2368bd,
+  alphaAccent: #24bd82,
+  // Alpha base color variant
+  
+);
