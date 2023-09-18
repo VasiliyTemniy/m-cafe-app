@@ -9,6 +9,19 @@ module.exports = {
     "@vue/eslint-config-typescript"
   ],
   rules: {
+    "indent": [
+      "warn",
+      2,
+      { 
+        "SwitchCase": 1,
+        "flatTernaryExpressions": true
+      }
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "no-useless-escape": 0,
     "@typescript-eslint/semi": [
       "error"
     ],

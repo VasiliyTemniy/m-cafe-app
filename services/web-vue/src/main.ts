@@ -1,11 +1,16 @@
-import './assets/main.css';
+import './styles/main.scss';
 
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 
-const app = createApp(App);
+import { createRedux } from "./redux/utils/storePlugin";
+import { store } from "./redux/admin/store";
 
-app.use(router);
+document.getElementsByTagName('html')[0].classList.add('light'); // init default theme - light
+document.getElementsByTagName('html')[0].classList.add('trebuchet'); // init default theme - font_trebuchet
 
-app.mount('#app');
+createApp(App)
+  .use(router)
+  .use(createRedux(store))
+  .mount("#app");

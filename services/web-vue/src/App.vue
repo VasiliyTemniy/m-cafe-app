@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue';
+import { useAppSelector, useInitAppAdmin } from './redux/admin/hooks';
+
+useInitAppAdmin();
+
+// const jopa = useAppSelector(store => store.settings.theme);
+
+const nuuu = useAppSelector(store => store.settings.dbUiSettings);
+// const jopa = 'jopa';
+console.log(nuuu);
 </script>
 
 <template>
