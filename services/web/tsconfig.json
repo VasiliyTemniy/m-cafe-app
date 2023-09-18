@@ -18,6 +18,7 @@
     "jsx": "react-jsx",
     "noFallthroughCasesInSwitch": true,
     "useUnknownInCatchVariables": false,
+    "verbatimModuleSyntax": true,
     "noEmit": false,
     "outDir": "./dist",
     "rootDirs": [
