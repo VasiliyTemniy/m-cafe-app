@@ -1,25 +1,25 @@
-{
-  "overrides": [
+module.exports = {
+  overrides: [
     {
-      "files": [
+      files: [
         "**/*.{ts,tsx}"
       ],
-      "env": {
+      env: {
         "browser": true,
         "es6": true,
         "node": true
       },
-      "extends": [
+      extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
       ],
-      "plugins": [
+      plugins: [
         "@typescript-eslint",
         "react"
       ],
-      "rules": {
+      rules: {
         "@typescript-eslint/semi": [
           "error"
         ],
@@ -41,17 +41,18 @@
         "react/prop-types": 0,
         "react/react-in-jsx-scope": 0
       },
-      "settings": {
-        "react": {
+      settings: {
+        react: {
           "pragma": "React",
           "version": "detect"
         }
       },
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "project": [
+      parser: "@typescript-eslint/parser",
+      parserOptions: {
+        project: [
           "./tsconfig.json"
-        ]
+        ],
+        tsconfigRootDir: __dirname
       }
     }
   ]
