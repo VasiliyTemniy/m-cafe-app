@@ -1,6 +1,6 @@
+import type { NewOrderBody, NewOrderFood, OrderDT } from '@m-cafe-app/utils';
 import { Facility, Food } from '@m-cafe-app/db';
 import { maxNameLen, minNameLen } from '@m-cafe-app/shared-constants';
-import { NewOrderBody, NewOrderFood, OrderDT } from '@m-cafe-app/utils';
 import supertest from 'supertest';
 import { userAgent } from './sessions_api_helper';
 import { apiBaseUrl } from './test_helper';

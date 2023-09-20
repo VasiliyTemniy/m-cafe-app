@@ -1,8 +1,5 @@
-import {
-  EditFixedLocBody,
-  NewFixedLocBody,
-  timestampsKeys
-} from "@m-cafe-app/utils";
+import type { EditFixedLocBody, NewFixedLocBody } from "@m-cafe-app/utils";
+import { timestampsKeys } from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';

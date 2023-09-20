@@ -1,4 +1,6 @@
-import { Router, RequestHandler } from 'express';
+import type { NewFoodComponent, FoodComponentDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
+import { Router } from 'express';
 import middleware from '../utils/middleware.js';
 import { Food, FoodComponent, Ingredient } from '@m-cafe-app/db';
 import {
@@ -7,9 +9,7 @@ import {
   timestampsKeys,
   DatabaseError,
   isAddFoodComponentsBody,
-  NewFoodComponent,
   isEditFoodComponentBody,
-  FoodComponentDT,
 } from '@m-cafe-app/utils';
 import {
   includeFoodComponentData,

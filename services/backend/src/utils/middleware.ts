@@ -1,9 +1,8 @@
+import type { RequestMiddle } from '../types/RequestCustom.js';
+import type { RequestHandler, Request, Response, NextFunction } from 'express';
 import logger from './logger.js';
 import jwt from 'jsonwebtoken';
 import config from './config.js';
-import { RequestMiddle } from '../types/RequestCustom.js';
-import type { RequestHandler } from "express";
-import { Request, Response, NextFunction } from 'express';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';
 import {
   ApplicationError,

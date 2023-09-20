@@ -1,14 +1,13 @@
-import {
-  Model,
+import type {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
   HasManyGetAssociationsMixin,
   HasManyAddAssociationMixin,
-  HasManyRemoveAssociationMixin,
-  DataTypes
+  HasManyRemoveAssociationMixin
 } from 'sequelize';
-import { PropertiesCreationOptional } from "../types/helpers.js";
+import type { PropertiesCreationOptional } from "../types/helpers.js";
+import { Model, DataTypes } from 'sequelize';
 import Address from './Address.js';
 import { sequelize } from '../db.js';
 import {

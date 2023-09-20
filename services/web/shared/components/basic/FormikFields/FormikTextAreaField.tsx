@@ -1,6 +1,7 @@
-import { FocusEvent } from 'react';
-import { FieldHookConfig, useField } from "formik";
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
+import type { FieldHookConfig } from "formik";
+import type { FocusEvent } from 'react';
+import { useField } from "formik";
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { Tooltip } from '../Tooltip';
 import { useRef } from "react";

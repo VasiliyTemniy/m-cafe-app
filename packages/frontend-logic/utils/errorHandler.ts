@@ -1,5 +1,5 @@
+import type { TFunction } from "../shared/hooks";
 import { isAxiosError } from "axios";
-import { TFunction } from "../shared/hooks";
 import { showNotification } from "../shared/reducers/notificationsReducer";
 
 export const handleAxiosError = (

@@ -1,5 +1,5 @@
+import type { ContainerProps } from "./Container";
 import { useInitLC } from "@m-cafe-app/frontend-logic/shared/hooks";
-import { ContainerProps } from "./Container";
 
 export interface WrapperProps extends ContainerProps {
 }

@@ -1,6 +1,8 @@
-import { MouseEvent, useMemo } from "react";
-import { FieldHookConfig, useField } from "formik";
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
+import type { FieldHookConfig } from "formik";
+import type { MouseEvent } from 'react';
+import { useMemo } from "react";
+import { useField } from "formik";
 import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { autoCompleteArray } from '@m-cafe-app/frontend-logic/utils';
 import { Image } from "../Image";

@@ -1,3 +1,4 @@
+import type { LoginUserBody } from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';
@@ -10,7 +11,6 @@ import {
 import { connectToDatabase, User } from '@m-cafe-app/db';
 import { Session } from "../redis/Session";
 import jwt from 'jsonwebtoken';
-import { LoginUserBody } from "@m-cafe-app/utils";
 import * as fc from 'fast-check';
 import config from "../utils/config";
 import { initLogin, userAgent } from "./sessions_api_helper";

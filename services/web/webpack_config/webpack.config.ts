@@ -1,9 +1,9 @@
+import type { Configuration as WebpackConfiguration } from "webpack";
+import type { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
 import path from 'path';
 import { rules } from './webpack.rules.js';
 import { plugins } from './webpack.plugins.js';
 //import { optimization } from './webpack.optimization';
-import { Configuration as WebpackConfiguration } from "webpack";
-import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
 import HtmlWebPackPlugin from 'html-webpack-plugin';
 
 import * as dotenv from "dotenv";

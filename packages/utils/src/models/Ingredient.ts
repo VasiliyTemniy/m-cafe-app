@@ -1,7 +1,9 @@
+import type { MapToUnknown, MapToDT } from "../types/helpers.js";
 import type { IngredientData } from "@m-cafe-app/db";
+import type { LocStringDT } from "./LocString.js";
 import { isNumber } from "../types/typeParsers.js";
-import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
-import { isLocStringDT, LocStringDT } from "./LocString.js";
+import { hasOwnProperty } from "../types/helpers.js";
+import { isLocStringDT } from "./LocString.js";
 
 
 export type IngredientDT = Omit<MapToDT<IngredientData>, 'nameLocId' | 'stockMeasureLocId'>

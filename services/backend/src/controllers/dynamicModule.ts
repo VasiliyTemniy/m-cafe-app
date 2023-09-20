@@ -1,6 +1,7 @@
+import type { DynamicModuleDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
 import {
   DatabaseError,
-  DynamicModuleDT,
   isEditDynamicModuleBody,
   isNewDynamicModuleBody,
   mapDataToTransit,
@@ -8,7 +9,7 @@ import {
   timestampsKeys,
   updateInstance
 } from '@m-cafe-app/utils';
-import { Router, RequestHandler } from 'express';
+import { Router } from 'express';
 import { DynamicModule, LocString, Picture } from '@m-cafe-app/db';
 import middleware from '../utils/middleware.js';
 import { includeAltTextLocNoTimestamps, includeLocStringNoTimestamps } from '../utils/sequelizeHelpers.js';

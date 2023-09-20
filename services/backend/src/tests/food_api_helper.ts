@@ -1,4 +1,4 @@
-import { FoodData, FoodTypeData, LocStringData } from "@m-cafe-app/db";
+import type { FoodData, FoodTypeData, LocStringData } from "@m-cafe-app/db";
 import { Food, FoodType, LocString } from '@m-cafe-app/db';
 
 

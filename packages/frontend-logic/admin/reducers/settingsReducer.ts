@@ -1,11 +1,12 @@
-import { ApplicationError, isUiSettingDT, SafeyAny, UiSettingDT } from '@m-cafe-app/utils';
+import type { AppDispatch } from '../store';
+import type { TFunction } from '../../shared/hooks';
+import type { UiSettingDT, SafeyAny } from '@m-cafe-app/utils';
+import type { SettingsState } from '../../shared/reducers';
+import { ApplicationError, isUiSettingDT } from '@m-cafe-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
-import { AppDispatch } from '../store';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { sharedSettingsSliceBase } from '../../shared/reducers';
-import type { SettingsState } from '../../shared/reducers';
-import { TFunction } from '../../shared/hooks';
 import { Md5 } from 'ts-md5';
 
 type UpdUiSettingAction = {

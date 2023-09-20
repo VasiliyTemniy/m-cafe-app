@@ -1,5 +1,7 @@
+import type { UserDT, AddressDT, NewAddressBody, EditAddressBody } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
 import bcryptjs from 'bcryptjs';
-import { RequestHandler, Router } from 'express';
+import { Router } from 'express';
 import {
   CredentialsError,
   HackError,
@@ -8,14 +10,10 @@ import {
   UnknownError,
   isEditUserBody,
   isNewUserBody,
-  UserDT,
   isNewAddressBody,
-  AddressDT,
   isEditAddressBody,
   DatabaseError,
   isNumber,
-  NewAddressBody,
-  EditAddressBody,
   hasOwnProperty,
   mapDataToTransit
 } from '@m-cafe-app/utils';

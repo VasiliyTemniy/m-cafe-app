@@ -1,5 +1,6 @@
-import { StockDT } from "../../models/Stock.js";
-import { hasOwnProperty, MapToUnknown } from "../helpers.js";
+import type { MapToUnknown } from "../helpers.js";
+import type { StockDT } from "../../models/Stock.js";
+import { hasOwnProperty } from "../helpers.js";
 import { isNumber } from "../typeParsers.js";
 
 

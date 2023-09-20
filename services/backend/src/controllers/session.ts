@@ -1,6 +1,8 @@
+import type { UserDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
-import { RequestHandler, Router } from 'express';
+import { Router } from 'express';
 import middleware from '../utils/middleware.js';
 import config from '../utils/config.js';
 import { isRequestCustom, isRequestWithUser } from '../types/RequestCustom.js';
@@ -11,7 +13,6 @@ import {
   UnknownError,
   SessionError,
   ProhibitedError,
-  UserDT,
   mapDataToTransit,
   isLoginBody
 } from '@m-cafe-app/utils';

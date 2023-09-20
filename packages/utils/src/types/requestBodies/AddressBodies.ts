@@ -1,5 +1,6 @@
-import { AddressDT } from "../../models/Address.js";
-import { hasOwnProperty, MapToUnknown } from "../helpers.js";
+import type { MapToUnknown } from "../helpers.js";
+import type { AddressDT } from "../../models/Address.js";
+import { hasOwnProperty } from "../helpers.js";
 import { isString, isNumber } from "../typeParsers.js";
 
 export type NewAddressBody = Omit<AddressDT, 'id'>;

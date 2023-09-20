@@ -1,7 +1,8 @@
+import type { FixedLocDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
 import {
   ApplicationError,
   DatabaseError,
-  FixedLocDT,
   isEditFixedLocBody,
   isEditManyFixedLocBody,
   isNewFixedLocBody,
@@ -9,7 +10,7 @@ import {
   RequestBodyError,
   updateInstance
 } from '@m-cafe-app/utils';
-import { Router, RequestHandler } from 'express';
+import { Router } from 'express';
 import { FixedLoc, LocString } from '@m-cafe-app/db';
 import middleware from '../utils/middleware.js';
 import { includeLocStringNoTimestamps } from '../utils/sequelizeHelpers.js';

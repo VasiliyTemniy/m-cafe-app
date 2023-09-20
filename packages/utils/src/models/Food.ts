@@ -1,10 +1,15 @@
+import type { MapToUnknown, MapToDT } from "../types/helpers.js";
 import type { FoodData } from "@m-cafe-app/db";
+import type { LocStringDT } from "./LocString.js";
+import type { FoodTypeDT } from "./FoodType.js";
+import type { FoodComponentDT } from "./FoodComponent.js";
+import type { PictureDT } from "./Picture.js";
 import { isNumber } from "../types/typeParsers.js";
-import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
-import { isLocStringDT, LocStringDT } from "./LocString.js";
-import { FoodTypeDT, isFoodTypeDT } from "./FoodType.js";
-import { FoodComponentDT, isFoodComponentDT } from "./FoodComponent.js";
-import { isPictureDT, PictureDT } from "./Picture.js";
+import { hasOwnProperty } from "../types/helpers.js";
+import { isLocStringDT } from "./LocString.js";
+import { isFoodTypeDT } from "./FoodType.js";
+import { isFoodComponentDT } from "./FoodComponent.js";
+import { isPictureDT } from "./Picture.js";
 
 
 export type FoodDT = Omit<MapToDT<FoodData>, 'nameLocId' | 'descriptionLocId' | 'foodTypeId'>

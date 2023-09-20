@@ -1,6 +1,6 @@
+import type { AppDispatch } from '../store';
 import { createSlice } from '@reduxjs/toolkit';
 // import { notificationArrayLength, notificationShowTime } from '../constants';
-import { AppDispatch } from '../store';
 
 export interface Notification {
   message: string;

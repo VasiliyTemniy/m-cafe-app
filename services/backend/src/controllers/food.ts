@@ -1,4 +1,6 @@
-import { Router, RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
+import type { FoodDT, PictureDT, FoodComponentDT } from '@m-cafe-app/utils';
+import { Router } from 'express';
 import middleware from '../utils/middleware.js';
 import {
   Food,
@@ -9,7 +11,6 @@ import {
   Picture
 } from '@m-cafe-app/db';
 import {
-  FoodDT,
   isNewFoodBody,
   mapDataToTransit,
   RequestBodyError,
@@ -18,8 +19,6 @@ import {
   DatabaseError,
   updateInstance,
   RequestQueryError,
-  PictureDT,
-  FoodComponentDT
 } from '@m-cafe-app/utils';
 import {
   includeAltTextLocNoTimestamps,

@@ -1,6 +1,7 @@
+import type { MapToUnknown, MapToDT } from "../types/helpers.js";
 import type { LocStringData } from "@m-cafe-app/db";
 import { isNumber, isString } from "../types/typeParsers.js";
-import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
+import { hasOwnProperty } from "../types/helpers.js";
 
 
 export type LocStringDT = MapToDT<LocStringData>;

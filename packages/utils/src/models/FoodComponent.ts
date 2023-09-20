@@ -1,8 +1,11 @@
+import type { MapToUnknown, MapToDT } from "../types/helpers.js";
 import type { FoodComponentData } from "@m-cafe-app/db";
+import type { IngredientDTS } from "./Ingredient.js";
+import type { FoodDTS } from "./Food.js";
 import { isNumber, isBoolean } from "../types/typeParsers.js";
-import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
-import { IngredientDTS, isIngredientDTS } from "./Ingredient.js";
-import { FoodDTS, isFoodDTS } from "./Food.js";
+import { hasOwnProperty } from "../types/helpers.js";
+import { isIngredientDTS } from "./Ingredient.js";
+import { isFoodDTS } from "./Food.js";
 
 
 export type FoodComponentDT = Omit<MapToDT<FoodComponentData>, 'foodId' | 'componentId'>

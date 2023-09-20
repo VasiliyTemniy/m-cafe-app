@@ -1,13 +1,13 @@
-import {
+import type {
   EditFacilityBody,
   EditStock,
-  isStockDT,
   NewAddressBody,
   NewFacilityBody,
   NewStock,
   StockDT,
   UserDT
 } from "@m-cafe-app/utils";
+import { isStockDT } from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';

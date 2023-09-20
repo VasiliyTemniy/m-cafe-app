@@ -1,10 +1,10 @@
+import type { CommonProps, LCSpecificValue } from '../../types';
+import type { CSSProperties } from "react";
 import { useMemo } from 'react';
 import { ApplicationError } from "@m-cafe-app/utils";
 import { useUiSettings } from "./useUiSettings";
-import { CSSProperties } from "react";
 import { isCSSPropertyKey } from "@m-cafe-app/shared-constants";
 import { useAppSelector } from "./reduxHooks";
-import { CommonProps, LCSpecificValue } from '../../types';
 
 interface UseInitLCProps extends CommonProps {
   componentType:

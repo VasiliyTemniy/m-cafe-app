@@ -1,4 +1,5 @@
-import { hasOwnProperty, MapToUnknown } from "../helpers.js";
+import type { MapToUnknown } from "../helpers.js";
+import { hasOwnProperty } from "../helpers.js";
 import { isNumber, isString } from "../typeParsers.js";
 
 /**

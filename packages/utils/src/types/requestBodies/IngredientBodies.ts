@@ -1,6 +1,8 @@
-import { IngredientDT } from "../../models/Ingredient.js";
-import { hasOwnProperty, MapToUnknown } from "../helpers.js";
-import { EditLocString, isEditLocString, isNewLocString, NewLocString } from "../../models/LocString.js";
+import type { MapToUnknown } from "../helpers.js";
+import type { IngredientDT } from "../../models/Ingredient.js";
+import type { EditLocString, NewLocString } from "../../models/LocString.js";
+import { hasOwnProperty } from "../helpers.js";
+import { isEditLocString, isNewLocString } from "../../models/LocString.js";
 import { isNumber } from "../typeParsers.js";
 
 export type NewIngredientBody = Omit<IngredientDT, 'id' | 'nameLoc' | 'stockMeasureLoc'>

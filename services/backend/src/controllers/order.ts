@@ -1,3 +1,5 @@
+import type { NewOrderFood, OrderDT, OrderDTS, OrderFoodDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
 import config from '../utils/config.js';
 import jwt from 'jsonwebtoken';
 import {
@@ -7,17 +9,13 @@ import {
   isEditOrderStatusBody,
   isNewOrderBody,
   mapDataToTransit,
-  NewOrderFood,
-  OrderDT,
-  OrderDTS,
-  OrderFoodDT,
   ProhibitedError,
   RequestBodyError,
   RequestQueryError,
   timestampsKeys,
   UnknownError,
 } from '@m-cafe-app/utils';
-import { Router, RequestHandler } from 'express';
+import { Router } from 'express';
 import { Facility, FacilityManager, Food, Order, OrderFood } from '@m-cafe-app/db';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';
 import middleware from '../utils/middleware.js';

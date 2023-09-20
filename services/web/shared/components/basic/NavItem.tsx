@@ -1,5 +1,5 @@
+import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useNavigate } from 'react-router-dom';
 
 interface NavItemProps extends CommonProps {

@@ -1,5 +1,5 @@
+import type { JwtPayload } from "jsonwebtoken";
 import { hasOwnProperty } from "@m-cafe-app/utils";
-import { JwtPayload } from "jsonwebtoken";
 
 export interface JwtPayloadCustom extends JwtPayload {
   id: string;

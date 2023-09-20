@@ -1,7 +1,9 @@
+import type { MapToUnknown, MapToDT } from "../types/helpers.js";
 import type { OrderFoodData } from "@m-cafe-app/db";
+import type { FoodDTS } from "./Food.js";
 import { isNumber, isString } from "../types/typeParsers.js";
-import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
-import { FoodDTS, isFoodDTS } from "./Food.js";
+import { hasOwnProperty } from "../types/helpers.js";
+import { isFoodDTS } from "./Food.js";
 
 
 export type OrderFoodDT = Omit<MapToDT<OrderFoodData>, 'foodId' | 'orderId'>

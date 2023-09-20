@@ -1,6 +1,13 @@
+import type { Response } from "supertest";
+import type {
+  EditUserBody,
+  NewAddressBody,
+  NewUserBody
+} from "@m-cafe-app/utils";
+import type { AddressData } from "@m-cafe-app/db";
 import { expect } from "chai";
 import "mocha";
-import supertest, { Response } from 'supertest';
+import supertest from 'supertest';
 import app from "../app";
 import { apiBaseUrl } from './test_helper';
 import {
@@ -40,12 +47,6 @@ import {
   phonenumberRegExp,
   usernameRegExp
 } from "@m-cafe-app/shared-constants";
-import {
-  EditUserBody,
-  NewAddressBody,
-  NewUserBody
-} from "@m-cafe-app/utils";
-import { AddressData } from "@m-cafe-app/db";
 import { initLogin, userAgent } from "./sessions_api_helper";
 
 

@@ -1,4 +1,6 @@
-import { Router, RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
+import type { FacilityDT, NewAddressBody, StockDT, EditStock, NewStock } from '@m-cafe-app/utils';
+import { Router } from 'express';
 import middleware from '../utils/middleware.js';
 import {
   Address,
@@ -11,7 +13,6 @@ import {
   UserAddress
 } from '@m-cafe-app/db';
 import {
-  FacilityDT,
   isNewFacilityBody,
   mapDataToTransit,
   RequestBodyError,
@@ -19,15 +20,11 @@ import {
   DatabaseError,
   updateInstance,
   isEditFacilityBody,
-  NewAddressBody,
   isNumber,
   UnknownError,
   isEditStockBody,
   ProhibitedError,
-  StockDT,
-  hasOwnProperty,
-  EditStock,
-  NewStock
+  hasOwnProperty
 } from '@m-cafe-app/utils';
 import {
   includeNameDescriptionLocNoTimestamps,

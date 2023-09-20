@@ -1,5 +1,5 @@
+import type { MigrationContext } from '../types/MigrationContext.js';
 import { DataTypes } from 'sequelize';
-import { MigrationContext } from '../types/MigrationContext.js';
 import {
   emailRegExp,
   maxEmailLen,

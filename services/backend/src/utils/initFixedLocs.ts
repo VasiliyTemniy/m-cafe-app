@@ -1,5 +1,6 @@
+import type { NewLocString } from '@m-cafe-app/utils';
 import { FixedLoc, LocString } from '@m-cafe-app/db';
-import { ApplicationError, isNewLocString, isString, NewLocString } from '@m-cafe-app/utils';
+import { ApplicationError, isNewLocString, isString } from '@m-cafe-app/utils';
 import logger from './logger.js';
 import { getFileReadPromises } from './getFileReadPromises.js';
 

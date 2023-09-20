@@ -1,8 +1,5 @@
-import {
-  EditDynamicModuleBody,
-  NewDynamicModuleBody,
-  timestampsKeys
-} from "@m-cafe-app/utils";
+import type { EditDynamicModuleBody, NewDynamicModuleBody } from "@m-cafe-app/utils";
+import { timestampsKeys } from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';

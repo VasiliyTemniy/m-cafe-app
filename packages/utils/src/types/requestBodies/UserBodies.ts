@@ -1,5 +1,6 @@
-import { UserDT } from "../../models/User.js";
-import { hasOwnProperty, MapToUnknown } from "../helpers.js";
+import type { MapToUnknown } from "../helpers.js";
+import type { UserDT } from "../../models/User.js";
+import { hasOwnProperty } from "../helpers.js";
 import { isString } from "../typeParsers.js";
 
 
