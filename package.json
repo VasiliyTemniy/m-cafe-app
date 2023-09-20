@@ -83,7 +83,11 @@
     "docker:dev:manager:up": "docker compose -f docker-compose.manager.dev.yml -p m_cafe_dev up --detach",
     "docker:dev:manager:down": "docker compose -f docker-compose.manager.dev.yml -p m_cafe_dev down",
     "docker:prod:up": "docker compose -f docker-compose.yml -p m_cafe up --detach",
-    "docker:prod:down": "docker compose -f docker-compose.yml -p m_cafe down"
+    "docker:prod:down": "docker compose -f docker-compose.yml -p m_cafe down",
+    "//C90": "C9",
+    "dev:web:admin:vue": "yarn workspace m-cafe-web-vue run dev",
+    "eslint:vue": "yarn workspace m-cafe-web-vue run lint",
+    "//C91": "C9"
   },
   "dependencies": {
     "concurrently": "^8.0.1"
@@ -91,8 +95,10 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@vue/eslint-config-typescript": "^12.0.0",
     "eslint": "^8.40.0",
     "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-vue": "^9.17.0",
     "typescript": "~5.1.6"
   },
   "workspaces": [

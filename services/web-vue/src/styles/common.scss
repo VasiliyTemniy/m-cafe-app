@@ -1,0 +1,122 @@
+@use './vars' as *;
+@use './colors' as *;
+@use './theming' as *;
+@use './vars' as g-v; // global-vars
+@use 'sass:color';
+
+
+%reset-std {
+  margin: 0;
+  padding: 0;
+}
+
+%scrollbar-custom {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar, &::-webkit-scrollbar-track, &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+}
+
+%form-overflow-control {
+  height: 100%;
+  margin: -1rem 0 -2px;
+  padding: 1rem 0 2px;
+  overflow-x: visible;
+}
+
+
+// Glass containers common
+.glass {
+  @include theme(box-shadow, Shadow, 0 0 8px);
+  @include theme(border, GlassBorder, g-v.$glass-container-border-thickness solid);
+  @include theme(background, GlassBG);
+  padding: g-v.$glass-container-padding;
+  border-radius: g-v.$glass-container-border-radius;
+  backdrop-filter: blur(2px);
+}
+// Glass containers common
+
+// Modal wrapper common
+.modal-wrapper.scrollable-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  // height handled by js
+  z-index: g-v.$modal-wrapper-z-index;
+
+  .scrollbar {
+    right: 12px;
+  }
+
+  &.blur {
+    @include theme(background-color, Shadow);
+    backdrop-filter: blur(1px);
+  }
+}
+// Modal wrapper common
+
+// Scrollable common
+.scrollable-wrapper {
+  position: relative;
+  .scrollable {
+    @extend %scrollbar-custom;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1rem;
+    left: -1rem;
+    height: calc(100% + 1rem);
+    width: calc(100% + 3rem);
+  }
+
+  &.without-before {
+    &::before {
+      display: none;
+    }
+  }
+
+  .scrollbar {
+    z-index: g-v.$modal-wrapper-z-index + 10;
+    .scrollbar-track {
+      transition: height g-v.$hover-animation-speed ease-in-out;
+    }
+    .scrollbar-thumb {
+      transition: height g-v.$hover-animation-speed ease-in-out;
+    }
+  }
+}
+// Scrollable common
+
+.draggable {
+  -webkit-app-region: drag;
+}
+
+.tooltip {
+  position: absolute;
+
+  &.invisible {
+    display: none;
+  }
+}
+
+
+.svg-button {
+  position: relative;
+  .svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.svg {
+  @include theme(filter, SVGFilter);
+}

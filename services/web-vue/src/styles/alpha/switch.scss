@@ -1,0 +1,142 @@
+@use '../colors' as *;
+@use '../theming' as *;
+@use './alpha_vars' as v-v;
+
+
+.alpha.switch {
+  position: relative;
+  width: v-v.$switch-width;
+  display: inline-block;
+  vertical-align: middle;
+  user-select: none;
+  text-align: left;
+
+  &.disabled {
+    cursor: not-allowed;
+
+    &::before {
+      cursor: not-allowed;
+    }
+  }
+
+  .switch-checkbox {
+    display: none;
+  }
+
+  .switch-label {
+    display: block;
+    width: v-v.$switch-width;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 20px;
+    margin: 0;
+  }
+
+  .switch-inner {
+    display: block;
+    width: 200%;
+    margin-left: -100%;
+    transition: margin v-v.$switch-control-speed ease-in 0s;
+
+    &::before,
+    &::after {
+      display: block;
+      float: left;
+      width: 50%;
+      height: v-v.$switch-height;
+      padding: 0;
+      line-height: v-v.$switch-height;
+      font-size: v-v.$switch-font-size;
+      font-weight: bold;
+      box-sizing: border-box;
+    }
+
+    &::before {
+      content: attr(data-textleft);
+      text-transform: uppercase;
+      padding-left: v-v.$switch-height * 0.3;
+    }
+
+    &::after {
+      content: attr(data-textright);
+      text-transform: uppercase;
+      padding-right: v-v.$switch-height * 0.3;
+      text-align: right;
+    }
+  }
+
+  // &-inner::after {
+  //   content: attr(data-textright);
+  //   text-transform: uppercase;
+  //   padding-right: v-v.$switch-height * 0.3;
+  //   text-align: right;
+  // }
+
+  .switch-switch {
+    display: block;
+    height: v-v.$switch-height * 0.71;
+    width: v-v.$switch-height * 0.71;
+    margin: v-v.$switch-height * 0.15;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: v-v.$switch-width * 0.53;
+    border-radius: v-v.$switch-height * 0.6;
+    transition: right v-v.$switch-control-speed ease-in;
+  }
+
+  .switch-checkbox:checked + .switch-label {
+    .switch-inner {
+      margin-left: 0;
+    }
+    .switch-switch {
+      right: 0;
+    }
+  }
+}
+
+
+.alpha.alpha-color.switch {
+
+  &.disabled {
+    @include theme(background-color, AlphaDisabled);
+
+    &::before {
+      @include theme(background-color, AlphaDisabled);
+    }
+  }
+
+  .switch-label {
+    @include theme(border, Border, 0 solid);
+  }
+
+  .switch-inner {
+
+    &::before,
+    &::after {
+      @include theme(color, AlphaLabelText);
+    }
+
+    &::before {
+      // @include theme(color, SwitchDot);
+      color: white;
+      @include theme(background-color, AlphaPrimaryHighlight);
+    }
+
+    &::after {
+      @include theme(color, AlphaText);
+      @include theme(background-color, AlphaBGSecond);
+    }
+  }
+
+  // &-inner::after {
+  //   @include theme(color, AlphaText);
+  //   @include theme(background-color, AlphaBGSecond);
+  // }
+
+  .switch-switch {
+    @include theme(border, Border, 0 solid);
+    // @include theme(background-color, SwitchDot);
+    background-color: white;
+  }
+}
