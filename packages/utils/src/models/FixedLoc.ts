@@ -1,7 +1,9 @@
+import type { MapToUnknown, MapToDT } from "../types/helpers.js";
 import type { FixedLocData } from "@m-cafe-app/db";
+import type { LocStringDT } from "./LocString.js";
 import { isNumber, isString } from "../types/typeParsers.js";
-import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
-import { isLocStringDT, LocStringDT } from "./LocString.js";
+import { hasOwnProperty } from "../types/helpers.js";
+import { isLocStringDT } from "./LocString.js";
 
 
 export type FixedLocDT = Omit<MapToDT<FixedLocData>, 'locStringId'>

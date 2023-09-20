@@ -1,9 +1,10 @@
-import { Router, RequestHandler } from 'express';
+import type { IngredientDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
+import { Router } from 'express';
 import middleware from '../utils/middleware.js';
 import { Ingredient, LocString } from '@m-cafe-app/db';
 import {
   DatabaseError,
-  IngredientDT,
   mapDataToTransit,
   timestampsKeys,
   isNewIngredientBody,

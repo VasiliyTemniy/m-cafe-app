@@ -1,14 +1,12 @@
+import type { WrapperProps } from './Wrapper';
+import type { MouseEvent as ReactMouseEvent, RefObject, CSSProperties } from 'react';
 import {
   useState,
   useEffect,
   useRef,
-  useCallback,
-  MouseEvent as ReactMouseEvent,
-  RefObject,
-  CSSProperties
+  useCallback
 } from 'react';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { WrapperProps } from './Wrapper';
 import { debounceResizeObserver } from '@m-cafe-app/frontend-logic/utils';
 
 interface ScrollableProps extends WrapperProps {

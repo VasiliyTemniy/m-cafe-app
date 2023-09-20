@@ -1,4 +1,5 @@
-import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import type { AnyAction, ThunkAction } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { sharedReducers } from '../shared/store';
 
 const store = configureStore({

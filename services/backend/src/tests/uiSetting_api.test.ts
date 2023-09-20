@@ -1,8 +1,5 @@
-import {
-  EditUiSettingBody,
-  NewUiSettingBody,
-  timestampsKeys
-} from "@m-cafe-app/utils";
+import type { EditUiSettingBody, NewUiSettingBody } from "@m-cafe-app/utils";
+import { timestampsKeys } from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';

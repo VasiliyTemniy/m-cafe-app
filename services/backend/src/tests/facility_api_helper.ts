@@ -1,4 +1,5 @@
-import { Address, AddressData, Facility, FacilityData, LocString, LocStringData } from "@m-cafe-app/db";
+import type { AddressData, FacilityData, LocStringData } from "@m-cafe-app/db";
+import { Address, Facility, LocString } from "@m-cafe-app/db";
 
 const initialFacilitiesLocStrings: Omit<LocStringData, 'id'>[] = [
   {

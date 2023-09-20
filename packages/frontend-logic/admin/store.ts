@@ -1,4 +1,5 @@
-import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import type { AnyAction, ThunkAction } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { sharedReducers } from '../shared/store';
 import { managerReducers } from '../manager/store';
 import fixedLocsReducer from './reducers/fixedLocsReducer';

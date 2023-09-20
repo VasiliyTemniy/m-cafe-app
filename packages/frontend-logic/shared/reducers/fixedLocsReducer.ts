@@ -1,9 +1,10 @@
+import type { AppDispatch } from '../store';
+import type  { TFunction } from '../hooks';
+import type { FixedLocDT, SafeyAny } from '@m-cafe-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
-import { AppDispatch } from '../store';
 import fixedLocService from '../services/fixedLoc';
-import { ApplicationError, FixedLocDT, hasOwnProperty, isFixedLocDT, SafeyAny } from '@m-cafe-app/utils';
-import { TFunction } from '../hooks';
+import { ApplicationError, hasOwnProperty, isFixedLocDT } from '@m-cafe-app/utils';
 import { Md5 } from 'ts-md5';
 
 type SetFixedLocAction = {

@@ -1,5 +1,5 @@
-import axios from 'axios';
 import type { NewUserBody, LoginUserBody, EditUserBody } from '@m-cafe-app/utils';
+import axios from 'axios';
 import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 
 

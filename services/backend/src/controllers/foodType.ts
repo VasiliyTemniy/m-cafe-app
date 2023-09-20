@@ -1,8 +1,9 @@
-import { Router, RequestHandler } from 'express';
+import type { FoodTypeDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
+import { Router } from 'express';
 import middleware from '../utils/middleware.js';
 import { Food, FoodType, LocString } from '@m-cafe-app/db';
 import {
-  FoodTypeDT,
   isNewFoodTypeBody,
   mapDataToTransit,
   RequestBodyError,

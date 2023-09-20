@@ -1,9 +1,11 @@
+import type { MapToUnknown } from "../helpers.js";
+import type { OrderDT } from "../../models/Order.js";
+import type { OrderFoodDT } from "../../models/OrderFood.js";
+import type { NewAddressBody } from "./AddressBodies.js";
 import { isAddressDT } from "../../models/Address.js";
-import { OrderDT } from "../../models/Order.js";
-import { OrderFoodDT } from "../../models/OrderFood.js";
-import { hasOwnProperty, MapToUnknown } from "../helpers.js";
+import { hasOwnProperty } from "../helpers.js";
 import { isNumber, isString } from "../typeParsers.js";
-import { isNewAddressBody, NewAddressBody } from "./AddressBodies.js";
+import { isNewAddressBody } from "./AddressBodies.js";
 
 export type NewOrderBody = Omit<OrderDT, 'id' | 'totalCost' | 'user' | 'orderFoods' | 'status' | 'archiveAddress' | 'facility'>
 & {

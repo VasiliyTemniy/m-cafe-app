@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react';
+import type { MouseEventHandler } from 'react';
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 

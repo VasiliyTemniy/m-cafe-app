@@ -1,6 +1,8 @@
-import { DynamicModuleDT } from "../../models/DynamicModule.js";
-import { hasOwnProperty, MapToUnknown } from "../helpers.js";
-import { EditLocString, isEditLocString, isNewLocString, NewLocString } from "../../models/LocString.js";
+import type { MapToUnknown } from "../helpers.js";
+import type { DynamicModuleDT } from "../../models/DynamicModule.js";
+import type { EditLocString, NewLocString } from "../../models/LocString.js";
+import { hasOwnProperty } from "../helpers.js";
+import { isEditLocString, isNewLocString } from "../../models/LocString.js";
 import { isNumber, isString } from "../typeParsers.js";
 
 export type NewDynamicModuleBody = Omit<DynamicModuleDT, 'id' | 'locString' | 'picture' | 'placementType'>

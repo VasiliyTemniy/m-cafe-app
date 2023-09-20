@@ -1,4 +1,4 @@
-import {
+import type {
   EditFoodBody,
   EditFoodTypeBody,
   FoodComponentDT,
@@ -6,9 +6,9 @@ import {
   NewFoodBody,
   NewFoodTypeBody,
   NewPictureBody,
-  PictureDT,
-  timestampsKeys
+  PictureDT
 } from "@m-cafe-app/utils";
+import { timestampsKeys } from "@m-cafe-app/utils";
 import { expect } from "chai";
 import "mocha";
 import supertest from 'supertest';

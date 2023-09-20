@@ -1,11 +1,13 @@
-import { ApplicationError, hasOwnProperty, isUiSettingDT, SafeyAny, UiSettingDT } from '@m-cafe-app/utils';
+import type { AppDispatch } from '../store';
+import type  { TFunction } from '../hooks';
+import type { UiSettingDT, SafeyAny } from '@m-cafe-app/utils';
+import type { AllowedThemes } from '@m-cafe-app/shared-constants';
+import { ApplicationError, hasOwnProperty, isUiSettingDT } from '@m-cafe-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
-import { AppDispatch } from '../store';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
-import { TFunction } from '../hooks';
 import { Md5 } from 'ts-md5';
-import { AllowedThemes, allowedThemes } from '@m-cafe-app/shared-constants';
+import { allowedThemes } from '@m-cafe-app/shared-constants';
 
 
 type SettingsActionSetLanguage = { payload: 'main' | 'sec' | 'alt' };

@@ -1,10 +1,9 @@
+import type { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
+import type { JwtPayloadCustom } from '../types/JWTPayloadCustom.js';
 import logger from './logger.js';
-import type { ErrorRequestHandler } from "express";
-import { Request, Response, NextFunction } from 'express';
 import { Session } from '../redis/Session.js';
 import { hasOwnProperty, isCustomError, isNamedError } from '@m-cafe-app/utils';
 import jwt from 'jsonwebtoken';
-import { JwtPayloadCustom } from '../types/JWTPayloadCustom.js';
 import { AggregateError as SequelizeAggregateError } from 'sequelize';
 
 export const errorHandler = (async (error, req: Request, res: Response, next: NextFunction) => {

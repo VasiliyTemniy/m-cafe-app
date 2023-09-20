@@ -1,10 +1,15 @@
+import type { MapToUnknown, MapToDT } from "../types/helpers.js";
 import type { OrderData } from "@m-cafe-app/db";
+import type { UserDT } from "./User.js";
+import type { AddressDT } from "./Address.js";
+import type { OrderFoodDT } from "./OrderFood.js";
+import type { FacilityDTS } from "./Facility.js";
 import { isNumber, isString } from "../types/typeParsers.js";
-import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
-import { isUserDT, UserDT } from "./User.js";
-import { AddressDT, isAddressDT } from "./Address.js";
-import { isOrderFoodDT, OrderFoodDT } from "./OrderFood.js";
-import { FacilityDTS, isFacilityDTS } from "./Facility.js";
+import { hasOwnProperty } from "../types/helpers.js";
+import { isUserDT } from "./User.js";
+import { isAddressDT } from "./Address.js";
+import { isOrderFoodDT } from "./OrderFood.js";
+import { isFacilityDTS } from "./Facility.js";
 
 
 export type OrderDT = Omit<MapToDT<OrderData>, 'userId' | 'addressId' | 'facilityId'>

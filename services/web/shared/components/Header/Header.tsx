@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { useAppDispatch, useAppSelector, useInitLC, useTranslation } from "@m-cafe-app/frontend-logic/shared/hooks";
 import { setTheme } from "@m-cafe-app/frontend-logic/shared/reducers";
 import { Switch } from "../basic";

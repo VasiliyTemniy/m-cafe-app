@@ -1,10 +1,10 @@
-import axios from 'axios';
 import type {
   NewUiSettingBody,
   EditUiSettingBody,
   EditManyUiSettingBody,
   UiSettingDT
 } from '@m-cafe-app/utils';
+import axios from 'axios';
 import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 import sharedUiSettingsService from '../../shared/services/uiSetting';
 

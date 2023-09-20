@@ -1,4 +1,4 @@
-import { TFunction } from "../shared/hooks";
+import type { TFunction } from "../shared/hooks";
 
 /**
  * Autocomplete from options to array where every element contains strToCheck

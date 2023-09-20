@@ -2,9 +2,9 @@
 // umzug did not work with .ts import export "type": "module" system and so on
 // workaround with custom file imports
 
+import type { MigrationContext } from './types/MigrationContext.js';
 import { glob } from 'glob';
 import logger from './logger.js';
-import { MigrationContext } from './types/MigrationContext.js';
 
 type MigrationFn = ({ context }: MigrationContext) => Promise<void>;
 

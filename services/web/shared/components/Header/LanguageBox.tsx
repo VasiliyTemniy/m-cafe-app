@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@m-cafe-app/frontend-logic/shared/hooks";
 import { setLanguage } from "@m-cafe-app/frontend-logic/shared/reducers";
 import { Dropbox } from "../basic";

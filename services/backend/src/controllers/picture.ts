@@ -1,4 +1,6 @@
-import { Router, RequestHandler } from 'express';
+import type { PictureDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
+import { Router } from 'express';
 import middleware from '../utils/middleware.js';
 import { foodPicturesDir, modulesPicturesDir, upload } from '../utils/uploadMiddleware.js';
 import path from 'path';
@@ -9,7 +11,6 @@ import {
   isEditPictureBody,
   isNewPictureBody,
   mapDataToTransit,
-  PictureDT,
   RequestBodyError,
   UploadFileError
 } from '@m-cafe-app/utils';

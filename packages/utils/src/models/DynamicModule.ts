@@ -1,8 +1,11 @@
+import type { MapToUnknown, MapToDT } from "../types/helpers.js";
 import type { DynamicModuleData } from "@m-cafe-app/db";
+import type { LocStringDT } from "./LocString.js";
+import type { PictureDT } from "./Picture.js";
 import { isNumber, isString } from "../types/typeParsers.js";
-import { hasOwnProperty, MapToDT, MapToUnknown } from "../types/helpers.js";
-import { isLocStringDT, LocStringDT } from "./LocString.js";
-import { isPictureDT, PictureDT } from "./Picture.js";
+import { hasOwnProperty } from "../types/helpers.js";
+import { isLocStringDT } from "./LocString.js";
+import { isPictureDT } from "./Picture.js";
 
 
 export type DynamicModuleDT = Omit<MapToDT<DynamicModuleData>, 'locStringId' | 'pictureId'>

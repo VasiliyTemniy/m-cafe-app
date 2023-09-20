@@ -1,6 +1,7 @@
+import type { UiSettingDT } from '@m-cafe-app/utils';
+import type { RequestHandler } from 'express';
 import {
   DatabaseError,
-  UiSettingDT,
   isEditUiSettingBody,
   isNewUiSettingBody,
   mapDataToTransit,
@@ -8,7 +9,7 @@ import {
   timestampsKeys,
   isEditManyUiSettingBody
 } from '@m-cafe-app/utils';
-import { Router, RequestHandler } from 'express';
+import { Router } from 'express';
 import { UiSetting } from '@m-cafe-app/db';
 import middleware from '../utils/middleware.js';
 

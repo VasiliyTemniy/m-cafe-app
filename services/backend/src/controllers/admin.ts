@@ -1,4 +1,5 @@
-import { Router, RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
+import { Router } from 'express';
 import { DatabaseError, hasOwnProperty, ProhibitedError, RequestBodyError, RequestQueryError } from '@m-cafe-app/utils';
 import { isAdministrateUserBody } from '@m-cafe-app/utils';
 import middleware from '../utils/middleware.js';

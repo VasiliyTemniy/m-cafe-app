@@ -1,5 +1,6 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, DataTypes } from 'sequelize';
-import { PropertiesCreationOptional } from '../types/helpers.js';
+import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
+import type { PropertiesCreationOptional } from "../types/helpers.js";
+import { Model, DataTypes } from 'sequelize';
 import Facility from './Facility.js';
 import Ingredient from './Ingredient.js';
 import { sequelize } from '../db.js';
