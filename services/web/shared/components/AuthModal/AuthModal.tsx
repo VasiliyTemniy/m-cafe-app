@@ -12,26 +12,36 @@ import { phonenumberRegExp, usernameRegExp } from "@m-cafe-app/shared-constants"
 import { Modal } from "../basic";
 
 
-interface LoginPageProps {
+interface AuthModalProps {
   modalActive: boolean;
   modalWithBlur?: boolean;
+  authModalInitialMode: 'login' | 'signup';
   onCancel: () => void;
+  loginNecessary?: boolean;
 }
 
-export const LoginPage = ({
+export const AuthModal = ({
   modalActive,
   modalWithBlur = true,
-  onCancel
-}: LoginPageProps) => {
+  authModalInitialMode,
+  onCancel,
+  loginNecessary
+}: AuthModalProps) => {
 
   const dispatch = useAppDispatch();
 
   const observer = useRef<ResizeObserver | null>(null);
-  const [signupPage, setSignupPage] = useState(false);
   const [modalWrapperExcludeTop, setModalWrapperExcludeTop] = useState(0);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login');
   const { t } = useTranslation();
 
-  const tNode = 'loginPage';
+  useEffect(() => {
+    if (authModalInitialMode) {
+      setAuthModalMode(authModalInitialMode);
+    }
+  }, [authModalInitialMode]);
+
+  const tNode = 'authModal';
 
   const handleLogin = ({ credential, password }: LoginFormValues) => {
     const username = usernameRegExp.test(credential) ? credential : undefined;
@@ -45,7 +55,7 @@ export const LoginPage = ({
     const birthdate = values.birthdate ? new Date(values.birthdate).toISOString() : undefined;
     const newUser: NewUserBody = mapEmptyStringsToUndefined({ ...values, birthdate });
     void dispatch(sendNewUser(newUser, t));
-    setSignupPage(prev => !prev);
+    setAuthModalMode('login');
   };
 
   const handleResize = (header: HTMLElement) => {
@@ -64,9 +74,9 @@ export const LoginPage = ({
     };
   }, []);
 
-  if (!signupPage) return (
+  if (authModalMode === 'login') return (
     <Modal
-      classNameAddon='login'
+      classNameAddon='auth'
       active={modalActive}
       title={t(`${tNode}.loginForm.title`)}
       subtitle={t(`${tNode}.loginForm.welcome`)}
@@ -75,14 +85,15 @@ export const LoginPage = ({
     >
       <LoginForm
         onSubmit={handleLogin}
-        changePage={() => setSignupPage(prev => !prev)}
+        changeMode={() => setAuthModalMode('signup')}
         onCancel={onCancel}
+        loginNecessary={loginNecessary}
       />
     </Modal>
   );
   else return (
     <Modal
-      classNameAddon='login'
+      classNameAddon='auth'
       active={modalActive}
       title={t(`${tNode}.signupForm.title`)}
       subtitle={t(`${tNode}.signupForm.welcome`)}
@@ -91,8 +102,9 @@ export const LoginPage = ({
     >
       <SignupForm
         onSubmit={handleSignup}
-        changePage={() => setSignupPage(prev => !prev)}
+        changeMode={() => setAuthModalMode('login')}
         onCancel={onCancel}
+        loginNecessary={loginNecessary}
       />
     </Modal>
   );

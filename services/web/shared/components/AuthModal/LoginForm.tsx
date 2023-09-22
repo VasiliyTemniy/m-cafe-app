@@ -12,15 +12,16 @@ export type LoginFormValues = {
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues) => void,
-  changePage: () => void,
-  onCancel: () => void  
+  changeMode: () => void,
+  onCancel: () => void,
+  loginNecessary?: boolean
 }
 
-export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) => {
+export const LoginForm = ({ onSubmit, changeMode, onCancel, loginNecessary }: LoginFormProps) => {
 
   const { t } = useTranslation();
 
-  const tNode = 'loginPage';
+  const tNode = 'authModal';
 
   const initialValues: LoginFormValues = {
     credential: '',
@@ -56,7 +57,7 @@ export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) =>
                 label={t(`${tNode}.label.toSignup`)}
                 variant='primary'
                 id='toggle-button'
-                onClick={changePage}
+                onClick={changeMode}
               />
               <ButtonGroup>
                 <Button
@@ -71,6 +72,7 @@ export const LoginForm = ({ onSubmit, changePage, onCancel }: LoginFormProps) =>
                   variant='secondary'
                   id='cancel-button'
                   onClick={onCancel}
+                  disabled={loginNecessary}
                 />
               </ButtonGroup>
             </div>

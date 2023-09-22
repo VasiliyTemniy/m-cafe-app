@@ -12,15 +12,16 @@ export type SignupFormValues = NewUserBody & {
 
 interface SignupFormProps {
   onSubmit: (values: SignupFormValues) => void,
-  changePage: () => void,
-  onCancel: () => void  
+  changeMode: () => void,
+  onCancel: () => void,
+  loginNecessary?: boolean
 }
 
-export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) => {
+export const SignupForm = ({ onSubmit, changeMode, onCancel, loginNecessary }: SignupFormProps) => {
 
   const { t } = useTranslation();
 
-  const tNode = 'loginPage';
+  const tNode = 'authModal';
 
   const initialValues: SignupFormValues = {
     username: '',
@@ -90,7 +91,7 @@ export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) 
                 label={t(`${tNode}.label.toLogin`)}
                 variant='primary'
                 id='toggle-button'
-                onClick={changePage}
+                onClick={changeMode}
               />
               <ButtonGroup>
                 <Button
@@ -105,6 +106,7 @@ export const SignupForm = ({ onSubmit, changePage, onCancel }: SignupFormProps) 
                   variant='secondary'
                   id='cancel-button'
                   onClick={onCancel}
+                  disabled={loginNecessary}
                 />
               </ButtonGroup>
             </div>

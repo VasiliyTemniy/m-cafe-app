@@ -6,7 +6,7 @@ $modal-login-main-height: 28rem;
 // To remove total height change while changing to login / signup forms
 $modal-login-title-height: 5.2rem;
 
-.alpha.modal.login {
+.alpha.modal.auth {
   width: $modal-login-width;
 
   .modal-title {
@@ -55,7 +55,7 @@ $modal-login-title-height: 5.2rem;
 
 
 @media (pointer:none), (pointer:coarse) and (orientation: landscape) {
-  .alpha.modal.login {
+  .alpha.modal.auth {
     .modal-main {
       height: 60vh;
       .login-form, .signup-form {
@@ -69,7 +69,7 @@ $modal-login-title-height: 5.2rem;
 }
 
 @media (pointer:none), (pointer:coarse) and (orientation: portrait) {
-  .alpha.modal.login {
+  .alpha.modal.auth {
     // height: 80vh;
     .modal-main {
       .login-form, .signup-form {
