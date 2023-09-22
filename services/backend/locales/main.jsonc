@@ -13,6 +13,18 @@
       "submit": {
         "mainStr": "Подтвердить",
         "secStr": "Submit"
+      },
+      "login": {
+        "mainStr": "Войти",
+        "secStr": "Login"
+      },
+      "signup": {
+        "mainStr": "Регистрация",
+        "secStr": "Signup"
+      },
+      "logout": {
+        "mainStr": "Выйти",
+        "secStr": "Logout"
       }
     },
     "languageNames": {
