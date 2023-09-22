@@ -1,6 +1,6 @@
 import { useAppSelector, useInitAppManager } from '@m-cafe-app/frontend-logic/manager/hooks';
 import { AppRoutes } from './AppRoutes';
-import { LoginPage, AppContent, Wrapper, Header, Loading } from 'shared/components';
+import { AppContent, Wrapper, Header, Loading } from 'shared/components';
 import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
 import { StaffSidebar } from 'shared/staffComponents';
 
@@ -23,13 +23,8 @@ export const App = () => {
       <>
         {/* <Notification/> */}
         <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
-          <Header />
-          <AppContent>
-            <LoginPage
-              modalActive={true}
-              onCancel={() => null}
-            />
-          </AppContent>
+          <Header loginNecessary={true}/>
+          <AppContent />
         </Wrapper>
       </>
     );
@@ -37,7 +32,7 @@ export const App = () => {
     return (
       <>
         <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
-          <Header />
+          <Header loginNecessary={true}/>
           <AppContent>
             {/* <Notification/> */}
             <AppRoutes/>
