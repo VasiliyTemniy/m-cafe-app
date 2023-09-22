@@ -1,10 +1,13 @@
 @use '../../../styles/vars' as g-v; // global-vars
+@use '../../../styles/alpha/alpha_vars' as v-v; //variant-vars
 @use '../../../styles/theming' as *;
 @use '../../../styles/colors' as *;
 
 $header-gap: 1rem;
 $header-dropbox-width: 5.2rem;
 $header-padding: 1rem;
+$header-svg-scale: 2rem;
+$header-logged-in-gaps: 0.3rem;
 
 header.alpha {
   position: sticky;
@@ -25,6 +28,31 @@ header.alpha {
 
     .dropbox {
       width: $header-dropbox-width;
+    }
+
+    .header-auth-wrapper {
+      .logged-in {
+        width: calc(v-v.$button-min-width * 0.8 * 2);
+        padding: $header-logged-in-gaps;
+        gap: $header-logged-in-gaps;
+        border: 1px solid black; // STYLE THIS!
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        
+        .image.svg {
+          width: calc($header-svg-scale * 0.7);
+          height: calc($header-svg-scale * 0.7);
+        }
+      }
+    }
+
+    .cart {
+      &.image.svg {
+        width: $header-svg-scale;
+        height: $header-svg-scale;
+        cursor: pointer;
+      }
     }
   }
 }
