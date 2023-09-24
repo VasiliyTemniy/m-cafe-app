@@ -1,10 +1,10 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { FacilityDT } from "../../models/Facility.js";
-import type { EditLocString, NewLocString } from "../../models/LocString.js";
-import type { EditAddressBody, NewAddressBody } from "./AddressBodies.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isEditLocString, isNewLocString } from "../../models/LocString.js";
-import { isEditAddressBody, isNewAddressBody } from "./AddressBodies.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { FacilityDT } from '../../models/Facility.js';
+import type { EditLocString, NewLocString } from '../../models/LocString.js';
+import type { EditAddressBody, NewAddressBody } from './AddressBodies.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isEditLocString, isNewLocString } from '../../models/LocString.js';
+import { isEditAddressBody, isNewAddressBody } from './AddressBodies.js';
 
 export type NewFacilityBody = Omit<FacilityDT, 'id' | 'nameLoc' | 'descriptionLoc' | 'address'>
 & {

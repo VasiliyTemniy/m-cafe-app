@@ -1,5 +1,5 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from "../types/helpers.js";
+import type { PropertiesCreationOptional } from '../types/helpers.js';
 import { Model, DataTypes } from 'sequelize';
 import FoodComponent from './FoodComponent.js';
 import FoodPicture from './FoodPicture.js';
@@ -68,7 +68,7 @@ Food.init({
   modelName: 'foods'
 });
   
-Food.addHook("afterFind", findResult => {
+Food.addHook('afterFind', findResult => {
   if (!findResult) return;
   
   const mapComponentKey = (instance: FoodComponent) => {

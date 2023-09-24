@@ -278,7 +278,7 @@ orderRouter.post(
   
       const payload = jwt.verify(token, config.SECRET);
   
-      if (typeof payload === "string" || payload instanceof String || !isCustomPayload(payload))
+      if (typeof payload === 'string' || payload instanceof String || !isCustomPayload(payload))
         throw new AuthorizationError('Malformed token');
 
       userId = Number(payload.id);

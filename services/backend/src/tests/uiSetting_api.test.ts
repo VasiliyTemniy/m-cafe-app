@@ -1,18 +1,18 @@
-import type { EditUiSettingBody, NewUiSettingBody } from "@m-cafe-app/utils";
-import { timestampsKeys } from "@m-cafe-app/utils";
-import { expect } from "chai";
-import "mocha";
+import type { EditUiSettingBody, NewUiSettingBody } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/utils';
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import { connectToDatabase, UiSetting, User } from '@m-cafe-app/db';
-import config from "../utils/config";
-import { validAdminInDB } from "./admin_api_helper";
+import config from '../utils/config';
+import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
-import { Session } from "../redis/Session";
-import { initLogin, userAgent } from "./sessions_api_helper";
-import { apiBaseUrl } from "./test_helper";
-import { validUserInDB } from "./user_api_helper";
-import { initUiSettings } from "../utils/initUiSettings";
+import { Session } from '../redis/Session';
+import { initLogin, userAgent } from './sessions_api_helper';
+import { apiBaseUrl } from './test_helper';
+import { validUserInDB } from './user_api_helper';
+import { initUiSettings } from '../utils/initUiSettings';
 
 
 
@@ -88,7 +88,7 @@ describe('UiSetting requests tests', () => {
 
     const response2 = await api
       .delete(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -97,7 +97,7 @@ describe('UiSetting requests tests', () => {
 
     const response3 = await api
       .post(`${apiBaseUrl}/ui-setting`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -107,7 +107,7 @@ describe('UiSetting requests tests', () => {
 
     const response4 = await api
       .put(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -126,7 +126,7 @@ describe('UiSetting requests tests', () => {
 
     const response = await api
       .post(`${apiBaseUrl}/ui-setting`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(newUiSetting)
       .expect(201)
@@ -146,7 +146,7 @@ describe('UiSetting requests tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updUiSetting)
       .expect(200)
@@ -173,7 +173,7 @@ describe('UiSetting requests tests', () => {
 
     await api
       .delete(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 

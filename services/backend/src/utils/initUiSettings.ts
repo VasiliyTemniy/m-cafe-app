@@ -19,7 +19,7 @@ export const initUiSettings = async () => {
     for (const fileReadResult of fileReadResults) {
 
       // Strip JSONC comments
-      const strippedFromCommentsFileReadResult = fileReadResult.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? "" : m);
+      const strippedFromCommentsFileReadResult = fileReadResult.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? '' : m);
 
       const uiSettingsTree = JSON.parse(strippedFromCommentsFileReadResult) as JSON;
       await parseUiSettingsTree(uiSettingsTree);

@@ -1,5 +1,5 @@
-import { hasOwnProperty } from "../helpers.js";
-import { isString } from "../typeParsers.js";
+import { hasOwnProperty } from '../helpers.js';
+import { isString } from '../typeParsers.js';
 
 export interface LoginUserBody {
   username?: string;
@@ -8,10 +8,10 @@ export interface LoginUserBody {
 }
 
 const hasUsernamePassword = (body: unknown): body is { username: unknown, password: unknown; } =>
-  hasOwnProperty(body, "username") && hasOwnProperty(body, "password");
+  hasOwnProperty(body, 'username') && hasOwnProperty(body, 'password');
 
 const hasPhonenumberPassword = (body: unknown): body is { phonenumber: unknown, password: unknown; } =>
-  hasOwnProperty(body, "phonenumber") && hasOwnProperty(body, "password");
+  hasOwnProperty(body, 'phonenumber') && hasOwnProperty(body, 'password');
 
 
 export const isLoginBody = (body: unknown): body is LoginUserBody =>

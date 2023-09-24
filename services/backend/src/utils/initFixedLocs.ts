@@ -19,7 +19,7 @@ export const initFixedLocs = async () => {
     for (const fileReadResult of fileReadResults) {
 
       // Strip JSONC comments
-      const strippedFromCommentsFileReadResult = fileReadResult.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? "" : m);
+      const strippedFromCommentsFileReadResult = fileReadResult.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? '' : m);
 
       const fixedLocTree = JSON.parse(strippedFromCommentsFileReadResult) as JSON;
       await parseLocTree(fixedLocTree);

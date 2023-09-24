@@ -1,11 +1,11 @@
-import type { MapToUnknown, MapToDT } from "../types/helpers.js";
-import type { DynamicModuleData } from "@m-cafe-app/db";
-import type { LocStringDT } from "./LocString.js";
-import type { PictureDT } from "./Picture.js";
-import { isNumber, isString } from "../types/typeParsers.js";
-import { hasOwnProperty } from "../types/helpers.js";
-import { isLocStringDT } from "./LocString.js";
-import { isPictureDT } from "./Picture.js";
+import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { DynamicModuleData } from '@m-cafe-app/db';
+import type { LocStringDT } from './LocString.js';
+import type { PictureDT } from './Picture.js';
+import { isNumber, isString } from '../types/typeParsers.js';
+import { hasOwnProperty } from '../types/helpers.js';
+import { isLocStringDT } from './LocString.js';
+import { isPictureDT } from './Picture.js';
 
 
 export type DynamicModuleDT = Omit<MapToDT<DynamicModuleData>, 'locStringId' | 'pictureId'>
@@ -17,29 +17,29 @@ export type DynamicModuleDT = Omit<MapToDT<DynamicModuleData>, 'locStringId' | '
 type DynamicModuleDTFields = MapToUnknown<DynamicModuleDT>;
 
 const hasDynamicModuleDTFields = (obj: unknown): obj is DynamicModuleDTFields =>
-  hasOwnProperty(obj, "id")
+  hasOwnProperty(obj, 'id')
   &&
-  hasOwnProperty(obj, "moduleType")
+  hasOwnProperty(obj, 'moduleType')
   &&
-  hasOwnProperty(obj, "page")
+  hasOwnProperty(obj, 'page')
   &&
-  hasOwnProperty(obj, "placement")
+  hasOwnProperty(obj, 'placement')
   &&
-  hasOwnProperty(obj, "placementType");
+  hasOwnProperty(obj, 'placementType');
 
 export const isDynamicModuleDT = (obj: unknown): obj is DynamicModuleDT => {
   if (!hasDynamicModuleDTFields(obj)) return false;
 
   if (
-    (hasOwnProperty(obj, "className") && !isString(obj.className))
+    (hasOwnProperty(obj, 'className') && !isString(obj.className))
     ||
-    (hasOwnProperty(obj, "inlineCss") && !isString(obj.inlineCss))
+    (hasOwnProperty(obj, 'inlineCss') && !isString(obj.inlineCss))
     ||
-    (hasOwnProperty(obj, "url") && !isString(obj.url))
+    (hasOwnProperty(obj, 'url') && !isString(obj.url))
     ||
-    (hasOwnProperty(obj, "locString") && !isLocStringDT(obj.locString))
+    (hasOwnProperty(obj, 'locString') && !isLocStringDT(obj.locString))
     ||
-    (hasOwnProperty(obj, "picture") && !isPictureDT(obj.picture))
+    (hasOwnProperty(obj, 'picture') && !isPictureDT(obj.picture))
   ) return false;
   
   return isNumber(obj.id)

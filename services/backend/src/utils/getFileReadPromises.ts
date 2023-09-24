@@ -25,7 +25,7 @@ export const getFileReadPromises = async (path: string, ext: string) => {
     const replacePath = process.platform === 'win32' ? devRelativePathWin32 :
       process.env.NODE_ENV === 'production' ? prodGlobPath : devRelativePath;
 
-    const fileReadPromise = await readFile(file.replace(replacePath, ReplacePath), "utf8");
+    const fileReadPromise = await readFile(file.replace(replacePath, ReplacePath), 'utf8');
 
     return fileReadPromise;
   });

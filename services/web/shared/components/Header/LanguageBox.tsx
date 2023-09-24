@@ -1,8 +1,8 @@
-import type { MouseEvent } from "react";
-import { useAppDispatch, useAppSelector } from "@m-cafe-app/frontend-logic/shared/hooks";
-import { setLanguage } from "@m-cafe-app/frontend-logic/shared/reducers";
-import { Dropbox } from "../basic";
-import { collapseExpanded } from "@m-cafe-app/frontend-logic/utils";
+import type { MouseEvent } from 'react';
+import { useAppDispatch, useAppSelector } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { setLanguage } from '@m-cafe-app/frontend-logic/shared/reducers';
+import { Dropbox } from '../basic';
+import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
 
 interface LanguageBoxProps {
   languages: string[];

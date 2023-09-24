@@ -1,9 +1,9 @@
-import type { EditDynamicModuleBody, NewDynamicModuleBody } from "@m-cafe-app/utils";
-import { timestampsKeys } from "@m-cafe-app/utils";
-import { expect } from "chai";
-import "mocha";
+import type { EditDynamicModuleBody, NewDynamicModuleBody } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/utils';
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import {
   connectToDatabase,
   DynamicModule,
@@ -11,18 +11,18 @@ import {
   Picture,
   User
 } from '@m-cafe-app/db';
-import config from "../utils/config";
-import { validAdminInDB } from "./admin_api_helper";
+import config from '../utils/config';
+import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
-import { Session } from "../redis/Session";
-import { initLogin, userAgent } from "./sessions_api_helper";
-import { apiBaseUrl } from "./test_helper";
-import { validUserInDB } from "./user_api_helper";
+import { Session } from '../redis/Session';
+import { initLogin, userAgent } from './sessions_api_helper';
+import { apiBaseUrl } from './test_helper';
+import { validUserInDB } from './user_api_helper';
 import {
   includeAltTextLocNoTimestamps,
   includeLocStringNoTimestamps,
-} from "../utils/sequelizeHelpers";
-import { initDynamicModules } from "./dynamicModule_api_helper";
+} from '../utils/sequelizeHelpers';
+import { initDynamicModules } from './dynamicModule_api_helper';
 
 
 
@@ -120,7 +120,7 @@ describe('DynamicModule requests tests', () => {
 
     const response2 = await api
       .delete(`${apiBaseUrl}/dynamic-module/${dynamicModules[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -129,7 +129,7 @@ describe('DynamicModule requests tests', () => {
 
     const response3 = await api
       .post(`${apiBaseUrl}/dynamic-module`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -139,7 +139,7 @@ describe('DynamicModule requests tests', () => {
 
     const response4 = await api
       .put(`${apiBaseUrl}/dynamic-module/${dynamicModules[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -166,7 +166,7 @@ describe('DynamicModule requests tests', () => {
 
     const response = await api
       .post(`${apiBaseUrl}/dynamic-module`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(newDynamicModule)
       .expect(201)
@@ -201,7 +201,7 @@ describe('DynamicModule requests tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/dynamic-module/${dynamicModules[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updDynamicModule)
       .expect(200)
@@ -251,7 +251,7 @@ describe('DynamicModule requests tests', () => {
 
     await api
       .delete(`${apiBaseUrl}/dynamic-module/${dynamicModules[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 

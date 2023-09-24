@@ -1,4 +1,4 @@
-import { useInitAppShared } from "../../shared/hooks";
+import { useInitAppShared } from '../../shared/hooks';
 import { domainBaseUrl } from '@m-cafe-app/shared-constants';
 
 export const useInitAppAdmin = () => {

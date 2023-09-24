@@ -14,58 +14,58 @@ export const initialUsersPassword = 'iwannabeahero';
 
 export const initialUsers: Omit<UserData, 'id' | 'rights'>[] = [
   {
-    username: "Vasisualiy",
-    name: "Mikhail Dyachenko",
+    username: 'Vasisualiy',
+    name: 'Mikhail Dyachenko',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561256"
+    phonenumber: '88003561256'
   },
   {
-    username: "flash_us",
-    name: "Ilja Dyachenko",
+    username: 'flash_us',
+    name: 'Ilja Dyachenko',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561277"
+    phonenumber: '88003561277'
   },
   {
-    username: "StevieDoesntKnow",
-    name: "Steve Miller",
+    username: 'StevieDoesntKnow',
+    name: 'Steve Miller',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561288",
+    phonenumber: '88003561288',
     birthdate: new Date('2001-07-23T07:31:03.242Z')
   },
   {
-    username: "Poperdopeler",
-    name: "Vasisualiy Edipstein",
+    username: 'Poperdopeler',
+    name: 'Vasisualiy Edipstein',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561294",
+    phonenumber: '88003561294',
     email: 'my-emah@jjjjppp.com'
   },
   {
-    username: "FanstasmagoR",
-    name: "Hren Petrovich",
+    username: 'FanstasmagoR',
+    name: 'Hren Petrovich',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561227"
+    phonenumber: '88003561227'
   },
   {
-    username: "utopia_Forever",
+    username: 'utopia_Forever',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561211"
+    phonenumber: '88003561211'
   },
   {
-    username: "gollum",
+    username: 'gollum',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561226",
+    phonenumber: '88003561226',
     birthdate: new Date('2001-07-23T07:31:03.242Z')
   },
   {
-    username: "OW_YEAH",
+    username: 'OW_YEAH',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561236",
+    phonenumber: '88003561236',
     email: 'my-email@jjjjppp.com',
   },
   {
-    username: "fantasy",
+    username: 'fantasy',
     passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
-    phonenumber: "88003561293"
+    phonenumber: '88003561293'
   }
 ];
 

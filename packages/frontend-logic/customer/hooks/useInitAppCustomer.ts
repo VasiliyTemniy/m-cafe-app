@@ -1,4 +1,4 @@
-import { useInitAppShared } from "../../shared/hooks";
+import { useInitAppShared } from '../../shared/hooks';
 
 export const useInitAppCustomer = () => {
 

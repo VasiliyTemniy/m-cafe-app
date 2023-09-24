@@ -1,12 +1,12 @@
-import type { MouseEventHandler, MouseEvent } from "react";
+import type { MouseEventHandler, MouseEvent } from 'react';
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { TextComp } from "./TextComp";
-import { Image } from "./Image";
-import { Switch } from "./Switch";
-import { apiBaseUrl } from "@m-cafe-app/shared-constants";
-import { collapseExpanded } from "@m-cafe-app/frontend-logic/utils";
-import { Scrollable } from "./Scrollable";
+import { TextComp } from './TextComp';
+import { Image } from './Image';
+import { Switch } from './Switch';
+import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
+import { Scrollable } from './Scrollable';
 
 
 interface FiltersboxProps extends CommonProps {

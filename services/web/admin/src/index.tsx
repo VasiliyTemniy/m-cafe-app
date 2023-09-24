@@ -12,7 +12,7 @@ import { Loading } from 'shared/components';
 document.getElementsByTagName('html')[0].classList.add('light'); // init default theme - light
 document.getElementsByTagName('html')[0].classList.add('trebuchet'); // init default theme - font_trebuchet
 
-const rootElement = document.getElementById("root");
+const rootElement = document.getElementById('root');
 
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);

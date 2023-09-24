@@ -1,9 +1,9 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { EditLocString, NewLocString } from "../../models/LocString.js";
-import type { FoodDT } from "../../models/Food.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isEditLocString, isNewLocString } from "../../models/LocString.js";
-import { isNumber } from "../typeParsers.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { EditLocString, NewLocString } from '../../models/LocString.js';
+import type { FoodDT } from '../../models/Food.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isEditLocString, isNewLocString } from '../../models/LocString.js';
+import { isNumber } from '../typeParsers.js';
 
 export type NewFoodBody = Omit<FoodDT, 'id' | 'nameLoc' | 'descriptionLoc' | 'foodType'>
 & {

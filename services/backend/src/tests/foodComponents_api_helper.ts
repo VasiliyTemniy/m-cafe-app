@@ -1,5 +1,5 @@
-import type { FoodData, LocStringData } from "@m-cafe-app/db";
-import { FoodType } from "@m-cafe-app/db";
+import type { FoodData, LocStringData } from '@m-cafe-app/db';
+import { FoodType } from '@m-cafe-app/db';
 import { Food, FoodComponent, LocString, Ingredient } from '@m-cafe-app/db';
 
 

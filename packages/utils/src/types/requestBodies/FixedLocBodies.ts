@@ -1,10 +1,10 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { FixedLocDT } from "../../models/FixedLoc.js";
-import type { EditLocString, NewLocString } from "../../models/LocString.js";
-import { isFixedLocDT } from "../../models/FixedLoc.js";
-import { isNewLocString, isEditLocString } from "../../models/LocString.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isString } from "../typeParsers.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { FixedLocDT } from '../../models/FixedLoc.js';
+import type { EditLocString, NewLocString } from '../../models/LocString.js';
+import { isFixedLocDT } from '../../models/FixedLoc.js';
+import { isNewLocString, isEditLocString } from '../../models/LocString.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isString } from '../typeParsers.js';
 
 export type NewFixedLocBody = Omit<FixedLocDT, 'id' | 'locString'>
 & {

@@ -1,11 +1,11 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { OrderDT } from "../../models/Order.js";
-import type { OrderFoodDT } from "../../models/OrderFood.js";
-import type { NewAddressBody } from "./AddressBodies.js";
-import { isAddressDT } from "../../models/Address.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isNumber, isString } from "../typeParsers.js";
-import { isNewAddressBody } from "./AddressBodies.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { OrderDT } from '../../models/Order.js';
+import type { OrderFoodDT } from '../../models/OrderFood.js';
+import type { NewAddressBody } from './AddressBodies.js';
+import { isAddressDT } from '../../models/Address.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isNumber, isString } from '../typeParsers.js';
+import { isNewAddressBody } from './AddressBodies.js';
 
 export type NewOrderBody = Omit<OrderDT, 'id' | 'totalCost' | 'user' | 'orderFoods' | 'status' | 'archiveAddress' | 'facility'>
 & {
@@ -60,7 +60,7 @@ export const isNewOrderBody = (body: unknown): body is NewOrderBody => {
     ||
     (hasOwnProperty(body, 'newAddress') && !isNewAddressBody(body.newAddress))
     ||
-    (hasOwnProperty(body, "customerName") && !isString(body.customerName))
+    (hasOwnProperty(body, 'customerName') && !isString(body.customerName))
   )
     return false;
 
@@ -90,7 +90,7 @@ export const isEditOrderBody = (body: unknown): body is EditOrderBody => {
     ||
     (hasOwnProperty(body, 'newAddress') && !isNewAddressBody(body.newAddress))
     ||
-    (hasOwnProperty(body, "customerName") && !isString(body.customerName))
+    (hasOwnProperty(body, 'customerName') && !isString(body.customerName))
   )
     return false;
 

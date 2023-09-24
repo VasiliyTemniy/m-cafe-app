@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Scrollable } from "../basic";
+import { useEffect, useRef, useState } from 'react';
+import { Scrollable } from '../basic';
 
 interface AppContentProps {
   children?: JSX.Element[] | JSX.Element;

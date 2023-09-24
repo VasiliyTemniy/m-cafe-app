@@ -1,101 +1,101 @@
-import { hasOwnProperty } from "./helpers.js";
-import { isString } from "./typeParsers.js";
+import { hasOwnProperty } from './helpers.js';
+import { isString } from './typeParsers.js';
 
 export class SessionError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "SessionError";
+    this.name = 'SessionError';
   }
 }
 
 export class RequestBodyError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "RequestBodyError";
+    this.name = 'RequestBodyError';
   }
 }
 
 export class UploadFileError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "UploadFileError";
+    this.name = 'UploadFileError';
   }
 }
 
 export class RequestQueryError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "RequestQueryError";
+    this.name = 'RequestQueryError';
   }
 }
 
 export class CredentialsError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "CredentialsError";
+    this.name = 'CredentialsError';
   }
 }
 
 export class BannedError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "BannedError";
+    this.name = 'BannedError';
   }
 }
 
 export class HackError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "HackError";
+    this.name = 'HackError';
   }
 }
 
 export class PasswordLengthError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "PasswordLengthError";
+    this.name = 'PasswordLengthError';
   }
 }
 
 export class UnknownError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "UnknownError";
+    this.name = 'UnknownError';
   }
 }
 
 export class DatabaseError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "DatabaseError";
+    this.name = 'DatabaseError';
   }
 }
 
 export class ProhibitedError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "ProhibitedError";
+    this.name = 'ProhibitedError';
   }
 }
 
 export class AuthorizationError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "AuthorizationError";
+    this.name = 'AuthorizationError';
   }
 }
 
 export class ParseError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "ParseError";
+    this.name = 'ParseError';
   }
 }
 
 export class RedisError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "RedisError";
+    this.name = 'RedisError';
   }
 }
 
@@ -112,7 +112,7 @@ export class ApplicationError extends Error {
 
   constructor(message: string, meta?: ApplicationErrorMeta) {
     super(message);
-    this.name = "ApplicationError";
+    this.name = 'ApplicationError';
     this._meta = meta;
   }
 
@@ -128,7 +128,7 @@ interface NamedError {
 }
 
 const hasNamedErrorFields = (error: unknown): error is { name: unknown; } =>
-  hasOwnProperty(error, "name");
+  hasOwnProperty(error, 'name');
 
 export const isNamedError = (error: unknown): error is NamedError => {
   if (hasNamedErrorFields(error)) {
@@ -144,7 +144,7 @@ interface CustomError {
 }
 
 const hasCustomErrorFields = (error: unknown): error is { name: unknown, message: unknown; } =>
-  hasOwnProperty(error, "name") && hasOwnProperty(error, "message");
+  hasOwnProperty(error, 'name') && hasOwnProperty(error, 'message');
 
 export const isCustomError = (error: unknown): error is CustomError => {
   if (hasCustomErrorFields(error)) {

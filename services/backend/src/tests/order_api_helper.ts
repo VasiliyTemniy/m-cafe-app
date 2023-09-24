@@ -49,7 +49,7 @@ export const initOrders = async (
       const response = userTokenCookie
         ? await api
           .post(`${apiBaseUrl}/order`)
-          .set("Cookie", [userTokenCookie])
+          .set('Cookie', [userTokenCookie])
           .set('User-Agent', userAgent)
           .send(validOrder)
           .expect(201)

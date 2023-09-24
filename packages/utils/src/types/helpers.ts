@@ -1,5 +1,5 @@
-import { ApplicationError, RedisError } from "./Errors.js";
-import { isBoolean, isDate, isNumber, isString } from "./typeParsers.js";
+import { ApplicationError, RedisError } from './Errors.js';
+import { isBoolean, isDate, isNumber, isString } from './typeParsers.js';
 
 export type MapToUnknown<T> = {
   [Property in keyof T]: unknown

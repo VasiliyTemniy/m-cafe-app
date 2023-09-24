@@ -1,9 +1,9 @@
-import type { NewUserBody } from "@m-cafe-app/utils";
-import { Formik, Form } from "formik";
+import type { NewUserBody } from '@m-cafe-app/utils';
+import { Formik, Form } from 'formik';
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { FormikPersist } from '@m-cafe-app/frontend-logic/shared/components';
-import { signupValidationSchema } from "./validationSchemas";
-import { ButtonGroup, Button, FormikTextField, FormikDateField, Scrollable } from "../basic";
+import { signupValidationSchema } from './validationSchemas';
+import { ButtonGroup, Button, FormikTextField, FormikDateField, Scrollable } from '../basic';
 
 
 export type SignupFormValues = NewUserBody & {

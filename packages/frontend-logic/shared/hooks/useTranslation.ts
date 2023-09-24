@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useAppSelector } from "./reduxHooks";
+import { useAppSelector } from './reduxHooks';
 
 export type TFunction = (locName: string) => string;
 

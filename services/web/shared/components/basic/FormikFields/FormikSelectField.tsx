@@ -1,14 +1,14 @@
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
-import type { FieldHookConfig } from "formik";
+import type { FieldHookConfig } from 'formik';
 import type { MouseEvent } from 'react';
-import { useMemo } from "react";
-import { useField } from "formik";
+import { useMemo } from 'react';
+import { useField } from 'formik';
 import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { autoCompleteArray } from '@m-cafe-app/frontend-logic/utils';
-import { Image } from "../Image";
-import { Tooltip } from "../Tooltip";
-import { apiBaseUrl } from "@m-cafe-app/shared-constants";
-import { Scrollable } from "../Scrollable";
+import { Image } from '../Image';
+import { Tooltip } from '../Tooltip';
+import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { Scrollable } from '../Scrollable';
 
 
 type FormikSelectFieldProps = FieldHookConfig<string> & CommonFieldProps & {

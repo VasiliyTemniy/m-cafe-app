@@ -1,15 +1,15 @@
-import type { MapToUnknown, MapToDT } from "../types/helpers.js";
-import type { FoodData } from "@m-cafe-app/db";
-import type { LocStringDT } from "./LocString.js";
-import type { FoodTypeDT } from "./FoodType.js";
-import type { FoodComponentDT } from "./FoodComponent.js";
-import type { PictureDT } from "./Picture.js";
-import { isNumber } from "../types/typeParsers.js";
-import { hasOwnProperty } from "../types/helpers.js";
-import { isLocStringDT } from "./LocString.js";
-import { isFoodTypeDT } from "./FoodType.js";
-import { isFoodComponentDT } from "./FoodComponent.js";
-import { isPictureDT } from "./Picture.js";
+import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { FoodData } from '@m-cafe-app/db';
+import type { LocStringDT } from './LocString.js';
+import type { FoodTypeDT } from './FoodType.js';
+import type { FoodComponentDT } from './FoodComponent.js';
+import type { PictureDT } from './Picture.js';
+import { isNumber } from '../types/typeParsers.js';
+import { hasOwnProperty } from '../types/helpers.js';
+import { isLocStringDT } from './LocString.js';
+import { isFoodTypeDT } from './FoodType.js';
+import { isFoodComponentDT } from './FoodComponent.js';
+import { isPictureDT } from './Picture.js';
 
 
 export type FoodDT = Omit<MapToDT<FoodData>, 'nameLocId' | 'descriptionLocId' | 'foodTypeId'>
@@ -25,15 +25,15 @@ export type FoodDT = Omit<MapToDT<FoodData>, 'nameLocId' | 'descriptionLocId' | 
 type FoodDTFields = MapToUnknown<FoodDT>;
 
 const hasFoodDTFields = (obj: unknown): obj is FoodDTFields =>
-  hasOwnProperty(obj, "id")
+  hasOwnProperty(obj, 'id')
   &&
-  hasOwnProperty(obj, "nameLoc")
+  hasOwnProperty(obj, 'nameLoc')
   &&
-  hasOwnProperty(obj, "descriptionLoc")
+  hasOwnProperty(obj, 'descriptionLoc')
   &&
-  hasOwnProperty(obj, "foodType")
+  hasOwnProperty(obj, 'foodType')
   &&
-  hasOwnProperty(obj, "price");
+  hasOwnProperty(obj, 'price');
 
 export const isFoodDT = (obj: unknown): obj is FoodDT => {
   if (!hasFoodDTFields(obj)) return false;
@@ -72,9 +72,9 @@ type FoodDTSFields = MapToUnknown<FoodDTS>;
 
 
 const hasFoodDTSFields = (obj: unknown): obj is FoodDTSFields =>
-  hasOwnProperty(obj, "id")
+  hasOwnProperty(obj, 'id')
   &&
-  hasOwnProperty(obj, "nameLoc");
+  hasOwnProperty(obj, 'nameLoc');
 
 export const isFoodDTS = (obj: unknown): obj is FoodDTS =>
   hasFoodDTSFields(obj)

@@ -7,7 +7,7 @@ const testingRouter = Router();
 testingRouter.get(
   '/ping',
   (req, res) => {
-    res.status(200).json({ "message": "Pong" });
+    res.status(200).json({ 'message': 'Pong' });
   });
 
 testingRouter.get(

@@ -1,2 +1,2 @@
-export * from "yup";
-export { default } from "yup";
+export * from 'yup';
+export { default } from 'yup';

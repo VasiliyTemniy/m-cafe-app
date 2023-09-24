@@ -1,9 +1,9 @@
-import { isAllowedTheme } from "@m-cafe-app/shared-constants";
-import { useLayoutEffect } from "react";
-import { useTranslation } from "./useTranslation";
-import { initFixedLocs, initUiSettings, setTheme, sendRefreshToken } from "../reducers";
-import { useAppDispatch, useAppSelector } from "./reduxHooks";
-import { isString } from "@m-cafe-app/utils";
+import { isAllowedTheme } from '@m-cafe-app/shared-constants';
+import { useLayoutEffect } from 'react';
+import { useTranslation } from './useTranslation';
+import { initFixedLocs, initUiSettings, setTheme, sendRefreshToken } from '../reducers';
+import { useAppDispatch, useAppSelector } from './reduxHooks';
+import { isString } from '@m-cafe-app/utils';
 
 export const useInitAppShared = () => {
 

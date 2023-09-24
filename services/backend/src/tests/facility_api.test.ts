@@ -6,12 +6,12 @@ import type {
   NewStock,
   StockDT,
   UserDT
-} from "@m-cafe-app/utils";
-import { isStockDT } from "@m-cafe-app/utils";
-import { expect } from "chai";
-import "mocha";
+} from '@m-cafe-app/utils';
+import { isStockDT } from '@m-cafe-app/utils';
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import {
   connectToDatabase,
   Address,
@@ -21,18 +21,18 @@ import {
   User,
   UserAddress
 } from '@m-cafe-app/db';
-import config from "../utils/config";
-import { validAdminInDB } from "./admin_api_helper";
+import config from '../utils/config';
+import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
-import { Session } from "../redis/Session";
-import { initLogin, userAgent } from "./sessions_api_helper";
-import { apiBaseUrl } from "./test_helper";
-import { initialUsers, initialUsersPassword, validUserInDB } from "./user_api_helper";
+import { Session } from '../redis/Session';
+import { initLogin, userAgent } from './sessions_api_helper';
+import { apiBaseUrl } from './test_helper';
+import { initialUsers, initialUsersPassword, validUserInDB } from './user_api_helper';
 import {
   includeNameDescriptionLocNoTimestamps
-} from "../utils/sequelizeHelpers";
-import { initFacilities } from "./facility_api_helper";
-import { initIngredients } from "./ingredient_api_helper";
+} from '../utils/sequelizeHelpers';
+import { initFacilities } from './facility_api_helper';
+import { initIngredients } from './ingredient_api_helper';
 
 
 
@@ -99,7 +99,7 @@ describe('Facility requests tests', () => {
 
     const response2 = await api
       .delete(`${apiBaseUrl}/facility/${facilities[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -108,7 +108,7 @@ describe('Facility requests tests', () => {
 
     const response3 = await api
       .post(`${apiBaseUrl}/facility`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -118,7 +118,7 @@ describe('Facility requests tests', () => {
 
     const response4 = await api
       .put(`${apiBaseUrl}/facility/${facilities[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -145,7 +145,7 @@ describe('Facility requests tests', () => {
 
     const response = await api
       .post(`${apiBaseUrl}/facility`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(newFacility)
       .expect(201)
@@ -176,7 +176,7 @@ describe('Facility requests tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/facility/${facilities[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updFacility)
       .expect(200)
@@ -216,7 +216,7 @@ describe('Facility requests tests', () => {
     // User adds doubleUserAddress
     await api
       .post(`${apiBaseUrl}/user/address`)
-      .set("Cookie", [userTokenCookie])
+      .set('Cookie', [userTokenCookie])
       .set('User-Agent', userAgent)
       .send(doubleUsedAddress)
       .expect(201)
@@ -235,7 +235,7 @@ describe('Facility requests tests', () => {
     // Facility with doubleUserAddress gets created
     const response = await api
       .post(`${apiBaseUrl}/facility`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(newFacility)
       .expect(201)
@@ -268,7 +268,7 @@ describe('Facility requests tests', () => {
 
     await api
       .put(`${apiBaseUrl}/facility/${newFacilityData.id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updFacility)
       .expect(200)
@@ -283,7 +283,7 @@ describe('Facility requests tests', () => {
     // User moves out
     await api
       .delete(`${apiBaseUrl}/user/address/${addressExists2!.id}`)
-      .set("Cookie", [userTokenCookie])
+      .set('Cookie', [userTokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 
@@ -306,7 +306,7 @@ describe('Facility requests tests', () => {
     
     await api
       .put(`${apiBaseUrl}/facility/${newFacilityData.id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updFacility2)
       .expect(200)
@@ -330,7 +330,7 @@ describe('Facility requests tests', () => {
         
     await api
       .put(`${apiBaseUrl}/facility/${newFacilityData.id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updFacility3)
       .expect(200)
@@ -343,7 +343,7 @@ describe('Facility requests tests', () => {
     // User moves to new facility location
     await api
       .post(`${apiBaseUrl}/user/address`)
-      .set("Cookie", [userTokenCookie])
+      .set('Cookie', [userTokenCookie])
       .set('User-Agent', userAgent)
       .send(newFacilityAddress)
       .expect(201)
@@ -355,7 +355,7 @@ describe('Facility requests tests', () => {
     // User moves out again, but the address stays
     await api
       .delete(`${apiBaseUrl}/user/address/${addressExists6!.id}`)
-      .set("Cookie", [userTokenCookie])
+      .set('Cookie', [userTokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 
@@ -378,7 +378,7 @@ describe('Facility requests tests', () => {
 
     const response = await api
       .get(`${apiBaseUrl}/facility/${facilities[0].id}/managers`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -423,7 +423,7 @@ New stocks get added, other stocks get updated', async () => {
     // Manager adds stocks
     const response = await api
       .put(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .send({ stocksUpdate: stocksToSend })
       .expect(200)
@@ -448,7 +448,7 @@ New stocks get added, other stocks get updated', async () => {
     // Admin updates stocks
     const response2 = await api
       .put(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ stocksUpdate: stocksToUpdate })
       .expect(200)
@@ -495,7 +495,7 @@ New stocks get added, other stocks get updated', async () => {
     // Manager of facility number 1 wants to add stocks to facility 0
     const response = await api
       .put(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .send({ stocksUpdate: stocksToSend })
       .expect(403)
@@ -523,7 +523,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
     const response1 = await api
       .get(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -537,7 +537,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
     const response2 = await api
       .get(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -551,7 +551,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
     const response3 = await api
       .get(`${apiBaseUrl}/facility/${facilities[0].id}/stocks`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -567,7 +567,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
     await api
       .post(`${apiBaseUrl}/facility/${facilities[0].id}/managers`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ userId: usersInDB[0].id })
       .expect(201);
@@ -588,7 +588,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
     await api
       .delete(`${apiBaseUrl}/facility/${facilities[0].id}/managers/${facilityManagersInDB[0].userId}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 
@@ -606,7 +606,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
     await api
       .delete(`${apiBaseUrl}/facility/${facilities[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 

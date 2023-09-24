@@ -1,12 +1,12 @@
-import type { Configuration as WebpackConfiguration } from "webpack";
-import type { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
+import type { Configuration as WebpackConfiguration } from 'webpack';
+import type { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
 import path from 'path';
 import { rules } from './webpack.rules.js';
 import { plugins } from './webpack.plugins.js';
 //import { optimization } from './webpack.optimization';
 import HtmlWebPackPlugin from 'html-webpack-plugin';
 
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 
 const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 
@@ -44,7 +44,7 @@ const config: Configuration = {
     static: `./.webpack-dev.${frontendModule}`,
     compress: true,
     port,
-    allowedHosts: "all",
+    allowedHosts: 'all',
     hot: true,
     open: [ outputPublicPath ],
     historyApiFallback: true,

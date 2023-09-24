@@ -1,4 +1,4 @@
-import type { CommonProps } from "@m-cafe-app/frontend-logic/types";
+import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import type { ChangeEventHandler, FocusEventHandler } from 'react';
 
 export interface InputLCProps extends CommonProps {

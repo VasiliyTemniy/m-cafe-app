@@ -1,19 +1,19 @@
-import type { LoginUserBody } from "@m-cafe-app/utils";
-import { expect } from "chai";
-import "mocha";
+import type { LoginUserBody } from '@m-cafe-app/utils';
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import { apiBaseUrl } from './test_helper';
 import {
   initialUsers,
   validUserInDB,
 } from './user_api_helper';
 import { connectToDatabase, User } from '@m-cafe-app/db';
-import { Session } from "../redis/Session";
+import { Session } from '../redis/Session';
 import jwt from 'jsonwebtoken';
 import * as fc from 'fast-check';
-import config from "../utils/config";
-import { initLogin, userAgent } from "./sessions_api_helper";
+import config from '../utils/config';
+import { initLogin, userAgent } from './sessions_api_helper';
 import sha1 from 'sha1';
 
 
@@ -102,7 +102,7 @@ succeds and gives token + id (userId) as response', async () => {
 
     const response3 = await api
       .get(`${apiBaseUrl}/user/me`)
-      .set("Cookie", [response1.headers['set-cookie'][0] as string])
+      .set('Cookie', [response1.headers['set-cookie'][0] as string])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -223,7 +223,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const response = await api
       .get(`${apiBaseUrl}/user/me`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', 'SUPERTEST')
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -243,7 +243,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const responseInvToken = await api
       .get(`${apiBaseUrl}/user/me`)
-      .set("Cookie", [invalidTokenCookie])
+      .set('Cookie', [invalidTokenCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -260,7 +260,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const responseInvSecret = await api
       .get(`${apiBaseUrl}/user/me`)
-      .set("Cookie", [tokenInvSecretCookie])
+      .set('Cookie', [tokenInvSecretCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -276,7 +276,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const responseInvPayload = await api
       .get(`${apiBaseUrl}/user/me`)
-      .set("Cookie", [tokenInvPayloadCookie])
+      .set('Cookie', [tokenInvPayloadCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -296,7 +296,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const response = await api
       .get(`${apiBaseUrl}/user/me`)
-      .set("Cookie", [tokenValidCookie])
+      .set('Cookie', [tokenValidCookie])
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -313,7 +313,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     const responseRefreshed = await api
       .get(`${apiBaseUrl}/session/refresh`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(200);
 
@@ -337,7 +337,7 @@ same browser(userAgent) without logout leads to session token refresh', async ()
 
     await api
       .delete(`${apiBaseUrl}/session`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 
