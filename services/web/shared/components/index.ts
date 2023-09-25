@@ -4,3 +4,4 @@ export * from './AuthModal';
 export * from './Header';
 export * from './AppContent';
 export * from './Cart';
+export * from './ErrorPage';
