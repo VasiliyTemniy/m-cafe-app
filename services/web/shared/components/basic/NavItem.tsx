@@ -1,6 +1,6 @@
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 interface NavItemProps extends CommonProps {
   path: string;
@@ -24,7 +24,7 @@ export const NavItem = ({
 
   return (
     <li className={className} id={id}>
-      <Link to={path}>{label}</Link>
+      <NavLink to={path}>{label}</NavLink>
     </li>
   );
 };
