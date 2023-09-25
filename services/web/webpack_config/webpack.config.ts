@@ -47,7 +47,13 @@ const config: Configuration = {
     allowedHosts: 'all',
     hot: true,
     open: [ outputPublicPath ],
-    historyApiFallback: true,
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/admin\/.*/, to: '/admin/index.html' },
+        { from: /^\/manager\/.*/, to: '/manager/index.html' },
+        { from: /^\/.*$/, to: '/index.html' },
+      ],
+    },
     watchFiles: {
       paths: [`${frontendModule}/src/**/*`, `${frontendModule}/public/**/*`],
       options: {
