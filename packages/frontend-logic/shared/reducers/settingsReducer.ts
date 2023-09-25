@@ -40,6 +40,7 @@ export const sharedSettingsSliceBase = {
   initialState,
   reducers: {
     setLanguage: (state: SettingsState, action: SettingsActionSetLanguage): SettingsState => {
+      window.localStorage.setItem('CafeAppLanguage', JSON.stringify(action.payload));
       return { ...state, language: action.payload };
     },
     setUiSettings: (state: SettingsState, action: SettingsActionSetUiSettings): SettingsState => {

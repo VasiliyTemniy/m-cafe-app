@@ -1,9 +1,10 @@
 import { isAllowedTheme } from '@m-cafe-app/shared-constants';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useEffect } from 'react';
 import { useTranslation } from './useTranslation';
-import { initFixedLocs, initUiSettings, setTheme, sendRefreshToken } from '../reducers';
+import { initFixedLocs, initUiSettings, setTheme, sendRefreshToken, setLanguage } from '../reducers';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
 import { isString } from '@m-cafe-app/utils';
+import { getFirstBrowserLanguage } from '../../utils';
 
 export const useInitAppShared = () => {
 
@@ -12,6 +13,8 @@ export const useInitAppShared = () => {
   const dispatch = useAppDispatch();
 
   const theme = useAppSelector(state => state.settings.theme);
+  const language = useAppSelector(state => state.settings.language);
+  const locsHash = useAppSelector(state => state.fixedLocs.locsHash);
   const user = useAppSelector(state => state.user);
 
   useLayoutEffect(() => {
@@ -30,6 +33,31 @@ export const useInitAppShared = () => {
       void dispatch(sendRefreshToken(t));
     }
   }, []);
+
+  useEffect(() => {
+    const preferredLanguage = window.localStorage.getItem('CafeAppLanguage');
+    if (!preferredLanguage) {
+      // No preferred language found - check browser navigator for lang info
+      const detectedLanguage = getFirstBrowserLanguage();
+      if (!detectedLanguage) {
+        // No language detected in browser navigator - set main language
+        window.localStorage.setItem('CafeAppLanguage', JSON.stringify('main'));
+      } else {
+        for (const languageAlias of ['main', 'sec', 'alt']) {
+          // Check if any of provided languages is detected
+          if (detectedLanguage.startsWith(t(`main.detectLanguageNames.${languageAlias}`))) {
+            window.localStorage.setItem('CafeAppLanguage', JSON.stringify(languageAlias));
+            break;
+          }
+        }
+      }
+    } else /* preferredLanguage was found in localStorage */ {
+      const parsedPreferredLanguage = JSON.parse(preferredLanguage) as 'main' | 'sec' | 'alt';
+      if (parsedPreferredLanguage !== language) {
+        void dispatch(setLanguage(parsedPreferredLanguage));
+      }
+    }
+  }, [locsHash]);
 
   return { user };
   
