@@ -1,0 +1,17 @@
+// You can edit your locales here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for tNodePath
+{
+  "staffSidebar": {
+    "customerView": {
+      "mainStr": "Вид покупателя",
+      "secStr": "Customer view"
+    },
+    "fixedLocs": {
+      "mainStr": "Переводы",
+      "secStr": "Translations"
+    },
+    "uiSettings": {
+      "mainStr": "Настройки UI",
+      "secStr": "UI settings"
+    }
+  }
+}
