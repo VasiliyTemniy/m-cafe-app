@@ -55,6 +55,17 @@
         "secStr": "РЕЗЕРВ"
       }
     },
+    "detectLanguageNames": {
+      "main": {
+        "mainStr": "ru"
+      },
+      "sec": {
+        "mainStr": "en"
+      },
+      "alt": {
+        "mainStr": "РЕЗЕРВ"
+      }
+    },
     "theme": {
       "light": {
         "mainStr": "Св",
