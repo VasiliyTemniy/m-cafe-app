@@ -17,6 +17,10 @@
   min-width: v-v.$nav-item-min-width;
   cursor: pointer;
 
+  a {
+    text-decoration: none;
+  }
+
   &::after,
   &::before {
     content: '';
@@ -47,8 +51,11 @@
 
 .alpha.alpha-color.nav-item {
   @include theme(background-color, AlphaAccentTransparent);
-  @include theme(color, AlphaText);
-  @include theme(-webkit-text-fill-color, AlphaText);
+
+  a {
+    @include theme(color, AlphaText);
+    @include theme(-webkit-text-fill-color, AlphaText);
+  }
 
   &::after,
   &::before {
