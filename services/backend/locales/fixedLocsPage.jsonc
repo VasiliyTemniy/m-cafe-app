@@ -8,6 +8,24 @@
     "namespacesBox": {
       "mainStr": "Область имён переводов",
       "secStr": "Localizations namespace"
+    },
+    "fixedLocsTable": {
+      "name": {
+        "mainStr": "Имя",
+        "secStr": "Name"
+      },
+      "main": {
+        "mainStr": "Основной",
+        "secStr": "Main"
+      },
+      "sec": {
+        "mainStr": "Дополнительный",
+        "secStr": "Secondary"
+      },
+      "alt": {
+        "mainStr": "Альтернативный",
+        "secStr": "Alternative"
+      }
     }
   }
 }
