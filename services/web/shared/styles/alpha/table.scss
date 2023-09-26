@@ -1,0 +1,69 @@
+@use '../colors' as *;
+@use './alpha_vars' as v-v; // variant-vars
+@use '../vars' as g-v; // global-vars
+@use '../theming' as *;
+@use '../common' as *;
+
+
+.alpha.table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  max-width: 100%;
+
+  th, td {
+    padding: v-v.$table-cell-padding;
+  }
+
+  tr {
+    height: v-v.$table-row-height;
+    transition: background-color g-v.$hover-animation-speed ease-in-out;
+    cursor: pointer;
+  }
+
+  tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+  }
+  tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+  }
+  tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+  }
+  tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+  }
+}
+
+.alpha.alpha-color.table {
+  @include theme(color, AlphaText);
+  @include theme(-webkit-text-fill-color, AlphaText);
+
+  th, td {
+    @include theme(border, Border, 1px solid);
+  }
+
+  thead {
+    tr.table-header {
+      @include theme(background-color, AlphaBGFirst);
+    }
+    tr.table-column-names {
+      @include theme(background-color, AlphaBGFirst);
+    }
+    tr.table-footer {
+      @include theme(background-color, AlphaBGFirst);
+    }
+  }
+
+  tbody {
+    tr:nth-child(even of :not([hidden])) {
+      @include theme(background-color, AlphaBGSecond);
+    }
+    tr:nth-child(odd of :not([hidden])) {
+      @include theme(background-color, AlphaBGThird);
+    }
+  }
+
+  tr:hover:not(.table-column-names, .table-header, .table-footer) {
+    @include theme(background-color, AlphaBGThirdHighlight);
+  }
+}
