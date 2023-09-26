@@ -1,7 +1,7 @@
 import { isAllowedTheme } from '@m-cafe-app/shared-constants';
-import { useLayoutEffect, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from './useTranslation';
-import { initFixedLocs, initUiSettings, setTheme, sendRefreshToken, setLanguage } from '../reducers';
+import { setTheme, sendRefreshToken, setLanguage } from '../reducers';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
 import { isString } from '@m-cafe-app/utils';
 import { getFirstBrowserLanguage } from '../../utils';
@@ -14,12 +14,10 @@ export const useInitAppShared = () => {
 
   const theme = useAppSelector(state => state.settings.theme);
   const language = useAppSelector(state => state.settings.language);
-  const locsHash = useAppSelector(state => state.fixedLocs.locsHash);
+  const locsHash = useAppSelector(state => state.fixedLocs.parsedFixedLocsHash);
   const user = useAppSelector(state => state.user);
 
-  useLayoutEffect(() => {
-    void dispatch(initFixedLocs(t));
-    void dispatch(initUiSettings(t));
+  useEffect(() => {
     const storedTheme = window.localStorage.getItem('CafeAppTheme');
     if (!storedTheme) window.localStorage.setItem('CafeAppTheme', JSON.stringify(theme));
     else { 
