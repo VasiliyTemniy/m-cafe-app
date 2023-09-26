@@ -1,0 +1,34 @@
+
+$fixed-locs-tools-dropbox-width: 12rem;
+
+.container {
+  .fixed-locs-header {
+    .text.title {
+      padding-bottom: 1rem;
+    }
+
+    &-tools {
+      padding: 1rem;
+
+      #namespaces-box {
+        width: $fixed-locs-tools-dropbox-width;
+      }
+    }
+  }
+
+  table#fixed-locs {
+    tr {
+      th, td {
+
+        div {
+          text-overflow: ellipsis;
+          word-wrap: break-word;
+          max-width: 10rem;
+          max-height: 2.6rem;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
