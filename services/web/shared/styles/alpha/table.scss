@@ -6,9 +6,10 @@
 
 
 .alpha.table {
-  border-collapse: collapse;
-  table-layout: fixed;
-  max-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: v-v.$table-border-radius;
 
   th, td {
     padding: v-v.$table-cell-padding;
@@ -16,30 +17,49 @@
 
   tr {
     height: v-v.$table-row-height;
-    transition: background-color g-v.$hover-animation-speed ease-in-out;
-    cursor: pointer;
   }
 
-  tr:first-child th:first-child {
-    border-top-left-radius: 10px;
+  tbody tr {
+    cursor: pointer;
+    transition: background-color g-v.$hover-animation-speed ease-in-out;
   }
-  tr:first-child th:last-child {
-    border-top-right-radius: 10px;
-  }
-  tr:last-child td:first-child {
-    border-bottom-left-radius: 10px;
-  }
-  tr:last-child td:last-child {
-    border-bottom-right-radius: 10px;
-  }
+
+}
+
+%table-border-right {
+  @include theme(border-right, Border, 1px solid);
+}
+
+%table-border-bottom {
+  @include theme(border-bottom, Border, 1px solid);
 }
 
 .alpha.alpha-color.table {
   @include theme(color, AlphaText);
   @include theme(-webkit-text-fill-color, AlphaText);
+  @include theme(border, Border, 1px solid);
 
-  th, td {
-    @include theme(border, Border, 1px solid);
+  /* Apply a border to the right of all but the last column */
+  th:not(:last-child),
+  td:not(:last-child) {
+    @extend %table-border-right;
+  }
+
+  /* Apply a border to the bottom of all but the last row */
+  // thead>tr:not(:last-child)>th,  // these two were in some guide https://unused-css.com/blog/css-rounded-table-corners/
+  // thead>tr:not(:last-child)>td,  // but they did not apply border to bottom of thead
+  thead>tr>th,
+  thead>tr>td,
+  tbody>tr:not(:last-child)>th,
+  tbody>tr:not(:last-child)>td,
+  tfoot>tr:not(:last-child)>th,
+  tfoot>tr:not(:last-child)>td,
+  tr:not(:last-child)>td,
+  tr:not(:last-child)>th,
+  thead:not(:last-child),
+  tbody:not(:last-child),
+  tfoot:not(:last-child) {
+    @extend %table-border-bottom;
   }
 
   thead {
@@ -47,7 +67,7 @@
       @include theme(background-color, AlphaBGFirst);
     }
     tr.table-column-names {
-      @include theme(background-color, AlphaBGFirst);
+      @include theme(background-color, AlphaPrimaryTransparent);
     }
     tr.table-footer {
       @include theme(background-color, AlphaBGFirst);
@@ -61,9 +81,13 @@
     tr:nth-child(odd of :not([hidden])) {
       @include theme(background-color, AlphaBGThird);
     }
-  }
 
-  tr:hover:not(.table-column-names, .table-header, .table-footer) {
-    @include theme(background-color, AlphaBGThirdHighlight);
+    tr:nth-child(n):hover {
+      @include theme(background-color, AlphaPrimaryTransparentHighlight);
+    }
+
+    tr:nth-child(n):active {
+      @include theme(background-color, AlphaPrimaryTransparentActive);
+    }
   }
 }
