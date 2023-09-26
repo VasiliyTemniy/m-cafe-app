@@ -17,6 +17,8 @@ $fixed-locs-tools-dropbox-width: 12rem;
   }
 
   table#fixed-locs {
+    table-layout: fixed;
+
     tr {
       th, td {
 
@@ -24,9 +26,22 @@ $fixed-locs-tools-dropbox-width: 12rem;
           text-overflow: ellipsis;
           word-wrap: break-word;
           max-width: 10rem;
-          max-height: 2.6rem;
           overflow: hidden;
           white-space: nowrap;
+        }
+      }
+
+      th:nth-child(2),
+      td:nth-child(2) {
+        div {
+          max-width: 25rem;
+        }
+      }
+
+      th:nth-child(n + 3),
+      td:nth-child(n + 3) {
+        div {
+          max-width: calc((100vw - 25rem) / 3);
         }
       }
     }
