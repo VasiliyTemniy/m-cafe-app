@@ -11,8 +11,8 @@ export const App = () => {
 
   console.log('You actually see JS from manager module executed');
 
-  const uiSettingsHash = useAppSelector(state => state.settings.uiSettingsHash);
-  const fixedLocsHash = useAppSelector(state => state.fixedLocs.locsHash);
+  const uiSettingsHash = useAppSelector(state => state.settings.parsedUiSettingsHash);
+  const fixedLocsHash = useAppSelector(state => state.fixedLocs.parsedFixedLocsHash);
   const user = useAppSelector(state => state.user);
 
   if (!uiSettingsHash || !fixedLocsHash)

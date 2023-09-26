@@ -8,8 +8,8 @@ export const App = () => {
 
   useInitAppAdmin();
 
-  const uiSettingsHash = useAppSelector(state => state.settings.uiSettingsHash);
-  const fixedLocsHash = useAppSelector(state => state.fixedLocs.locsHash);
+  const uiSettingsHash = useAppSelector(state => state.settings.parsedUiSettingsHash);
+  const fixedLocsHash = useAppSelector(state => state.fixedLocs.parsedFixedLocsHash);
 
   if (!uiSettingsHash || !fixedLocsHash)
     return <Loading size='medium'/>;
