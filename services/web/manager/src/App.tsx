@@ -37,7 +37,9 @@ export const App = () => {
             {/* <Notification/> */}
             <AppRoutes/>
           </AppContent>
-          <StaffSidebar/>
+          <StaffSidebar>
+            
+          </StaffSidebar>
         </Wrapper>
       </>
     );

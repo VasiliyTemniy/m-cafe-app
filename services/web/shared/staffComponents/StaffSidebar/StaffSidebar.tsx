@@ -1,13 +1,14 @@
 import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 import { useEffect, useRef, useState } from 'react';
-import { Scrollable, SVGButton, NavItem } from '../../components';
-import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { Scrollable, SVGButton } from '../../components';
 
-export const StaffSidebar = () => {
+interface StaffSidebarProps {
+  children: JSX.Element | JSX.Element[];
+}
 
-  const { t } = useTranslation();
-
-  const tNode = 'staffSidebar';
+export const StaffSidebar = ({
+  children
+}: StaffSidebarProps) => {
 
   const observer = useRef<ResizeObserver | null>(null);
   const [sidebarPaddingTop, setSidebarPaddingTop] = useState(80);
@@ -50,12 +51,7 @@ export const StaffSidebar = () => {
       />
       <Scrollable highlightScrollbarOnContentHover={false} wrapperStyle={{ height: `${sidebarScrollableHeight}px` }}>
         <ul>
-          <NavItem path='/' label={t(`${tNode}.customerView`)}/>
-          <NavItem path='/fixed-locs' label={t(`${tNode}.fixedLocs`)}/>
-          <NavItem path='/ui-settings' label={t(`${tNode}.uiSettings`)}/>
-          <NavItem path='/' label='SECOND NAV YAY'/>
-          <NavItem path='/' label='SECOND NAV YAY'/>
-          <NavItem path='/' label='SECOND NAV YAY'/>
+          {children}
         </ul>
       </Scrollable>
     </nav>
