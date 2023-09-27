@@ -1,5 +1,5 @@
-
 $fixed-locs-tools-dropbox-width: 12rem;
+$fixed-locs-table-name-column-width: 25rem;
 
 .container {
   .fixed-locs-header {
@@ -17,33 +17,49 @@ $fixed-locs-tools-dropbox-width: 12rem;
   }
 
   table#fixed-locs {
-    table-layout: fixed;
-
     tr {
-      th, td {
-
-        div {
-          text-overflow: ellipsis;
-          word-wrap: break-word;
-          max-width: 10rem;
-          overflow: hidden;
-          white-space: nowrap;
-        }
-      }
-
       th:nth-child(2),
       td:nth-child(2) {
         div {
-          max-width: 25rem;
+          max-width: $fixed-locs-table-name-column-width;
         }
       }
 
       th:nth-child(n + 3),
       td:nth-child(n + 3) {
         div {
-          max-width: calc((100vw - 25rem) / 3);
+          max-width: calc((100vw - $fixed-locs-table-name-column-width - 6rem) / 3);
         }
       }
+    }
+  }
+}
+
+
+$modal-edit-fixed-loc-min-width: 60rem;
+$modal-edit-fixed-loc-form-min-height: 16rem;
+
+.modal#edit-fixed-loc {
+  min-width: $modal-edit-fixed-loc-min-width;
+
+  .modal-title {
+    .text {
+      padding: 1rem 0;
+    }
+  }
+
+  .item-info {
+    align-self: flex-start;
+    padding-left: 2rem;
+    display: grid;
+    grid-template-columns: 3rem 40rem;
+    grid-template-rows: 1.4rem 1.4rem;
+  }
+  
+  .form {
+    min-height: $modal-edit-fixed-loc-form-min-height;
+    .form-inputs {
+      min-width: calc($modal-edit-fixed-loc-min-width - 4rem);
     }
   }
 }
