@@ -9,22 +9,34 @@
       "mainStr": "Область имён переводов",
       "secStr": "Localizations namespace"
     },
-    "fixedLocsTable": {
-      "name": {
-        "mainStr": "Имя",
-        "secStr": "Name"
+    "name": {
+      "mainStr": "Имя",
+      "secStr": "Name"
+    },
+    "main": {
+      "mainStr": "Основной",
+      "secStr": "Main"
+    },
+    "sec": {
+      "mainStr": "Дополнительный",
+      "secStr": "Secondary"
+    },
+    "alt": {
+      "mainStr": "Альтернативный",
+      "secStr": "Alternative"
+    },
+    "editFixedLocModal": {
+      "title": {
+        "mainStr": "Редактирование фиксированного перевода",
+        "secStr": "Edit fixed loc"
       },
-      "main": {
-        "mainStr": "Основной",
-        "secStr": "Main"
-      },
-      "sec": {
-        "mainStr": "Дополнительный",
-        "secStr": "Secondary"
-      },
-      "alt": {
-        "mainStr": "Альтернативный",
-        "secStr": "Alternative"
+      "validationErrors": {
+        "required": {
+          "main": {
+            "mainStr": "Требуется основной перевод",
+            "secStr": "Main loc string required"
+          }
+        }
       }
     }
   }

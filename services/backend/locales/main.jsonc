@@ -25,6 +25,10 @@
       "logout": {
         "mainStr": "Выйти",
         "secStr": "Logout"
+      },
+      "delete": {
+        "mainStr": "Удалить",
+        "secStr": "Delete"
       }
     },
     "languageNames": {
