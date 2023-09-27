@@ -127,9 +127,8 @@ button.alpha.alpha-color {
       }
     
       &:hover::before, &:focus-visible::before {
-        @include theme(box-shadow, RejectShadowIn);
+        @include theme(box-shadow, RejectHighlight, inset 0 0 6px);
       }
     }
-
   }
 }
