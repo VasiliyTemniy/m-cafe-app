@@ -1,4 +1,4 @@
-import type { IngredientData, LocStringData } from "@m-cafe-app/db";
+import type { IngredientData, LocStringData } from '@m-cafe-app/db';
 import { LocString, Ingredient } from '@m-cafe-app/db';
 
 export const initialIngredientLocStrings: Omit<LocStringData, 'id'>[] = [

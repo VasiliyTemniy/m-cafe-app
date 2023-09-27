@@ -19,7 +19,7 @@ export interface RequestCustom extends Request {
 }
 
 export const hasRequestCustomFields = (req: Request): req is RequestCustomFields =>
-  hasOwnProperty(req, "userId") && hasOwnProperty(req, "token");
+  hasOwnProperty(req, 'userId') && hasOwnProperty(req, 'token');
 
 export const isRequestCustom = (req: Request): req is RequestCustom =>
   hasRequestCustomFields(req) && isNumber(req.userId) && isString(req.token);
@@ -33,7 +33,7 @@ export interface RequestWithUser extends RequestCustom {
 }
 
 export const hasRequestWithUserFields = (req: Request): req is RequestWithUserFields =>
-  hasOwnProperty(req, "userId") && hasOwnProperty(req, "token") && hasOwnProperty(req, "user");
+  hasOwnProperty(req, 'userId') && hasOwnProperty(req, 'token') && hasOwnProperty(req, 'user');
 
 export const isRequestWithUser = (req: Request): req is RequestWithUser =>
   hasRequestWithUserFields(req) && isNumber(req.userId) && isString(req.token) && req.user instanceof User;

@@ -1,18 +1,18 @@
-import type { EditIngredientBody, NewIngredientBody } from "@m-cafe-app/utils";
-import { timestampsKeys } from "@m-cafe-app/utils";
-import { expect } from "chai";
-import "mocha";
+import type { EditIngredientBody, NewIngredientBody } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/utils';
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import { connectToDatabase, Ingredient, LocString, User } from '@m-cafe-app/db';
-import config from "../utils/config";
-import { validAdminInDB, validManagerInDB } from "./admin_api_helper";
+import config from '../utils/config';
+import { validAdminInDB, validManagerInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
-import { Session } from "../redis/Session";
-import { initLogin, userAgent } from "./sessions_api_helper";
-import { apiBaseUrl } from "./test_helper";
-import { validUserInDB } from "./user_api_helper";
-import { initIngredients } from "./ingredient_api_helper";
+import { Session } from '../redis/Session';
+import { initLogin, userAgent } from './sessions_api_helper';
+import { apiBaseUrl } from './test_helper';
+import { validUserInDB } from './user_api_helper';
+import { initIngredients } from './ingredient_api_helper';
 
 
 
@@ -54,7 +54,7 @@ describe('Ingredient requests tests', () => {
 
     const response1 = await api
       .get(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)
-      .set("Cookie", [tokenCookieManager])
+      .set('Cookie', [tokenCookieManager])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -88,7 +88,7 @@ describe('Ingredient requests tests', () => {
 
     const response2 = await api
       .get(`${apiBaseUrl}/ingredient`)
-      .set("Cookie", [tokenCookieManager])
+      .set('Cookie', [tokenCookieManager])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -113,7 +113,7 @@ describe('Ingredient requests tests', () => {
 
     const response2 = await api
       .delete(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -122,7 +122,7 @@ describe('Ingredient requests tests', () => {
 
     const response3 = await api
       .post(`${apiBaseUrl}/ingredient`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -132,7 +132,7 @@ describe('Ingredient requests tests', () => {
 
     const response4 = await api
       .put(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -142,7 +142,7 @@ describe('Ingredient requests tests', () => {
 
     const response5 = await api
       .get(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -151,7 +151,7 @@ describe('Ingredient requests tests', () => {
 
     const response6 = await api
       .get(`${apiBaseUrl}/ingredient`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -160,7 +160,7 @@ describe('Ingredient requests tests', () => {
 
     const response7 = await api
       .delete(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)
-      .set("Cookie", [tokenCookieManager])
+      .set('Cookie', [tokenCookieManager])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -169,7 +169,7 @@ describe('Ingredient requests tests', () => {
 
     const response8 = await api
       .post(`${apiBaseUrl}/ingredient`)
-      .set("Cookie", [tokenCookieManager])
+      .set('Cookie', [tokenCookieManager])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -179,7 +179,7 @@ describe('Ingredient requests tests', () => {
 
     const response9 = await api
       .put(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)
-      .set("Cookie", [tokenCookieManager])
+      .set('Cookie', [tokenCookieManager])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -205,7 +205,7 @@ describe('Ingredient requests tests', () => {
 
     const response = await api
       .post(`${apiBaseUrl}/ingredient`)
-      .set("Cookie", [tokenCookieAdmin])
+      .set('Cookie', [tokenCookieAdmin])
       .set('User-Agent', userAgent)
       .send(newIngredient)
       .expect(201)
@@ -238,7 +238,7 @@ describe('Ingredient requests tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)
-      .set("Cookie", [tokenCookieAdmin])
+      .set('Cookie', [tokenCookieAdmin])
       .set('User-Agent', userAgent)
       .send(updIngredient)
       .expect(200)
@@ -277,7 +277,7 @@ describe('Ingredient requests tests', () => {
 
     await api
       .delete(`${apiBaseUrl}/foodtype/${ingredients[0].id}`)
-      .set("Cookie", [tokenCookieAdmin])
+      .set('Cookie', [tokenCookieAdmin])
       .set('User-Agent', userAgent)
       .expect(204);
 

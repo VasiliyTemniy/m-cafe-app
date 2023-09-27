@@ -25,6 +25,10 @@
       "logout": {
         "mainStr": "Выйти",
         "secStr": "Logout"
+      },
+      "delete": {
+        "mainStr": "Удалить",
+        "secStr": "Delete"
       }
     },
     "languageNames": {
@@ -53,6 +57,17 @@
       "alt": {
         "mainStr": "РЕЗЕРВ",
         "secStr": "РЕЗЕРВ"
+      }
+    },
+    "detectLanguageNames": {
+      "main": {
+        "mainStr": "ru"
+      },
+      "sec": {
+        "mainStr": "en"
+      },
+      "alt": {
+        "mainStr": "РЕЗЕРВ"
       }
     },
     "theme": {

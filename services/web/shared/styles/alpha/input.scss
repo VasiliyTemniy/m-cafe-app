@@ -19,12 +19,14 @@
  */
 .alpha.input-wrapper {
   position: relative;
+  width: 100%;
 
   input {
     font-size: v-v.$input-font-size;
     font-weight: v-v.$input-font-weight;
     padding: 0 0 v-v.$input-border-thickness-highlight v-v.$input-padding-left;
     display: block;
+    box-sizing: border-box;
     border: none;
     border-radius: 0;
     height: v-v.$input-height;
@@ -148,6 +150,7 @@
     font-weight: v-v.$input-font-weight;
     padding: 0 0 v-v.$input-border-thickness-highlight v-v.$input-padding-left;
     display: block;
+    box-sizing: border-box;
     border: none;
     border-radius: 0;
     height: v-v.$input-height;
@@ -169,38 +172,6 @@
     &:focus ~ label {
       top: v-v.$input-label-lift-amount;
       font-size: v-v.$input-label-lifted-font-size;
-    }
-  }
-
-  textarea.rows-3 {
-    &:focus-visible,
-    &:focus,
-    &:active:not(:disabled) {
-      height: calc(2 * v-v.$input-height + 1 * v-v.$modal-gap + 1 * v-v.$input-border-thickness-highlight) !important;
-    }
-  }
-
-  textarea.rows-5 {
-    &:focus-visible,
-    &:focus,
-    &:active:not(:disabled) {
-      height: calc(3 * v-v.$input-height + 2 * v-v.$modal-gap + 2 * v-v.$input-border-thickness-highlight) !important;
-    }
-  }
-
-  textarea.rows-7 {
-    &:focus-visible,
-    &:focus,
-    &:active:not(:disabled) {
-      height: calc(4 * v-v.$input-height + 3 * v-v.$modal-gap + 3 * v-v.$input-border-thickness-highlight) !important;
-    }
-  }
-
-  textarea.rows-9 {
-    &:focus-visible,
-    &:focus,
-    &:active:not(:disabled) {
-      height: calc(5 * v-v.$input-height + 4 * v-v.$modal-gap + 4 * v-v.$input-border-thickness-highlight) !important;
     }
   }
 

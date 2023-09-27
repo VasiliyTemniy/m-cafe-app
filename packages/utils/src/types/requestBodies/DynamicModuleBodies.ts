@@ -1,9 +1,9 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { DynamicModuleDT } from "../../models/DynamicModule.js";
-import type { EditLocString, NewLocString } from "../../models/LocString.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isEditLocString, isNewLocString } from "../../models/LocString.js";
-import { isNumber, isString } from "../typeParsers.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { DynamicModuleDT } from '../../models/DynamicModule.js';
+import type { EditLocString, NewLocString } from '../../models/LocString.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isEditLocString, isNewLocString } from '../../models/LocString.js';
+import { isNumber, isString } from '../typeParsers.js';
 
 export type NewDynamicModuleBody = Omit<DynamicModuleDT, 'id' | 'locString' | 'picture' | 'placementType'>
 & {
@@ -24,15 +24,15 @@ export const isNewDynamicModuleBody = (body: unknown): body is NewDynamicModuleB
   if (!hasNewDynamicModuleBodyFields(body)) return false;
 
   if (
-    (hasOwnProperty(body, "className") && !isString(body.className))
+    (hasOwnProperty(body, 'className') && !isString(body.className))
     ||
-    (hasOwnProperty(body, "inlineCss") && !isString(body.inlineCss))
+    (hasOwnProperty(body, 'inlineCss') && !isString(body.inlineCss))
     ||
-    (hasOwnProperty(body, "url") && !isString(body.url))
+    (hasOwnProperty(body, 'url') && !isString(body.url))
     ||
-    (hasOwnProperty(body, "locString") && !isNewLocString(body.locString))
+    (hasOwnProperty(body, 'locString') && !isNewLocString(body.locString))
     ||
-    (hasOwnProperty(body, "placementType") && !isString(body.placementType))
+    (hasOwnProperty(body, 'placementType') && !isString(body.placementType))
   ) return false;
   
   return isString(body.moduleType)
@@ -57,15 +57,15 @@ export const isEditDynamicModuleBody = (body: unknown): body is EditDynamicModul
   if (!hasEditDynamicModuleBodyFields(body)) return false;
 
   if (
-    (hasOwnProperty(body, "className") && !isString(body.className))
+    (hasOwnProperty(body, 'className') && !isString(body.className))
     ||
-    (hasOwnProperty(body, "inlineCss") && !isString(body.inlineCss))
+    (hasOwnProperty(body, 'inlineCss') && !isString(body.inlineCss))
     ||
-    (hasOwnProperty(body, "url") && !isString(body.url))
+    (hasOwnProperty(body, 'url') && !isString(body.url))
     ||
-    (hasOwnProperty(body, "locString") && !isEditLocString(body.locString))
+    (hasOwnProperty(body, 'locString') && !isEditLocString(body.locString))
     ||
-    (hasOwnProperty(body, "placementType") && !isString(body.placementType))
+    (hasOwnProperty(body, 'placementType') && !isString(body.placementType))
   ) return false;
   
   return isString(body.moduleType)

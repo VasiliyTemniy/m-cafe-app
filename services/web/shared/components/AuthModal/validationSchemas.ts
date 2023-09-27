@@ -20,7 +20,7 @@ import {
 
 export const loginValidationSchema = (t: TFunction) => {
 
-  const tNode = 'loginPage.validationErrors';
+  const tNode = 'authModal.validationErrors';
 
   return yup.object().shape({
     credential: yup

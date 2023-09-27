@@ -35,7 +35,7 @@ const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: Ne
 
   const payload = jwt.verify(token, config.SECRET);
 
-  if (typeof payload === "string" || payload instanceof String || !isCustomPayload(payload))
+  if (typeof payload === 'string' || payload instanceof String || !isCustomPayload(payload))
     return next(new AuthorizationError('Malformed token'));
 
   req.userId = Number(payload.id);

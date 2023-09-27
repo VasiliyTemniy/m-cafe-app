@@ -23,6 +23,8 @@ export const TextComp = ({
     classNameOverride,
   });
 
+  if (!text) return null;
+
   switch (htmlEl) {
     case 'div':
       return (

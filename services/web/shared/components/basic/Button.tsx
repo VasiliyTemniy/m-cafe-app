@@ -1,13 +1,13 @@
-import type { MouseEventHandler } from "react";
+import type { MouseEventHandler } from 'react';
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
-import { useInitLC } from "@m-cafe-app/frontend-logic/shared/hooks";
-import { Tooltip } from "./Tooltip";
+import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { Tooltip } from './Tooltip';
 
 interface ButtonProps extends CommonProps {
   label: string;
   onClick?: MouseEventHandler;
   disabled?: boolean;
-  type?: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
+  type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
   variant?: 'primary' | 'secondary' | 'delete';
 }
 

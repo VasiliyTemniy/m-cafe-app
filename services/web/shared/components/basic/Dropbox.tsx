@@ -1,10 +1,10 @@
-import type { MouseEventHandler, MouseEvent } from "react";
+import type { MouseEventHandler, MouseEvent } from 'react';
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Image } from "./Image";
-import { apiBaseUrl } from "@m-cafe-app/shared-constants";
-import { collapseExpanded } from "@m-cafe-app/frontend-logic/utils";
-import { Scrollable } from "./Scrollable";
+import { Image } from './Image';
+import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
+import { Scrollable } from './Scrollable';
 
 interface DropboxProps extends CommonProps {
   options: string[];
@@ -51,7 +51,7 @@ export const Dropbox = ({
       <div className='chosen-wrapper' onClick={handleDropboxClick}>
         <div className='chosen-option'>{tNode ? t(`${tNode}.${currentOption}`) : currentOption}</div>
         <>
-          {!!label && <label htmlFor={id}>{label}</label>}
+          {!!label && <div className='label'>{label}</div>}
           <Image src={`${apiBaseUrl}/public/pictures/svg/arrow.svg`} classNameAddon='svg'/>
           {specific?.useBarBelow &&
             <div className='bar'/>

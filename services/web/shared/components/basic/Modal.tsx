@@ -34,7 +34,8 @@ export const Modal = ({
 }: ModalProps) => {
 
   const modalRef = useRef<HTMLDivElement>(null);
-  const observer = useRef<ResizeObserver | null>(null);
+  const parentObserver = useRef<ResizeObserver | null>(null);
+  const modalObserver = useRef<ResizeObserver | null>(null);
   const [wrapperHeight, setWrapperHeight] = useState(0);
   const [wrapperWidth, setWrapperWidth] = useState(0);
   const [wrapperTop, setWrapperTop] = useState(0);
@@ -49,12 +50,9 @@ export const Modal = ({
   });
 
   const handleResize = (parent: HTMLElement, modal: HTMLDivElement) => {
-    const newWrapperHeight = (parent.clientHeight - wrapperExcludeTop - wrapperExcludeBottom) < modal.clientHeight
-      ? parent.scrollHeight - wrapperExcludeTop - wrapperExcludeBottom
-      : parent.clientHeight - wrapperExcludeTop - wrapperExcludeBottom;
+    const newWrapperHeight = parent.clientHeight - wrapperExcludeTop - wrapperExcludeBottom;
     setWrapperHeight(newWrapperHeight);
     setWrapperTop(wrapperExcludeTop);
-    // Width must not be overflowing anyway
     const newWrapperWidth = parent.clientWidth - wrapperExcludeLeft - wrapperExcludeRight;
     setWrapperWidth(newWrapperWidth);
     setWrapperLeft(wrapperExcludeLeft);
@@ -66,14 +64,19 @@ export const Modal = ({
     if (!modalRef.current) return;
     const parent = document.body;
     const modal = modalRef.current;
-    observer.current = new ResizeObserver(() => {
+    parentObserver.current = new ResizeObserver(() => {
       handleResize(parent, modal);
     });
-    observer.current.observe(parent);
+    parentObserver.current.observe(parent);
+    modalObserver.current = new ResizeObserver(() => {
+      handleResize(parent, modal);
+    });
+    modalObserver.current.observe(modal);
     return () => {
-      observer.current?.unobserve(parent);
+      parentObserver.current?.unobserve(parent);
+      modalObserver.current?.unobserve(modal);
     };
-  }, [wrapperExcludeTop, wrapperExcludeRight, wrapperExcludeBottom, wrapperExcludeLeft]);
+  }, [wrapperExcludeTop, wrapperExcludeRight, wrapperExcludeBottom, wrapperExcludeLeft, active]);
 
   if (active) {
     return ReactDOM.createPortal(

@@ -1,9 +1,9 @@
-import type { NewUserBody } from "@m-cafe-app/utils";
-import { Formik, Form } from "formik";
+import type { NewUserBody } from '@m-cafe-app/utils';
+import { Formik, Form } from 'formik';
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { FormikPersist } from '@m-cafe-app/frontend-logic/shared/components';
-import { signupValidationSchema } from "./validationSchemas";
-import { ButtonGroup, Button, FormikTextField, FormikDateField, Scrollable } from "../basic";
+import { signupValidationSchema } from './validationSchemas';
+import { ButtonGroup, Button, FormikTextField, FormikDateField, Scrollable } from '../basic';
 
 
 export type SignupFormValues = NewUserBody & {
@@ -41,8 +41,8 @@ export const SignupForm = ({ onSubmit, changeMode, onCancel, loginNecessary }: S
     >
       {({ isValid, dirty }) => {
         return (
-          <Form className='signup-form'>
-            <Scrollable classNameAddon="signup-form-inputs-wrapper">
+          <Form className='form'>
+            <Scrollable classNameAddon="form-inputs">
               <FormikTextField
                 placeholder={t(`${tNode}.placeholder.username`)}
                 label={t(`${tNode}.label.username`)}
@@ -86,7 +86,7 @@ export const SignupForm = ({ onSubmit, changeMode, onCancel, loginNecessary }: S
               />
               <FormikPersist formName='signup-form'/>
             </Scrollable>
-            <div className="signup-form-buttons-wrapper">
+            <div className="form-buttons">
               <Button
                 label={t(`${tNode}.label.toLogin`)}
                 variant='primary'

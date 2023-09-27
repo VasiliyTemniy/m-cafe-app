@@ -1,25 +1,32 @@
+import type { MouseEventHandler } from 'react';
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 
 interface TableProps extends CommonProps {
-  children: JSX.Element[] | JSX.Element;
   caption?: string;
   header?: string;
   columns: string[];
   items: Array<{
-    id: string;
+    id: number;
     [key: string]: string | number | boolean | undefined
   }>;
+  tableName: string;
+  footer?: JSX.Element | JSX.Element[];
+  onItemClick?: MouseEventHandler;
+  onCellClick?: MouseEventHandler;
 }
 
 export const Table = ({
   classNameOverride,
   classNameAddon,
-  id,
   caption,
   header,
   columns,
-  items
+  items,
+  footer,
+  tableName,
+  onItemClick,
+  onCellClick
 }: TableProps) => {
 
   const { className, style } = useInitLC({
@@ -30,27 +37,34 @@ export const Table = ({
   });
 
   return (
-    <table className={className} id={id} style={style}>
+    <table className={className} id={tableName} style={style}>
       {caption &&
         <caption>
           {caption}
         </caption>
       }
-      {header &&
-        <thead>
-          <tr>
+      <thead>
+        {header &&
+          <tr className='table-header'>
             <th colSpan={columns.length}>{header}</th>
           </tr>
-        </thead>
-      }
+        }
+        <tr className='table-column-names'>
+          {
+            columns.map(column =>
+              <th key={`${tableName}-${column}`}>{column}</th>
+            )
+          }
+        </tr>
+      </thead>
       <tbody>
         {
           items.map(item =>
-            <tr key={item.id}>
+            <tr key={`${tableName}-${item.id}`} id={`${item.id}`} onClick={onItemClick}>
               {
-                Object.keys(item).map(key => 
-                  <td key={`${item.id}-${item[key]}`}>
-                    {item[key]}
+                Object.keys(item).map((key, index) => 
+                  <td key={`${tableName}-${item.id}-${index}`} id={`${item.id}-${index}`} onClick={onCellClick}>
+                    <div>{item[key]}</div>
                   </td>
                 )
               }
@@ -58,6 +72,7 @@ export const Table = ({
           )
         }
       </tbody>
+      {footer}
     </table>
   );
 };

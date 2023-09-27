@@ -1,0 +1,102 @@
+@use '../colors' as *;
+@use './alpha_vars' as v-v; // variant-vars
+@use '../vars' as g-v; // global-vars
+@use '../theming' as *;
+@use '../common' as *;
+
+
+.alpha.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: v-v.$table-border-radius;
+  table-layout: fixed;
+
+  th, td {
+    padding: v-v.$table-cell-padding;
+
+    div {
+      text-overflow: ellipsis;
+      word-wrap: break-word;
+      max-width: 10rem;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+
+  tr {
+    height: v-v.$table-row-height;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background-color g-v.$hover-animation-speed ease-in-out;
+  }
+
+}
+
+%table-border-right {
+  @include theme(border-right, Border, 1px solid);
+}
+
+%table-border-bottom {
+  @include theme(border-bottom, Border, 1px solid);
+}
+
+.alpha.alpha-color.table {
+  @include theme(color, AlphaText);
+  @include theme(-webkit-text-fill-color, AlphaText);
+  @include theme(border, Border, 1px solid);
+
+  /* Apply a border to the right of all but the last column */
+  th:not(:last-child),
+  td:not(:last-child) {
+    @extend %table-border-right;
+  }
+
+  /* Apply a border to the bottom of all but the last row */
+  // thead>tr:not(:last-child)>th,  // these two were in some guide https://unused-css.com/blog/css-rounded-table-corners/
+  // thead>tr:not(:last-child)>td,  // but they did not apply border to bottom of thead
+  thead>tr>th,
+  thead>tr>td,
+  tbody>tr:not(:last-child)>th,
+  tbody>tr:not(:last-child)>td,
+  tfoot>tr:not(:last-child)>th,
+  tfoot>tr:not(:last-child)>td,
+  tr:not(:last-child)>td,
+  tr:not(:last-child)>th,
+  thead:not(:last-child),
+  tbody:not(:last-child),
+  tfoot:not(:last-child) {
+    @extend %table-border-bottom;
+  }
+
+  thead {
+    tr.table-header {
+      @include theme(background-color, AlphaBGFirst);
+    }
+    tr.table-column-names {
+      @include theme(background-color, AlphaPrimaryTransparent);
+    }
+    tr.table-footer {
+      @include theme(background-color, AlphaBGFirst);
+    }
+  }
+
+  tbody {
+    tr:nth-child(even of :not([hidden])) {
+      @include theme(background-color, AlphaBGSecond);
+    }
+    tr:nth-child(odd of :not([hidden])) {
+      @include theme(background-color, AlphaBGThird);
+    }
+
+    tr:nth-child(n):hover {
+      @include theme(background-color, AlphaPrimaryTransparentHighlight);
+    }
+
+    tr:nth-child(n):active {
+      @include theme(background-color, AlphaPrimaryTransparentActive);
+    }
+  }
+}

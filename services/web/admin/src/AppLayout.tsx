@@ -1,0 +1,48 @@
+import { useAppSelector } from '@m-cafe-app/frontend-logic/admin/hooks';
+import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { AppContent, Wrapper, Header, NavItem } from 'shared/components';
+import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
+import { StaffSidebar } from 'shared/staffComponents';
+import { Outlet } from 'react-router-dom';
+
+
+export const AppLayout = () => {
+
+  const user = useAppSelector(state => state.user);
+
+  const { t } = useTranslation();
+
+  const sidebarTNode = 'staffSidebar';
+
+  if (!user.phonenumber) {
+    return (
+      <>
+        {/* <Notification/> */}
+        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
+          <Header loginNecessary={true}/>
+          <AppContent />
+        </Wrapper>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
+          <Header loginNecessary={true}/>
+          <AppContent>
+            {/* <Notification/> */}
+            <Outlet />
+          </AppContent>
+          <StaffSidebar>
+            <NavItem path='/' label={t(`${sidebarTNode}.customerView`)}/>
+            <NavItem path='/fixed-locs' label={t(`${sidebarTNode}.fixedLocs`)}/>
+            <NavItem path='/ui-settings' label={t(`${sidebarTNode}.uiSettings`)}/>
+            {/* <NavItem path='/' label='SECOND NAV YAY'/>
+            <NavItem path='/' label='SECOND NAV YAY'/>
+            <NavItem path='/' label='SECOND NAV YAY'/> */}
+          </StaffSidebar>
+        </Wrapper>
+      </>
+    );
+  }
+};

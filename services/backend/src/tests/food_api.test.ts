@@ -7,12 +7,12 @@ import type {
   NewFoodTypeBody,
   NewPictureBody,
   PictureDT
-} from "@m-cafe-app/utils";
-import { timestampsKeys } from "@m-cafe-app/utils";
-import { expect } from "chai";
-import "mocha";
+} from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/utils';
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import {
   connectToDatabase,
   Food,
@@ -23,20 +23,20 @@ import {
   Picture,
   User
 } from '@m-cafe-app/db';
-import config from "../utils/config";
-import { validAdminInDB } from "./admin_api_helper";
+import config from '../utils/config';
+import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
-import { Session } from "../redis/Session";
-import { initLogin, userAgent } from "./sessions_api_helper";
-import { apiBaseUrl } from "./test_helper";
-import { initFoods, initFoodTypes } from "./food_api_helper";
-import { validUserInDB } from "./user_api_helper";
+import { Session } from '../redis/Session';
+import { initLogin, userAgent } from './sessions_api_helper';
+import { apiBaseUrl } from './test_helper';
+import { initFoods, initFoodTypes } from './food_api_helper';
+import { validUserInDB } from './user_api_helper';
 import {
   includeNameDescriptionLocNoTimestamps,
   includeNameDescriptionLocNoTimestampsSecondLayer
-} from "../utils/sequelizeHelpers";
-import { initFoodComponents } from "./foodComponents_api_helper";
-import { initIngredients } from "./ingredient_api_helper";
+} from '../utils/sequelizeHelpers';
+import { initFoodComponents } from './foodComponents_api_helper';
+import { initIngredients } from './ingredient_api_helper';
 
 
 
@@ -117,7 +117,7 @@ describe('Food type requests tests', () => {
 
     const response2 = await api
       .delete(`${apiBaseUrl}/foodtype/${foodTypes[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -126,7 +126,7 @@ describe('Food type requests tests', () => {
 
     const response3 = await api
       .post(`${apiBaseUrl}/foodtype`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -136,7 +136,7 @@ describe('Food type requests tests', () => {
 
     const response4 = await api
       .put(`${apiBaseUrl}/foodtype/${foodTypes[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -159,7 +159,7 @@ describe('Food type requests tests', () => {
 
     const response = await api
       .post(`${apiBaseUrl}/foodtype`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(newFoodType)
       .expect(201)
@@ -189,7 +189,7 @@ describe('Food type requests tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/foodtype/${foodTypes[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updFoodType)
       .expect(200)
@@ -213,7 +213,7 @@ describe('Food type requests tests', () => {
 
     await api
       .delete(`${apiBaseUrl}/foodtype/${foodTypes[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 
@@ -352,7 +352,7 @@ describe('Food requests tests', () => {
 
     const response2 = await api
       .delete(`${apiBaseUrl}/food/${foods[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -361,7 +361,7 @@ describe('Food requests tests', () => {
 
     const response3 = await api
       .post(`${apiBaseUrl}/food`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -371,7 +371,7 @@ describe('Food requests tests', () => {
 
     const response4 = await api
       .put(`${apiBaseUrl}/food/${foods[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -396,7 +396,7 @@ describe('Food requests tests', () => {
 
     const response = await api
       .post(`${apiBaseUrl}/food`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(newFood)
       .expect(201)
@@ -424,7 +424,7 @@ describe('Food requests tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/food/${foods[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updFood)
       .expect(200)
@@ -465,7 +465,7 @@ describe('Food requests tests', () => {
 
     await api
       .delete(`${apiBaseUrl}/food/${foods[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 

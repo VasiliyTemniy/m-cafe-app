@@ -12,25 +12,34 @@ import { allowedThemes } from '@m-cafe-app/shared-constants';
 
 type SettingsActionSetLanguage = { payload: 'main' | 'sec' | 'alt' };
 
-type SettingsActionSetUiSettings = { payload: { uiSettings: UiSettingDT[] } };
+type SettingsActionParseUiSettings = {
+  payload: {
+    uiSettings: UiSettingDT[]
+  }
+};
 
 type SettingsActionSetTheme = { payload: AllowedThemes };
 
+/**
+ * Fixed locs are unnested to uiNodes by first part until dot in loc.name
+ * key: string is uiNode name
+ */
+export type ParsedUiSettings = {
+  [key: string]: UiSettingDT[]
+};
 
 export type SettingsState = {
   dbUiSettings: UiSettingDT[],
-  actualUiSettings: {
-    [key: string]: UiSettingDT[]
-  },
-  uiSettingsHash: string,
+  parsedUiSettings: ParsedUiSettings,
+  parsedUiSettingsHash: string,
   theme: AllowedThemes,
   language: 'main' | 'sec' | 'alt'
 };
 
 const initialState: SettingsState = {
   dbUiSettings: [],
-  actualUiSettings: {},
-  uiSettingsHash: '',
+  parsedUiSettings: {},
+  parsedUiSettingsHash: '',
   theme: 'light',
   language: 'main'
 };
@@ -40,37 +49,36 @@ export const sharedSettingsSliceBase = {
   initialState,
   reducers: {
     setLanguage: (state: SettingsState, action: SettingsActionSetLanguage): SettingsState => {
+      window.localStorage.setItem('CafeAppLanguage', JSON.stringify(action.payload));
       return { ...state, language: action.payload };
     },
-    setUiSettings: (state: SettingsState, action: SettingsActionSetUiSettings): SettingsState => {
-      return { ...state, dbUiSettings: action.payload.uiSettings };
-    },
     /**
-     * Reads DB ui settings, splits names to namespaces ( like `${componentType}-${theme}-baseVariant` )
-     * and actual settings names ( like className if ends with -classNames or CSS property name if ends with -inlineCSS )
+     * Reads DB ui settings, splits names to uiNodes ( like `${componentType}-${theme}-baseVariant` )
+     * and parsed settings names ( like className if ends with -classNames or CSS property name if ends with -inlineCSS )
      * Filters all settings with value === 'false'
      * @example
      * So, uiSetting = { name: 'input-dark-classNames.shadowed', value: 'true' }
      * 
      * gets split to:
-     * namespace === 'input-dark-classNames',
+     * uiNode === 'input-dark-classNames',
      * uiSetting: { name: 'shadowed', value: 'true' }
      */
-    parseUiSettings: (state: SettingsState, action: SettingsActionSetUiSettings): SettingsState => {
-      const newUiSettingsState = {} as { [key: string]: UiSettingDT[] };
+    parseUiSettings: (state: SettingsState, action: SettingsActionParseUiSettings): SettingsState => {
+      const parsedUiSettings = {} as { [key: string]: UiSettingDT[] };
       for (const uiSetting of action.payload.uiSettings) {
-        if (uiSetting.value === 'false') continue;
-        const nameParts = uiSetting.name.split('.');
-        const namespace = nameParts[0];
-        const uiSettingName = nameParts[1] ? nameParts[1] : '';
-        const actualUiSetting = { ...uiSetting, name: uiSettingName };
-        if (hasOwnProperty(newUiSettingsState, namespace))
-          newUiSettingsState[namespace] = [ ...newUiSettingsState[namespace], actualUiSetting ];
+        // For admin module, ui settings filter is applied before component init, not inside of a reducer to preserve falsy settings in state
+        if (uiSetting.value === 'false' && !process.env.FRONTEND_MODULE_ADMIN) continue;
+        const firstDotIndex = uiSetting.name.indexOf('.');
+        const uiNode = uiSetting.name.slice(0, firstDotIndex);
+        const uiSettingName = uiSetting.name.slice(firstDotIndex + 1);
+        const parsedUiSetting = { ...uiSetting, name: uiSettingName };
+        if (hasOwnProperty(parsedUiSettings, uiNode))
+          parsedUiSettings[uiNode] = [ ...parsedUiSettings[uiNode], parsedUiSetting ];
         else
-          newUiSettingsState[namespace] = [ actualUiSetting ];
+          parsedUiSettings[uiNode] = [ parsedUiSetting ];
       }
-      const uiSettingsHash = Md5.hashStr(JSON.stringify(newUiSettingsState));
-      return { ...state, actualUiSettings: newUiSettingsState, uiSettingsHash };
+      const parsedUiSettingsHash = Md5.hashStr(JSON.stringify(parsedUiSettings));
+      return { ...state, parsedUiSettings, parsedUiSettingsHash };
     },
     setTheme: (state: SettingsState, action: SettingsActionSetTheme): SettingsState => {
       const rootElement = document.getElementsByTagName('html')[0];
@@ -89,7 +97,7 @@ const settingsSlice = createSlice({
   ...sharedSettingsSliceBase
 });
 
-export const { setLanguage, setUiSettings, parseUiSettings, setTheme } = settingsSlice.actions;
+export const { setLanguage, parseUiSettings, setTheme } = settingsSlice.actions;
 
 export const initUiSettings = (t: TFunction) => {
   return async (dispatch: AppDispatch) => {
@@ -99,7 +107,6 @@ export const initUiSettings = (t: TFunction) => {
       for (const uiSetting of uiSettings) {
         if (!isUiSettingDT(uiSetting)) throw new ApplicationError('Server has sent wrong data', { all: uiSettings, current: uiSetting as SafeyAny });
       }
-      dispatch(setUiSettings({ uiSettings }));
       dispatch(parseUiSettings({ uiSettings }));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));

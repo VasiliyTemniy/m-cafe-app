@@ -1,8 +1,8 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { UiSettingDT } from "../../models/UiSetting.js";
-import { isUiSettingDT } from "../../models/UiSetting.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isString } from "../typeParsers.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { UiSettingDT } from '../../models/UiSetting.js';
+import { isUiSettingDT } from '../../models/UiSetting.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isString } from '../typeParsers.js';
 
 export type NewUiSettingBody = Omit<UiSettingDT, 'id'>;
 

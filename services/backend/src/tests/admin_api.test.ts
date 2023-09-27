@@ -1,15 +1,15 @@
-import { expect } from "chai";
-import "mocha";
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import { apiBaseUrl } from './test_helper';
 import { connectToDatabase, User } from '@m-cafe-app/db';
 import { Session } from '../redis/Session';
-import { initSuperAdmin } from "../utils/adminInit";
-import { initLogin, userAgent } from "./sessions_api_helper";
+import { initSuperAdmin } from '../utils/adminInit';
+import { initLogin, userAgent } from './sessions_api_helper';
 import { initialUsers, validNewUser, validUserInDB } from './user_api_helper';
-import config from "../utils/config";
-import { validAdminInDB } from "./admin_api_helper";
+import config from '../utils/config';
+import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
 
 
@@ -103,7 +103,7 @@ describe('Admin router basics', () => {
 
     const response1 = await api
       .put(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
-      .set("Cookie", [tokenCookie1])
+      .set('Cookie', [tokenCookie1])
       .set('User-Agent', userAgent)
       .send({ rights: 'admin' })
       .expect(200)
@@ -116,7 +116,7 @@ describe('Admin router basics', () => {
 
     const response2 = await api
       .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
-      .set("Cookie", [tokenCookie2])
+      .set('Cookie', [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'user' })
       .expect(200)
@@ -127,7 +127,7 @@ describe('Admin router basics', () => {
 
     const response3 = await api
       .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
-      .set("Cookie", [tokenCookie2])
+      .set('Cookie', [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
       .expect(200)
@@ -141,7 +141,7 @@ describe('Admin router basics', () => {
 
     await api
       .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
-      .set("Cookie", [tokenCookie2])
+      .set('Cookie', [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ rights: 'user' })
       .expect(200)
@@ -167,7 +167,7 @@ describe('Admin router basics', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/admin/user/${superadmin.id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
       .expect(403)
@@ -184,7 +184,7 @@ describe('Admin router basics', () => {
 
     const response1 = await api
       .put(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ admin: true })
       .expect(403)
@@ -196,7 +196,7 @@ describe('Admin router basics', () => {
     // Check admin route for getting user data
     const response2 = await api
       .get(`${apiBaseUrl}/admin/user/`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -222,7 +222,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     // Check that user's token is valid
     await api
       .get(`${apiBaseUrl}/user/me`)
-      .set("Cookie", [validUsersTokenCookie])
+      .set('Cookie', [validUsersTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -233,7 +233,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     // Admin disables the user
     await api
       .put(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send({ rights: 'disabled' })
       .expect(200)
@@ -263,7 +263,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
     // Check that user's previously valid token is now invalid
     const response2 = await api
       .get(`${apiBaseUrl}/user/me`)
-      .set("Cookie", [validUsersTokenCookie])
+      .set('Cookie', [validUsersTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -288,7 +288,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
 
     const response = await api
       .delete(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -304,7 +304,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
 
     await api
       .delete(`${apiBaseUrl}/user`)
-      .set("Cookie", [tokenCookie1])
+      .set('Cookie', [tokenCookie1])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -313,7 +313,7 @@ Also, all user sessions get deleted after user being banned. Also, user is not v
 
     await api
       .delete(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
-      .set("Cookie", [tokenCookie2])
+      .set('Cookie', [tokenCookie2])
       .set('User-Agent', userAgent)
       .expect(204);
 
@@ -329,7 +329,7 @@ if they did not request to make permanent deletion', async () => {
 
     await api
       .delete(`${apiBaseUrl}/user`)
-      .set("Cookie", [tokenCookie1])
+      .set('Cookie', [tokenCookie1])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -338,7 +338,7 @@ if they did not request to make permanent deletion', async () => {
 
     await api
       .put(`${apiBaseUrl}/admin/user/${validUserInDBID}`)
-      .set("Cookie", [tokenCookie2])
+      .set('Cookie', [tokenCookie2])
       .set('User-Agent', userAgent)
       .send({ restore: true })
       .expect(200);

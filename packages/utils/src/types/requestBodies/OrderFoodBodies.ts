@@ -1,7 +1,7 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { NewOrderFood } from "./OrderBodies.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isNumber } from "../typeParsers.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { NewOrderFood } from './OrderBodies.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isNumber } from '../typeParsers.js';
 
 
 export type EditOrderFoodBody = NewOrderFood & { id: number };

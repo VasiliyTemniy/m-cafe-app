@@ -1,8 +1,8 @@
-import type { RedisClientOptions, RedisFunctions, RedisModules, RedisScripts } from "@redis/client";
+import type { RedisClientOptions, RedisFunctions, RedisModules, RedisScripts } from '@redis/client';
 import type { CookieOptions } from 'express';
 import type { Secret } from 'jsonwebtoken';
-import * as dotenv from "dotenv";
-import { readFileSync } from "fs";
+import * as dotenv from 'dotenv';
+import { readFileSync } from 'fs';
 
 export const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 

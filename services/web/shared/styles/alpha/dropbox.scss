@@ -42,7 +42,7 @@
       }
     };
 
-    label {
+    .label {
       position: absolute;
       font-weight: normal;
       pointer-events: none;
@@ -185,7 +185,7 @@
       height: calc(v-v.$input-height * 0.8);
       font-size: calc(v-v.$input-font-size * 0.8);
     }
-    label {
+    .label {
       top: calc(v-v.$input-label-lift-amount * 0.8);
       font-size: calc(v-v.$input-label-lifted-font-size * 0.8);
     }
@@ -228,7 +228,7 @@
       @extend %hover-color-common;
     }
 
-    label {
+    .label {
       @include theme(color, AlphaText);
     }
 

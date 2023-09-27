@@ -1,13 +1,12 @@
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
-import type { FieldHookConfig } from "formik";
-import type { FocusEvent } from 'react';
-import { useField } from "formik";
+import type { FieldHookConfig } from 'formik';
+import { useField } from 'formik';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { Tooltip } from '../Tooltip';
-import { useRef } from "react";
+import { useRef, useEffect } from 'react';
 
 type FormikTextAreaFieldProps = FieldHookConfig<string> & CommonFieldProps & {
-  maxrows: number
+  maxTextLength?: number
 };
 
 export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAreaFieldProps) => {
@@ -44,30 +43,26 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
     ? 'bugfix'
     : '';
 
-  const handleBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
-    field.onBlur(e);
-    if (areaRef.current) {
-      areaRef.current.style.height = `${
-        Math.min(
-          Math.max(
-            areaRef.current?.scrollHeight,
-            32
-          ),
-          32 * (props.maxrows - 1) + 15
-        )
-      }px`;
+  const handleAreaHeight = () => {
+    if (!areaRef.current) return;
+    areaRef.current.style.removeProperty('height');
+    if (areaRef.current.scrollHeight > areaRef.current.clientHeight) {
+      areaRef.current.style.height = `${areaRef.current.scrollHeight}px`;
     }
   };
+
+  useEffect(() => {
+    handleAreaHeight();
+  }, []);
 
   return(
     <div className={`input-wrapper textarea ${baseVariant} ${baseColorVariant}`}>
       <textarea
         id={field.name}
         name={field.name}
-        className={`${className} rows-${props.maxrows}`}
+        className={`${className}`}
         value={field.value}
         onChange={field.onChange}
-        onBlur={handleBlur}
         style={style}
         disabled={disabled}
         ref={areaRef}
@@ -77,6 +72,8 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
         autoCapitalize='off'
         spellCheck='false'
         placeholder={inputPlaceholder}
+        onKeyUp={handleAreaHeight}
+        maxLength={props.maxTextLength}
       />
       <label htmlFor={props.name} className={labelBugFix}>{labelText}</label>
       <>

@@ -1,5 +1,5 @@
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
-import { useInitLC } from "@m-cafe-app/frontend-logic/shared/hooks";
+import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 
 interface ButtonGroupProps extends CommonProps {
   children: JSX.Element[] | JSX.Element;

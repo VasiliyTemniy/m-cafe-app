@@ -1,15 +1,15 @@
-import { expect } from "chai";
-import "mocha";
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
-import config from "../utils/config";
+import app from '../app';
+import config from '../utils/config';
 import { connectToDatabase, LocString, User } from '@m-cafe-app/db';
-import { validAdminInDB } from "./admin_api_helper";
+import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
-import { Session } from "../redis/Session";
-import { initLogin, userAgent } from "./sessions_api_helper";
-import { apiBaseUrl } from "./test_helper";
-import { initFacilities } from "./facility_api_helper";
+import { Session } from '../redis/Session';
+import { initLogin, userAgent } from './sessions_api_helper';
+import { apiBaseUrl } from './test_helper';
+import { initFacilities } from './facility_api_helper';
 
 
 
@@ -45,7 +45,7 @@ describe('App stability, middleware, routing, unhandled errors tests', () => {
 
     const response = await api
       .delete(`${apiBaseUrl}/facility/some_string`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(400);
 

@@ -1,6 +1,6 @@
-import type { MapToUnknown } from "../helpers.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isNumber, isString } from "../typeParsers.js";
+import type { MapToUnknown } from '../helpers.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isNumber, isString } from '../typeParsers.js';
 
 /**
  * This request body is not connected with PictureDT because picture file is
@@ -31,7 +31,7 @@ export const isNewPictureBody = (body: unknown): body is NewPictureBody => {
     ||
     (hasOwnProperty(body, 'altTextSecStr') && !isString(body.altTextSecStr))
     ||
-    (hasOwnProperty(body, "altTextAltStr") && !isString(body.altTextAltStr))
+    (hasOwnProperty(body, 'altTextAltStr') && !isString(body.altTextAltStr))
   )
     return false;
 
@@ -56,7 +56,7 @@ export const isEditPictureBody = (body: unknown): body is EditPictureBody => {
     ||
     (hasOwnProperty(body, 'altTextSecStr') && !isString(body.altTextSecStr))
     ||
-    (hasOwnProperty(body, "altTextAltStr") && !isString(body.altTextAltStr))
+    (hasOwnProperty(body, 'altTextAltStr') && !isString(body.altTextAltStr))
   )
     return false;
 

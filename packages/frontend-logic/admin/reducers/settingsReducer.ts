@@ -1,7 +1,7 @@
 import type { AppDispatch } from '../store';
 import type { TFunction } from '../../shared/hooks';
 import type { UiSettingDT, SafeyAny } from '@m-cafe-app/utils';
-import type { SettingsState } from '../../shared/reducers';
+import type { ParsedUiSettings, SettingsState } from '../../shared/reducers';
 import { ApplicationError, isUiSettingDT } from '@m-cafe-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import uiSettingService from '../services/uiSetting';
@@ -9,9 +9,16 @@ import { handleAxiosError } from '../../utils/errorHandler';
 import { sharedSettingsSliceBase } from '../../shared/reducers';
 import { Md5 } from 'ts-md5';
 
+type SetDbUiSettingsAction = {
+  payload: {
+    uiSettings: UiSettingDT[]
+  }
+};
+
 type UpdUiSettingAction = {
   payload: {
     uiSetting: UiSettingDT,
+    uiNode: string
   };
 };
 
@@ -23,54 +30,52 @@ export type { SettingsState };
 const settingsSlice = createSlice({
   ...sharedSettingsSliceBase,
   reducers: {
+    setDbUiSettings: (state: SettingsState, action: SetDbUiSettingsAction): SettingsState => {
+      return { ...state, dbUiSettings: action.payload.uiSettings };
+    },
     /**
-     * @param {UpdUiSettingAction} action
-     * payload UiSettingDT with full name without separation to namespace
+     * Updates `parsed` ui settings state, does not send anything to backend,
+     * does not update dbUiSettings state
      */
     updUiSetting(state: SettingsState, action: UpdUiSettingAction) {
-      const nameParts = action.payload.uiSetting.name.split('.');
-      const namespace = nameParts[0];
-      const uiSettingName = nameParts[1] ? nameParts[1] : '';
-      const actualUiSetting: UiSettingDT = {
-        ...action.payload.uiSetting,
-        name: uiSettingName
-      };
-      const newActualUiSettingsState = state.actualUiSettings[namespace].map(
-        uiSetting => uiSetting.id === action.payload.uiSetting.id ? actualUiSetting : uiSetting
-      );
-      const newDbUiSettingsState = state.dbUiSettings.map(
+      const uiNode = action.payload.uiNode;
+      const newParsedUiSettingsNamespaceState = state.parsedUiSettings[uiNode].map(
         uiSetting => uiSetting.id === action.payload.uiSetting.id ? action.payload.uiSetting : uiSetting
       );
-      const uiSettingsHash = Md5.hashStr(JSON.stringify(newActualUiSettingsState));
-      const newState = {
-        ...state,
-        dbUiSettings: newDbUiSettingsState,
-        actualUiSettings: {
-          [namespace]: newActualUiSettingsState,
-          ...state.actualUiSettings
-        },
-        uiSettingsHash
+      const updParsedUiSettings = {
+        ...state.parsedUiSettings,
+        [uiNode]: newParsedUiSettingsNamespaceState
       };
-      return { ...newState };
+      const parsedUiSettingsHash = Md5.hashStr(JSON.stringify(newParsedUiSettingsNamespaceState));
+      return { ...state, parsedUiSettings: updParsedUiSettings, parsedUiSettingsHash };
     },
     ...sharedSettingsSliceBase.reducers
   }
 });
 
-export const { setLanguage, setUiSettings, updUiSetting, parseUiSettings, setTheme } = settingsSlice.actions;
+export const { setLanguage, setDbUiSettings, updUiSetting, parseUiSettings, setTheme } = settingsSlice.actions;
 
 /**
  * Updates many ui settings in DB
+ * 
+ * Server response is used to reinit ui settings state
  */
-export const sendUpdUiSettings = (updUiSettings: UiSettingDT[], t: TFunction) => {
+export const sendUpdUiSettings = (parsedUiSettings: ParsedUiSettings, t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
+      const updUiSettings = [] as UiSettingDT[];
+      for (const uiNode in parsedUiSettings) {
+        for (const uiSetting of parsedUiSettings[uiNode]) {
+          const dbUiSettingName = uiNode + '.' + uiSetting.name;
+          updUiSettings.push({ ...uiSetting, name: dbUiSettingName });
+        }
+      }
       const uiSettings = await uiSettingService.updateManyUiSettings(updUiSettings);
       if (!Array.isArray(uiSettings)) throw new ApplicationError('Server has sent wrong data', { current: uiSettings });
       for (const uiSetting of uiSettings) {
         if (!isUiSettingDT(uiSetting)) throw new ApplicationError('Server has sent wrong data', { all: uiSettings, current: uiSetting as SafeyAny });
       }
-      dispatch(setUiSettings({ uiSettings }));
+      dispatch(setDbUiSettings({ uiSettings }));
       dispatch(parseUiSettings({ uiSettings }));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
@@ -78,6 +83,24 @@ export const sendUpdUiSettings = (updUiSettings: UiSettingDT[], t: TFunction) =>
   };
 };
 
-export { initUiSettings } from '../../shared/reducers/settingsReducer';
+/**
+ * Difference between initUiSettings from shared folder and initAdminUiSettings - 
+ * admin's init sets dbUiSettings state in addition to parsed ui settings state
+ */
+export const initAdminUiSettings = (t: TFunction) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const uiSettings = await uiSettingService.getUiSettings();
+      if (!Array.isArray(uiSettings)) throw new ApplicationError('Server has sent wrong data', { current: uiSettings });
+      for (const uiSetting of uiSettings) {
+        if (!isUiSettingDT(uiSetting)) throw new ApplicationError('Server has sent wrong data', { all: uiSettings, current: uiSetting as SafeyAny });
+      }
+      dispatch(setDbUiSettings({ uiSettings }));
+      dispatch(parseUiSettings({ uiSettings }));
+    } catch (e: unknown) {
+      dispatch(handleAxiosError(e, t));
+    }
+  };
+};
 
 export default settingsSlice.reducer;

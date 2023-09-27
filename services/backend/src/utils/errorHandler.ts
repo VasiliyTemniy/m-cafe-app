@@ -79,7 +79,7 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
 
     case 'TokenExpiredError':
 
-      const hasToken = (req: unknown): req is { token: unknown; } => hasOwnProperty(req, "token");
+      const hasToken = (req: unknown): req is { token: unknown; } => hasOwnProperty(req, 'token');
       if (!hasToken(req)) {
         res.status(401).json({
           error: {

@@ -1,19 +1,19 @@
-import type { EditFixedLocBody, NewFixedLocBody } from "@m-cafe-app/utils";
-import { timestampsKeys } from "@m-cafe-app/utils";
-import { expect } from "chai";
-import "mocha";
+import type { EditFixedLocBody, NewFixedLocBody } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/utils';
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import { connectToDatabase, FixedLoc, LocString, User } from '@m-cafe-app/db';
-import config from "../utils/config";
-import { validAdminInDB } from "./admin_api_helper";
+import config from '../utils/config';
+import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
-import { Session } from "../redis/Session";
-import { initLogin, userAgent } from "./sessions_api_helper";
-import { apiBaseUrl } from "./test_helper";
-import { validUserInDB } from "./user_api_helper";
-import { initFixedLocs } from "../utils/initFixedLocs";
-import { includeLocStringNoTimestamps } from "../utils/sequelizeHelpers";
+import { Session } from '../redis/Session';
+import { initLogin, userAgent } from './sessions_api_helper';
+import { apiBaseUrl } from './test_helper';
+import { validUserInDB } from './user_api_helper';
+import { initFixedLocs } from '../utils/initFixedLocs';
+import { includeLocStringNoTimestamps } from '../utils/sequelizeHelpers';
 
 
 
@@ -93,7 +93,7 @@ describe('FixedLoc requests tests', () => {
 
     const response2 = await api
       .delete(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -102,7 +102,7 @@ describe('FixedLoc requests tests', () => {
 
     const response3 = await api
       .post(`${apiBaseUrl}/fixed-loc`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -112,7 +112,7 @@ describe('FixedLoc requests tests', () => {
 
     const response4 = await api
       .put(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
-      .set("Cookie", [commonUserTokenCookie])
+      .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
       .send({ some: 'crap' })
       .expect(403)
@@ -133,7 +133,7 @@ describe('FixedLoc requests tests', () => {
 
     const response = await api
       .post(`${apiBaseUrl}/fixed-loc`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(newFixedLoc)
       .expect(201)
@@ -156,7 +156,7 @@ describe('FixedLoc requests tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updFixedLoc)
       .expect(200)
@@ -186,7 +186,7 @@ describe('FixedLoc requests tests', () => {
 
     await api
       .delete(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
-      .set("Cookie", [tokenCookie])
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(204);
 

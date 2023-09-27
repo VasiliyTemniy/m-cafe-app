@@ -5,12 +5,14 @@
 @use './loading' as *;
 @use './alpha/button' as *;
 @use './alpha/buttongroup' as *;
+@use './alpha/form' as *;
 @use './alpha/input' as *;
 @use './alpha/modal' as *;
 @use './alpha/switch' as *;
 @use './alpha/dropbox' as *;
 @use './alpha/scrollbar' as *;
 @use './alpha/container' as *;
+@use './alpha/table' as *;
 @use './alpha/textcomp' as *;
 @use './alpha/tooltip' as *;
 @use './alpha/navitem' as *;
@@ -26,7 +28,7 @@ body {
   overflow: hidden;
 }
 
-div {
+div, span, p, h1, h2, h3, h4 {
   @extend %reset-std;
 }
 
@@ -43,28 +45,3 @@ div {
 .alpha.alpha-color#app-wrapper {
   @include theme(background-color, AlphaBGMain);
 }
-
-// Main window
-// .window-container-divider {
-//   height: 100%;
-//   width: calc(100vw - g-v.$menu-width);
-//   // -webkit-transition: all g-v.$menu-item-hover-animation-speed ease-in-out;
-//   // transition: all g-v.$menu-item-hover-animation-speed ease-in-out;
-//   overflow: hidden;
-
-//   .main-container {
-//     height: calc(100vh - g-v.$frame-top-height - g-v.$footer-height);
-//     overflow-x: hidden;
-//     overflow-y: auto;
-//     @extend %scrollbar-custom;
-//   }
-// }
-
-// .window-container {
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-//   height: calc(100vh - g-v.$frame-top-height - g-v.$footer-height);
-// }
-// Main window

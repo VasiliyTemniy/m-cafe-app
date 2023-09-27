@@ -1,9 +1,9 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { IngredientDT } from "../../models/Ingredient.js";
-import type { EditLocString, NewLocString } from "../../models/LocString.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isEditLocString, isNewLocString } from "../../models/LocString.js";
-import { isNumber } from "../typeParsers.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { IngredientDT } from '../../models/Ingredient.js';
+import type { EditLocString, NewLocString } from '../../models/LocString.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isEditLocString, isNewLocString } from '../../models/LocString.js';
+import { isNumber } from '../typeParsers.js';
 
 export type NewIngredientBody = Omit<IngredientDT, 'id' | 'nameLoc' | 'stockMeasureLoc'>
 & {
@@ -20,13 +20,13 @@ export const isNewIngredientBody = (body: unknown): body is NewIngredientBody =>
   if (!hasNewIngredientBodyFields(body)) return false;
 
   if (
-    (hasOwnProperty(body, "proteins") && !isNumber(body.proteins))
+    (hasOwnProperty(body, 'proteins') && !isNumber(body.proteins))
     ||
-    (hasOwnProperty(body, "fats") && !isNumber(body.fats))
+    (hasOwnProperty(body, 'fats') && !isNumber(body.fats))
     ||
-    (hasOwnProperty(body, "carbohydrates") && !isNumber(body.carbohydrates))
+    (hasOwnProperty(body, 'carbohydrates') && !isNumber(body.carbohydrates))
     ||
-    (hasOwnProperty(body, "calories") && !isNumber(body.calories))
+    (hasOwnProperty(body, 'calories') && !isNumber(body.calories))
   ) return false;
 
   return isNewLocString(body.nameLoc) && isNewLocString(body.stockMeasureLoc);
@@ -48,13 +48,13 @@ export const isEditIngredientBody = (body: unknown): body is EditIngredientBody 
   if (!hasEditIngredientBodyFields(body)) return false;
 
   if (
-    (hasOwnProperty(body, "proteins") && !isNumber(body.proteins))
+    (hasOwnProperty(body, 'proteins') && !isNumber(body.proteins))
     ||
-    (hasOwnProperty(body, "fats") && !isNumber(body.fats))
+    (hasOwnProperty(body, 'fats') && !isNumber(body.fats))
     ||
-    (hasOwnProperty(body, "carbohydrates") && !isNumber(body.carbohydrates))
+    (hasOwnProperty(body, 'carbohydrates') && !isNumber(body.carbohydrates))
     ||
-    (hasOwnProperty(body, "calories") && !isNumber(body.calories))
+    (hasOwnProperty(body, 'calories') && !isNumber(body.calories))
   ) return false;
 
   return isEditLocString(body.nameLoc) && isEditLocString(body.stockMeasureLoc);

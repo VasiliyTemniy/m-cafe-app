@@ -1,8 +1,8 @@
-import { ParseError } from "./Errors.js";
+import { ParseError } from './Errors.js';
 
 export const parseString = (str: unknown): string => {
   if (!str || !isString(str)) {
-    return "";
+    return '';
   }
   return str;
 };
@@ -30,7 +30,7 @@ export const parseBoolean = (bool: unknown): boolean => {
 
 export const parseJSON = (strJson: unknown): JSON => {
   if (!strJson || !isJSON(strJson)) {
-    return JSON.parse("") as JSON;
+    return JSON.parse('') as JSON;
   }
   return strJson;
 };

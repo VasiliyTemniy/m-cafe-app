@@ -6,11 +6,11 @@ import type {
   EditOrderStatusBody,
   OrderDTS,
   OrderDT
-} from "@m-cafe-app/utils";
-import { expect } from "chai";
-import "mocha";
+} from '@m-cafe-app/utils';
+import { expect } from 'chai';
+import 'mocha';
 import supertest from 'supertest';
-import app from "../app";
+import app from '../app';
 import {
   connectToDatabase,
   Address,
@@ -22,17 +22,17 @@ import {
   OrderFood,
   FacilityManager
 } from '@m-cafe-app/db';
-import config from "../utils/config";
-import { validAdminInDB, validManagerInDB } from "./admin_api_helper";
+import config from '../utils/config';
+import { validAdminInDB, validManagerInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
-import { Session } from "../redis/Session";
-import { initLogin, userAgent } from "./sessions_api_helper";
-import { apiBaseUrl } from "./test_helper";
-import { initialUsers, initialUsersPassword, validAddresses, validUserInDB } from "./user_api_helper";
-import { initFacilities } from "./facility_api_helper";
-import { initFoods } from "./food_api_helper";
-import { includeNameLocNoTimestamps } from "../utils/sequelizeHelpers";
-import { initOrders } from "./order_api_helper";
+import { Session } from '../redis/Session';
+import { initLogin, userAgent } from './sessions_api_helper';
+import { apiBaseUrl } from './test_helper';
+import { initialUsers, initialUsersPassword, validAddresses, validUserInDB } from './user_api_helper';
+import { initFacilities } from './facility_api_helper';
+import { initFoods } from './food_api_helper';
+import { includeNameLocNoTimestamps } from '../utils/sequelizeHelpers';
+import { initOrders } from './order_api_helper';
 
 
 
@@ -147,7 +147,7 @@ describe('Order requests tests', () => {
 
     await api
       .post(`${apiBaseUrl}/order`)
-      .set("Cookie", [userTokenCookie])
+      .set('Cookie', [userTokenCookie])
       .set('User-Agent', userAgent)
       .send({
         ...validOrder,
@@ -233,7 +233,7 @@ describe('Order requests tests', () => {
 
     const response2 = await api
       .put(`${apiBaseUrl}/order/${response1.body.id}`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .send(updValidOrder)
       .expect(200)
@@ -289,7 +289,7 @@ describe('Order requests tests', () => {
 
     const response2 = await api
       .put(`${apiBaseUrl}/order/${response1.body.id}/status`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .send(newStatus)
       .expect(200)
@@ -327,7 +327,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
     const response1 = await api
       .post(`${apiBaseUrl}/order`)
-      .set("Cookie", [userTokenCookie])
+      .set('Cookie', [userTokenCookie])
       .set('User-Agent', userAgent)
       .send(validOrder)
       .expect(201)
@@ -335,7 +335,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
     const response2 = await api
       .get(`${apiBaseUrl}/order/${response1.body.id}`)
-      .set("Cookie", [userTokenCookie])
+      .set('Cookie', [userTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -369,7 +369,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
     const response4 = await api
       .get(`${apiBaseUrl}/order/${response1.body.id}`)
-      .set("Cookie", [anotherUserTokenCookie])
+      .set('Cookie', [anotherUserTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -380,7 +380,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
     const response5 = await api
       .get(`${apiBaseUrl}/order/${response1.body.id}`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -397,14 +397,14 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
     await api
       .get(`${apiBaseUrl}/order/${response1.body.id}`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)  // Just check that data passes
       .expect('Content-Type', /application\/json/);
 
     await api
       .get(`${apiBaseUrl}/order/${response1.body.id}`)
-      .set("Cookie", [adminTokenCookie])
+      .set('Cookie', [adminTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)  // Just check that data passes
       .expect('Content-Type', /application\/json/);
@@ -419,7 +419,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
     const response1 = await api
       .get(`${apiBaseUrl}/order/user/${validUserInDBID}`)
-      .set("Cookie", [userTokenCookie])
+      .set('Cookie', [userTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -438,14 +438,14 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
     await api
       .get(`${apiBaseUrl}/order/user/${validUserInDBID}`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)  // Just check that data passes
       .expect('Content-Type', /application\/json/);
 
     await api
       .get(`${apiBaseUrl}/order/user/${validUserInDBID}`)
-      .set("Cookie", [adminTokenCookie])
+      .set('Cookie', [adminTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)  // Just check that data passes
       .expect('Content-Type', /application\/json/);
@@ -464,7 +464,7 @@ or manager with req query facilityid', async () => {
 
     const response1 = await api
       .get(`${apiBaseUrl}/order/?limit=100`)
-      .set("Cookie", [adminTokenCookie])
+      .set('Cookie', [adminTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -484,7 +484,7 @@ or manager with req query facilityid', async () => {
     // Manager asks to get all info without specifying facilityid
     const response2 = await api
       .get(`${apiBaseUrl}/order/?limit=100`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .expect(403)
       .expect('Content-Type', /application\/json/);
@@ -496,7 +496,7 @@ or manager with req query facilityid', async () => {
     // Manager asks to get all info while specifying facilityid which he is a manager of
     const response3 = await api
       .get(`${apiBaseUrl}/order/?limit=100&facilityid=${facilities[0].id}`)
-      .set("Cookie", [managerTokenCookie])
+      .set('Cookie', [managerTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);

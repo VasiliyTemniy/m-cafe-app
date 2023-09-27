@@ -1,7 +1,7 @@
-import type { MapToUnknown } from "../helpers.js";
-import type { FoodComponentDT } from "../../models/FoodComponent.js";
-import { hasOwnProperty } from "../helpers.js";
-import { isBoolean, isNumber } from "../typeParsers.js";
+import type { MapToUnknown } from '../helpers.js';
+import type { FoodComponentDT } from '../../models/FoodComponent.js';
+import { hasOwnProperty } from '../helpers.js';
+import { isBoolean, isNumber } from '../typeParsers.js';
 
 export type NewFoodComponent = Omit<FoodComponentDT, 'id' | 'component'>
 & {

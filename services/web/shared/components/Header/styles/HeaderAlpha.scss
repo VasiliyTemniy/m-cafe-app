@@ -8,6 +8,7 @@ $header-dropbox-width: 5.2rem;
 $header-padding: 1rem;
 $header-svg-scale: 2rem;
 $header-logged-in-gaps: 0.3rem;
+$header-logged-in-border-radius: 4px;
 
 header.alpha {
   position: sticky;
@@ -35,10 +36,11 @@ header.alpha {
         width: calc(v-v.$button-min-width * 0.8 * 2);
         padding: $header-logged-in-gaps;
         gap: $header-logged-in-gaps;
-        border: 1px solid black; // STYLE THIS!
+        border-radius: $header-logged-in-border-radius;
         display: flex;
         align-items: center;
         cursor: pointer;
+        transition: box-shadow g-v.$hover-animation-speed ease-in-out;
         
         .image.svg {
           width: calc($header-svg-scale * 0.7);
@@ -61,4 +63,17 @@ header.alpha {
 header.alpha.alpha-color {
   @include theme(background-color, AlphaBGThird);
   @include theme(box-shadow, Shadow, 0 0 6px);
+
+  .header-right {
+    .header-auth-wrapper {
+      .logged-in {
+        @include theme(border, Border, 1px solid);
+        @include theme(box-shadow, Special, inset 0 0 6px);
+
+        &:hover {
+          @include theme(box-shadow, Border, inset 0 0 6px);
+        }
+      }
+    }
+  }
 }

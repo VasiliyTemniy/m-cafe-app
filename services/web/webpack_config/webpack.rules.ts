@@ -1,5 +1,5 @@
 import type { ModuleOptions } from 'webpack';
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -26,31 +26,31 @@ export const rules: Required<ModuleOptions>['rules'] = [
   },
   {
     test: /\.s[ac]ss$/i,
-    use: [isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
+    use: [isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
       {
-        loader: "css-loader",
+        loader: 'css-loader',
         options: {
           importLoaders: 2, // 0 => no loaders (default); 1 => postcss-loader; ! 2 ! => postcss-loader, sass-loader
         },
       },
       {
-        loader: "postcss-loader",
+        loader: 'postcss-loader',
         options: {
           postcssOptions: {
             plugins: [
               [
-                "postcss-preset-env",
+                'postcss-preset-env',
                 { /* Options*/ },
               ],
               [
-                "postcss-combine-duplicated-selectors",
+                'postcss-combine-duplicated-selectors',
                 { removeDuplicatedValues: true }
               ]
             ],
           },
         },
       },
-      "sass-loader",
+      'sass-loader',
     ],
   },
   {

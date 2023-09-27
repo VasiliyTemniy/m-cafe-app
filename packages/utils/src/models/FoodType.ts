@@ -1,9 +1,9 @@
-import type { MapToUnknown, MapToDT } from "../types/helpers.js";
-import type { FoodTypeData } from "@m-cafe-app/db";
-import type { LocStringDT } from "./LocString.js";
-import { isNumber } from "../types/typeParsers.js";
-import { hasOwnProperty } from "../types/helpers.js";
-import { isLocStringDT } from "./LocString.js";
+import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { FoodTypeData } from '@m-cafe-app/db';
+import type { LocStringDT } from './LocString.js';
+import { isNumber } from '../types/typeParsers.js';
+import { hasOwnProperty } from '../types/helpers.js';
+import { isLocStringDT } from './LocString.js';
 
 
 export type FoodTypeDT = Omit<MapToDT<FoodTypeData>, 'nameLocId' | 'descriptionLocId'>
@@ -15,11 +15,11 @@ export type FoodTypeDT = Omit<MapToDT<FoodTypeData>, 'nameLocId' | 'descriptionL
 type FoodTypeDTFields = MapToUnknown<FoodTypeDT>;
 
 const hasFoodTypeDTFields = (obj: unknown): obj is FoodTypeDTFields =>
-  hasOwnProperty(obj, "id")
+  hasOwnProperty(obj, 'id')
   &&
-  hasOwnProperty(obj, "nameLoc")
+  hasOwnProperty(obj, 'nameLoc')
   &&
-  hasOwnProperty(obj, "descriptionLoc");
+  hasOwnProperty(obj, 'descriptionLoc');
 
 export const isFoodTypeDT = (obj: unknown): obj is FoodTypeDT =>
   hasFoodTypeDTFields(obj)

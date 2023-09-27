@@ -1,18 +1,20 @@
 import { useCallback } from 'react';
-import { useAppSelector } from "./reduxHooks";
+import { useAppSelector } from './reduxHooks';
 
 export type TFunction = (locName: string) => string;
 
 export const useTranslation = (): { t: TFunction } => {
 
   const selectedLanguage = useAppSelector(state => state.settings.language);
-  const fixedLocs = useAppSelector(state => state.fixedLocs.locs);
-  const fixedLocsHash = useAppSelector(state => state.fixedLocs.locsHash);
+  const fixedLocs = useAppSelector(state => state.fixedLocs.parsedFixedLocs);
+  const fixedLocsHash = useAppSelector(state => state.fixedLocs.parsedFixedLocsHash);
 
   const t = useCallback((locName: string) => {
-    const namespace = locName.split('.')[0];
+    const firstDotIndex = locName.indexOf('.');
+    const namespace = locName.slice(0, firstDotIndex);
+    const shortLocName = locName.slice(firstDotIndex + 1);
     if (!fixedLocs[namespace]) return (`No translation found for ${locName}!`);
-    const translationLoc = fixedLocs[namespace].find(loc => loc.name === locName);
+    const translationLoc = fixedLocs[namespace].find(loc => loc.name === shortLocName);
     if (!translationLoc) return (`No translation found for ${locName}!`);
   
     const translation =

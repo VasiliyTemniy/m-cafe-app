@@ -1,10 +1,10 @@
 import type { CommonProps, LCSpecificValue } from '../../types';
-import type { CSSProperties } from "react";
+import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
-import { ApplicationError } from "@m-cafe-app/utils";
-import { useUiSettings } from "./useUiSettings";
-import { isCSSPropertyKey } from "@m-cafe-app/shared-constants";
-import { useAppSelector } from "./reduxHooks";
+import { ApplicationError } from '@m-cafe-app/utils';
+import { useUiSettings } from './useUiSettings';
+import { isCSSPropertyKey } from '@m-cafe-app/shared-constants';
+import { useAppSelector } from './reduxHooks';
 
 interface UseInitLCProps extends CommonProps {
   componentType:
@@ -46,34 +46,36 @@ export const useInitLC = ({
 }: UseInitLCProps) => {
 
   const theme = useAppSelector(store => store.settings.theme);
-  const uiSettingsHash = useAppSelector(store => store.settings.uiSettingsHash);
+  const uiSettingsHash = useAppSelector(store => store.settings.parsedUiSettingsHash);
 
   const { ui } = useUiSettings();
 
-  // define ui node - componentName for layout components, componentType for basic components
-  const uiNode = componentType === 'layout'
+  // define lookup - componentName for layout components, componentType for basic components
+  const lookup = componentType === 'layout'
     ? componentName
     : componentType;
 
-  const uiSettingsClassnames = ui(`${uiNode}-${theme}-classNames`);
-
   // baseVariant must have the most SCSS for web / inlineCSS for mobile
-  const baseVariant = ui(`${uiNode}-${theme}-baseVariant`);
+  const baseVariant = ui(`${lookup}-${theme}-baseVariant`);
 
   const baseVariantClassName = baseVariant.length > 0
     ? baseVariant[0].value
     : 'alpha';
 
   // same as baseVariant, but for color scheme
-  const baseColorVariant = ui(`${uiNode}-${theme}-baseColorVariant`);
+  const baseColorVariant = ui(`${lookup}-${theme}-baseColorVariant`);
 
   const baseColorVariantClassName = baseColorVariant.length > 0
     ? baseColorVariant[0].value
     : 'alpha-color';
 
-  const uiSettingsInlineCSS = ui(`${uiNode}-${theme}-inlineCSS`);
+  const uiSettingsClassnames = ui(`${lookup}-${theme}-classNames`);
 
-  const specialUiSettingsSet = new Set([ ...ui(`${uiNode}-${theme}-special`).map(uiSetting => uiSetting.name) ]);
+  const uiSettingsInlineCSS = ui(`${lookup}-${theme}-inlineCSS`);
+
+  const specialUiSettingsSet = new Set(
+    ui(`${lookup}-${theme}-special`).map(uiSetting => uiSetting.name)
+  );
 
   return useMemo(() => {
     
@@ -83,8 +85,8 @@ export const useInitLC = ({
     let settingsClassNameAddon = '';
 
     // add all settings that are true
-    for (const uiSetting of uiSettingsClassnames) {
-      settingsClassNameAddon += uiSetting.value + ' ';
+    for (const uiSettingClassName of uiSettingsClassnames) {
+      settingsClassNameAddon += uiSettingClassName.name + ' ';
     }
 
     settingsClassNameAddon.trim();
@@ -109,11 +111,9 @@ export const useInitLC = ({
     const style = {} as CSSProperties;
 
     for (const uiSetting of uiSettingsInlineCSS) {
-      if (uiSetting.value !== 'false') {
-        const key = uiSetting.name;
-        if (!isCSSPropertyKey(key)) throw new ApplicationError('Wrong key applied to inline CSS', { current: uiSetting, all: uiSettingsInlineCSS });
-        style[key] = uiSetting.value;
-      }
+      const key = uiSetting.name;
+      if (!isCSSPropertyKey(key)) throw new ApplicationError('Wrong key applied to inline CSS', { current: uiSetting, all: uiSettingsInlineCSS });
+      style[key] = uiSetting.value;
     }
 
     /**

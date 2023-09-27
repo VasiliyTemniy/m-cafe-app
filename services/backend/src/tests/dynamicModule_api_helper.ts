@@ -1,4 +1,4 @@
-import type { DynamicModuleData, LocStringData } from "@m-cafe-app/db";
+import type { DynamicModuleData, LocStringData } from '@m-cafe-app/db';
 import { LocString, DynamicModule } from '@m-cafe-app/db';
 
 

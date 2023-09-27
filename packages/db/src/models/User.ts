@@ -6,7 +6,7 @@ import type {
   HasManyAddAssociationMixin,
   HasManyRemoveAssociationMixin
 } from 'sequelize';
-import type { PropertiesCreationOptional } from "../types/helpers.js";
+import type { PropertiesCreationOptional } from '../types/helpers.js';
 import { Model, DataTypes } from 'sequelize';
 import Address from './Address.js';
 import { sequelize } from '../db.js';

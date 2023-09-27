@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useFormikContext } from "formik";
-import { useDebounce } from "../hooks/useDebounce";
+import { useEffect } from 'react';
+import { useFormikContext } from 'formik';
+import { useDebounce } from '../hooks/useDebounce';
 
 // Rewritten from formik-persist class component to function component
 // https://github.com/jaredpalmer/formik-persist/tree/master
