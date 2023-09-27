@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 
@@ -11,6 +12,8 @@ interface TableProps extends CommonProps {
   }>;
   tableName: string;
   footer?: JSX.Element | JSX.Element[];
+  onItemClick?: MouseEventHandler;
+  onCellClick?: MouseEventHandler;
 }
 
 export const Table = ({
@@ -21,7 +24,9 @@ export const Table = ({
   columns,
   items,
   footer,
-  tableName
+  tableName,
+  onItemClick,
+  onCellClick
 }: TableProps) => {
 
   const { className, style } = useInitLC({
@@ -55,10 +60,10 @@ export const Table = ({
       <tbody>
         {
           items.map(item =>
-            <tr key={`${tableName}-${item.id}`}>
+            <tr key={`${tableName}-${item.id}`} id={`${item.id}`} onClick={onItemClick}>
               {
                 Object.keys(item).map((key, index) => 
-                  <td key={`${tableName}-${item.id}-${item[key]}-${index}`}>
+                  <td key={`${tableName}-${item.id}-${index}`} id={`${item.id}-${index}`} onClick={onCellClick}>
                     <div>{item[key]}</div>
                   </td>
                 )
