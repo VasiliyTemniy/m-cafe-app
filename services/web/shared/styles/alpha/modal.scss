@@ -17,7 +17,6 @@
   align-items: center;
   gap: v-v.$modal-gap;
   position: relative;
-  // top handled by js
   left: 50%;
   transform: translateX(-50%);
   margin: 10px 0;
@@ -56,10 +55,6 @@
     justify-content: flex-start;
     align-items: center;
     gap: v-v.$modal-gap;
-
-    .input-wrapper {
-      width: v-v.$modal-input-width;
-    }
   }
 }
 
@@ -71,7 +66,7 @@
 
     .modal-main {
       .input-wrapper {
-        width: v-v.$modal-input-width - 4rem;
+        max-width: calc(100vw - 4rem);
         label {
           font-size: small;
         }
