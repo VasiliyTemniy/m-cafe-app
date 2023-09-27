@@ -10,9 +10,18 @@
   border-spacing: 0;
   overflow: hidden;
   border-radius: v-v.$table-border-radius;
+  table-layout: fixed;
 
   th, td {
     padding: v-v.$table-cell-padding;
+
+    div {
+      text-overflow: ellipsis;
+      word-wrap: break-word;
+      max-width: 10rem;
+      overflow: hidden;
+      white-space: nowrap;
+    }
   }
 
   tr {
