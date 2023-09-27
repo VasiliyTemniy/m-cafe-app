@@ -1,0 +1,39 @@
+@use './alpha_vars' as v-v; // variant-vars
+@use '../common' as *;
+
+.alpha {
+  .form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    &-inputs {
+      @extend %form-overflow-control;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: calc(v-v.$modal-gap / 1.5);
+      min-height: calc(v-v.$input-height * 3 + (v-v.$modal-gap * 2) / 1.5);
+    }
+
+    &-buttons {
+      width: 100%;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-evenly;
+      padding-top: 1rem;
+      gap: calc(v-v.$modal-gap / 2);
+    }
+
+    .scrollable-wrapper {
+      height: 100%;
+      .scrollbar {
+        right: -1rem;
+      }
+    }
+  }
+}

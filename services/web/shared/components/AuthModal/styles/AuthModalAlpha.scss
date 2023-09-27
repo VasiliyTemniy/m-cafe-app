@@ -1,68 +1,21 @@
-@use '../../../styles/alpha/alpha_vars' as v-v; // variant-vars
-@use '../../../styles/common' as *;
-
-$modal-login-width: 30rem;
-$modal-login-main-height: 28rem;
-// To remove total height change while changing to login / signup forms
-$modal-login-title-height: 5.2rem;
+$modal-auth-width: 30rem;
+$modal-auth-main-height: 28rem;
+$modal-auth-title-height: 5.2rem;
+$modal-auth-inputs-width: 22rem;
 
 .alpha.modal.auth {
-  width: $modal-login-width;
+  width: $modal-auth-width;
 
   .modal-title {
-    height: $modal-login-title-height;
+    height: $modal-auth-title-height;
   }
 
   .modal-main {
-    height: $modal-login-main-height;
-    
-    .login-form, .signup-form {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      height: 100%;
-      width: 100%;
+    height: $modal-auth-main-height;
 
-      &-inputs-wrapper {
-        @extend %form-overflow-control;
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-        flex-direction: column;
-        gap: calc(v-v.$modal-gap / 1.5);
-        min-height: calc(v-v.$input-height * 3 + (v-v.$modal-gap * 2) / 1.5);
-      }
-
-      &-buttons-wrapper {
-        width: 100%;
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-evenly;
-        padding-top: 1rem;
-        gap: calc(v-v.$modal-gap / 2);
-      }
-
-      .scrollable-wrapper {
-        height: 100%;
-        .scrollbar {
-          right: -1rem;
-        }
-      }
-    }
-  }
-}
-
-
-@media (pointer:none), (pointer:coarse) and (orientation: landscape) {
-  .alpha.modal.auth {
-    .modal-main {
-      height: 60vh;
-      .login-form, .signup-form {
-        
-        &-inputs-wrapper {
-          height: calc(70vh - 6rem);
-        }
+    .form {
+      .form-inputs {
+        width: $modal-auth-inputs-width;
       }
     }
   }
@@ -70,10 +23,9 @@ $modal-login-title-height: 5.2rem;
 
 @media (pointer:none), (pointer:coarse) and (orientation: portrait) {
   .alpha.modal.auth {
-    // height: 80vh;
     .modal-main {
-      .login-form, .signup-form {
-        &-buttons-wrapper {
+      .form {
+        &-buttons {
           display: grid;
         }
       }
