@@ -36,8 +36,8 @@ export const LoginForm = ({ onSubmit, changeMode, onCancel, loginNecessary }: Lo
     >
       {({ isValid, dirty }) => {
         return (
-          <Form className='login-form'>
-            <Scrollable classNameAddon="login-form-inputs-wrapper">
+          <Form className='form'>
+            <Scrollable classNameAddon="form-inputs">
               <FormikTextField
                 placeholder={t(`${tNode}.placeholder.credential`)}
                 label={t(`${tNode}.label.credential`)}
@@ -52,7 +52,7 @@ export const LoginForm = ({ onSubmit, changeMode, onCancel, loginNecessary }: Lo
               />
               <FormikPersist formName='login-form'/>
             </Scrollable>
-            <div className="login-form-buttons-wrapper">
+            <div className="form-buttons">
               <Button
                 label={t(`${tNode}.label.toSignup`)}
                 variant='primary'
