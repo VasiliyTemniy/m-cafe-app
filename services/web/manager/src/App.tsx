@@ -1,6 +1,6 @@
 import { useAppSelector, useInitAppManager } from '@m-cafe-app/frontend-logic/manager/hooks';
 import { AppRoutes } from './AppRoutes';
-import { AppContent, Wrapper, Header, Loading } from 'shared/components';
+import { AppContent, Header, Loading, Container } from 'shared/components';
 import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
 import { StaffSidebar } from 'shared/staffComponents';
 
@@ -22,16 +22,16 @@ export const App = () => {
     return (
       <>
         {/* <Notification/> */}
-        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
+        <Container id='app-wrapper' onClick={() => collapseExpanded()} type='wrapper'>
           <Header loginNecessary={true}/>
           <AppContent />
-        </Wrapper>
+        </Container>
       </>
     );
   } else {
     return (
       <>
-        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
+        <Container id='app-wrapper' onClick={() => collapseExpanded()} type='wrapper'>
           <Header loginNecessary={true}/>
           <AppContent>
             {/* <Notification/> */}
@@ -40,7 +40,7 @@ export const App = () => {
           <StaffSidebar>
             
           </StaffSidebar>
-        </Wrapper>
+        </Container>
       </>
     );
   }

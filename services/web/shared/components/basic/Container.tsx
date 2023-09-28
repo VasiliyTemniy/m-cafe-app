@@ -13,6 +13,7 @@ export interface ContainerProps extends CommonProps {
   onMouseUp?: MouseEventHandler;
   ref?: Ref<HTMLDivElement>;
   text?: string;
+  type?: 'container' | 'wrapper';
 }
 
 export const Container = ({
@@ -28,12 +29,13 @@ export const Container = ({
   onMouseUp,
   ref,
   text,
-  style
+  style,
+  type = 'container'
 }: ContainerProps) => {
 
   const { className, style: settingsStyle } = useInitLC({
-    componentType: 'container',
-    componentName: 'container',
+    componentType: type,
+    componentName: type,
     classNameAddon,
     classNameOverride,
   });
