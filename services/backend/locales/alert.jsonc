@@ -1,0 +1,9 @@
+// You can edit your locales here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for tNodePath
+{
+  "alert": {
+    "reset": {
+      "mainStr": "Внимание! Все изменения, применённые на данной странице, сбросятся на заводские. Изменение необратимо",
+      "secStr": "Warning! All changes applied on this page will be reset to factory defaults. All changes are irreversible"
+    }
+  }
+}

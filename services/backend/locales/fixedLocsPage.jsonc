@@ -2,12 +2,16 @@
 {
   "fixedLocsPage": {
     "title": {
-      "mainStr": "Фиксированные переводы. Переводы текста, не зависящего от продуктов и заведений, представленных в приложении",
-      "secStr": "Fixed locs. Localizations for text that does not relate to product or facility data"
+      "mainStr": "Фиксированные переводы. Переводы текста, не зависящего от продуктов и заведений, представленных в приложении. Для редактирования, сначала выберите область имён. После редактирования, нажмите кнопку 'Применить изменения' для отправки изменений в базу данных",
+      "secStr": "Fixed locs. Localizations for text that does not relate to product or facility data. To edit, first select namespace. After editing, click 'Apply changes' to send changes to database"
     },
     "namespacesBox": {
       "mainStr": "Область имён переводов",
       "secStr": "Localizations namespace"
+    },
+    "namespace": {
+      "mainStr": "Область имён",
+      "secStr": "Namespace"
     },
     "name": {
       "mainStr": "Имя",

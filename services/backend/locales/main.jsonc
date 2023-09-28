@@ -29,6 +29,26 @@
       "delete": {
         "mainStr": "Удалить",
         "secStr": "Delete"
+      },
+      "applyChanges": {
+        "mainStr": "Применить изменения",
+        "secStr": "Apply changes"
+      },
+      "revertChanges": {
+        "mainStr": "Сбросить изменения",
+        "secStr": "Revert changes"
+      },
+      "reserve": {
+        "mainStr": "Зарезервировать",
+        "secStr": "Reserve"
+      },
+      "resetAll": {
+        "mainStr": "Сбросить всё",
+        "secStr": "Reset all"
+      },
+      "reset": {
+        "mainStr": "Сбросить",
+        "secStr": "Reset"
       }
     },
     "languageNames": {
