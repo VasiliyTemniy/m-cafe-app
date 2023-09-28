@@ -2,7 +2,7 @@ import { Route, createBrowserRouter, createRoutesFromElements } from 'react-rout
 import { ErrorPage, UnderConstruction } from 'shared/components';
 import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 import { AppLayout } from './AppLayout';
-import { FixedLocsPage } from 'shared/staffComponents';
+import { FixedLocsPage } from 'shared/adminComponents';
 
 
 export const router = createBrowserRouter(
