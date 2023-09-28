@@ -126,7 +126,7 @@ adminRouter.delete(
 adminRouter.get(
   '/fixed-loc/reset',
   middleware.verifyToken,
-  middleware.adminCheck,
+  middleware.superAdminCheck,
   middleware.sessionCheck,
   (async (req, res) => {
 
