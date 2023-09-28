@@ -142,6 +142,37 @@ fixedLocRouter.put(
 );
 
 fixedLocRouter.put(
+  '/reserve/:id',
+  middleware.verifyToken,
+  middleware.adminCheck,
+  middleware.sessionCheck,
+  middleware.requestParamsCheck,
+  (async (req, res) => {
+
+    const fixedLoc = await FixedLoc.findByPk(req.params.id);
+    if (!fixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
+
+    const locString = await LocString.findByPk(fixedLoc.locStringId);
+    if (!locString) throw new ApplicationError(`No loc string entry for existing fixed loc! fixed loc id: ${req.params.id}, loc string id: ${fixedLoc.locStringId}`);
+
+    // Instead of deleting a fixed loc, it is assigned a filter value
+    locString.mainStr = fixedLocFilter;
+    locString.secStr = fixedLocFilter;
+    locString.altStr = fixedLocFilter;
+
+    await locString.save();
+
+    const resBody: FixedLocDT = {
+      locString: mapDataToTransit(locString.dataValues),
+      ...mapDataToTransit(fixedLoc.dataValues)
+    };
+
+    res.status(200).json(resBody);
+
+  }) as RequestHandler
+);
+
+fixedLocRouter.put(
   '/:id',
   middleware.verifyToken,
   middleware.adminCheck,
@@ -178,32 +209,6 @@ fixedLocRouter.put(
     };
     
     res.status(200).json(resBody);
-
-  }) as RequestHandler
-);
-
-fixedLocRouter.delete(
-  '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
-  (async (req, res) => {
-
-    const fixedLoc = await FixedLoc.findByPk(req.params.id);
-    if (!fixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
-
-    const locString = await LocString.findByPk(fixedLoc.locStringId);
-    if (!locString) throw new ApplicationError(`No loc string entry for existing fixed loc! fixed loc id: ${req.params.id}, loc string id: ${fixedLoc.locStringId}`);
-
-    // Instead of deleting a fixed loc, it is assigned a filter value
-    locString.mainStr = fixedLocFilter;
-    locString.secStr = fixedLocFilter;
-    locString.altStr = fixedLocFilter;
-
-    await locString.save();
-
-    res.status(204).end();
 
   }) as RequestHandler
 );
