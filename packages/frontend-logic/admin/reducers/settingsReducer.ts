@@ -30,7 +30,7 @@ export type { SettingsState };
 const settingsSlice = createSlice({
   ...sharedSettingsSliceBase,
   reducers: {
-    setDbUiSettings: (state: SettingsState, action: SetDbUiSettingsAction): SettingsState => {
+    setDbUiSettings(state: SettingsState, action: SetDbUiSettingsAction) {
       return { ...state, dbUiSettings: action.payload.uiSettings };
     },
     /**
