@@ -4,6 +4,14 @@
     "reset": {
       "mainStr": "Внимание! Все изменения, применённые на данной странице, сбросятся на заводские. Изменение необратимо",
       "secStr": "Warning! All changes applied on this page will be reset to factory defaults. All changes are irreversible"
+    },
+    "fixedLocSuccess": {
+      "mainStr": "Операция с фиксированной(ыми) локализацией(ями) успешно завершена!",
+      "secStr": "Update of fixed localization(s) successfully completed!"
+    },
+    "uiSettingSuccess": {
+      "mainStr": "Настройки интерфейса успешно сохранены!",
+      "secStr": "Interface settings successfully saved!"
     }
   }
 }
