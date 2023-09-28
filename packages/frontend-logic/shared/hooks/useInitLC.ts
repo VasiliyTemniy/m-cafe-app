@@ -1,4 +1,4 @@
-import type { CommonProps, LCSpecificValue } from '../../types';
+import type { CommonProps } from '../../types';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { ApplicationError } from '@m-cafe-app/utils';
@@ -16,6 +16,7 @@ interface UseInitLCProps extends CommonProps {
     'button' |
     'button-group' |
     'nav-item' |
+    'notification' |
     'modal' |
     'svg-image' |
     'svg-button' |
@@ -31,8 +32,6 @@ interface UseInitLCProps extends CommonProps {
   label?: string,
   variant?: string
 }
-
-
 
 export const useInitLC = ({
   componentType,
@@ -119,7 +118,7 @@ export const useInitLC = ({
     /**
      * Component type-specific resolve block
      */
-    let specific = undefined as LCSpecificValue;
+    let specific = undefined;
 
     switch (componentType) {
 
@@ -137,6 +136,13 @@ export const useInitLC = ({
           labelAsPlaceholder: specialUiSettingsSet.has('labelAsPlaceholder'),
           useBarBelow: specialUiSettingsSet.has('useBarBelow'),
           firefoxFix
+        };
+        break;
+
+      case 'notification':
+        specific = {
+          hidden: specialUiSettingsSet.has('hidden'),
+          animate: specialUiSettingsSet.has('animate')
         };
         break;
 
