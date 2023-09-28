@@ -27,15 +27,18 @@
   overflow-x: visible;
 }
 
-
 // Glass containers common
-.glass {
+%glass {
   @include theme(box-shadow, Shadow, 0 0 8px);
   @include theme(border, GlassBorder, g-v.$glass-container-border-thickness solid);
   @include theme(background, GlassBG);
   padding: g-v.$glass-container-padding;
   border-radius: g-v.$glass-container-border-radius;
   backdrop-filter: blur(2px);
+}
+
+.glass {
+  @extend %glass;
 }
 // Glass containers common
 
