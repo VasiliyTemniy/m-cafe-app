@@ -46,9 +46,7 @@ export const FormikTextAreaField = ({ disabled = false, ...props }: FormikTextAr
   const handleAreaHeight = () => {
     if (!areaRef.current) return;
     areaRef.current.style.removeProperty('height');
-    if (areaRef.current.scrollHeight > areaRef.current.clientHeight) {
-      areaRef.current.style.height = `${areaRef.current.scrollHeight}px`;
-    }
+    areaRef.current.style.height = `${areaRef.current.scrollHeight}px`;
   };
 
   useEffect(() => {
