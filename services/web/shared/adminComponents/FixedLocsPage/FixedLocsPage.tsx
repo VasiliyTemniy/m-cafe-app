@@ -1,20 +1,24 @@
 import type { MouseEvent } from 'react';
 import type { EditFixedLocFormValues } from './EditFixedLocForm';
+import type { FixedLocDT } from '@m-cafe-app/utils';
 import { useState } from 'react';
-import { useAppSelector } from '@m-cafe-app/frontend-logic/admin/hooks';
+import { useAppDispatch, useAppSelector } from '@m-cafe-app/frontend-logic/admin/hooks';
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Container, Dropbox, Modal, Table, TextComp } from 'shared/components';
+import { Button, ButtonGroup, Container, Dropbox, Modal, Table, TextComp } from 'shared/components';
 import { EditFixedLocForm } from './EditFixedLocForm';
+import { parseFixedLocs, sendReserveFixedLoc, sendResetFixedLocs, sendUpdFixedLocs, updParsedFixedLoc } from '@m-cafe-app/frontend-logic/admin/reducers';
 
 export const FixedLocsPage = () => {
 
   const { t } = useTranslation();
   const tNode = 'fixedLocsPage';
 
+  const dispatch = useAppDispatch();
+
   const [chosenNamespace, setChosenNamespace] = useState('all');
   const [editFixedLocModalOpen, setEditFixedLocModalOpen] = useState(false);
-  const [chosenFixedLoc, setChosenFixedLoc] = useState<EditFixedLocFormValues & {id: number, name: string}>({
-    id: 0, name: '', mainStr: '', secStr: '', altStr: ''
+  const [chosenFixedLoc, setChosenFixedLoc] = useState<FixedLocDT>({
+    id: 0, name: '', locString: { id: 0, mainStr: '', secStr: '', altStr: '' }
   });
 
   const parsedFixedLocs = useAppSelector(state => state.fixedLocs.parsedFixedLocs);
@@ -26,15 +30,44 @@ export const FixedLocsPage = () => {
   };
 
   const handleTableItemClick = (e: MouseEvent) => {
-    const fixedLocToEdit = tableItems.find(item => item.id === Number(e.currentTarget.id));
+    if (chosenNamespace === 'all') return;
+    const fixedLocToEdit = parsedFixedLocs[chosenNamespace].find(loc => loc.id === Number(e.currentTarget.id));
     if (!fixedLocToEdit) return;
 
     setChosenFixedLoc(fixedLocToEdit);
     setEditFixedLocModalOpen(true);
   };
 
-  const handleUpdateFixedLoc = () => {
+  const handleUpdateFixedLoc = (values: EditFixedLocFormValues) => {
+    const fixedLocToUpdate: FixedLocDT = {
+      id: chosenFixedLoc.id,
+      name: chosenFixedLoc.name,
+      locString: {
+        id: chosenFixedLoc.locString.id,
+        ...values
+      }
+    };
+    dispatch(updParsedFixedLoc({ fixedLoc: fixedLocToUpdate, namespace: chosenNamespace}));
+    setEditFixedLocModalOpen(false);
+  };
 
+  const handleReserveFixedLoc = () => {
+    void dispatch(sendReserveFixedLoc(chosenFixedLoc.id, t));
+    setEditFixedLocModalOpen(false);
+  };
+
+  const handleApplyChanges = () => {
+    void dispatch(sendUpdFixedLocs(parsedFixedLocs, t));
+  };
+
+  const handleRevertChanges = () => {
+    dispatch(parseFixedLocs({ fixedLocs: dbFixedLocs }));
+  };
+
+  const handleResetFixedLocs = () => {
+    const confirmReset = confirm(t('alert.reset'));
+    if (!confirmReset) return;
+    void dispatch(sendResetFixedLocs(t));
   };
 
   const filteredFixedLocs = chosenNamespace === 'all'
@@ -72,6 +105,25 @@ export const FixedLocsPage = () => {
               onChoose={handleChooseNamespace}
               id='namespaces-box'
             />
+            <div className='buttons'>
+              <ButtonGroup>
+                <Button
+                  label={t('main.buttonLabel.applyChanges')}
+                  onClick={handleApplyChanges}
+                  variant='primary'
+                />
+                <Button
+                  label={t('main.buttonLabel.revertChanges')}
+                  onClick={handleRevertChanges}
+                  variant='secondary'
+                />
+              </ButtonGroup>
+              <Button
+                label={t('main.buttonLabel.resetAll')}
+                onClick={handleResetFixedLocs}
+                variant='delete'
+              />
+            </div>
           </div>
         </div>
         <Container classNameAddon='second-layer'>
@@ -80,6 +132,7 @@ export const FixedLocsPage = () => {
             columns={tableColumns}
             items={tableItems}
             onItemClick={handleTableItemClick}
+            classNameAddon={chosenNamespace === 'all' ? 'no-pointer' : undefined}
           />
         </Container>
       </Container>
@@ -90,19 +143,17 @@ export const FixedLocsPage = () => {
         withBlur={true}
       >
         <div className='item-info'>
-          {/* <div className='item-info-group'> */}
           <TextComp text={`id`} htmlEl='span' classNameAddon='bold'/>
           <TextComp text={`${chosenFixedLoc.id}`} htmlEl='span'/>
-          {/* </div>
-          <div className='item-info-group'> */}
+          <TextComp text={t(`${tNode}.namespace`)} htmlEl='span' classNameAddon='bold'/>
+          <TextComp text={chosenNamespace} htmlEl='span'/>
           <TextComp text={t(`${tNode}.name`)} htmlEl='span' classNameAddon='bold'/>
           <TextComp text={chosenFixedLoc.name} htmlEl='span'/>
-          {/* </div> */}
         </div>
         <EditFixedLocForm
-          initialValues={chosenFixedLoc}
+          fixedLoc={chosenFixedLoc}
           onSubmit={handleUpdateFixedLoc}
-          onDelete={() => null}
+          onDelete={handleReserveFixedLoc}
           onCancel={() => setEditFixedLocModalOpen(false)}
         />
       </Modal>
