@@ -8,10 +8,23 @@ $fixed-locs-table-name-column-width: 25rem;
     }
 
     &-tools {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
       padding: 1rem;
 
       #namespaces-box {
         width: $fixed-locs-tools-dropbox-width;
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+
+        button {
+          height: fit-content;
+        }
       }
     }
   }
@@ -30,6 +43,12 @@ $fixed-locs-table-name-column-width: 25rem;
         div {
           max-width: calc((100vw - $fixed-locs-table-name-column-width - 6rem) / 3);
         }
+      }
+    }
+
+    &.no-pointer {
+      tbody tr {
+        cursor: default;
       }
     }
   }
@@ -52,7 +71,7 @@ $modal-edit-fixed-loc-form-min-height: 16rem;
     align-self: flex-start;
     padding-left: 2rem;
     display: grid;
-    grid-template-columns: 3rem 40rem;
+    grid-template-columns: 7rem 40rem;
     grid-template-rows: 1.6rem 1.6rem;
   }
   
