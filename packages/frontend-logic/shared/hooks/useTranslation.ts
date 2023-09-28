@@ -13,7 +13,7 @@ export const useTranslation = (): { t: TFunction } => {
     const firstDotIndex = locName.indexOf('.');
     const namespace = locName.slice(0, firstDotIndex);
     const shortLocName = locName.slice(firstDotIndex + 1);
-    if (!fixedLocs[namespace]) return (`No translation found for ${locName}!`);
+    if (!fixedLocs[namespace]) return (`Namespace not found: ${namespace}!`);
     const translationLoc = fixedLocs[namespace].find(loc => loc.name === shortLocName);
     if (!translationLoc) return (`No translation found for ${locName}!`);
   
