@@ -2,6 +2,7 @@ import { Formik, Form } from 'formik';
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { fixedLocValidationSchema } from './validationSchemas';
 import { ButtonGroup, Button, Scrollable, FormikTextAreaField } from 'shared/components';
+import type { FixedLocDT } from '@m-cafe-app/utils';
 
 
 export type EditFixedLocFormValues = {
@@ -14,19 +15,25 @@ interface EditFixedLocFormProps {
   onSubmit: (values: EditFixedLocFormValues) => void,
   onCancel: () => void,
   onDelete: () => void,
-  initialValues: EditFixedLocFormValues
+  fixedLoc: FixedLocDT
 }
 
 export const EditFixedLocForm = ({
   onSubmit,
   onCancel,
   onDelete,
-  initialValues
+  fixedLoc
 }: EditFixedLocFormProps) => {
 
   const { t } = useTranslation();
 
   const tNode = 'fixedLocsPage';
+
+  const initialValues: EditFixedLocFormValues = {
+    mainStr: fixedLoc.locString.mainStr,
+    secStr: fixedLoc.locString.secStr,
+    altStr: fixedLoc.locString.altStr
+  };
 
   return (
     <Formik
@@ -59,7 +66,7 @@ export const EditFixedLocForm = ({
             </Scrollable>
             <div className="form-buttons">
               <Button
-                label={t('main.buttonLabel.delete')}
+                label={t('main.buttonLabel.reserve')}
                 variant='delete'
                 id='delete-button'
                 onClick={onDelete}
