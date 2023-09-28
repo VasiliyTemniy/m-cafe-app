@@ -25,15 +25,15 @@ LocString.init({
     autoIncrement: true
   },
   mainStr: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(5000),
     allowNull: false
   },
   secStr: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(5000),
     allowNull: true
   },
   altStr: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(5000),
     allowNull: true
   },
   createdAt: {

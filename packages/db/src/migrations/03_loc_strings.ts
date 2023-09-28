@@ -9,15 +9,15 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       autoIncrement: true
     },
     main_str: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5000),
       allowNull: false
     },
     sec_str: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5000),
       allowNull: true
     },
     alt_str: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5000),
       allowNull: true
     },
     created_at: {
