@@ -2,12 +2,16 @@ import type { AppDispatch } from '../store';
 import { createSlice } from '@reduxjs/toolkit';
 // import { notificationArrayLength, notificationShowTime } from '../constants';
 
+
+const notificationArrayLength = Number(process.env.NOTIFICATION_ARRAY_LENGTH) || 100;
+const notificationTimeout = Number(process.env.NOTIFICATION_TIMEOUT) || 4000;
+
 export interface Notification {
   message: string;
   type: 'success' | 'error' | 'neutral';
 }
 
-type SetNotificationAction = {
+type AddNotificationAction = {
   payload: {
     notification: Notification,
     timeoutId: number
@@ -25,9 +29,9 @@ const notificationSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
-    addNotification(state: NotificationState, action: SetNotificationAction) {
-      const notificationArray = state.log.length > 100 // notificationArrayLength
-        ? [ ...state.log ].filter((item, index) => index !== 0)
+    addNotification(state: NotificationState, action: AddNotificationAction) {
+      const notificationArray = state.log.length > notificationArrayLength
+        ? [ ...state.log ].slice(1)
         : [ ...state.log ];
 
       clearTimeout(state.timeoutId);
@@ -45,7 +49,7 @@ const notificationSlice = createSlice({
 
 export const { addNotification, hideNotifications, clearNotifications } = notificationSlice.actions;
 
-export const showNotification = (message: string, type: 'success' | 'error' | 'neutral') => {
+export const notify = (message: string, type: 'success' | 'error' | 'neutral', timer = notificationTimeout) => {
   return (dispatch: AppDispatch) => {
     const now = new Date();
 
@@ -63,7 +67,7 @@ export const showNotification = (message: string, type: 'success' | 'error' | 'n
 
     const timeoutId: number = window.setTimeout(() => {
       dispatch(hideNotifications());
-    }, 3000); // notificationShowTime);
+    }, timer);
     
     dispatch(addNotification({ notification: { message: `[${timeNow}]: ${message}`, type }, timeoutId }));
   };
