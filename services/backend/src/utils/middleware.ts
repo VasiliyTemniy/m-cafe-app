@@ -95,6 +95,23 @@ const adminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction
 }) as RequestHandler;
 
 
+const superAdminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
+
+  if (!req.token) return next(new ApplicationError('Wrong usage of a adminCheck middleware in app code. Please, contact admins'));
+
+  const userRights = await Session.getUserRightsCache(req.token);
+  if (userRights !== 'admin') return next(new ProhibitedError('You have no admin permissions'));
+
+  const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
+  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
+
+  if (user.phonenumber !== config.SUPERADMIN_PHONENUMBER) return next(new ProhibitedError(`Please, call superadmin to resolve this problem ${config.SUPERADMIN_PHONENUMBER}`));
+
+  next();
+
+}) as RequestHandler;
+
+
 const sessionCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
   if (!req.userId) return next(new ApplicationError('Wrong usage of a sessionCheck middleware in app code. Please, contact admins'));
@@ -144,6 +161,7 @@ export default {
   userCheck,
   managerCheck,
   adminCheck,
+  superAdminCheck,
   sessionCheck,
   requestParamsCheck,
   unknownEndpoint
