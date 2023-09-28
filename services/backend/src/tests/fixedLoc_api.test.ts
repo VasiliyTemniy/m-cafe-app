@@ -14,6 +14,7 @@ import { apiBaseUrl } from './test_helper';
 import { validUserInDB } from './user_api_helper';
 import { initFixedLocs } from '../utils/initFixedLocs';
 import { includeLocStringNoTimestamps } from '../utils/sequelizeHelpers';
+import { fixedLocFilter } from '@m-cafe-app/shared-constants';
 
 
 
@@ -77,11 +78,12 @@ describe('FixedLoc requests tests', () => {
 
   });
 
-  it('FixedLoc POST, PUT, DELETE routes require admin rights', async () => {
+  it('FixedLoc POST, PUT routes require admin rights', async () => {
 
     const response1 = await api
-      .delete(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
+      .put(`${apiBaseUrl}/fixed-loc/reserve/${fixedLocs[0].id}`)
       .set('User-Agent', userAgent)
+      .send({ some: 'crap' })
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -92,9 +94,10 @@ describe('FixedLoc requests tests', () => {
     const commonUserTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string; 
 
     const response2 = await api
-      .delete(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
+      .put(`${apiBaseUrl}/fixed-loc/reserve/${fixedLocs[0].id}`)
       .set('Cookie', [commonUserTokenCookie])
       .set('User-Agent', userAgent)
+      .send({ some: 'crap' })
       .expect(403)
       .expect('Content-Type', /application\/json/);
 
@@ -182,13 +185,18 @@ describe('FixedLoc requests tests', () => {
 
   });
 
-  it('FixedLoc DELETE /:id deletes fixedLoc, can be used by admin', async () => {
+  it('FixedLoc PUT /reserve/:id reserves fixedLoc by changing locString to reserved filter value, can be used by admin', async () => {
 
-    await api
-      .delete(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
+    const response = await api
+      .put(`${apiBaseUrl}/fixed-loc/reserve/${fixedLocs[0].id}`)
       .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
-      .expect(204);
+      .expect(200);
+
+    expect(response.body.name).to.equal(fixedLocs[0].name);
+    expect(response.body.locString.mainStr).to.equal(fixedLocFilter);
+    expect(response.body.locString.secStr).to.equal(fixedLocFilter);
+    expect(response.body.locString.altStr).to.equal(fixedLocFilter);
 
   });
 
