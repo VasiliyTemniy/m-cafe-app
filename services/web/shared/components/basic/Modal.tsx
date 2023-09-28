@@ -8,7 +8,7 @@ import { Scrollable } from './Scrollable';
 
 interface ModalProps extends CommonProps {
   children: JSX.Element[] | JSX.Element;
-  title: string;
+  title?: string;
   subtitle?: string;
   active: boolean;
   withBlur?: boolean;
@@ -96,10 +96,12 @@ export const Modal = ({
           style={{ ...style, top: `${modalTop}px` }}
           id={id}
         >
-          <div className='modal-title'>
-            <TextComp text={title} classNameAddon='title' htmlEl='h3'/>
-            <TextComp text={subtitle} classNameAddon='subtitle' htmlEl='h4'/>
-          </div>
+          {(title || subtitle) &&
+            <div className='modal-title'>
+              <TextComp text={title} classNameAddon='title' htmlEl='h3'/>
+              <TextComp text={subtitle} classNameAddon='subtitle' htmlEl='h4'/>
+            </div>
+          }
           <div className='modal-main'>
             {children}
           </div>
