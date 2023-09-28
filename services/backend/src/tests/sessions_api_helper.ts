@@ -11,13 +11,18 @@ export const initLogin = async (
   password: string,
   api: supertest.SuperTest<supertest.Test>,
   expectedStatus: number,
-  loginUserAgent: string = userAgent
+  loginUserAgent: string = userAgent,
+  isSuperAdmin: boolean = false
 ) => {
 
-  const loginBody: LoginUserBody = {
-    phonenumber: user.phonenumber,
-    password: password
-  };
+  const loginBody: LoginUserBody = isSuperAdmin
+    ? {
+      username: user.username,
+      password: password
+    } : {
+      phonenumber: user.phonenumber,
+      password: password
+    };
 
   const response = await api
     .post(`${apiBaseUrl}/session`)
