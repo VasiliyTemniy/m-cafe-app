@@ -6,7 +6,7 @@ import { ApplicationError, isUiSettingDT } from '@m-cafe-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
-import { sharedSettingsSliceBase } from '../../shared/reducers';
+import { notify, sharedSettingsSliceBase } from '../../shared/reducers';
 import { Md5 } from 'ts-md5';
 
 type SetDbUiSettingsAction = {
@@ -77,6 +77,7 @@ export const sendUpdUiSettings = (parsedUiSettings: ParsedUiSettings, t: TFuncti
       }
       dispatch(setDbUiSettings({ uiSettings }));
       dispatch(parseUiSettings({ uiSettings }));
+      dispatch(notify(t('alert.uiSettingSuccess'), 'success'));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
     }

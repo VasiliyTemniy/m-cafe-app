@@ -6,7 +6,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
 import fixedLocService from '../services/fixedLoc';
 import { ApplicationError, isFixedLocDT } from '@m-cafe-app/utils';
-import { sharedFixedLocSliceBase } from '../../shared/reducers';
+import { notify, sharedFixedLocSliceBase } from '../../shared/reducers';
 import { Md5 } from 'ts-md5';
 
 type SetDbFixedLocsAction = {
@@ -93,6 +93,7 @@ export const sendUpdFixedLocs = (parsedFixedLocs: ParsedFixedLocs, t: TFunction)
       }
       dispatch(setDbFixedLocs({ fixedLocs }));
       dispatch(parseFixedLocs({ fixedLocs }));
+      dispatch(notify(t('alert.fixedLocSuccess'), 'success'));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
     }
@@ -112,6 +113,7 @@ export const sendResetFixedLocs = (t: TFunction) => {
       }
       dispatch(setDbFixedLocs({ fixedLocs }));
       dispatch(parseFixedLocs({ fixedLocs }));
+      dispatch(notify(t('alert.fixedLocSuccess'), 'success'));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
     }
@@ -129,6 +131,7 @@ export const sendReserveFixedLoc = (id: number, t: TFunction) => {
       const shortLocName = fixedLoc.name.slice(firstDotIndex + 1);
       const parsedFixedLoc = { ...fixedLoc, name: shortLocName };
       dispatch(updParsedFixedLoc({ fixedLoc: parsedFixedLoc, namespace }));
+      dispatch(notify(t('alert.fixedLocSuccess'), 'success'));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
     }
