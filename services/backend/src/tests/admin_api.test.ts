@@ -3,7 +3,7 @@ import 'mocha';
 import supertest from 'supertest';
 import app from '../app';
 import { apiBaseUrl } from './test_helper';
-import { connectToDatabase, User } from '@m-cafe-app/db';
+import { connectToDatabase, FixedLoc, LocString, User } from '@m-cafe-app/db';
 import { Session } from '../redis/Session';
 import { initSuperAdmin } from '../utils/adminInit';
 import { initLogin, userAgent } from './sessions_api_helper';
@@ -11,6 +11,7 @@ import { initialUsers, validNewUser, validUserInDB } from './user_api_helper';
 import config from '../utils/config';
 import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
+import { initFixedLocs } from '../utils/initFixedLocs';
 
 
 
@@ -71,10 +72,6 @@ describe('Admin router basics', () => {
 
   let validAdminInDBID: number;
   let validUserInDBID: number;
-
-  before(async () => {
-    await initSuperAdmin();
-  });
 
   beforeEach(async () => {
     await User.scope('all').destroy({
@@ -370,4 +367,111 @@ if they did not request to make permanent deletion', async () => {
 
   });
 
+});
+
+
+describe('Superadmin routes tests', () => {
+  
+  let validAdminTokenCookie: string;
+  let mockSuperAdminTokenCookie: string;
+
+  let realSuperadmin: User;
+  let mockSuperadmin: User;
+
+  before(async () => {
+    await User.scope('all').destroy({
+      force: true,
+      where: {
+        phonenumber: {
+          [Op.not]: config.SUPERADMIN_PHONENUMBER
+        }
+      }
+    });
+
+    realSuperadmin = await User.findOne({
+      where: {
+        phonenumber: config.SUPERADMIN_PHONENUMBER
+      }
+    }) as User;
+
+    realSuperadmin.phonenumber = '123456789';
+    await realSuperadmin.save();
+
+    mockSuperadmin = await User.create({
+      ...validUserInDB.dbEntry,
+      rights: 'admin',
+      phonenumber: config.SUPERADMIN_PHONENUMBER
+    });
+
+    const admin = await User.create(validAdminInDB.dbEntry);
+
+    await FixedLoc.destroy({ force: true, where: {} });
+
+    validAdminTokenCookie = await initLogin(admin, validAdminInDB.password, api, 201, userAgent) as string;
+    mockSuperAdminTokenCookie = await initLogin(mockSuperadmin, validUserInDB.password, api, 201, userAgent, true) as string;
+  });
+
+  after(async () => {
+    mockSuperadmin.phonenumber = '1234567891';
+    await mockSuperadmin.save();
+
+    realSuperadmin.phonenumber = config.SUPERADMIN_PHONENUMBER;
+    await realSuperadmin.save();
+
+    await User.scope('all').destroy({
+      force: true,
+      where: {
+        phonenumber: {
+          [Op.not]: config.SUPERADMIN_PHONENUMBER
+        }
+      }
+    });
+
+    await FixedLoc.destroy({ force: true, where: {} });
+  });
+
+  it('Admin /fixed-loc/reset route works, can be used only by superadmin', async () => {
+
+    const response1 = await api
+      .get(`${apiBaseUrl}/admin/fixed-loc/reset`)
+      .set('Cookie', [validAdminTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(403);
+
+    expect(response1.body.error.name).to.equal('ProhibitedError');
+    expect(response1.body.error.message).to.equal(`Please, call superadmin to resolve this problem ${config.SUPERADMIN_PHONENUMBER}`);
+
+    await initFixedLocs();
+
+    const fixedLocs = await FixedLoc.findAll({});
+
+    const randomFixedLocId = Math.floor(Math.random() * fixedLocs.length);
+
+    const fixedLocToEdit = await FixedLoc.findByPk(fixedLocs[randomFixedLocId].id);
+    if (!fixedLocToEdit) return expect(true).to.equal(false);
+
+    fixedLocToEdit.name = 'newName';
+    await fixedLocToEdit.save();
+
+    const locStringToEdit = await LocString.findByPk(fixedLocs[randomFixedLocId].locStringId);
+    if (!locStringToEdit) return expect(true).to.equal(false);
+
+    locStringToEdit.mainStr = 'newMainStr';
+    await locStringToEdit.save();
+
+
+    const response2 = await api
+      .get(`${apiBaseUrl}/admin/fixed-loc/reset`)
+      .set('Cookie', [mockSuperAdminTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(200);
+
+    const responseFixedLocs = response2.body as FixedLoc[];
+
+    const resettedFixedLoc = responseFixedLocs.find(fixedLoc => fixedLoc.id === fixedLocs[randomFixedLocId].id);
+
+    expect(resettedFixedLoc?.name).to.not.equal('newName');
+    expect(resettedFixedLoc?.locString?.mainStr).to.not.equal('newMainStr');
+    
+  });
 });
