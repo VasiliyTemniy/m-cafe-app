@@ -15,3 +15,6 @@ export * from './Loading';
 export * from './Scrollable';
 export * from './NavItem';
 export * from './Notification';
+export * from './Input';
+export * from './SelectInput';
+export * from './TextArea';
