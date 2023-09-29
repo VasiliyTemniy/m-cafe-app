@@ -28,8 +28,6 @@ interface UseInitLCProps extends CommonProps {
     'layout',
   componentName: string,
   errorMessage?: string,
-  placeholder?: string,
-  label?: string,
   variant?: string
 }
 
@@ -39,8 +37,6 @@ export const useInitLC = ({
   classNameAddon,
   classNameOverride,
   errorMessage,
-  placeholder,
-  label,
   variant
 }: UseInitLCProps) => {
 
@@ -130,7 +126,7 @@ export const useInitLC = ({
         const firefoxVersion = match ? Number(match[1]) : null;
         const firefoxFix = firefoxVersion
           ? firefoxVersion > 108
-          : false;
+          : componentName === 'input-time' || componentName === 'input-date';
 
         specific = {
           labelAsPlaceholder: specialUiSettingsSet.has('labelAsPlaceholder'),
@@ -180,8 +176,6 @@ export const useInitLC = ({
     classNameAddon,
     classNameOverride,
     errorMessage,
-    placeholder,
-    label,
     variant,
     uiSettingsHash
   ]);
