@@ -3,4 +3,3 @@ export * from './FormikSelectField';
 export * from './FormikTextAreaField';
 export * from './FormikTextField';
 export * from './FormikTimeField';
-export * from './InputLCProps';
