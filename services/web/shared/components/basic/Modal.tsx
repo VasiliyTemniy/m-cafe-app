@@ -16,6 +16,7 @@ interface ModalProps extends CommonProps {
   wrapperExcludeRight?: number;
   wrapperExcludeBottom?: number;
   wrapperExcludeLeft?: number;
+  zIndexOverride?: number;
 }
 
 export const Modal = ({
@@ -30,7 +31,8 @@ export const Modal = ({
   wrapperExcludeTop = 0,
   wrapperExcludeRight = 0,
   wrapperExcludeBottom = 0,
-  wrapperExcludeLeft = 0
+  wrapperExcludeLeft = 0,
+  zIndexOverride
 }: ModalProps) => {
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,8 @@ export const Modal = ({
           height: `${wrapperHeight}px`,
           top: `${wrapperTop}px`,
           width: `${wrapperWidth}px`,
-          left: `${wrapperLeft}px`
+          left: `${wrapperLeft}px`,
+          zIndex: zIndexOverride
         }}
         highlightScrollbarOnContentHover={false}
       >
