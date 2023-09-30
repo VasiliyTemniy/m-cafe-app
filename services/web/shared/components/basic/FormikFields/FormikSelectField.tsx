@@ -1,10 +1,7 @@
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
 import type { FieldHookConfig } from 'formik';
 import type { MouseEvent } from 'react';
-import { useDeferredValue } from 'react';
 import { useField } from 'formik';
-import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { autoCompleteArray } from '@m-cafe-app/frontend-logic/utils';
 import { Tooltip } from '../Tooltip';
 import { SelectInput } from '../SelectInput';
 
@@ -31,12 +28,8 @@ export const FormikSelectField = ({
   options,
   ...props
 }: FormikSelectFieldProps) => {
-  
-  const { t } = useTranslation();
 
   const [field, meta, helpers] = useField(props);
-
-  const deferredValue = useDeferredValue(field.value);
 
   const errorMessage = meta.error && meta.touched
     ? meta.error
@@ -45,8 +38,6 @@ export const FormikSelectField = ({
   const handleChooseOption = (e: MouseEvent<HTMLDivElement>) => {
     void helpers.setValue(e.currentTarget.innerText, false);
   };
-
-  const displayedOptions = autoCompleteArray(options, deferredValue, t, tNode);
 
   return(
     <SelectInput
@@ -68,7 +59,7 @@ export const FormikSelectField = ({
       spellCheck={spellCheck}
       placeholder={placeholder}
       label={label}
-      options={displayedOptions}
+      options={options}
       tNode={tNode}
       handleChooseOption={handleChooseOption}
     >

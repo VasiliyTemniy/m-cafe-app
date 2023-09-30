@@ -1,9 +1,11 @@
 import type { MouseEventHandler } from 'react';
 import type { InputProps } from './Input';
+import { useDeferredValue } from 'react';
 import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { apiBaseUrl } from '@m-cafe-app/shared-constants';
 import { Image } from './Image';
 import { Scrollable } from './Scrollable';
+import { autoCompleteArray } from '@m-cafe-app/frontend-logic/utils';
 
 interface SelectInputProps extends InputProps {
   handleChooseOption: MouseEventHandler;
@@ -38,6 +40,8 @@ export const SelectInput = ({
 
   const { t } = useTranslation();
 
+  const deferredValue = useDeferredValue(value);
+
   const { className, style: uiSettingsStyle, specific } = useInitLC({
     componentType: 'input',
     componentName: `input ${internalType}`,
@@ -55,6 +59,8 @@ export const SelectInput = ({
       ? errorMessage
       : placeholder
     : label;
+
+  const displayedOptions = autoCompleteArray(options, deferredValue, t, tNode);
 
   return (
     <div
@@ -88,14 +94,14 @@ export const SelectInput = ({
       <Image src={`${apiBaseUrl}/public/pictures/svg/arrow.svg`} classNameAddon='svg'/>
       <div className='dropdown-wrapper'>
         <Scrollable classNameAddon='options-wrapper' heightTweak={4} highlightScrollbarOnContentHover={false}>
-          {options.map(option => 
+          {displayedOptions.map(option => 
             <div key={option} onMouseDown={handleChooseOption} id={option}>
               { tNode ? t(`${tNode}.${option}`) : option }
             </div>)
           }
         </Scrollable>
         <>
-          {options.length > 0 && specific?.useBarBelow &&
+          {displayedOptions.length > 0 && specific?.useBarBelow &&
             <div className='bar-after'/>
           }
         </>
