@@ -71,7 +71,7 @@
 
   .bar {
     position: absolute;
-    width: calc(100% + v-v.$input-padding-left);
+    width: 100%;
     bottom: 0;
     height: v-v.$input-border-thickness;
     transition:
@@ -120,7 +120,7 @@
     height: v-v.$input-svg-scale;
     width: v-v.$input-svg-scale;
     top: 50%;
-    right: 0.3rem;
+    right: v-v.$input-svg-right;
     transform: translateY(-50%) rotate(-90deg);
     transition: transform v-v.$input-animation-speed ease-in-out;
     pointer-events: none;
@@ -223,7 +223,7 @@
     height: v-v.$input-datetime-svg-scale;
     width: v-v.$input-datetime-svg-scale;
     top: 45%;
-    right: 0.3rem;
+    right: v-v.$input-svg-right;
     transform: translateY(-50%);
     pointer-events: none;
   }
@@ -233,9 +233,6 @@
 .alpha.time.input.firefox-fix {
   input[value=""]:not(:focus) {
     color: transparent;
-  }
-  .image.svg {
-    right: 0;
   }
 }
 
