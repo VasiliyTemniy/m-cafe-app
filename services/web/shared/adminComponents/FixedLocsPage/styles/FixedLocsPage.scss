@@ -1,4 +1,4 @@
-$fixed-locs-tools-dropbox-width: 12rem;
+$fixed-locs-tools-input-width: 12rem;
 $fixed-locs-table-name-column-width: 25rem;
 
 .container {
@@ -9,12 +9,22 @@ $fixed-locs-table-name-column-width: 25rem;
 
     &-tools {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 2fr 3fr;
       align-items: end;
       padding: 1rem;
 
-      #namespaces-box {
-        width: $fixed-locs-tools-dropbox-width;
+      .inputs {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+
+        #namespaces-box {
+          width: $fixed-locs-tools-input-width;
+        }
+  
+        #fixed-locs-filter-box {
+          width: $fixed-locs-tools-input-width;
+        }
       }
 
       .buttons {

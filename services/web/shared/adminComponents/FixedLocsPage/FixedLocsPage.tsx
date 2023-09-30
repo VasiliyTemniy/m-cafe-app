@@ -1,12 +1,19 @@
 import type { MouseEvent } from 'react';
 import type { EditFixedLocFormValues } from './EditFixedLocForm';
 import type { FixedLocDT } from '@m-cafe-app/utils';
-import { useState } from 'react';
+import { useState, useDeferredValue } from 'react';
 import { useAppDispatch, useAppSelector } from '@m-cafe-app/frontend-logic/admin/hooks';
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { Button, ButtonGroup, Container, Dropbox, Modal, Table, TextComp } from 'shared/components';
+import { Button, ButtonGroup, Container, Dropbox, Input, Modal, Table, TextComp } from 'shared/components';
 import { EditFixedLocForm } from './EditFixedLocForm';
-import { parseFixedLocs, sendReserveFixedLoc, sendResetFixedLocs, sendUpdFixedLocs, updParsedFixedLoc } from '@m-cafe-app/frontend-logic/admin/reducers';
+import {
+  parseFixedLocs,
+  sendReserveFixedLoc,
+  sendResetFixedLocs,
+  sendUpdFixedLocs,
+  updParsedFixedLoc
+} from '@m-cafe-app/frontend-logic/admin/reducers';
+import { parseFixedLoc } from '@m-cafe-app/frontend-logic/utils';
 
 export const FixedLocsPage = () => {
 
@@ -15,6 +22,8 @@ export const FixedLocsPage = () => {
 
   const dispatch = useAppDispatch();
 
+  const [fixedLocFilter, setFixedLocFilter] = useState('');
+  const deferredFilter = useDeferredValue(fixedLocFilter);
   const [chosenNamespace, setChosenNamespace] = useState('all');
   const [editFixedLocModalOpen, setEditFixedLocModalOpen] = useState(false);
   const [chosenFixedLoc, setChosenFixedLoc] = useState<FixedLocDT>({
@@ -30,11 +39,22 @@ export const FixedLocsPage = () => {
   };
 
   const handleTableItemClick = (e: MouseEvent) => {
-    if (chosenNamespace === 'all') return;
-    const fixedLocToEdit = parsedFixedLocs[chosenNamespace].find(loc => loc.id === Number(e.currentTarget.id));
-    if (!fixedLocToEdit) return;
+    // if (chosenNamespace === 'all') return;
+    // const fixedLocToEdit = parsedFixedLocs[chosenNamespace].find(loc => loc.id === Number(e.currentTarget.id));
+    // if (!fixedLocToEdit) return;
 
-    setChosenFixedLoc(fixedLocToEdit);
+    const foundFixedLoc = chosenNamespace === 'all'
+      ? dbFixedLocs.find(loc => loc.id === Number(e.currentTarget.id))
+      : parsedFixedLocs[chosenNamespace].find(loc => loc.id === Number(e.currentTarget.id));
+    if (!foundFixedLoc) return;
+
+    if (chosenNamespace === 'all') {
+      const { parsedFixedLoc, namespace } = parseFixedLoc(foundFixedLoc);
+      setChosenNamespace(namespace);
+      setChosenFixedLoc(parsedFixedLoc);
+    } else {
+      setChosenFixedLoc(foundFixedLoc);
+    }
     setEditFixedLocModalOpen(true);
   };
 
@@ -70,12 +90,17 @@ export const FixedLocsPage = () => {
     void dispatch(sendResetFixedLocs(t));
   };
 
-  const filteredFixedLocs = chosenNamespace === 'all'
+  const namespacesFixedLocs = chosenNamespace === 'all'
     ? dbFixedLocs
     : parsedFixedLocs[chosenNamespace];
 
+  const filteredFixedLocs = deferredFilter === ''
+    ? namespacesFixedLocs
+    : namespacesFixedLocs.filter(loc => loc.name.toLowerCase().includes(deferredFilter.toLowerCase()));
+
   const tableColumns = [
     'id',
+    // t(`${tNode}.namespace`),
     t(`${tNode}.name`),
     t(`${tNode}.main`),
     t(`${tNode}.sec`),
@@ -98,13 +123,24 @@ export const FixedLocsPage = () => {
         <div className='fixed-locs-header'>
           <TextComp text={t(`${tNode}.title`)} classNameAddon='title'/>
           <div className='fixed-locs-header-tools'>
-            <Dropbox
-              options={[ ...fixedLocsNamespaces, 'all' ]}
-              label={t(`${tNode}.namespacesBox`)}
-              currentOption={chosenNamespace}
-              onChoose={handleChooseNamespace}
-              id='namespaces-box'
-            />
+            <div className='inputs'>
+              <Dropbox
+                options={[ ...fixedLocsNamespaces, 'all' ]}
+                label={t(`${tNode}.namespacesBox`)}
+                currentOption={chosenNamespace}
+                onChoose={handleChooseNamespace}
+                id='namespaces-box'
+              />
+              <Input
+                onChange={e => setFixedLocFilter(e.target.value)}
+                value={fixedLocFilter}
+                placeholder={t(`${tNode}.placeholder.filter`)}
+                label={t(`${tNode}.label.filter`)}
+                id='fixed-locs-filter-box'
+                type='text'
+                name='fixed-locs-filter'
+              />
+            </div>
             <div className='buttons'>
               <ButtonGroup>
                 <Button
@@ -132,7 +168,7 @@ export const FixedLocsPage = () => {
             columns={tableColumns}
             items={tableItems}
             onItemClick={handleTableItemClick}
-            classNameAddon={chosenNamespace === 'all' ? 'no-pointer' : undefined}
+            // classNameAddon={chosenNamespace === 'all' ? 'no-pointer' : undefined}
           />
         </Container>
       </Container>
