@@ -63,7 +63,7 @@ export const Input = ({
   return (
     <div
       id={id}
-      className={className}
+      className={`${className}${specific?.firefoxFix ? ' firefox-fix' : ''}`}
       style={{ ...style, ...uiSettingsStyle }}
     >
       <input
