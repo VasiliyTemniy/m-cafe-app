@@ -126,7 +126,7 @@ export const useInitLC = ({
         const firefoxVersion = match ? Number(match[1]) : null;
         const firefoxFix = firefoxVersion
           ? firefoxVersion > 108
-          : componentName === 'input-time' || componentName === 'input-date';
+          : componentName === 'input time' || componentName === 'input date';
 
         specific = {
           labelAsPlaceholder: specialUiSettingsSet.has('labelAsPlaceholder'),
