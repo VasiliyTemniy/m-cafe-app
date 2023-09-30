@@ -29,6 +29,18 @@
       "mainStr": "Альтернативный",
       "secStr": "Alternative"
     },
+    "placeholder": {
+      "filter": {
+        "mainStr": "Фильтр по имени",
+        "secStr": "Filter by name"
+      }
+    },
+    "label": {
+      "filter": {
+        "mainStr": "Фильтр по имени",
+        "secStr": "Filter by name"
+      }
+    },
     "editFixedLocModal": {
       "title": {
         "mainStr": "Редактирование фиксированного перевода",
