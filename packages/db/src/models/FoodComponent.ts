@@ -1,5 +1,5 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import Food from './Food.js';
 import Ingredient from './Ingredient.js';
@@ -63,18 +63,34 @@ FoodComponent.init({
   underscored: true,
   timestamps: true,
   modelName: 'food_component',
+  defaultScope: {
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    }
+  },
   scopes: {
     compositeFood: {
       where: {
         compositeFood: true
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
       }
     },
     simpleFood: {
       where: {
         compositeFood: false
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
       }
     },
-    all: {}
+    all: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    allWithTimestamps: {}
   }
 });
   

@@ -1,5 +1,5 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
 
@@ -48,7 +48,20 @@ LocString.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'loc_string'
+  modelName: 'loc_string',
+  defaultScope: {
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    }
+  },
+  scopes: {
+    all: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    allWithTimestamps: {}
+  }
 });
   
 export default LocString;

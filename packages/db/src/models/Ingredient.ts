@@ -1,5 +1,5 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import LocString from './LocString.js';
 import { sequelize } from '../db.js';
@@ -68,7 +68,20 @@ Ingredient.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'ingredient'
+  modelName: 'ingredient',
+  defaultScope: {
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    }
+  },
+  scopes: {
+    all: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    allWithTimestamps: {}
+  }
 });
   
 export default Ingredient;

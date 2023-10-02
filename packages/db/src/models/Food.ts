@@ -1,5 +1,5 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import FoodComponent from './FoodComponent.js';
 import FoodPicture from './FoodPicture.js';
@@ -65,7 +65,20 @@ Food.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'foods'
+  modelName: 'foods',
+  defaultScope: {
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    }
+  },
+  scopes: {
+    all: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    allWithTimestamps: {}
+  }
 });
   
 Food.addHook('afterFind', findResult => {

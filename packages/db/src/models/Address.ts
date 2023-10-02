@@ -1,5 +1,5 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
 import {
@@ -167,7 +167,20 @@ Address.init({
       unique: true,
       fields: ['region', 'region_district', 'city', 'city_district', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
     }
-  ]
+  ],
+  defaultScope: {
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    }
+  },
+  scopes: {
+    all: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    allWithTimestamps: {}
+  }
 });
   
 export default Address;

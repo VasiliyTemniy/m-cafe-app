@@ -1,5 +1,5 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import Address from './Address.js';
 import LocString from './LocString.js';
@@ -60,7 +60,20 @@ Facility.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'facility'
+  modelName: 'facility',
+  defaultScope: {
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    }
+  },
+  scopes: {
+    all: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    allWithTimestamps: {}
+  }
 });
   
 export default Facility;

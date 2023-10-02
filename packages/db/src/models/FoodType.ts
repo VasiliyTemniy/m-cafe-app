@@ -1,5 +1,5 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import Food from './Food.js';
 import LocString from './LocString.js';
@@ -50,7 +50,20 @@ FoodType.init({
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'food_type'
+  modelName: 'food_type',
+  defaultScope: {
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    }
+  },
+  scopes: {
+    all: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    allWithTimestamps: {}
+  }
 });
   
 export default FoodType;
