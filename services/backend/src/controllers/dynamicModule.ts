@@ -6,9 +6,9 @@ import {
   isNewDynamicModuleBody,
   mapDataToTransit,
   RequestBodyError,
-  timestampsKeys,
   updateInstance
 } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import { Router } from 'express';
 import { DynamicModule, LocString, Picture } from '@m-cafe-app/db';
 import middleware from '../utils/middleware.js';
