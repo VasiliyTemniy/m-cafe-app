@@ -5,3 +5,8 @@ export * from './baseUrls.js';
 export * from './allowedThemes.js';
 export * from './uiSettingTypes.js';
 export * from './filtrationConstants.js';
+export * from './componentGroups.js';
+export * from './fixedLocsScopes.js';
+export * from './specificUiSettings.js';
+export * from './allowedClassNamesUiSettings.js';
+export * from './timestampsKeys.js';
