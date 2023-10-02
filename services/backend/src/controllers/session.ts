@@ -32,10 +32,10 @@ sessionRouter.post(
     const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
     const user = username
-      ? await User.scope('all').findOne({
+      ? await User.scope('allWithPasswordHash').findOne({
         where: { username: username }
       })
-      : await User.scope('all').findOne({
+      : await User.scope('allWithPasswordHash').findOne({
         where: { phonenumber: phonenumber }
       });
 
