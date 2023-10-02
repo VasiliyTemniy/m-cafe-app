@@ -21,8 +21,16 @@ import FixedLoc from './FixedLoc.js';
  * User + Address table associations BEGIN
  ******/
 
-User.belongsToMany(Address, { through: UserAddress });
-Address.belongsToMany(User, { through: UserAddress });
+User.belongsToMany(Address, {
+  through: UserAddress,
+  foreignKey: 'userId',
+  as: 'addresses'
+});
+Address.belongsToMany(User, {
+  through: UserAddress,
+  foreignKey: 'addressId',
+  as: 'users'
+});
 User.hasMany(UserAddress, {
   foreignKey: 'userId',
   as: 'userAddresses'
