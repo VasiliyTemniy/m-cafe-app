@@ -16,7 +16,6 @@ import {
   isNewFacilityBody,
   mapDataToTransit,
   RequestBodyError,
-  timestampsKeys,
   DatabaseError,
   updateInstance,
   isEditFacilityBody,
@@ -26,6 +25,7 @@ import {
   ProhibitedError,
   hasOwnProperty
 } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import {
   includeNameDescriptionLocNoTimestamps,
   includeNameLocNoTimestamps,
@@ -442,7 +442,7 @@ facilityRouter.delete(
     if (!foundUser) throw new DatabaseError(`No user entry with this id ${req.params.userId}`);
 
     if (foundUser.rights === 'manager') {
-      foundUser.rights = 'user';
+      foundUser.rights = 'customer';
       await foundUser.save();
     }
 
