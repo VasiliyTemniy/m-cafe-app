@@ -3,6 +3,7 @@ import { FixedLoc, LocString } from '@m-cafe-app/db';
 import { ApplicationError, isNewLocString, isString } from '@m-cafe-app/utils';
 import logger from './logger.js';
 import { getFileReadPromises } from './getFileReadPromises.js';
+import type { FixedLocsScope } from '@m-cafe-app/shared-constants';
 
 /**
  * Look for all jsonc files in locales folder
@@ -31,13 +32,21 @@ export const initFixedLocs = async () => {
 };
 
 const parseLocTree = async (locTree: JSON) => {
+  try {
+    const namespace = locTree['ns' as keyof JSON] as string;
+    const scope = locTree['sc' as keyof JSON] as FixedLocsScope;
+    if (!isString(namespace) || !isString(scope)) throw new ApplicationError('Wrong locales structure! No namespace or scope found. Check locales', { current: locTree });
 
-  for (const key in locTree) {
-    const tNodeObj = locTree[key as keyof JSON];
-    if (!isTNodeObj(tNodeObj)) throw new ApplicationError('Wrong locales structure! Check locales', { current: locTree });
-    await parseTNodeTree(tNodeObj, key);
+    for (const key in locTree) {
+      if (key === 'ns' || key === 'sc') continue;
+      const tNodeObj = locTree[key as keyof JSON];
+      if (!isTNodeObj(tNodeObj)) throw new ApplicationError('Wrong locales structure! Check locales', { current: locTree });
+      await parseTNodeTree(tNodeObj, key, namespace, scope);
+    }
+  } catch (error) {
+    logger.error(error);
+    throw new ApplicationError('Wrong locales structure! Check locales', { current: locTree });
   }
-
 };
 
 const locKeys = ['mainStr', 'secStr', 'altStr'];
@@ -54,32 +63,34 @@ const isTNodeObj = (obj: unknown): obj is TNodeObj => {
   return true;
 };
 
-const parseTNodeTree = async (tNodeParent: TNodeObj, tNodePath: string) => {
+const parseTNodeTree = async (tNodeParent: TNodeObj, tNodePath: string, namespace: string, scope: FixedLocsScope) => {
 
   for (const key in tNodeParent) {
 
     // If found locKey as mainStr, secStr, altStr then append foundFixedLocs
     if (locKeys.includes(key)) {
       if (!isNewLocString(tNodeParent)) throw new ApplicationError('Wrong locales structure! Check locales', { current: tNodeParent });
-      await addFixedLocToDB(tNodePath, tNodeParent);
+      await addFixedLocToDB(tNodePath, tNodeParent, namespace, scope);
       // Break here means continue for parent of tNodeParent
       break;
     } else {
       const tNodeChild = tNodeParent[key];
       if (!isTNodeObj(tNodeChild)) throw new ApplicationError('Wrong JSON format! Check locales', { current: tNodeParent });
-      await parseTNodeTree(tNodeChild, tNodePath + '.' + key);
+      await parseTNodeTree(tNodeChild, tNodePath + '.' + key, namespace, scope);
     }
   }
 };
 
-const addFixedLocToDB = async (tNodePath: string, locString: NewLocString) => {
-  const foundFixedLoc = await FixedLoc.findOne({ where: { name: tNodePath }});
+const addFixedLocToDB = async (tNodePath: string, locString: NewLocString, namespace: string, scope: FixedLocsScope) => {
+  const foundFixedLoc = await FixedLoc.findOne({ where: { name: tNodePath, namespace, scope }});
 
   if (!foundFixedLoc) {
     const savedLocString = await LocString.create(locString);
     await FixedLoc.create({
       name: tNodePath,
-      locStringId: savedLocString.id
+      locStringId: savedLocString.id,
+      namespace,
+      scope
     });
   }
 };
