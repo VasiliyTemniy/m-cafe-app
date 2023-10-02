@@ -1,15 +1,19 @@
-import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { MapToDT } from '../types/helpers.js';
 import type { UiSettingData } from '@m-cafe-app/db';
-import { isNumber, isString } from '../types/typeParsers.js';
-import { hasOwnProperty } from '../types/helpers.js';
+import { checkProperties, isNumber, isString } from '../types/typeValidators.js';
 
 
 export type UiSettingDT = MapToDT<UiSettingData>;
 
-type UiSettingDTFields = MapToUnknown<UiSettingDT>;
+export const isUiSettingDT = (obj: unknown): obj is UiSettingDT => {
 
-const hasUiSettingDTFields = (obj: unknown): obj is UiSettingDTFields =>
-  hasOwnProperty(obj, 'id') && hasOwnProperty(obj, 'name') && hasOwnProperty(obj, 'value');
+  if (!checkProperties({obj, properties: [
+    'id'
+  ], required: true, validator: isNumber})) return false;
 
-export const isUiSettingDT = (obj: unknown): obj is UiSettingDT =>
-  hasUiSettingDTFields(obj) && isNumber(obj.id) && isString(obj.name) && isString(obj.value);
+  if (!checkProperties({obj, properties: [
+    'name', 'group', 'theme', 'value'
+  ], required: true, validator: isString})) return false;
+
+  return true;
+};

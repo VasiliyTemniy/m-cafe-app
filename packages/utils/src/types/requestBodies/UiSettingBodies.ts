@@ -1,48 +1,40 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { UiSettingDT } from '../../models/UiSetting.js';
 import { isUiSettingDT } from '../../models/UiSetting.js';
-import { hasOwnProperty } from '../helpers.js';
-import { isString } from '../typeParsers.js';
+import { checkProperties, isString } from '../typeValidators.js';
 
 export type NewUiSettingBody = Omit<UiSettingDT, 'id'>;
 
-type NewUiSettingBodyFields = MapToUnknown<NewUiSettingBody>;
+export const isNewUiSettingBody = (obj: unknown): obj is NewUiSettingBody => {
 
-const hasNewUiSettingBodyFields = (body: unknown): body is NewUiSettingBodyFields =>
-  hasOwnProperty(body, 'name') && hasOwnProperty(body, 'value');
+  if (!checkProperties({obj: obj, properties: [
+    'name', 'value', 'group', 'theme'
+  ], required: true, validator: isString})) return false;
 
-export const isNewUiSettingBody = (body: unknown): body is NewUiSettingBody =>
-  hasNewUiSettingBodyFields(body) && isString(body.name) && isString(body.value);
+  return true;
+};
 
 
 export type EditUiSettingBody = NewUiSettingBody;
   
-type EditUiSettingBodyFields = MapToUnknown<EditUiSettingBody>;
+export const isEditUiSettingBody = (obj: unknown): obj is EditUiSettingBody => {
   
-const hasEditUiSettingBodyFields = (body: unknown): body is EditUiSettingBodyFields =>
-  hasNewUiSettingBodyFields(body);
-  
-export const isEditUiSettingBody = (body: unknown): body is EditUiSettingBody =>
-  hasEditUiSettingBodyFields(body) && isString(body.name) && isString(body.value);
+  if (!checkProperties({obj, properties: [
+    'name', 'value', 'group', 'theme'
+  ], required: true, validator: isString})) return false;
+
+  return true;
+};
 
 
 export type EditManyUiSettingBody = {
   updUiSettings: Array<UiSettingDT>
 };
-
-type EditManyUiSettingBodyFields = MapToUnknown<EditManyUiSettingBody>;
-
-const hasEditManyUiSettingBodyFields = (body: unknown): body is EditManyUiSettingBodyFields =>
-  hasOwnProperty(body, 'updUiSettings');
   
-export const isEditManyUiSettingBody = (body: unknown): body is EditManyUiSettingBody => {
-  if (!hasEditManyUiSettingBodyFields(body)) return false;
+export const isEditManyUiSettingBody = (obj: unknown): obj is EditManyUiSettingBody => {
 
-  if (!Array.isArray(body.updUiSettings)) return false;
-
-  for (const updUiSetting of body.updUiSettings) {
-    if (!isUiSettingDT(updUiSetting)) return false;
-  }
+  if (!checkProperties({obj, properties: [
+    'updUiSettings'
+  ], required: true, validator: isUiSettingDT, isArray: true})) return false;
 
   return true;
 };

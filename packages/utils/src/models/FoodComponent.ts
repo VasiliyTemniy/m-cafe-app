@@ -1,9 +1,8 @@
-import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { MapToDT } from '../types/helpers.js';
 import type { FoodComponentData } from '@m-cafe-app/db';
 import type { IngredientDTS } from './Ingredient.js';
 import type { FoodDTS } from './Food.js';
-import { isNumber, isBoolean } from '../types/typeParsers.js';
-import { hasOwnProperty } from '../types/helpers.js';
+import { isNumber, isBoolean, checkProperties } from '../types/typeValidators.js';
 import { isIngredientDTS } from './Ingredient.js';
 import { isFoodDTS } from './Food.js';
 
@@ -13,25 +12,27 @@ export type FoodComponentDT = Omit<MapToDT<FoodComponentData>, 'foodId' | 'compo
   component: FoodDTS | IngredientDTS;
 };
 
-type FoodComponentDTFields = MapToUnknown<FoodComponentDT>;
+export const isFoodComponentDT = (obj: unknown): obj is FoodComponentDT =>{
 
-const hasFoodComponentDTFields = (obj: unknown): obj is FoodComponentDTFields =>
-  hasOwnProperty(obj, 'id')
-  &&
-  hasOwnProperty(obj, 'component')
-  &&
-  hasOwnProperty(obj, 'amount')
-  &&
-  hasOwnProperty(obj, 'compositeFood');
+  if (!checkProperties({obj, properties: [
+    'id'
+  ], required: true, validator: isNumber})) return false;
 
-// DTS means DataTransitSimple, used to bring only necessary data to nested objects
-export const isFoodComponentDT = (obj: unknown): obj is FoodComponentDT =>
-  hasFoodComponentDTFields(obj)
-  &&
-  isNumber(obj.id)
-  &&
-  (isFoodDTS(obj.component) || isIngredientDTS(obj.component))
-  &&
-  isNumber(obj.amount)
-  &&
-  isBoolean(obj.compositeFood);
+  if (!checkProperties({obj, properties: [
+    'component'
+  ], required: true, validator: isFoodDTS}))
+    if
+    (!checkProperties({obj, properties: [
+      'component'
+    ], required: true, validator: isIngredientDTS})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'amount'
+  ], required: true, validator: isNumber})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'compositeFood'
+  ], required: false, validator: isBoolean})) return false;
+
+  return true;
+};

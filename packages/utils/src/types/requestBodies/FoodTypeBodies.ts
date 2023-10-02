@@ -1,8 +1,7 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { FoodTypeDT } from '../../models/FoodType.js';
 import type { EditLocString, NewLocString } from '../../models/LocString.js';
-import { hasOwnProperty } from '../helpers.js';
 import { isEditLocString, isNewLocString } from '../../models/LocString.js';
+import { checkProperties } from '../typeValidators.js';
 
 export type NewFoodTypeBody = Omit<FoodTypeDT, 'id' | 'nameLoc' | 'descriptionLoc'>
 & {
@@ -10,13 +9,14 @@ export type NewFoodTypeBody = Omit<FoodTypeDT, 'id' | 'nameLoc' | 'descriptionLo
   descriptionLoc: NewLocString;
 };
 
-type NewFoodTypeBodyFields = MapToUnknown<NewFoodTypeBody>;
-
-const hasNewFoodTypeBodyFields = (body: unknown): body is NewFoodTypeBodyFields =>
-  hasOwnProperty(body, 'nameLoc') && hasOwnProperty(body, 'descriptionLoc');
-
-export const isNewFoodTypeBody = (body: unknown): body is NewFoodTypeBody =>
-  hasNewFoodTypeBodyFields(body) && isNewLocString(body.nameLoc) && isNewLocString(body.descriptionLoc);
+export const isNewFoodTypeBody = (obj: unknown): obj is NewFoodTypeBody => {
+  
+  if (!checkProperties({obj, properties: [
+    'nameLoc', 'descriptionLoc'
+  ], required: true, validator: isNewLocString})) return false;
+  
+  return true;
+};
 
 
 export type EditFoodTypeBody = Omit<NewFoodTypeBody, 'nameLoc' | 'descriptionLoc'>
@@ -25,10 +25,11 @@ export type EditFoodTypeBody = Omit<NewFoodTypeBody, 'nameLoc' | 'descriptionLoc
   descriptionLoc: EditLocString;
 };
   
-type EditFoodTypeBodyFields = MapToUnknown<EditFoodTypeBody>;
+export const isEditFoodTypeBody = (obj: unknown): obj is EditFoodTypeBody => {
   
-const hasEditFoodTypeBodyFields = (body: unknown): body is EditFoodTypeBodyFields =>
-  hasOwnProperty(body, 'nameLoc') && hasOwnProperty(body, 'descriptionLoc');
+  if (!checkProperties({obj, properties: [
+    'nameLoc', 'descriptionLoc'
+  ], required: true, validator: isEditLocString})) return false;
   
-export const isEditFoodTypeBody = (body: unknown): body is EditFoodTypeBody =>
-  hasEditFoodTypeBodyFields(body) && isEditLocString(body.nameLoc) && isEditLocString(body.descriptionLoc);
+  return true;
+};

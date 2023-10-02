@@ -1,10 +1,9 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { FacilityDT } from '../../models/Facility.js';
 import type { EditLocString, NewLocString } from '../../models/LocString.js';
 import type { EditAddressBody, NewAddressBody } from './AddressBodies.js';
-import { hasOwnProperty } from '../helpers.js';
 import { isEditLocString, isNewLocString } from '../../models/LocString.js';
 import { isEditAddressBody, isNewAddressBody } from './AddressBodies.js';
+import { checkProperties } from '../typeValidators.js';
 
 export type NewFacilityBody = Omit<FacilityDT, 'id' | 'nameLoc' | 'descriptionLoc' | 'address'>
 & {
@@ -13,19 +12,18 @@ export type NewFacilityBody = Omit<FacilityDT, 'id' | 'nameLoc' | 'descriptionLo
   address: NewAddressBody;
 };
 
-type NewFacilityBodyFields = MapToUnknown<NewFacilityBody>;
+export const isNewFacilityBody = (obj: unknown): obj is NewFacilityBody => {
 
-const hasNewFacilityBodyFields = (body: unknown): body is NewFacilityBodyFields =>
-  hasOwnProperty(body, 'nameLoc') && hasOwnProperty(body, 'descriptionLoc') && hasOwnProperty(body, 'address');
+  if (!checkProperties({obj, properties: [
+    'nameLoc', 'descriptionLoc'
+  ], required: true, validator: isNewLocString})) return false;
 
-export const isNewFacilityBody = (body: unknown): body is NewFacilityBody =>
-  hasNewFacilityBodyFields(body)
-  &&
-  isNewLocString(body.nameLoc)
-  &&
-  isNewLocString(body.descriptionLoc)
-  &&
-  isNewAddressBody(body.address);
+  if (!checkProperties({obj, properties: [
+    'address'
+  ], required: true, validator: isNewAddressBody})) return false;
+
+  return true;
+};
 
 
 export type EditFacilityBody = Omit<NewFacilityBody, 'nameLoc' | 'descriptionLoc'>
@@ -35,16 +33,15 @@ export type EditFacilityBody = Omit<NewFacilityBody, 'nameLoc' | 'descriptionLoc
   address: EditAddressBody;
 };
 
-type EditFacilityBodyFields = MapToUnknown<EditFacilityBody>;
+export const isEditFacilityBody = (obj: unknown): obj is EditFacilityBody => {
 
-const hasEditFacilityBodyFields = (body: unknown): body is EditFacilityBodyFields =>
-  hasOwnProperty(body, 'nameLoc') && hasOwnProperty(body, 'descriptionLoc') && hasOwnProperty(body, 'address');
+  if (!checkProperties({obj, properties: [
+    'nameLoc', 'descriptionLoc'
+  ], required: true, validator: isEditLocString})) return false;
 
-export const isEditFacilityBody = (body: unknown): body is EditFacilityBody =>
-  hasEditFacilityBodyFields(body)
-  &&
-  isEditLocString(body.nameLoc)
-  &&
-  isEditLocString(body.descriptionLoc)
-  &&
-  isEditAddressBody(body.address);
+  if (!checkProperties({obj, properties: [
+    'address'
+  ], required: true, validator: isEditAddressBody})) return false;
+
+  return true;
+};

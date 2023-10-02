@@ -1,6 +1,4 @@
-import type { MapToUnknown } from '../helpers.js';
-import { hasOwnProperty } from '../helpers.js';
-import { isNumber, isString } from '../typeParsers.js';
+import { checkProperties, isString } from '../typeValidators.js';
 
 /**
  * This request body is not connected with PictureDT because picture file is
@@ -16,49 +14,39 @@ export type NewPictureBody = {
   subjectId: string
 };
 
-type NewPictureBodyFields = MapToUnknown<NewPictureBody>;
+export const isNewPictureBody = (obj: unknown): obj is NewPictureBody => {
 
-const hasNewPictureBodyFields = (body: unknown): body is NewPictureBodyFields =>
-  hasOwnProperty(body, 'type') && hasOwnProperty(body, 'altTextLoc') && hasOwnProperty(body, 'subjectId');
+  if (!checkProperties({obj, properties: [
+    'altTextMainStr', 'subjectId', 'type'
+  ], required: true, validator: isString})) return false;
 
-export const isNewPictureBody = (body: unknown): body is NewPictureBody => {
-  if (!hasNewPictureBodyFields(body)) return false;
+  if (!checkProperties({obj, properties: [
+    'altTextSecStr', 'altTextAltStr'
+  ], required: false, validator: isString})) return false;
 
-  if (!((body.type === 'foodPicture') || (body.type === 'modulePicture'))) return false;
+  if (!checkProperties({obj, properties: [
+    'orderNumber'
+  ], required: false, validator: (value) => !isNaN(Number(value))})) return false;
 
-  if (
-    (hasOwnProperty(body, 'orderNumber') && !isNumber(Number(body.orderNumber)))
-    ||
-    (hasOwnProperty(body, 'altTextSecStr') && !isString(body.altTextSecStr))
-    ||
-    (hasOwnProperty(body, 'altTextAltStr') && !isString(body.altTextAltStr))
-  )
-    return false;
-
-  return isString(body.altTextMainStr) && isNumber(Number(body.subjectId));
+  return true;
 };
 
 
 export type EditPictureBody = Omit<NewPictureBody, 'subjectId'>;
 
-type EditPictureBodyFields = MapToUnknown<EditPictureBody>;
+export const isEditPictureBody = (obj: unknown): obj is EditPictureBody => {
 
-const hasEditPictureBodyFields = (body: unknown): body is EditPictureBodyFields =>
-  hasOwnProperty(body, 'type') && hasOwnProperty(body, 'altTextLoc');
+  if (!checkProperties({obj, properties: [
+    'altTextMainStr', 'type'
+  ], required: true, validator: isString})) return false;
 
-export const isEditPictureBody = (body: unknown): body is EditPictureBody => {
-  if (!hasEditPictureBodyFields(body)) return false;
-  
-  if (!((body.type === 'foodPicture') || (body.type === 'modulePicture'))) return false;
+  if (!checkProperties({obj, properties: [
+    'altTextSecStr', 'altTextAltStr'
+  ], required: false, validator: isString})) return false;
 
-  if (
-    (hasOwnProperty(body, 'orderNumber') && isNaN(Number(body.orderNumber)))
-    ||
-    (hasOwnProperty(body, 'altTextSecStr') && !isString(body.altTextSecStr))
-    ||
-    (hasOwnProperty(body, 'altTextAltStr') && !isString(body.altTextAltStr))
-  )
-    return false;
+  if (!checkProperties({obj, properties: [
+    'orderNumber'
+  ], required: false, validator: (value) => !isNaN(Number(value))})) return false;
 
-  return isString(body.altTextMainStr);
+  return true;
 };

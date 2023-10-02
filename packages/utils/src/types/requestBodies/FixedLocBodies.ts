@@ -1,23 +1,26 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { FixedLocDT } from '../../models/FixedLoc.js';
 import type { EditLocString, NewLocString } from '../../models/LocString.js';
 import { isFixedLocDT } from '../../models/FixedLoc.js';
 import { isNewLocString, isEditLocString } from '../../models/LocString.js';
-import { hasOwnProperty } from '../helpers.js';
-import { isString } from '../typeParsers.js';
+import { checkProperties, isString } from '../typeValidators.js';
 
 export type NewFixedLocBody = Omit<FixedLocDT, 'id' | 'locString'>
 & {
   locString: NewLocString;
 };
 
-type NewFixedLocBodyFields = MapToUnknown<NewFixedLocBody>;
+export const isNewFixedLocBody = (obj: unknown): obj is NewFixedLocBody => {
 
-const hasNewFixedLocBodyFields = (body: unknown): body is NewFixedLocBodyFields =>
-  hasOwnProperty(body, 'name') && hasOwnProperty(body, 'locString');
+  if (!checkProperties({obj, properties: [
+    'name', 'namespace', 'scope'
+  ], required: true, validator: isString})) return false;
 
-export const isNewFixedLocBody = (body: unknown): body is NewFixedLocBody =>
-  hasNewFixedLocBodyFields(body) && isString(body.name) && isNewLocString(body.locString);
+  if (!checkProperties({obj, properties: [
+    'locString'
+  ], required: true, validator: isNewLocString})) return false;
+
+  return true;
+};
 
 
 export type EditFixedLocBody = Omit<NewFixedLocBody, 'locString'>
@@ -25,32 +28,29 @@ export type EditFixedLocBody = Omit<NewFixedLocBody, 'locString'>
   locString: EditLocString;
 };
   
-type EditFixedLocBodyFields = MapToUnknown<EditFixedLocBody>;
-  
-const hasEditFixedLocBodyFields = (body: unknown): body is EditFixedLocBodyFields =>
-  hasNewFixedLocBodyFields(body);
-  
-export const isEditFixedLocBody = (body: unknown): body is EditFixedLocBody =>
-  hasEditFixedLocBodyFields(body) && isString(body.name) && isEditLocString(body.locString);
+export const isEditFixedLocBody = (obj: unknown): obj is EditFixedLocBody => {
+
+  if (!checkProperties({obj, properties: [
+    'name', 'namespace', 'scope'
+  ], required: true, validator: isString})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'locString'
+  ], required: true, validator: isEditLocString})) return false;
+
+  return true;
+};
 
 
 export type EditManyFixedLocBody = {
   updLocs: Array<FixedLocDT>
 };
-    
-type EditManyFixedLocBodyFields = MapToUnknown<EditManyFixedLocBody>;
-
-const hasEditManyFixedLocBodyFields = (body: unknown): body is EditManyFixedLocBodyFields =>
-  hasOwnProperty(body, 'updLocs');
   
-export const isEditManyFixedLocBody = (body: unknown): body is EditManyFixedLocBody => {
-  if (!hasEditManyFixedLocBodyFields(body)) return false;
+export const isEditManyFixedLocBody = (obj: unknown): obj is EditManyFixedLocBody => {
 
-  if (!Array.isArray(body.updLocs)) return false;
-
-  for (const updLoc of body.updLocs) {
-    if (!isFixedLocDT(updLoc)) return false;
-  }
+  if (!checkProperties({obj, properties: [
+    'updLocs'
+  ], required: true, validator: isFixedLocDT})) return false;
 
   return true;
 };

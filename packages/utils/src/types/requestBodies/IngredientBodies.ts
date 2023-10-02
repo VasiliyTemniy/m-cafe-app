@@ -1,9 +1,7 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { IngredientDT } from '../../models/Ingredient.js';
 import type { EditLocString, NewLocString } from '../../models/LocString.js';
-import { hasOwnProperty } from '../helpers.js';
 import { isEditLocString, isNewLocString } from '../../models/LocString.js';
-import { isNumber } from '../typeParsers.js';
+import { checkProperties, isNumber } from '../typeValidators.js';
 
 export type NewIngredientBody = Omit<IngredientDT, 'id' | 'nameLoc' | 'stockMeasureLoc'>
 & {
@@ -11,25 +9,17 @@ export type NewIngredientBody = Omit<IngredientDT, 'id' | 'nameLoc' | 'stockMeas
   stockMeasureLoc: NewLocString;
 };
 
-type NewIngredientBodyFields = MapToUnknown<NewIngredientBody>;
+export const isNewIngredientBody = (obj: unknown): obj is NewIngredientBody => {
 
-const hasNewIngredientBodyFields = (body: unknown): body is NewIngredientBodyFields =>
-  hasOwnProperty(body, 'nameLoc') && hasOwnProperty(body, 'stockMeasureLoc');
+  if (!checkProperties({obj, properties: [
+    'nameLoc', 'stockMeasureLoc'
+  ], required: true, validator: isNewLocString})) return false;
 
-export const isNewIngredientBody = (body: unknown): body is NewIngredientBody => {
-  if (!hasNewIngredientBodyFields(body)) return false;
+  if (!checkProperties({obj, properties: [
+    'proteins', 'fats', 'carbohydrates', 'calories'
+  ], required: false, validator: isNumber})) return false;
 
-  if (
-    (hasOwnProperty(body, 'proteins') && !isNumber(body.proteins))
-    ||
-    (hasOwnProperty(body, 'fats') && !isNumber(body.fats))
-    ||
-    (hasOwnProperty(body, 'carbohydrates') && !isNumber(body.carbohydrates))
-    ||
-    (hasOwnProperty(body, 'calories') && !isNumber(body.calories))
-  ) return false;
-
-  return isNewLocString(body.nameLoc) && isNewLocString(body.stockMeasureLoc);
+  return true;
 };
 
 
@@ -39,23 +29,15 @@ export type EditIngredientBody = Omit<NewIngredientBody, 'nameLoc' | 'stockMeasu
   stockMeasureLoc: EditLocString;
 };
   
-type EditIngredientBodyFields = MapToUnknown<EditIngredientBody>;
-  
-const hasEditIngredientBodyFields = (body: unknown): body is EditIngredientBodyFields =>
-  hasOwnProperty(body, 'nameLoc') && hasOwnProperty(body, 'stockMeasureLoc');
-  
-export const isEditIngredientBody = (body: unknown): body is EditIngredientBody => {
-  if (!hasEditIngredientBodyFields(body)) return false;
+export const isEditIngredientBody = (obj: unknown): obj is EditIngredientBody => {
 
-  if (
-    (hasOwnProperty(body, 'proteins') && !isNumber(body.proteins))
-    ||
-    (hasOwnProperty(body, 'fats') && !isNumber(body.fats))
-    ||
-    (hasOwnProperty(body, 'carbohydrates') && !isNumber(body.carbohydrates))
-    ||
-    (hasOwnProperty(body, 'calories') && !isNumber(body.calories))
-  ) return false;
+  if (!checkProperties({obj, properties: [
+    'nameLoc', 'stockMeasureLoc'
+  ], required: true, validator: isEditLocString})) return false;
 
-  return isEditLocString(body.nameLoc) && isEditLocString(body.stockMeasureLoc);
+  if (!checkProperties({obj, properties: [
+    'proteins', 'fats', 'carbohydrates', 'calories'
+  ], required: false, validator: isNumber})) return false;
+
+  return true;
 };

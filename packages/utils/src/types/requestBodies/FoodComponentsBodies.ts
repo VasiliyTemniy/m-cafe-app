@@ -1,57 +1,40 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { FoodComponentDT } from '../../models/FoodComponent.js';
-import { hasOwnProperty } from '../helpers.js';
-import { isBoolean, isNumber } from '../typeParsers.js';
+import { checkProperties, isBoolean, isNumber } from '../typeValidators.js';
 
 export type NewFoodComponent = Omit<FoodComponentDT, 'id' | 'component'>
 & {
   componentId: number;
 };
 
-type NewFoodComponentFields = MapToUnknown<NewFoodComponent>;
+export const isNewFoodComponent = (obj: unknown): obj is NewFoodComponent => {
+  
+  if (!checkProperties({obj, properties: [
+    'componentId', 'amount'
+  ], required: true, validator: isNumber})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'compositeFood'
+  ], required: true, validator: isBoolean})) return false;
+
+  return true;
+};
+
 
 export type AddFoodComponentsBody = {
   foodComponents: NewFoodComponent[];
 };
 
-const hasAddFoodComponentsBodyFields = (body: unknown): body is { foodComponents: unknown } =>
-  hasOwnProperty(body, 'foodComponents');
+export const isAddFoodComponentsBody = (obj: unknown): obj is AddFoodComponentsBody => {
 
-const hasNewFoodComponentFields = (obj: unknown): obj is NewFoodComponentFields =>
-  hasOwnProperty(obj, 'componentId') && (hasOwnProperty(obj, 'amount') && hasOwnProperty(obj, 'compositeFood'));
+  if (!checkProperties({obj, properties: [
+    'foodComponents'
+  ], required: true, validator: isNewFoodComponent, isArray: true})) return false;
 
-export const isAddFoodComponentsBody = (body: unknown): body is AddFoodComponentsBody => {
-  if (!hasAddFoodComponentsBodyFields(body) || !Array.isArray(body.foodComponents)) return false;
-
-  for (const component of body.foodComponents) {
-    if (
-      !hasNewFoodComponentFields(component)
-      ||
-      !isNumber(component.componentId)
-      ||
-      !isNumber(component.amount)
-      ||
-      !isBoolean(component.compositeFood)
-    )
-      return false;
-  }
-  
   return true;
 };
 
 
 export type EditFoodComponentBody = NewFoodComponent;
 
-type EditFoodComponentBodyFields = MapToUnknown<EditFoodComponentBody>;
-
-const hasEditFoodComponentBodyFields = (body: unknown): body is EditFoodComponentBodyFields =>
-  hasNewFoodComponentFields(body);
-
-export const isEditFoodComponentBody = (body: unknown): body is EditFoodComponentBody => 
-  hasEditFoodComponentBodyFields(body)
-  &&
-  isNumber(body.componentId)
-  &&
-  isNumber(body.amount)
-  &&
-  isBoolean(body.compositeFood);
+export const isEditFoodComponentBody = (obj: unknown): obj is EditFoodComponentBody => 
+  isNewFoodComponent(obj);

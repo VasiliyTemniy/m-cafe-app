@@ -1,20 +1,33 @@
-import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { MapToDT } from '../types/helpers.js';
 import type { FixedLocData } from '@m-cafe-app/db';
 import type { LocStringDT } from './LocString.js';
-import { isNumber, isString } from '../types/typeParsers.js';
-import { hasOwnProperty } from '../types/helpers.js';
+import { checkProperties, isNumber, isString } from '../types/typeValidators.js';
 import { isLocStringDT } from './LocString.js';
 
 
 export type FixedLocDT = Omit<MapToDT<FixedLocData>, 'locStringId'>
 & {
   locString: LocStringDT;
+  scope?: string;
 };
 
-type FixedLocDTFields = MapToUnknown<FixedLocDT>;
+export const isFixedLocDT = (obj: unknown): obj is FixedLocDT => {
 
-const hasFixedLocDTFields = (obj: unknown): obj is FixedLocDTFields =>
-  hasOwnProperty(obj, 'id') && hasOwnProperty(obj, 'name') && hasOwnProperty(obj, 'locString');
+  if (!checkProperties({obj, properties: [
+    'id'
+  ], required: true, validator: isNumber})) return false;
 
-export const isFixedLocDT = (obj: unknown): obj is FixedLocDT =>
-  hasFixedLocDTFields(obj) && isNumber(obj.id) && isString(obj.name) && isLocStringDT(obj.locString);
+  if (!checkProperties({obj, properties: [
+    'name', 'namespace'
+  ], required: true, validator: isString})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'locString'
+  ], required: true, validator: isLocStringDT})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'scope'
+  ], required: false, validator: isString})) return false;
+
+  return true;
+};

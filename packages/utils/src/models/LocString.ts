@@ -1,47 +1,40 @@
-import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { MapToDT } from '../types/helpers.js';
 import type { LocStringData } from '@m-cafe-app/db';
-import { isNumber, isString } from '../types/typeParsers.js';
-import { hasOwnProperty } from '../types/helpers.js';
+import { checkProperties, isNumber, isString } from '../types/typeValidators.js';
 
 
 export type LocStringDT = MapToDT<LocStringData>;
 
-type LocStringDTFields = MapToUnknown<LocStringDT>;
-
-const hasLocStringDTFields = (obj: unknown): obj is LocStringDTFields =>
-  hasOwnProperty(obj, 'id')
-  &&
-  hasOwnProperty(obj, 'mainStr');
-
 export const isLocStringDT = (obj: unknown): obj is LocStringDT => {
-  if (!hasLocStringDTFields(obj)) return false;
 
-  if (
-    (hasOwnProperty(obj, 'secStr') && !isString(obj.secStr))
-    ||
-    (hasOwnProperty(obj, 'altStr') && !isString(obj.altStr))
-  ) return false;
+  if (!checkProperties({obj, properties: [
+    'id'
+  ], required: true, validator: isNumber})) return false;
 
-  return isNumber(obj.id) && isString(obj.mainStr);
+  if (!checkProperties({obj, properties: [
+    'mainStr'
+  ], required: true, validator: isString})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'secStr', 'altStr'
+  ], required: false, validator: isString})) return false;
+
+  return true;
 };
 
 export type NewLocString = Omit<LocStringDT, 'id'>;
 
-type NewLocStringFields = MapToUnknown<NewLocString>;
-
-const hasNewLocStringFields = (obj: unknown): obj is NewLocStringFields =>
-  hasOwnProperty(obj, 'mainStr');
-
 export const isNewLocString = (obj: unknown): obj is NewLocString => {
-  if (!hasNewLocStringFields(obj)) return false;
 
-  if (
-    (hasOwnProperty(obj, 'secStr') && !isString(obj.secStr))
-    ||
-    (hasOwnProperty(obj, 'altStr') && !isString(obj.altStr))
-  ) return false;
+  if (!checkProperties({obj, properties: [
+    'mainStr'
+  ], required: true, validator: isString})) return false;
 
-  return isString(obj.mainStr);
+  if (!checkProperties({obj, properties: [
+    'secStr', 'altStr'
+  ], required: false, validator: isString})) return false;
+
+  return true;
 };
 
 export type EditLocString = LocStringDT;

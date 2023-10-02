@@ -1,9 +1,8 @@
-import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { MapToDT } from '../types/helpers.js';
 import type { DynamicModuleData } from '@m-cafe-app/db';
 import type { LocStringDT } from './LocString.js';
 import type { PictureDT } from './Picture.js';
-import { isNumber, isString } from '../types/typeParsers.js';
-import { hasOwnProperty } from '../types/helpers.js';
+import { checkProperties, isNumber, isString } from '../types/typeValidators.js';
 import { isLocStringDT } from './LocString.js';
 import { isPictureDT } from './Picture.js';
 
@@ -14,41 +13,27 @@ export type DynamicModuleDT = Omit<MapToDT<DynamicModuleData>, 'locStringId' | '
   picture?: PictureDT;
 };
 
-type DynamicModuleDTFields = MapToUnknown<DynamicModuleDT>;
-
-const hasDynamicModuleDTFields = (obj: unknown): obj is DynamicModuleDTFields =>
-  hasOwnProperty(obj, 'id')
-  &&
-  hasOwnProperty(obj, 'moduleType')
-  &&
-  hasOwnProperty(obj, 'page')
-  &&
-  hasOwnProperty(obj, 'placement')
-  &&
-  hasOwnProperty(obj, 'placementType');
-
 export const isDynamicModuleDT = (obj: unknown): obj is DynamicModuleDT => {
-  if (!hasDynamicModuleDTFields(obj)) return false;
 
-  if (
-    (hasOwnProperty(obj, 'className') && !isString(obj.className))
-    ||
-    (hasOwnProperty(obj, 'inlineCss') && !isString(obj.inlineCss))
-    ||
-    (hasOwnProperty(obj, 'url') && !isString(obj.url))
-    ||
-    (hasOwnProperty(obj, 'locString') && !isLocStringDT(obj.locString))
-    ||
-    (hasOwnProperty(obj, 'picture') && !isPictureDT(obj.picture))
-  ) return false;
-  
-  return isNumber(obj.id)
-  &&
-  isString(obj.moduleType)
-  &&
-  isString(obj.page)
-  &&
-  isNumber(obj.placement)
-  &&
-  isString(obj.placementType);
+  if (!checkProperties({obj, properties: [
+    'id', 'moduleType', 'page', 'placementType'
+  ], required: true, validator: isString})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'placement'
+  ], required: true, validator: isNumber})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'className', 'inlineCss', 'url'
+  ], required: false, validator: isString})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'locString'
+  ], required: false, validator: isLocStringDT})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'picture'
+  ], required: false, validator: isPictureDT})) return false;
+
+  return true;
 };

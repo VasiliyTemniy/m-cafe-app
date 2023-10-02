@@ -1,37 +1,23 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { AddressDT } from '../../models/Address.js';
-import { hasOwnProperty } from '../helpers.js';
-import { isString, isNumber } from '../typeParsers.js';
+import { isString, checkProperties, isNumber } from '../typeValidators.js';
 
 export type NewAddressBody = Omit<AddressDT, 'id'>;
 
-type NewAddressBodyFields = MapToUnknown<NewAddressBody>;
+export const isNewAddressBody = (obj: unknown): obj is NewAddressBody => {
 
-const hasNewAddressBodyFields = (body: unknown): body is NewAddressBodyFields =>
-  hasOwnProperty(body, 'city') && hasOwnProperty(body, 'street');
+  if (!checkProperties({obj, properties: [
+    'city', 'street'
+  ], required: true, validator: isString})) return false;
 
-export const isNewAddressBody = (body: unknown): body is NewAddressBody => {
-  if (!hasNewAddressBodyFields(body)) return false;
+  if (!checkProperties({obj, properties: [
+    'cityDistrict', 'region', 'regionDistrict', 'house', 'entrance', 'flat', 'entranceKey'
+  ], required: false, validator: isString})) return false;
 
-  if (
-    (hasOwnProperty(body, 'cityDistrict') && !isString(body.cityDistrict))
-    ||
-    (hasOwnProperty(body, 'region') && !isString(body.region))
-    ||
-    (hasOwnProperty(body, 'regionDistrict') && !isString(body.regionDistrict))
-    ||
-    (hasOwnProperty(body, 'house') && !isString(body.house))
-    ||
-    (hasOwnProperty(body, 'entrance') && !isString(body.entrance))
-    ||
-    (hasOwnProperty(body, 'floor') && !isNumber(body.floor))
-    ||
-    (hasOwnProperty(body, 'flat') && !isString(body.flat))
-    ||
-    (hasOwnProperty(body, 'entranceKey') && !isString(body.entranceKey))
-  ) return false;
+  if (!checkProperties({obj, properties: [
+    'floor'
+  ], required: false, validator: isNumber})) return false;
 
-  return isString(body.city) && isString(body.street);
+  return true;
 };
 
 export type EditAddressBody = NewAddressBody;

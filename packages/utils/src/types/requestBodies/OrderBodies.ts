@@ -1,11 +1,25 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { OrderDT } from '../../models/Order.js';
 import type { OrderFoodDT } from '../../models/OrderFood.js';
 import type { NewAddressBody } from './AddressBodies.js';
 import { isAddressDT } from '../../models/Address.js';
-import { hasOwnProperty } from '../helpers.js';
-import { isNumber, isString } from '../typeParsers.js';
+import { checkProperties, isNumber, isString } from '../typeValidators.js';
 import { isNewAddressBody } from './AddressBodies.js';
+
+
+export type NewOrderFood = Omit<OrderFoodDT, 'id' | 'archivePrice' | 'archiveFoodName' | 'food'>
+& {
+  foodId: number;
+};
+
+export const isNewOrderFood = (obj: unknown): obj is NewOrderFood => {
+
+  if (!checkProperties({obj, properties: [
+    'amount', 'foodId'
+  ], required: true, validator: isNumber})) return false;
+
+  return true;
+};
+
 
 export type NewOrderBody = Omit<OrderDT, 'id' | 'totalCost' | 'user' | 'orderFoods' | 'status' | 'archiveAddress' | 'facility'>
 & {
@@ -14,61 +28,33 @@ export type NewOrderBody = Omit<OrderDT, 'id' | 'totalCost' | 'user' | 'orderFoo
   facilityId: number;
 };
 
-type NewOrderBodyFields = MapToUnknown<NewOrderBody>;
+export const isNewOrderBody = (obj: unknown): obj is NewOrderBody => {
 
+  if (!checkProperties({obj, properties: [
+    'orderFoods'
+  ], required: true, validator: isNewOrderFood, isArray: true})) return false;
 
-export type NewOrderFood = Omit<OrderFoodDT, 'id' | 'archivePrice' | 'archiveFoodName' | 'food'>
-& {
-  foodId: number;
-};
+  if (!checkProperties({obj, properties: [
+    'deliverAt', 'customerPhonenumber'
+  ], required: true, validator: isString})) return false;
 
-type NewOrderFoodFields = MapToUnknown<NewOrderFood>;
+  if (!checkProperties({obj, properties: [
+    'facilityId'
+  ], required: true, validator: isNumber})) return false;
 
-const hasNewOrderFoodFields = (obj: unknown): obj is NewOrderFoodFields =>
-  hasOwnProperty(obj, 'amount')
-  &&
-  hasOwnProperty(obj, 'foodId');
+  if (!checkProperties({obj, properties: [
+    'address'
+  ], required: false, validator: isAddressDT}))
+    if (!checkProperties({obj, properties: [
+      'newAddress'
+    ], required: false, validator: isNewAddressBody}))
+      return false;
 
-export const isNewOrderFood = (obj: unknown): obj is NewOrderFood =>
-  hasNewOrderFoodFields(obj)
-  &&
-  isNumber(obj.amount)
-  &&
-  isNumber(obj.foodId);
+  if (!checkProperties({obj, properties: [
+    'customerName'
+  ], required: false, validator: isString})) return false;
 
-
-const hasNewOrderBodyFields = (body: unknown): body is NewOrderBodyFields =>
-  hasOwnProperty(body, 'orderFoods')
-  &&
-  hasOwnProperty(body, 'deliverAt')
-  &&
-  (
-    hasOwnProperty(body, 'address')
-    ||
-    hasOwnProperty(body, 'newAddress')
-  )
-  &&
-  hasOwnProperty(body, 'customerPhonenumber')
-  &&
-  hasOwnProperty(body, 'facilityId');
-
-export const isNewOrderBody = (body: unknown): body is NewOrderBody => {
-  if (!hasNewOrderBodyFields(body)) return false;
-
-  if (
-    (hasOwnProperty(body, 'address') && !isAddressDT(body.address))
-    ||
-    (hasOwnProperty(body, 'newAddress') && !isNewAddressBody(body.newAddress))
-    ||
-    (hasOwnProperty(body, 'customerName') && !isString(body.customerName))
-  )
-    return false;
-
-  if (!Array.isArray(body.orderFoods)) return false;
-  for (const orderFood of body.orderFoods)
-    if (!isNewOrderFood(orderFood)) return false;
-
-  return isString(body.deliverAt) && isString(body.customerPhonenumber) && isNumber(body.facilityId);
+  return true;
 };
 
 
@@ -77,30 +63,34 @@ export type EditOrderBody = Omit<NewOrderBody, 'orderFoods'>
   orderFoods: NewOrderFood[];
 };
 
-type EditOrderBodyFields = MapToUnknown<EditOrderBody>;
+export const isEditOrderBody = (obj: unknown): obj is EditOrderBody => {
 
-const hasEditOrderBodyFields = (body: unknown): body is EditOrderBodyFields =>
-  hasNewOrderBodyFields(body);
+  
+  if (!checkProperties({obj, properties: [
+    'orderFoods'
+  ], required: true, validator: isNewOrderFood, isArray: true})) return false;
 
-export const isEditOrderBody = (body: unknown): body is EditOrderBody => {
-  if (!hasEditOrderBodyFields(body)) return false;
+  if (!checkProperties({obj, properties: [
+    'deliverAt', 'customerPhonenumber'
+  ], required: true, validator: isString})) return false;
 
-  if (
-    (hasOwnProperty(body, 'address') && !isAddressDT(body.address))
-    ||
-    (hasOwnProperty(body, 'newAddress') && !isNewAddressBody(body.newAddress))
-    ||
-    (hasOwnProperty(body, 'customerName') && !isString(body.customerName))
-  )
-    return false;
+  if (!checkProperties({obj, properties: [
+    'facilityId'
+  ], required: true, validator: isNumber})) return false;
 
-  if (!Array.isArray(body.orderFoods)) return false;
-  for (const orderFood of body.orderFoods)
-    // It's still `new order food` here because of design - on put route,
-    // all the order foods get deleted and recreated
-    if (!isNewOrderFood(orderFood)) return false;
+  if (!checkProperties({obj, properties: [
+    'address'
+  ], required: false, validator: isAddressDT}))
+    if (!checkProperties({obj, properties: [
+      'newAddress'
+    ], required: false, validator: isNewAddressBody}))
+      return false;
 
-  return isString(body.deliverAt) && isString(body.customerPhonenumber) && isNumber(body.facilityId);
+  if (!checkProperties({obj, properties: [
+    'customerName'
+  ], required: false, validator: isString})) return false;
+
+  return true;
 };
 
 
@@ -108,10 +98,11 @@ export type EditOrderStatusBody = {
   status: string
 };
 
-const hasEditOrderStatusBodyFields = (body: unknown): body is { status: unknown } =>
-  hasOwnProperty(body, 'status');
+export const isEditOrderStatusBody = (obj: unknown): obj is EditOrderStatusBody => {
+  
+  if (!checkProperties({obj, properties: [
+    'status'
+  ], required: true, validator: isString})) return false;
 
-export const isEditOrderStatusBody = (body: unknown): body is EditOrderStatusBody =>
-  hasEditOrderStatusBodyFields(body)
-  &&
-  isString(body.status);
+  return true;
+};

@@ -1,26 +1,14 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { NewOrderFood } from './OrderBodies.js';
-import { hasOwnProperty } from '../helpers.js';
-import { isNumber } from '../typeParsers.js';
+import { checkProperties, isNumber } from '../typeValidators.js';
 
 
 export type EditOrderFoodBody = NewOrderFood & { id: number };
 
-type EditOrderFoodBodyFields = MapToUnknown<EditOrderFoodBody>;
+export const isEditOrderFoodBody = (obj: unknown): obj is EditOrderFoodBody => {
+  
+  if (!checkProperties({obj, properties: [
+    'amount', 'foodId', 'id'
+  ], required: true, validator: isNumber})) return false;
 
-
-const hasEditOrderFoodBodyFields = (body: unknown): body is EditOrderFoodBodyFields =>
-  hasOwnProperty(body, 'amount')
-  &&
-  hasOwnProperty(body, 'foodId')
-  &&
-  hasOwnProperty(body, 'id');
-
-export const isEditOrderFoodBody = (body: unknown): body is EditOrderFoodBody =>
-  hasEditOrderFoodBodyFields(body)
-  &&
-  isNumber(body.amount)
-  &&
-  isNumber(body.foodId)
-  &&
-  isNumber(body.id);
+  return true;
+};

@@ -1,8 +1,7 @@
-import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { MapToDT } from '../types/helpers.js';
 import type { PictureData } from '@m-cafe-app/db';
 import type { LocStringDT } from './LocString.js';
-import { isNumber, isString } from '../types/typeParsers.js';
-import { hasOwnProperty } from '../types/helpers.js';
+import { checkProperties, isNumber, isString } from '../types/typeValidators.js';
 import { isLocStringDT } from './LocString.js';
 
 
@@ -11,10 +10,19 @@ export type PictureDT = Omit<MapToDT<PictureData>, 'altTextLocId'>
   altTextLoc: LocStringDT;
 };
 
-type PictureDTFields = MapToUnknown<PictureDT>;
+export const isPictureDT = (obj: unknown): obj is PictureDT => {
 
-const hasPictureDTFields = (obj: unknown): obj is PictureDTFields =>
-  hasOwnProperty(obj, 'id') && hasOwnProperty(obj, 'src') && hasOwnProperty(obj, 'altTextLoc');
+  if (!checkProperties({obj, properties: [
+    'id'
+  ], required: true, validator: isNumber})) return false;
 
-export const isPictureDT = (obj: unknown): obj is PictureDT =>
-  hasPictureDTFields(obj) && isNumber(obj.id) && isString(obj.src) && isLocStringDT(obj.altTextLoc);
+  if (!checkProperties({obj, properties: [
+    'src'
+  ], required: true, validator: isString})) return false;
+
+  if (!checkProperties({obj, properties: [
+    'altTextLoc'
+  ], required: true, validator: isLocStringDT})) return false;
+
+  return true;
+};

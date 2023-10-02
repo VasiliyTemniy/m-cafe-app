@@ -1,30 +1,20 @@
-import type { MapToUnknown } from '../helpers.js';
 import type { UserDT } from '../../models/User.js';
-import { hasOwnProperty } from '../helpers.js';
-import { isString } from '../typeParsers.js';
+import { checkProperties, isString } from '../typeValidators.js';
 
 
 export type NewUserBody = Omit<UserDT, 'rights' | 'id'> & { password: string; };
 
-type NewUserBodyFields = MapToUnknown<NewUserBody>;
+export const isNewUserBody = (obj: unknown): obj is NewUserBody => {
 
-const hasNewUserBodyFields = (body: unknown): body is NewUserBodyFields =>
-  hasOwnProperty(body, 'password') && hasOwnProperty(body, 'phonenumber');
+  if (!checkProperties({obj, properties: [
+    'phonenumber', 'password'
+  ], required: true, validator: isString})) return false;
 
-export const isNewUserBody = (body: unknown): body is NewUserBody => {
-  if (!hasNewUserBodyFields(body)) return false;
+  if (!checkProperties({obj, properties: [
+    'username', 'name', 'email', 'birthdate', 'rights'
+  ], required: false, validator: isString})) return false;
 
-  if (
-    (hasOwnProperty(body, 'username') && !isString(body.username))
-    ||
-    (hasOwnProperty(body, 'name') && !isString(body.name))
-    ||
-    (hasOwnProperty(body, 'email') && !isString(body.email))
-    ||
-    (hasOwnProperty(body, 'birthdate') && !isString(body.birthdate))
-  ) return false;
-
-  return isString(body.phonenumber) && isString(body.password);
+  return true;
 };
 
 
@@ -33,27 +23,15 @@ export interface EditUserBody extends Omit<NewUserBody, 'phonenumber'> {
   phonenumber?: string;
 }
 
-type EditUserBodyFields = MapToUnknown<EditUserBody>;
+export const isEditUserBody = (obj: unknown): obj is EditUserBody => {
 
-const hasEditUserBodyFields = (body: unknown): body is EditUserBodyFields =>
-  hasOwnProperty(body, 'password');
+  if (!checkProperties({obj, properties: [
+    'password'
+  ], required: true, validator: isString})) return false;
 
-export const isEditUserBody = (body: unknown): body is EditUserBody => {
-  if (!hasEditUserBodyFields(body)) return false;
+  if (!checkProperties({obj, properties: [
+    'username', 'name', 'email', 'birthdate', 'rights', 'newPassword', 'phonenumber'
+  ], required: false, validator: isString})) return false;
 
-  if (
-    (hasOwnProperty(body, 'newPassword') && !isString(body.newPassword))
-    ||
-    (hasOwnProperty(body, 'phonenumber') && !isString(body.phonenumber))
-    ||
-    (hasOwnProperty(body, 'username') && !isString(body.username))
-    ||
-    (hasOwnProperty(body, 'name') && !isString(body.name))
-    ||
-    (hasOwnProperty(body, 'email') && !isString(body.email))
-    ||
-    (hasOwnProperty(body, 'birthdate') && !isString(body.birthdate))
-  ) return false;
-
-  return isString(body.password);
+  return true;
 };

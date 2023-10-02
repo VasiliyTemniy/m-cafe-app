@@ -1,8 +1,7 @@
-import type { MapToUnknown, MapToDT } from '../types/helpers.js';
+import type { MapToDT } from '../types/helpers.js';
 import type { FoodTypeData } from '@m-cafe-app/db';
 import type { LocStringDT } from './LocString.js';
-import { isNumber } from '../types/typeParsers.js';
-import { hasOwnProperty } from '../types/helpers.js';
+import { checkProperties, isNumber } from '../types/typeValidators.js';
 import { isLocStringDT } from './LocString.js';
 
 
@@ -12,20 +11,15 @@ export type FoodTypeDT = Omit<MapToDT<FoodTypeData>, 'nameLocId' | 'descriptionL
   descriptionLoc: LocStringDT;
 };
 
-type FoodTypeDTFields = MapToUnknown<FoodTypeDT>;
+export const isFoodTypeDT = (obj: unknown): obj is FoodTypeDT => {
 
-const hasFoodTypeDTFields = (obj: unknown): obj is FoodTypeDTFields =>
-  hasOwnProperty(obj, 'id')
-  &&
-  hasOwnProperty(obj, 'nameLoc')
-  &&
-  hasOwnProperty(obj, 'descriptionLoc');
+  if (!checkProperties({obj, properties: [
+    'id'
+  ], required: true, validator: isNumber})) return false;
 
-export const isFoodTypeDT = (obj: unknown): obj is FoodTypeDT =>
-  hasFoodTypeDTFields(obj)
-  &&
-  isNumber(obj.id)
-  &&
-  isLocStringDT(obj.nameLoc)
-  &&
-  isLocStringDT(obj.descriptionLoc);
+  if (!checkProperties({obj, properties: [
+    'nameLoc', 'descriptionLoc'
+  ], required: true, validator: isLocStringDT})) return false;
+
+  return true;
+};
