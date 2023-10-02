@@ -72,7 +72,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     rights: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'user',
+      defaultValue: 'customer',
       validate: {
         isIn: [[...possibleUserRights]]
       }
