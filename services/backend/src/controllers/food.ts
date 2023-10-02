@@ -14,12 +14,12 @@ import {
   isNewFoodBody,
   mapDataToTransit,
   RequestBodyError,
-  timestampsKeys,
   isEditFoodBody,
   DatabaseError,
   updateInstance,
   RequestQueryError,
 } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import {
   includeAltTextLocNoTimestamps,
   includeFoodComponentData,
