@@ -6,7 +6,7 @@ import type {
   HasManyAddAssociationMixin,
   HasManyRemoveAssociationMixin
 } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import Address from './Address.js';
 import { sequelize } from '../db.js';
@@ -105,7 +105,7 @@ User.init({
   rights: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'user',
+    defaultValue: 'customer',
     validate: {
       isIn: [[...possibleUserRights]]
     }
@@ -133,14 +133,20 @@ User.init({
       rights: {
         [Op.ne]: 'disabled'
       }
+    },
+    attributes: {
+      exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
     }
   },
   scopes: {
-    user: {
+    customer: {
       where: {
         rights: {
-          [Op.eq]: 'user'
+          [Op.eq]: 'customer'
         }
+      },
+      attributes: {
+        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
       }
     },
     admin: {
@@ -148,6 +154,9 @@ User.init({
         rights: {
           [Op.eq]: 'admin'
         }
+      },
+      attributes: {
+        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
       }
     },
     manager: {
@@ -155,6 +164,9 @@ User.init({
         rights: {
           [Op.eq]: 'manager'
         }
+      },
+      attributes: {
+        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
       }
     },
     disabled: {
@@ -162,9 +174,39 @@ User.init({
         rights: {
           [Op.eq]: 'disabled'
         }
+      },
+      attributes: {
+        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
       }
     },
-    all: {}
+    deleted: {
+      where: {
+        deletedAt: {
+          [Op.not]: {
+            [Op.is]: undefined
+          }
+        }
+      },
+      attributes: {
+        exclude: ['passwordHash']
+      },
+      paranoid: false
+    },
+    all: {
+      attributes: {
+        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+      },
+      paranoid: false
+    },
+    allWithTimestamps: {
+      paranoid: false
+    },
+    allWithPasswordHash: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'deletedAt']
+      },
+      paranoid: false
+    }
   }
 });
   
