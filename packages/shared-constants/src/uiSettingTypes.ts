@@ -1,17 +1,17 @@
 // Maybe will be updated
-const uiSettingTypesConst = [
+export const uiSettingTypesReadonly = [
   'classNames',
-  'special',
+  'specific',
   'baseVariant',
   'baseColorVariant',
   'inlineCSS'
 ] as const;
 
-export type UiSettingTypes = typeof uiSettingTypesConst[number];
+export type UiSettingTypes = typeof uiSettingTypesReadonly[number];
 
-const uiSettingTypesSet = new Set([ ...uiSettingTypesConst as readonly string[] ]);
+const uiSettingTypesSet = new Set([ ...uiSettingTypesReadonly as readonly string[] ]);
 
-export const uiSettingTypes = [ ...uiSettingTypesConst as readonly string[] ];
+export const uiSettingTypes = [ ...uiSettingTypesReadonly as readonly string[] ];
 
 export const isUiSettingType = (theme: string): theme is UiSettingTypes => {
   return uiSettingTypesSet.has(theme);
