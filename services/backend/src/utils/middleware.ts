@@ -25,9 +25,17 @@ const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFu
 };
 
 
+const setVerifyOptional: RequestHandler = (req: RequestMiddle, res: Response, next: NextFunction) => {
+  req.verifyOptional = true;
+  next();
+};
+
+
 const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  if (!req.cookies.token) return next(new AuthorizationError('Authorization required'));
+  if (!req.cookies.token)
+    if (!req.verifyOptional) return next(new AuthorizationError('Authorization required'));
+    else return next();
 
   const token = req.cookies.token as string;
 
@@ -46,13 +54,32 @@ const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: Ne
 
 const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
 
-  const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
+  const user = await User.scope('allWithTimestamps').findByPk(req.userId, { paranoid: false });
 
   if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
   if (user.rights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
   if (user.deletedAt) return next(new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin'));
 
   req.user = user;
+
+  next();
+
+}) as RequestHandler;
+
+
+const userRightsExtractor = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
+
+  if (!req.token) {
+    req.rights = 'customer';
+    return next();
+  } 
+
+  const userRights = await Session.getUserRightsCache(req.token);
+  if (userRights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
+
+  req.rights = userRights
+    ? userRights
+    : 'customer';
 
   next();
 
@@ -156,8 +183,10 @@ const unknownEndpoint: RequestHandler = (req: Request, res: Response) => {
 
 export default {
   requestLogger,
+  setVerifyOptional,
   verifyToken,
   userExtractor,
+  userRightsExtractor,
   userCheck,
   managerCheck,
   adminCheck,
