@@ -1,5 +1,5 @@
 import { hasOwnProperty } from './helpers.js';
-import { isString } from './typeParsers.js';
+import { isString } from './typeValidators.js';
 
 export class SessionError extends Error {
   constructor(message: string) {
