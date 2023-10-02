@@ -1,5 +1,5 @@
 // Maybe will be updated
-const allowedCSSPropertiesKeys = [
+export const allowedCSSPropertiesKeys = [
   'backgroundColor',
   'borderRadius',
   'height',
