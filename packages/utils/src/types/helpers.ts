@@ -1,5 +1,6 @@
 import { ApplicationError, RedisError } from './Errors.js';
-import { isBoolean, isDate, isNumber, isString } from './typeParsers.js';
+import { isBoolean, isDate, isNumber, isString } from './typeValidators.js';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 
 export type MapToUnknown<T> = {
   [Property in keyof T]: unknown
@@ -19,11 +20,8 @@ export type MapToStrings<T> = {
   [Property in keyof T]: string
 };
 
-export const hasOwnProperty = (obj: unknown, property: string) => Object.prototype.hasOwnProperty.call(obj, property);
-
-
-export const timestampsKeys = ['createdAt', 'updatedAt', 'deletedAt'];
-export const creationOptionalKeys = ['id', ...timestampsKeys];
+export const hasOwnProperty = (obj: unknown, property: string): property is keyof typeof obj => Object.prototype.hasOwnProperty.call(obj, property);
+export const hasOwnProperties = (obj: unknown, properties: string[]) => properties.every(property => hasOwnProperty(obj, property));
 
 
 /**
@@ -73,22 +71,27 @@ export const parseRedisToData = <T>(dataStrings: MapToStrings<T>): T => {
     const key = keyString as keyof T;
 
     if (!isNaN(Number(dataStrings[key]))) {
-      data[key] = Number(dataStrings[key]) as unknown as T[keyof T];
+      data[key] = Number(dataStrings[key]) as T[keyof T];
       continue;
     }
 
     // Date regexp
     if (/^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/.test(dataStrings[key])) {
-      data[key] = new Date(dataStrings[key]) as unknown as T[keyof T];
+      data[key] = new Date(dataStrings[key]) as T[keyof T];
       continue;
     }
 
-    if (dataStrings[key] === 'true' || dataStrings[key] === 'false') {
-      data[key] = Boolean(dataStrings[key]) as unknown as T[keyof T];
+    if (dataStrings[key] === 'true') {
+      data[key] = true as T[keyof T];
       continue;
     }
 
-    data[key] = dataStrings[key] as unknown as T[keyof T];
+    if (dataStrings[key] === 'false') {
+      data[key] = false as T[keyof T];
+      continue;
+    }
+
+    data[key] = dataStrings[key] as T[keyof T];
   }
   return data;
 };
@@ -104,16 +107,21 @@ export const parseRedisToDT = <T>(dataObjStrings: MapToStrings<T>): T => {
     const key = keyString as keyof T;
 
     if (!isNaN(Number(dataObjStrings[key]))) {
-      dataTransit[key] = Number(dataObjStrings[key]) as unknown as T[keyof T];
+      dataTransit[key] = Number(dataObjStrings[key]) as T[keyof T];
       continue;
     }
 
-    if (dataObjStrings[key] === 'true' || dataObjStrings[key] === 'false') {
-      dataTransit[key] = Boolean(dataObjStrings[key]) as unknown as T[keyof T];
+    if (dataObjStrings[key] === 'true') {
+      dataTransit[key] = true as T[keyof T];
       continue;
     }
 
-    dataTransit[key] = dataObjStrings[key] as unknown as T[keyof T];
+    if (dataObjStrings[key] === 'false') {
+      dataTransit[key] = false as T[keyof T];
+      continue;
+    }
+
+    dataTransit[key] = dataObjStrings[key] as T[keyof T];
   }
   return dataTransit;
 };
@@ -124,13 +132,20 @@ export const parseRedisToDT = <T>(dataObjStrings: MapToStrings<T>): T => {
  * Maps date obj to ISO strings, omits foreign keys, omits specified props.
  * For nested objects use separately for each layer
  */
-export const mapDataToTransit = <T>(data: T, omitProps?: { omit?: string[]; omitTimestamps?: boolean }): MapToDT<T> => {
+export const mapDataToTransit = <T>(
+  data: T,
+  options?: {
+    omit?: string[];
+    omitTimestamps?: boolean
+    includeForeignKeys?: boolean
+  }
+): MapToDT<T> => {
   const dataTransit = {} as MapToDT<T>;
 
   const omitFields =
-    omitProps && omitProps.omit && omitProps.omitTimestamps ? [...timestampsKeys, ...omitProps.omit] :
-    omitProps && omitProps.omitTimestamps ? [...timestampsKeys] :
-    omitProps && omitProps.omit ? [...omitProps.omit] :
+    options && options.omit && options.omitTimestamps ? [...timestampsKeys, ...options.omit] :
+    options && options.omitTimestamps ? [...timestampsKeys] :
+    options && options.omit ? [...options.omit] :
     [];
 
   for (const keyString in data) {
@@ -140,19 +155,19 @@ export const mapDataToTransit = <T>(data: T, omitProps?: { omit?: string[]; omit
     if (omitFields.includes(String(key))) continue;
 
     // Remove all foreign keys... In runtime only option is to check like this while all such keys must end up with 'Id'
-    if (keyString.endsWith('Id')) continue;
+    if (!options || !options.includeForeignKeys) if (keyString.endsWith('Id')) continue;
 
     if (typeof data[key] === 'object')
       if (isDate(data[key])) {
-        const date = data[key] as unknown as Date;
-        dataTransit[key] = date.toISOString() as unknown as MapToDT<T>[keyof T];
+        const date = data[key] as Date;
+        dataTransit[key] = date.toISOString() as MapToDT<T>[keyof T];
         continue;
       } else {
         // For nested objects use destructuring and apply this func manually for every layer. Needed like this for sequelize model instances
         continue;
       }
 
-    dataTransit[key] = data[key] as unknown as MapToDT<T>[keyof T];
+    dataTransit[key] = data[key] as MapToDT<T>[keyof T];
   }
 
   return dataTransit;
@@ -168,15 +183,15 @@ export const updateInstance = <T>(oldInstance: T, newInstanceData: MapToDT<T>) =
 
     if (typeof newInstanceData[key] === 'object') {
       if (isDate(newInstanceData[key])) {
-        const date = newInstanceData[key] as unknown as string;
-        oldInstance[key] = Date.parse(date) as unknown as T[keyof T];
+        const date = newInstanceData[key] as string;
+        oldInstance[key] = Date.parse(date) as T[keyof T];
         continue;
       } else {
         throw new ApplicationError('updateInstance function is used to update nested object! Check implementations');
       }
     }
 
-    oldInstance[key] = newInstanceData[key] as unknown as T[keyof T];
+    oldInstance[key] = newInstanceData[key] as T[keyof T];
   }
 };
 
@@ -191,7 +206,7 @@ export const mapEmptyStringsToUndefined = <T>(data: T): T => {
 
     const value = data[key];
 
-    if (isString(value) && value === '') mappedData[key] = undefined as unknown as T[keyof T];
+    if (isString(value) && value === '') mappedData[key] = undefined as T[keyof T];
     else mappedData[key] = data[key];
   }
 
