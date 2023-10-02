@@ -6,25 +6,31 @@ import {
   isNewUiSettingBody,
   mapDataToTransit,
   RequestBodyError,
-  timestampsKeys,
-  isEditManyUiSettingBody
+  isEditManyUiSettingBody,
+  UnknownError
 } from '@m-cafe-app/utils';
 import { Router } from 'express';
 import { UiSetting } from '@m-cafe-app/db';
 import middleware from '../utils/middleware.js';
+import { isRequestWithUserRights } from '../types/RequestCustom.js';
 
 
 const uiSettingRouter = Router();
 
 uiSettingRouter.get(
   '/',
+  middleware.setVerifyOptional,
+  middleware.verifyToken,
+  middleware.userRightsExtractor,
   (async (req, res) => {
 
-    const uiSettings = await UiSetting.findAll({
-      attributes: {
-        exclude: [...timestampsKeys]
-      }
-    });
+    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check userRightsExtractor middleware');
+
+    const scope = req.rights === 'admin'
+      ? 'all'
+      : 'nonFalsy';
+
+    const uiSettings = await UiSetting.scope(scope).findAll();
 
     const resBody: UiSettingDT[] = uiSettings.map(uiSetting => {
       const resUiSetting: UiSettingDT = {
@@ -40,14 +46,19 @@ uiSettingRouter.get(
 
 uiSettingRouter.get(
   '/:id',
+  middleware.setVerifyOptional,
+  middleware.verifyToken,
+  middleware.userRightsExtractor,
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    const uiSetting = await UiSetting.findByPk(req.params.id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      }
-    });
+    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check userRightsExtractor middleware');
+
+    const scope = req.rights === 'admin'
+      ? 'all'
+      : 'nonFalsy';
+
+    const uiSetting = await UiSetting.scope(scope).findByPk(req.params.id);
     if (!uiSetting) throw new DatabaseError(`No ui setting entry with this id ${req.params.id}`);
 
     const resBody: UiSettingDT = {
@@ -70,11 +81,13 @@ uiSettingRouter.post(
 
     if (!isNewUiSettingBody(req.body)) throw new RequestBodyError('Invalid new ui setting request body');
 
-    const { name, value } = req.body;
+    const { name, value, theme, group } = req.body;
     
     const savedUiSetting = await UiSetting.create({
       name,
-      value
+      value,
+      theme,
+      group
     });
 
     const resBody: UiSettingDT = {
@@ -102,11 +115,7 @@ uiSettingRouter.put(
 
     for (const updUiSetting of updUiSettings) {
 
-      const resUpdUiSetting = await UiSetting.findByPk(updUiSetting.id, {
-        attributes: {
-          exclude: [...timestampsKeys]
-        }
-      });
+      const resUpdUiSetting = await UiSetting.scope('all').findByPk(updUiSetting.id);
       if (!resUpdUiSetting) throw new DatabaseError(`No ui setting entry with this id ${updUiSetting.id}`);
 
       resUpdUiSetting.value = updUiSetting.value;
@@ -142,11 +151,7 @@ uiSettingRouter.put(
     const { name, value } = req.body;
     const _name = name;
 
-    const updUiSetting = await UiSetting.findByPk(req.params.id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      }
-    });
+    const updUiSetting = await UiSetting.scope('all').findByPk(req.params.id);
     if (!updUiSetting) throw new DatabaseError(`No ui setting entry with this id ${req.params.id}`);
 
     // updUiSetting.name = name; // Ui settings names must not be mutated!
@@ -166,7 +171,7 @@ uiSettingRouter.put(
 uiSettingRouter.delete(
   '/:id',
   middleware.verifyToken,
-  middleware.adminCheck,
+  middleware.superAdminCheck,
   middleware.sessionCheck,
   middleware.requestParamsCheck,
   (async (req, res) => {
