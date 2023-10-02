@@ -1,112 +1,85 @@
 import { UiSetting } from '@m-cafe-app/db';
-import { ApplicationError, isString } from '@m-cafe-app/utils';
 import logger from './logger.js';
-import { getFileReadPromises } from './getFileReadPromises.js';
-import { allowedThemes, isUiSettingType } from '@m-cafe-app/shared-constants';
+import {
+  allowedCSSPropertiesKeys,
+  allowedClassNamesUiSettingsReadonly,
+  allowedThemesReadonly,
+  componentGroupsReadonly,
+  specificUiSettingsReadonly,
+  uiSettingTypesReadonly
+} from '@m-cafe-app/shared-constants';
 
 /**
- * Look for all jsonc files in initialUiSettings folder
- * 
- * Inject theme after componentType/componentName
- * 
- * Add to DB if not exists
+ * Initializes the UI settings by iterating through the component groups,
+ * themes, and UI setting types. For each UI setting type, it performs
+ * different actions. It adds UI settings to the database based on the
+ * UI setting type, component group, and theme.
+ *
+ * @return {Promise<void>} Promise that resolves once all the UI settings are added to the database
  */
 export const initUiSettings = async () => {
 
-  try {
-    const fileReadResults = await getFileReadPromises('initialUiSettings', 'jsonc');
+  for (const theme of allowedThemesReadonly) {
+    for (const componentGroup of componentGroupsReadonly) {
+      for (const uiSettingType of uiSettingTypesReadonly) {
 
-    for (const fileReadResult of fileReadResults) {
-
-      // Strip JSONC comments
-      const strippedFromCommentsFileReadResult = fileReadResult.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? '' : m);
-
-      const uiSettingsTree = JSON.parse(strippedFromCommentsFileReadResult) as JSON;
-      await parseUiSettingsTree(uiSettingsTree);
+        switch (uiSettingType) {
+          case 'classNames':
+            for (const className of allowedClassNamesUiSettingsReadonly) {
+              await addUiSettingToDB(className, 'false', componentGroup, theme);
+            }
+            break;
+          case 'specific':
+            break;
+          case 'baseVariant':
+            await addUiSettingToDB('baseVariant', 'alpha', componentGroup, theme);
+            break;
+          case 'baseColorVariant':
+            await addUiSettingToDB('baseColorVariant', 'alpha-color', componentGroup, theme);
+            break;
+          case 'inlineCSS':
+            for (const inlineCSSKey of allowedCSSPropertiesKeys) {
+              await addUiSettingToDB(inlineCSSKey, 'false', componentGroup, theme);
+            }
+            break;
+          default:
+            logger.shout('Wrong ui setting type! Check ui settings. Setting ignored', uiSettingType);
+            continue;
+        }
+      }
     }
 
-  } catch (error) {
-    logger.error(error);
-  }
-};
-
-const parseUiSettingsTree = async (uiSettingsTree: JSON) => {
-
-  for (const key in uiSettingsTree) {
-    const uiNodeObj = uiSettingsTree[key as keyof JSON];
-    if (!isUiNodeObj(uiNodeObj)) throw new ApplicationError('Wrong ui settings structure! Check ui settings', { current: uiSettingsTree });
-    await parseUiNodeTree(uiNodeObj, key);
-  }
-
-};
-
-type UiNodeObj = {
-  [key:string] : unknown
-};
-
-const isUiNodeObj = (obj: unknown): obj is UiNodeObj => {
-  if (!obj || !(typeof obj === 'object')) return false;
-  for (const key in obj) {
-    if (!isString(key)) return false;
-  }
-  return true;
-};
-
-const parseUiNodeTree = async (uiNodeParent: UiNodeObj, uiNodePath: string) => {
-
-  for (const key in uiNodeParent) {
-
-    // If found value then append foundUiSettings
-    if (key === 'value') {
-      if (!isString(uiNodeParent[key])) throw new ApplicationError('Wrong ui settings structure! Check ui settings', { current: uiNodeParent });
-      await addUiSettingToDB(uiNodePath, uiNodeParent[key] as string);
-      // Break here means continue for parent of uiNodeParent
-      break;
-    } else {
-      const tNodeChild = uiNodeParent[key];
-      if (!isUiNodeObj(tNodeChild)) throw new ApplicationError('Wrong JSON format! Check ui settings', { current: uiNodeParent });
-      await parseUiNodeTree(tNodeChild, uiNodePath + '.' + key);
+    try {
+      for (const componentGroup in specificUiSettingsReadonly) {
+        const specificUiSetting = specificUiSettingsReadonly[componentGroup as keyof typeof specificUiSettingsReadonly];
+        for (const specificUiSettingKey in specificUiSetting) {
+          const value = specificUiSetting[specificUiSettingKey as keyof typeof specificUiSetting];
+          await addUiSettingToDB(specificUiSettingKey, value, componentGroup, theme);
+        }
+      }
+    } catch (error) {
+      logger.shout('Error adding specific UI settings to database. Check componentGroup name in specificUiSettingsReadonly', error);
     }
   }
 };
 
-const addUiSettingToDB = async (uiNodePath: string, value: string) => {
+/**
+ * Adds a UI setting to the database if it is not already there
+ *
+ * @param {string} name - The name of the UI setting.
+ * @param {string} value - The value of the UI setting.
+ * @param {string} group - The group of the UI setting.
+ * @param {string} theme - The theme of the UI setting.
+ */
+const addUiSettingToDB = async (name: string, value: string, group: string, theme: string) => {
+  const foundUiSetting = await UiSetting.findOne({ where: { name, group, theme } });
 
-  // Apply initial values to all themes
-  for (const theme of allowedThemes) {
-
-    let uiSettingName: string = '';
-
-    const uiNodes = uiNodePath.split('.');
-
-    // Inject theme to upperUiNode. Last part of upperUiNodeParts must be one of uiSettingTypes
-    const upperUiNode = uiNodes[0];
-    const upperUiNodeParts = upperUiNode.split('-');
-    const uiSettingType = upperUiNodeParts.pop();
-    if (!isString(uiSettingType) || !isUiSettingType(uiSettingType)) {
-      logger.shout('Wrong ui setting type! Check ui settings. Setting ignored', uiNodePath);
-      continue;
-    }
-    let themedUpperUiNode: string = theme + '-' + uiSettingType;
-    for (let i = upperUiNodeParts.length - 1; i > -1; i--) {
-      themedUpperUiNode = upperUiNodeParts[i] + '-' + themedUpperUiNode;
-    }
-
-    uiSettingName = themedUpperUiNode;
-
-    // Reassemble nodePath with injected theme
-    for (let i = 1; i < uiNodes.length; i++) {
-      uiSettingName = uiSettingName + '.' + uiNodes[i];
-    }
-
-    const foundUiSetting = await UiSetting.findOne({ where: { name: uiSettingName }});
-
-    if (!foundUiSetting) {
-      await UiSetting.create({
-        name: uiSettingName,
-        value
-      });
-    }
+  if (!foundUiSetting) {
+    await UiSetting.create({
+      name,
+      value,
+      group,
+      theme
+    });
   }
-
 };
