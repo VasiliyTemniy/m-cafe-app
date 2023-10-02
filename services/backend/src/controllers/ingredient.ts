@@ -6,12 +6,12 @@ import { Ingredient, LocString } from '@m-cafe-app/db';
 import {
   DatabaseError,
   mapDataToTransit,
-  timestampsKeys,
   isNewIngredientBody,
   RequestBodyError,
   isEditIngredientBody,
   updateInstance
 } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import { includeNameLocNoTimestamps, includeStockMeasureLocNoTimestamps } from '../utils/sequelizeHelpers.js';
 
 

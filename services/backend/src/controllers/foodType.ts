@@ -7,12 +7,12 @@ import {
   isNewFoodTypeBody,
   mapDataToTransit,
   RequestBodyError,
-  timestampsKeys,
   DatabaseError,
   updateInstance,
   isEditFoodTypeBody,
   RequestQueryError
 } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import { includeNameDescriptionLocNoTimestamps } from '../utils/sequelizeHelpers.js';
 
 

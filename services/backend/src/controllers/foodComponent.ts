@@ -6,11 +6,11 @@ import { Food, FoodComponent, Ingredient } from '@m-cafe-app/db';
 import {
   mapDataToTransit,
   RequestBodyError,
-  timestampsKeys,
   DatabaseError,
   isAddFoodComponentsBody,
   isEditFoodComponentBody,
 } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import {
   includeFoodComponentData,
   includeNameLocNoTimestamps
