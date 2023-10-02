@@ -12,9 +12,9 @@ import {
   ProhibitedError,
   RequestBodyError,
   RequestQueryError,
-  timestampsKeys,
   UnknownError,
 } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import { Router } from 'express';
 import { Facility, FacilityManager, Food, Order, OrderFood } from '@m-cafe-app/db';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';
@@ -42,7 +42,7 @@ orderRouter.get(
     // Check if user attempts to get other user's order info. Permitted for managers and admins
     if (Number(req.params.userId) !== req.userId) {
       const userRights = await Session.getUserRightsCache(req.token);
-      if (userRights === 'user') throw new ProhibitedError('You have no rights to see these order details');
+      if (userRights === 'customer') throw new ProhibitedError('You have no rights to see these order details');
     }
 
     let limit = 20;
@@ -228,7 +228,7 @@ orderRouter.get(
     // Check if user attempts to get other user's order info. Permitted for managers and admins
     if (order.userId !== req.userId) {
       const userRights = await Session.getUserRightsCache(req.token);
-      if (userRights === 'user') throw new ProhibitedError('You have no rights to see this order details');
+      if (userRights === 'customer') throw new ProhibitedError('You have no rights to see this order details');
       if (userRights === 'manager') {
         const facilityManager = await FacilityManager.findOne({ where: { userId: req.userId, facilityId: order.facilityId } });
         if (!facilityManager) throw new ProhibitedError('You are not a manager of this orders facility');
