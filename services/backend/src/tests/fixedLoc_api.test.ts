@@ -1,19 +1,17 @@
 import type { EditFixedLocBody, NewFixedLocBody } from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/utils';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../app';
 import { connectToDatabase, FixedLoc, LocString, User } from '@m-cafe-app/db';
 import config from '../utils/config';
-import { validAdminInDB } from './admin_api_helper';
+import { validAdminInDB, validManagerInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
 import { Session } from '../redis/Session';
 import { initLogin, userAgent } from './sessions_api_helper';
 import { apiBaseUrl } from './test_helper';
 import { validUserInDB } from './user_api_helper';
 import { initFixedLocs } from '../utils/initFixedLocs';
-import { includeLocStringNoTimestamps } from '../utils/sequelizeHelpers';
 import { fixedLocFilter } from '@m-cafe-app/shared-constants';
 
 
@@ -24,7 +22,8 @@ const api = supertest(app);
 
 describe('FixedLoc requests tests', () => {
 
-  let tokenCookie: string;
+  let adminTokenCookie: string;
+  let managerTokenCookie: string;
   let fixedLocs: FixedLoc[];
 
   before(async () => {
@@ -38,32 +37,29 @@ describe('FixedLoc requests tests', () => {
     });
 
     await User.create(validAdminInDB.dbEntry);
+    await User.create(validManagerInDB.dbEntry);
     await Session.destroy({ where: {} });
-    tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
+    adminTokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
+    managerTokenCookie = await initLogin(validManagerInDB.dbEntry, validManagerInDB.password, api, 201, userAgent) as string;
 
-    await FixedLoc.destroy({ where: {} });
+    await FixedLoc.scope('admin').destroy({ where: {} });
     await LocString.destroy({ where: {} });
 
     await initFixedLocs();
-    fixedLocs = await FixedLoc.findAll({});
+    fixedLocs = await FixedLoc.scope('admin').findAll({});
   });
 
-  it('FixedLoc GET routes work without authorization', async () => {
+  it('FixedLoc GET routes work without authorization and give only customer-scoped fixedLocs', async () => {
+
+    const customerFixedLocs = await FixedLoc.scope('customer').findAll({});
 
     const response1 = await api
-      .get(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
+      .get(`${apiBaseUrl}/fixed-loc/${customerFixedLocs[0].id}`)
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const fixedLocInDB = await FixedLoc.findByPk(fixedLocs[0].id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        includeLocStringNoTimestamps
-      ]
-    });
+    const fixedLocInDB = await FixedLoc.scope('customer').findByPk(customerFixedLocs[0].id);
 
     expect(response1.body.name).to.equal(fixedLocInDB?.name);
     expect(response1.body.locString.mainStr).to.equal(fixedLocInDB?.locString?.mainStr);
@@ -74,7 +70,43 @@ describe('FixedLoc requests tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
+    expect(response2.body).to.be.lengthOf(customerFixedLocs.length);
+    expect(response2.body.length).to.be.lessThan(fixedLocs.length);
+
+  });
+
+  it('FixedLoc GET routes give accordingly-scoped fixedLocs to authorized users', async () => {
+
+    const response1 = await api
+      .get(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
+      .set('Cookie', [adminTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response1.body.name).to.equal(fixedLocs[0].name);
+    expect(response1.body.locString.mainStr).to.equal(fixedLocs[0]?.locString?.mainStr);
+
+    const response2 = await api
+      .get(`${apiBaseUrl}/fixed-loc`)
+      .set('Cookie', [adminTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
     expect(response2.body).to.be.lengthOf(fixedLocs.length);
+
+    const response3 = await api
+      .get(`${apiBaseUrl}/fixed-loc`)
+      .set('Cookie', [managerTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const managerFixedLocs = await FixedLoc.scope('manager').findAll({});
+
+    expect(response3.body).to.be.lengthOf(managerFixedLocs.length);
+    expect(response3.body.length).to.be.lessThan(fixedLocs.length);
 
   });
 
@@ -131,12 +163,14 @@ describe('FixedLoc requests tests', () => {
       name: 'test',
       locString: {
         mainStr: 'Тест'
-      }
+      },
+      namespace: 'test',
+      scope: 'customer',
     };
 
     const response = await api
       .post(`${apiBaseUrl}/fixed-loc`)
-      .set('Cookie', [tokenCookie])
+      .set('Cookie', [adminTokenCookie])
       .set('User-Agent', userAgent)
       .send(newFixedLoc)
       .expect(201)
@@ -154,25 +188,20 @@ describe('FixedLoc requests tests', () => {
       locString: {
         id: fixedLocs[0].locStringId,
         mainStr: 'Тест по изменению'
-      }
+      },
+      namespace: 'test',
+      scope: 'customer',
     };
 
     const response = await api
       .put(`${apiBaseUrl}/fixed-loc/${fixedLocs[0].id}`)
-      .set('Cookie', [tokenCookie])
+      .set('Cookie', [adminTokenCookie])
       .set('User-Agent', userAgent)
       .send(updFixedLoc)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const updFixedLocInDB = await FixedLoc.findByPk(fixedLocs[0].id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        includeLocStringNoTimestamps
-      ]
-    });
+    const updFixedLocInDB = await FixedLoc.scope('admin').findByPk(fixedLocs[0].id);
 
     expect(response.body.name).to.not.equal(updFixedLoc.name);
     expect(response.body.name).to.equal(fixedLocs[0].name);
@@ -189,7 +218,7 @@ describe('FixedLoc requests tests', () => {
 
     const response = await api
       .put(`${apiBaseUrl}/fixed-loc/reserve/${fixedLocs[0].id}`)
-      .set('Cookie', [tokenCookie])
+      .set('Cookie', [adminTokenCookie])
       .set('User-Agent', userAgent)
       .expect(200);
 
@@ -204,7 +233,7 @@ describe('FixedLoc requests tests', () => {
 
     // Cleanup because of fixedLoc.locStringId foreignKey is RESTRICT onDelete,
     // Means destroy all LocStrings will lead to errors in other tests
-    await FixedLoc.destroy({ where: {} });
+    await FixedLoc.scope('admin').destroy({ where: {} });
     await LocString.destroy({ where: {} });
 
   });

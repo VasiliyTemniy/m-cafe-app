@@ -366,7 +366,7 @@ describe('Facility requests tests', () => {
 
   it('Facility GET /:id/managers route responses with all facility info including managers list as User DT objects', async () => {
 
-    const usersInDB = await User.scope('user').findAll();
+    const usersInDB = await User.scope('customer').findAll();
 
     const userToBecomeManager = usersInDB[Math.round(Math.random() * (usersInDB.length - 1))];
 
@@ -395,7 +395,7 @@ describe('Facility requests tests', () => {
   it('Facility PUT /:id/stocks route works and can be used either by current facility manager or by any admin. \
 New stocks get added, other stocks get updated', async () => {
 
-    const usersInDB = await User.scope('user').findAll();
+    const usersInDB = await User.scope('customer').findAll();
 
     const userToBecomeManager = usersInDB[Math.round(Math.random() * (usersInDB.length - 1))];
 
@@ -467,7 +467,7 @@ New stocks get added, other stocks get updated', async () => {
   it('Facility PUT /:id/stocks route cannot be used by other facility`s manager', async () => {
   
     // manager from previous test must have moved to another scope
-    const usersInDB = await User.scope('user').findAll();
+    const usersInDB = await User.scope('customer').findAll();
   
     const userToBecomeManager = usersInDB[Math.round(Math.random() * (usersInDB.length - 1))];
   
@@ -509,7 +509,7 @@ New stocks get added, other stocks get updated', async () => {
   it('Facility GET /:id/stocks route gives facility info including stocks. \
 Can be used either by current facility manager or by any admin', async () => {
 
-    const usersInDB = await User.scope('user').findAll();
+    const usersInDB = await User.scope('customer').findAll();
 
     const userToBecomeManager = usersInDB[Math.round(Math.random() * (usersInDB.length - 1))];
 
@@ -561,9 +561,9 @@ Can be used either by current facility manager or by any admin', async () => {
 
   });
 
-  it('Facility POST /:id/managers adds faciliry manager, can be used by admin', async () => {
+  it('Facility POST /:id/managers adds facility manager, can be used by admin', async () => {
 
-    const usersInDB = await User.scope('user').findAll();
+    const usersInDB = await User.scope('customer').findAll();
 
     await api
       .post(`${apiBaseUrl}/facility/${facilities[0].id}/managers`)
@@ -594,7 +594,7 @@ Can be used either by current facility manager or by any admin', async () => {
 
     const userExManager = await User.findOne({ where: { id: facilityManagersInDB[0].userId } });
 
-    expect(userExManager!.rights).to.equal('user');
+    expect(userExManager!.rights).to.equal('customer');
 
     const deletedManager = await FacilityManager.findOne({ where: { facilityId: facilities[0].id, userId: facilityManagersInDB[0].userId } });
 

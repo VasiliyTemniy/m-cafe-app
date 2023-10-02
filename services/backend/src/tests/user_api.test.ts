@@ -659,7 +659,7 @@ User marked as deleted gets appropriate message when trying to login', async () 
 
     expect(sessions).to.be.lengthOf(0);
 
-    const deletedUser = await User.findByPk(validUserInDBID, { paranoid: false });
+    const deletedUser = await User.scope('allWithTimestamps').findByPk(validUserInDBID);
     if (!deletedUser) return expect(true).to.equal(false);
 
     expect(!deletedUser.deletedAt).to.equal(false);

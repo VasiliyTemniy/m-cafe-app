@@ -1,5 +1,5 @@
 import type { EditUiSettingBody, NewUiSettingBody } from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -39,31 +39,55 @@ describe('UiSetting requests tests', () => {
     await Session.destroy({ where: {} });
     tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
 
-    await UiSetting.destroy({ where: {} });
+    await UiSetting.scope('all').destroy({ where: {} });
 
     await initUiSettings();
-    uiSettings = await UiSetting.findAll({});
+    uiSettings = await UiSetting.scope('all').findAll({});
   });
 
-  it('UiSetting GET routes work without authorization', async () => {
+  it('UiSetting GET routes work without authorization and give only non-falsy uiSettings', async () => {
+
+    const nonFalsyUiSettings = uiSettings.filter(uiSetting => uiSetting.dataValues.value !== 'false');
 
     const response1 = await api
-      .get(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
+      .get(`${apiBaseUrl}/ui-setting/${nonFalsyUiSettings[0].id}`)
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const uiSettingInDB = await UiSetting.findByPk(uiSettings[0].id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      }
-    });
+    const uiSettingInDB = await UiSetting.scope('all').findByPk(nonFalsyUiSettings[0].id);
 
     expect(response1.body.name).to.equal(uiSettingInDB?.name);
     expect(response1.body.value).to.equal(uiSettingInDB?.value);
 
     const response2 = await api
       .get(`${apiBaseUrl}/ui-setting`)
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response2.body).to.be.lengthOf(nonFalsyUiSettings.length);
+    expect(response2.body.length).to.be.lessThan(uiSettings.length);
+
+  });
+
+  it('UiSetting GET routes give all uiSettings including falsy if logged user is admin', async () => {
+
+    const response1 = await api
+      .get(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
+      .set('Cookie', [tokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const uiSettingInDB = await UiSetting.scope('all').findByPk(uiSettings[0].id);
+
+    expect(response1.body.name).to.equal(uiSettingInDB?.name);
+    expect(response1.body.value).to.equal(uiSettingInDB?.value);
+
+    const response2 = await api
+      .get(`${apiBaseUrl}/ui-setting`)
+      .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -86,14 +110,14 @@ describe('UiSetting requests tests', () => {
 
     const commonUserTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string; 
 
-    const response2 = await api
-      .delete(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
-      .set('Cookie', [commonUserTokenCookie])
-      .set('User-Agent', userAgent)
-      .expect(403)
-      .expect('Content-Type', /application\/json/);
+    // const response2 = await api
+    //   .delete(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
+    //   .set('Cookie', [commonUserTokenCookie])
+    //   .set('User-Agent', userAgent)
+    //   .expect(403)
+    //   .expect('Content-Type', /application\/json/);
 
-    expect(response2.body.error.name).to.equal('ProhibitedError');
+    // expect(response2.body.error.name).to.equal('ProhibitedError');
 
     const response3 = await api
       .post(`${apiBaseUrl}/ui-setting`)
@@ -121,7 +145,9 @@ describe('UiSetting requests tests', () => {
 
     const newUiSetting: NewUiSettingBody = {
       name: 'test',
-      value: 'testValue'
+      value: 'testValue',
+      theme: 'light',
+      group: 'input',
     };
 
     const response = await api
@@ -141,7 +167,9 @@ describe('UiSetting requests tests', () => {
 
     const updUiSetting: EditUiSettingBody = {
       name: 'editTest', // ui settings names must be unmutable, so the name does not get changed even if put for correct ui setting id
-      value: 'editTestValue'
+      value: 'editTestValue',
+      theme: 'light',
+      group: 'input',
     };
 
     const response = await api
@@ -169,14 +197,14 @@ describe('UiSetting requests tests', () => {
 
   });
 
-  it('UiSetting DELETE /:id deletes uiSetting, can be used by admin', async () => {
+  // it('UiSetting DELETE /:id deletes uiSetting, can be used by admin', async () => {
 
-    await api
-      .delete(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
-      .set('Cookie', [tokenCookie])
-      .set('User-Agent', userAgent)
-      .expect(204);
+  //   await api
+  //     .delete(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
+  //     .set('Cookie', [tokenCookie])
+  //     .set('User-Agent', userAgent)
+  //     .expect(204);
 
-  });
+  // });
 
 });

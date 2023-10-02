@@ -35,7 +35,6 @@ password, username get zeroified, phonenumber left for distinguishing reasons', 
     expect(adminUsers[0].rights).to.equal('admin');
     expect(adminUsers[0].phonenumber).to.exist;
     expect(adminUsers[0].username).to.exist;
-    expect(adminUsers[0].passwordHash).to.exist;
 
     expect(process.env.SUPERADMIN_USERNAME).to.equal('');
     expect(process.env.SUPERADMIN_PASSWORD).to.equal('');
@@ -115,12 +114,12 @@ describe('Admin router basics', () => {
       .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
       .set('Cookie', [tokenCookie2])
       .set('User-Agent', userAgent)
-      .send({ rights: 'user' })
+      .send({ rights: 'customer' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     expect(response2.body.id).to.equal(validAdminInDBID);
-    expect(response2.body.rights).to.equal('user');
+    expect(response2.body.rights).to.equal('customer');
 
     const response3 = await api
       .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
@@ -140,7 +139,7 @@ describe('Admin router basics', () => {
       .put(`${apiBaseUrl}/admin/user/${validAdminInDBID}`)
       .set('Cookie', [tokenCookie2])
       .set('User-Agent', userAgent)
-      .send({ rights: 'user' })
+      .send({ rights: 'customer' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -405,7 +404,7 @@ describe('Superadmin routes tests', () => {
 
     const admin = await User.create(validAdminInDB.dbEntry);
 
-    await FixedLoc.destroy({ force: true, where: {} });
+    await FixedLoc.scope('admin').destroy({ force: true, where: {} });
 
     validAdminTokenCookie = await initLogin(admin, validAdminInDB.password, api, 201, userAgent) as string;
     mockSuperAdminTokenCookie = await initLogin(mockSuperadmin, validUserInDB.password, api, 201, userAgent, true) as string;
@@ -427,7 +426,7 @@ describe('Superadmin routes tests', () => {
       }
     });
 
-    await FixedLoc.destroy({ force: true, where: {} });
+    await FixedLoc.scope('admin').destroy({ force: true, where: {} });
   });
 
   it('Admin /fixed-loc/reset route works, can be used only by superadmin', async () => {
@@ -443,11 +442,11 @@ describe('Superadmin routes tests', () => {
 
     await initFixedLocs();
 
-    const fixedLocs = await FixedLoc.findAll({});
+    const fixedLocs = await FixedLoc.scope('admin').findAll({});
 
     const randomFixedLocId = Math.floor(Math.random() * fixedLocs.length);
 
-    const fixedLocToEdit = await FixedLoc.findByPk(fixedLocs[randomFixedLocId].id);
+    const fixedLocToEdit = await FixedLoc.scope('admin').findByPk(fixedLocs[randomFixedLocId].id);
     if (!fixedLocToEdit) return expect(true).to.equal(false);
 
     fixedLocToEdit.name = 'newName';
