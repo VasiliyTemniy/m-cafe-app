@@ -79,8 +79,7 @@ jobs:
           FRONTEND_PORT: ${{ vars.FRONTEND_PORT }}
           BACKEND_URL: ${{ vars.BACKEND_URL }}
 
-      - name: Test
-        # run: yarn run test
+      - name: Backend test
         run: yarn run test:backend
         env:
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
@@ -97,6 +96,14 @@ jobs:
           REDIS_HOST: 127.0.0.1
           REDIS_PORT: 6379
 
+      - name: DB test
+        run: yarn run test:db
+        env:
+          DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
+          TEST_DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
+
+      - name: Utils test
+        run: yarn run test:utils
 
       # - name: e2e tests
       #   uses: cypress-io/github-action@v2
