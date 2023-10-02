@@ -111,7 +111,7 @@ adminRouter.delete(
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    const userSubject = await User.scope('all').findByPk(req.params.id, { paranoid: false });
+    const userSubject = await User.scope('allWithTimestamps').findByPk(req.params.id);
 
     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
     if (!userSubject.deletedAt) throw new ProhibitedError('Only voluntarily deleted users can be fully removed by admins');
@@ -130,7 +130,7 @@ adminRouter.get(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    await FixedLoc.destroy({ where: {} });
+    await FixedLoc.scope('admin').destroy({ where: {} });
     await initFixedLocs();
 
     const fixedLocs = await FixedLoc.findAll({
