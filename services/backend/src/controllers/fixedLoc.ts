@@ -8,26 +8,28 @@ import {
   isNewFixedLocBody,
   mapDataToTransit,
   RequestBodyError,
+  UnknownError,
   updateInstance
 } from '@m-cafe-app/utils';
 import { Router } from 'express';
 import { FixedLoc, LocString } from '@m-cafe-app/db';
 import middleware from '../utils/middleware.js';
-import { includeLocStringNoTimestamps } from '../utils/sequelizeHelpers.js';
 import { fixedLocFilter } from '@m-cafe-app/shared-constants';
+import { isRequestWithUserRights } from '../types/RequestCustom.js';
 
 
 const fixedLocRouter = Router();
 
 fixedLocRouter.get(
   '/',
+  middleware.setVerifyOptional,
+  middleware.verifyToken,
+  middleware.userRightsExtractor,
   (async (req, res) => {
 
-    const fixedLocs = await FixedLoc.findAll({
-      include: [
-        includeLocStringNoTimestamps
-      ]
-    });
+    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check userRightsExtractor middleware');
+
+    const fixedLocs = await FixedLoc.scope(req.rights).findAll();
 
     const resBody: FixedLocDT[] = fixedLocs.map(fixedLoc => {
       const resFixedLoc: FixedLocDT = {
@@ -44,14 +46,15 @@ fixedLocRouter.get(
 
 fixedLocRouter.get(
   '/:id',
+  middleware.setVerifyOptional,
+  middleware.verifyToken,
+  middleware.userRightsExtractor,
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    const fixedLoc = await FixedLoc.findByPk(req.params.id, {
-      include: [
-        includeLocStringNoTimestamps
-      ]
-    });
+    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check userRightsExtractor middleware');
+
+    const fixedLoc = await FixedLoc.scope(req.rights).findByPk(req.params.id);
     if (!fixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
 
     const resBody: FixedLocDT = {
@@ -75,12 +78,14 @@ fixedLocRouter.post(
 
     if (!isNewFixedLocBody(req.body)) throw new RequestBodyError('Invalid new fixed loc request body');
 
-    const { name, locString } = req.body;
+    const { name, namespace, scope, locString } = req.body;
     
     const savedLocString = await LocString.create(locString);
 
     const savedFixedLoc = await FixedLoc.create({
       name,
+      namespace,
+      scope,
       locStringId: savedLocString.id
     });
 
@@ -110,11 +115,7 @@ fixedLocRouter.put(
 
     for (const updLoc of updLocs) {
 
-      const updFixedLoc = await FixedLoc.findByPk(updLoc.id, {
-        include: [
-          includeLocStringNoTimestamps
-        ]
-      });
+      const updFixedLoc = await FixedLoc.scope('admin').findByPk(updLoc.id);
       if (!updFixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${updLoc.id}`);
 
       const updLocString = await LocString.findByPk(updLoc.locString.id);
@@ -149,7 +150,7 @@ fixedLocRouter.put(
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    const fixedLoc = await FixedLoc.findByPk(req.params.id);
+    const fixedLoc = await FixedLoc.scope('admin').findByPk(req.params.id);
     if (!fixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
 
     const locString = await LocString.findByPk(fixedLoc.locStringId);
@@ -185,11 +186,7 @@ fixedLocRouter.put(
     const { name, locString } = req.body;
     const _name = name;
 
-    const updFixedLoc = await FixedLoc.findByPk(req.params.id, {
-      include: [
-        includeLocStringNoTimestamps
-      ]
-    });
+    const updFixedLoc = await FixedLoc.scope('admin').findByPk(req.params.id);
     if (!updFixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
 
     const updLocString = await LocString.findByPk(locString.id);
