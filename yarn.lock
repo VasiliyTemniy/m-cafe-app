@@ -2981,6 +2981,7 @@ __metadata:
   resolution: "@m-cafe-app/backend-logic@workspace:packages/backend-logic"
   dependencies:
     "@m-cafe-app/db": "workspace:^"
+    "@m-cafe-app/models": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     chai: ^4.3.7
@@ -3011,6 +3012,16 @@ __metadata:
     "@m-cafe-app/shared-frontend-deps": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
     ts-md5: ^1.3.1
+    typescript: ~5.1.6
+  languageName: unknown
+  linkType: soft
+
+"@m-cafe-app/models@workspace:^, @m-cafe-app/models@workspace:packages/models":
+  version: 0.0.0-use.local
+  resolution: "@m-cafe-app/models@workspace:packages/models"
+  dependencies:
+    "@m-cafe-app/shared-constants": "workspace:^"
+    "@m-cafe-app/utils": "workspace:^"
     typescript: ~5.1.6
   languageName: unknown
   linkType: soft
@@ -11297,6 +11308,7 @@ __metadata:
   dependencies:
     "@m-cafe-app/backend-logic": "workspace:^"
     "@m-cafe-app/db": "workspace:^"
+    "@m-cafe-app/models": "workspace:^"
     "@m-cafe-app/shared-backend-deps": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/shared-dev-deps": "workspace:^"
