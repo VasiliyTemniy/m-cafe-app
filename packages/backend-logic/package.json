@@ -1,0 +1,25 @@
+{
+  "name": "@m-cafe-app/backend-logic",
+  "productName": "Modular cafe app",
+  "version": "1.0.0",
+  "description": "This package contains backend logic with onion-like or hexagonal-like architecture",
+  "main": "build/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "test": "cross-env NODE_ENV=test TEST_MODE=self mocha --exit",
+    "eslint": "eslint ./src/**/*.{ts,tsx}"
+  },
+  "dependencies": {
+    "@m-cafe-app/db": "workspace:^",
+    "@m-cafe-app/shared-constants": "workspace:^",
+    "@m-cafe-app/utils": "workspace:^"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "cross-env": "^7.0.3",
+    "mocha": "^10.2.0",
+    "typescript": "~5.1.6"
+  }
+}
