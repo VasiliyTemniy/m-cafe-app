@@ -18,6 +18,7 @@
     "eslint": "eslint ./src/**/*.{ts,tsx}"
   },
   "dependencies": {
+    "@m-cafe-app/backend-logic": "workspace:^",
     "@m-cafe-app/db": "workspace:^",
     "@m-cafe-app/shared-backend-deps": "workspace:^",
     "@m-cafe-app/shared-constants": "workspace:^",
