@@ -5,14 +5,14 @@ import logger from './utils/logger.js';
 import { connectToDatabase } from '@m-cafe-app/db';
 import { initSuperAdmin } from './utils/adminInit.js';
 import { connectToRedisSessionDB } from './redis/Session.js';
-import { initUiSettings } from './utils/initUiSettings.js';
 import { initFixedLocs } from './utils/initFixedLocs.js';
+import { uiSettingController } from './controllers';
 
 const start = async () => {
   await connectToDatabase();
   await initSuperAdmin();
   await connectToRedisSessionDB();
-  await initUiSettings();
+  await uiSettingController.service.initUiSettings();
   await initFixedLocs();
   const server = http.createServer(app);
   server.listen(config.PORT, () => {
