@@ -12,5 +12,4 @@ export * from './OrderBodies.js';
 export * from './OrderFoodBodies.js';
 export * from './PictureBodies.js';
 export * from './DynamicModuleBodies.js';
-export * from './UiSettingBodies.js';
 export * from './FixedLocBodies.js';
