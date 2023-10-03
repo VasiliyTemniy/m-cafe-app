@@ -2976,6 +2976,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@m-cafe-app/backend-logic@workspace:^, @m-cafe-app/backend-logic@workspace:packages/backend-logic":
+  version: 0.0.0-use.local
+  resolution: "@m-cafe-app/backend-logic@workspace:packages/backend-logic"
+  dependencies:
+    "@m-cafe-app/db": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^"
+    "@m-cafe-app/utils": "workspace:^"
+    chai: ^4.3.7
+    cross-env: ^7.0.3
+    mocha: ^10.2.0
+    typescript: ~5.1.6
+  languageName: unknown
+  linkType: soft
+
 "@m-cafe-app/db@workspace:^, @m-cafe-app/db@workspace:packages/db":
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/db@workspace:packages/db"
@@ -11281,6 +11295,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "m-cafe-backend@workspace:services/backend"
   dependencies:
+    "@m-cafe-app/backend-logic": "workspace:^"
     "@m-cafe-app/db": "workspace:^"
     "@m-cafe-app/shared-backend-deps": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"
