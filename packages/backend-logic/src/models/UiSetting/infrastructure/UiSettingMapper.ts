@@ -1,6 +1,6 @@
-import type { EntityDBMapper, EntityHttpMapper } from '../../utils';
-import type { UiSettingDT } from './UiSettingDT.js';
-import { UiSetting } from './UiSetting.js';
+import type { EntityDBMapper, EntityHttpMapper } from '../../../utils';
+import type { UiSettingDT } from '@m-cafe-app/models';
+import { UiSetting } from '@m-cafe-app/models';
 import { UiSetting as UiSettingPG } from '@m-cafe-app/db';
 
 

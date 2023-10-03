@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@m-cafe-app/db": "workspace:^",
+    "@m-cafe-app/models": "workspace:^",
     "@m-cafe-app/shared-constants": "workspace:^",
     "@m-cafe-app/utils": "workspace:^"
   },

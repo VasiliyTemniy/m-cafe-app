@@ -1,5 +1,5 @@
+import type { UiSettingDT } from '@m-cafe-app/models';
 import type { ICRUDService } from '../../../utils';
-import type { UiSettingDT } from '../UiSettingDT.js';
 
 export interface IUiSettingService extends ICRUDService<UiSettingDT> {
   getByScope(scope: string): Promise<UiSettingDT[]>

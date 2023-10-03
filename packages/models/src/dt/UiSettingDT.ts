@@ -1,7 +1,12 @@
-import type { MapToDT, MapToDTNU } from '../../utils';
-import type { UiSetting } from './UiSetting.js';
-import { idOptional, idRequired } from '../../utils';
-import { isEntity, isManyEntity, isString } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTNU } from '@m-cafe-app/utils';
+import type { UiSetting } from '../domain';
+import {
+  idOptional,
+  idRequired,
+  isEntity,
+  isManyEntity,
+  isString
+} from '@m-cafe-app/utils';
 
 
 const uiSettingPropertiesGroup = {

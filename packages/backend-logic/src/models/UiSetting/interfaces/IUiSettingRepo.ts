@@ -1,4 +1,4 @@
-import type { UiSetting } from '../UiSetting.js';
+import type { UiSetting } from '@m-cafe-app/models';
 import type { ICRUDRepo } from '../../../utils';
 
 export interface IUiSettingRepo extends ICRUDRepo<UiSetting> {

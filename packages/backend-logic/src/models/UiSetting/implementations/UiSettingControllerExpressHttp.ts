@@ -1,7 +1,7 @@
 import type { IUiSettingController, IUiSettingService } from '../interfaces';
 import type { Request, Response } from 'express';
 import type { RequestWithUserRights } from '../../../utils';
-import { isUiSettingDTMany, isUiSettingDTNU } from '../UiSettingDT.js';
+import { isUiSettingDTMany, isUiSettingDTNU } from '@m-cafe-app/models';
 import { ApplicationError, RequestBodyError } from '@m-cafe-app/utils';
 
 

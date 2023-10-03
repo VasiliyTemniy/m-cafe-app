@@ -1,0 +1,18 @@
+{
+  "name": "@m-cafe-app/models",
+  "productName": "Modular cafe app",
+  "version": "1.0.0",
+  "description": "This package contains project domain models, data transit models and validators",
+  "main": "build/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "eslint": "eslint ./src/**/*.{ts,tsx}"
+  },
+  "devDependencies": {
+    "@m-cafe-app/shared-constants": "workspace:^",
+    "@m-cafe-app/utils": "workspace:^",
+    "typescript": "~5.1.6"
+  }
+}

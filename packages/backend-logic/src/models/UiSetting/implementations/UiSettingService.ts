@@ -1,7 +1,7 @@
-import type { UiSettingDT, UiSettingDTNU } from '../UiSettingDT.js';
+import type { UiSettingDT, UiSettingDTNU } from '@m-cafe-app/models';
 import type { IUiSettingService, IUiSettingRepo } from '../interfaces';
 import { ApplicationError } from '@m-cafe-app/utils';
-import { UiSettingMapper } from '../UiSettingMapper';
+import { UiSettingMapper } from '../infrastructure';
 import {
   allowedCSSPropertiesKeys,
   allowedClassNamesUiSettingsReadonly,

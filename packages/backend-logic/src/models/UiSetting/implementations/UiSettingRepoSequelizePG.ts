@@ -1,8 +1,7 @@
-import type { UiSetting } from '../UiSetting.js';
+import type { UiSetting, UiSettingDTNU } from '@m-cafe-app/models';
 import type { IUiSettingRepo } from '../interfaces';
-import type { UiSettingDTNU } from '../UiSettingDT.js';
 import { DatabaseError } from '@m-cafe-app/utils';
-import { UiSettingMapper } from '../UiSettingMapper';
+import { UiSettingMapper } from '../infrastructure';
 import { UiSetting as UiSettingPG } from '@m-cafe-app/db';
 
 export class UiSettingRepoSequelizePG implements IUiSettingRepo {
