@@ -1,1 +1,1 @@
-export * from './models/UiSetting/implementations';
+export * from './models/UiSetting';
