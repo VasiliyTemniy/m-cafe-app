@@ -1,7 +1,14 @@
 import type { RequestHandler } from 'express';
 import type { FixedLocDT } from '@m-cafe-app/utils';
 import { Router } from 'express';
-import { DatabaseError, hasOwnProperty, ProhibitedError, RequestBodyError, RequestQueryError, mapDataToTransit } from '@m-cafe-app/utils';
+import {
+  DatabaseError,
+  hasOwnProperty,
+  ProhibitedError,
+  RequestBodyError,
+  RequestQueryError,
+  mapDataToTransit
+} from '@m-cafe-app/utils';
 import { isAdministrateUserBody } from '@m-cafe-app/utils';
 import middleware from '../utils/middleware.js';
 import { FixedLoc, User } from '@m-cafe-app/db';
@@ -9,7 +16,8 @@ import { Session } from '../redis/Session.js';
 import config from '../utils/config.js';
 import { possibleUserRights } from '@m-cafe-app/shared-constants';
 import { initFixedLocs } from '../utils/initFixedLocs.js';
-import { includeLocStringNoTimestamps } from '../utils/sequelizeHelpers.js';
+import { uiSettingController } from '../controllers';
+
 
 const adminRouter = Router();
 
@@ -133,11 +141,7 @@ adminRouter.get(
     await FixedLoc.scope('admin').destroy({ where: {} });
     await initFixedLocs();
 
-    const fixedLocs = await FixedLoc.findAll({
-      include: [
-        includeLocStringNoTimestamps
-      ]
-    });
+    const fixedLocs = await FixedLoc.findAll();
 
     const resBody: FixedLocDT[] = fixedLocs.map(fixedLoc => {
       const resFixedLoc: FixedLocDT = {
@@ -148,6 +152,18 @@ adminRouter.get(
     });
     
     res.status(200).json(resBody);
+
+  }) as RequestHandler
+);
+
+adminRouter.get(
+  '/ui-setting/reset',
+  middleware.verifyToken,
+  middleware.superAdminCheck,
+  middleware.sessionCheck,
+  (async (req, res) => {
+
+    await uiSettingController.reset(req, res);
 
   }) as RequestHandler
 );
