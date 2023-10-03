@@ -1,4 +1,4 @@
-import type { UiSettingDT } from '@m-cafe-app/backend-logic';
+import type { UiSettingDT } from '@m-cafe-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
