@@ -126,3 +126,34 @@ export const checkProperties = ({
   }
   return true;
 };
+
+
+interface PropertyGroup {
+  properties: string[];
+  required: boolean;
+  validator: (value: unknown) => boolean;
+  isArray: boolean;
+}
+
+export const isEntity = <T>(obj: unknown, propertiesGroups: PropertyGroup[]): obj is T => {
+  if (!isUnknownObject(obj)) return false;
+  for (const propertyGroup of propertiesGroups) {
+    if (!checkProperties({
+      obj,
+      properties: propertyGroup.properties,
+      required: propertyGroup.required,
+      validator: propertyGroup.validator,
+      isArray: propertyGroup.isArray
+    })) return false;
+  }
+  return true;
+};
+
+export const isManyEntity = <T>(obj: unknown, validator: (value: unknown) => boolean): obj is T[] => {
+  if (!isUnknownObject(obj)) return false;
+  if (!Array.isArray(obj)) return false;
+  for (const item of obj) {
+    if (!validator(item)) return false;
+  }
+  return true;
+};
