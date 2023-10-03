@@ -1,3 +1,4 @@
+import type { UiSettingDT } from '@m-cafe-app/backend-logic';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -12,6 +13,7 @@ import config from '../utils/config';
 import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
 import { initFixedLocs } from '../utils/initFixedLocs';
+import { uiSettingController } from '../controllers';
 
 
 
@@ -405,6 +407,7 @@ describe('Superadmin routes tests', () => {
     const admin = await User.create(validAdminInDB.dbEntry);
 
     await FixedLoc.scope('admin').destroy({ force: true, where: {} });
+    await uiSettingController.service.removeAll();
 
     validAdminTokenCookie = await initLogin(admin, validAdminInDB.password, api, 201, userAgent) as string;
     mockSuperAdminTokenCookie = await initLogin(mockSuperadmin, validUserInDB.password, api, 201, userAgent, true) as string;
@@ -444,15 +447,15 @@ describe('Superadmin routes tests', () => {
 
     const fixedLocs = await FixedLoc.scope('admin').findAll({});
 
-    const randomFixedLocId = Math.floor(Math.random() * fixedLocs.length);
+    const randomFixedLoc = Math.floor(Math.random() * fixedLocs.length);
 
-    const fixedLocToEdit = await FixedLoc.scope('admin').findByPk(fixedLocs[randomFixedLocId].id);
+    const fixedLocToEdit = await FixedLoc.scope('admin').findByPk(fixedLocs[randomFixedLoc].id);
     if (!fixedLocToEdit) return expect(true).to.equal(false);
 
     fixedLocToEdit.name = 'newName';
     await fixedLocToEdit.save();
 
-    const locStringToEdit = await LocString.findByPk(fixedLocs[randomFixedLocId].locStringId);
+    const locStringToEdit = await LocString.findByPk(fixedLocs[randomFixedLoc].locStringId);
     if (!locStringToEdit) return expect(true).to.equal(false);
 
     locStringToEdit.mainStr = 'newMainStr';
@@ -467,10 +470,47 @@ describe('Superadmin routes tests', () => {
 
     const responseFixedLocs = response2.body as FixedLoc[];
 
-    const resettedFixedLoc = responseFixedLocs.find(fixedLoc => fixedLoc.id === fixedLocs[randomFixedLocId].id);
+    const resettedFixedLoc = responseFixedLocs.find(fixedLoc => fixedLoc.id === fixedLocs[randomFixedLoc].id);
 
     expect(resettedFixedLoc?.name).to.not.equal('newName');
     expect(resettedFixedLoc?.locString?.mainStr).to.not.equal('newMainStr');
+    
+  });
+
+  it('Admin /ui-setting/reset route works, can be used only by superadmin', async () => {
+    
+    const response1 = await api
+      .get(`${apiBaseUrl}/admin/ui-setting/reset`)
+      .set('Cookie', [validAdminTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(403);
+
+    expect(response1.body.error.name).to.equal('ProhibitedError');
+    expect(response1.body.error.message).to.equal(`Please, call superadmin to resolve this problem ${config.SUPERADMIN_PHONENUMBER}`);
+
+    await uiSettingController.service.initUiSettings();
+
+    const uiSettings = await uiSettingController.service.getByScope('all');
+
+    const randomUiSetting = Math.floor(Math.random() * uiSettings.length);
+
+    const uiSettingToEdit = uiSettings[randomUiSetting];
+
+    uiSettingToEdit.name = 'newName';
+
+    await uiSettingController.service.update(uiSettingToEdit);
+
+    const response2 = await api
+      .get(`${apiBaseUrl}/admin/ui-setting/reset`)
+      .set('Cookie', [mockSuperAdminTokenCookie])
+      .set('User-Agent', userAgent)
+      .expect(200);
+
+    const resettedUiSettings = response2.body as UiSettingDT[];
+
+    const resettedUiSetting = resettedUiSettings.find(uiSetting => uiSetting.id === uiSettings[randomUiSetting].id);
+
+    expect(resettedUiSetting?.name).to.not.equal('newName');
     
   });
 });
