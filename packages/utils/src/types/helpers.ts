@@ -7,13 +7,14 @@ export type MapToUnknown<T> = {
 };
 
 export type MapToDT<T> = {
-  [Property in keyof T]:
-  T[Property] extends Date | undefined ? string :
+  -readonly [Property in keyof T]:
   T[Property] extends Date ? string :
-  T[Property] extends number ? number :
-    // Maybe this will be useful later...
-  // T[Property] extends ForeignKey<infer V> ? MapToDT<V> :
+  T[Property] extends (Date | undefined) ? (string | undefined) :
   T[Property]
+};
+
+export type MapToDTNU<T> = Omit<MapToDT<T>, 'id'> & {
+  id?: number
 };
 
 export type MapToStrings<T> = {
