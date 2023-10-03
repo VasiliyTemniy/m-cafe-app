@@ -3,6 +3,7 @@
 ## modular cafe app
 
 Written in typescript almost without 'any', but with few type assertions
+'any' used only for some generics
 
 ### Stack
 | Field | Tools |
@@ -17,6 +18,7 @@ Written in typescript almost without 'any', but with few type assertions
 
 ### Goals
 - Make this app quickly deployable using docker;
+- Implement hexagonal\onion architecture for backend;
 - Make production, development, etc be accessible, usable, deployable, so on in two ways: through docker-compose or without docker at all;
 - Use as least as possible repeats of types, validators, etc for typescript: achieved by using monorepo with yarn workspaces;
 - Make all functional React components with Redux + toolkit in separate package common for web and mobile frontend;
@@ -26,6 +28,9 @@ Written in typescript almost without 'any', but with few type assertions
 - Test everything with something - backend api tests mocha + chai, frontend tests mostly e2e via cypress
 - ?...
 - Profit!
+
+### TODOS
+- Update dockerfiles after finishing refactoring backend to hexagonal architecture
 
 
 All dependencies licences will be included at last with first release of v 1.0.0, maybe earlier
