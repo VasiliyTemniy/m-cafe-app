@@ -12,7 +12,7 @@ export class UiSettingRepoSequelizePG implements IUiSettingRepo {
     return dbUiSettings.map(uiSetting => UiSettingMapper.dbToDomain(uiSetting));
   }
 
-  async getAllByScope(scope: string = 'defaultScope'): Promise<UiSetting[]> {
+  async getByScope(scope: string = 'defaultScope'): Promise<UiSetting[]> {
     const dbUiSettings = await UiSettingPG.scope(scope).findAll();
     return dbUiSettings.map(uiSetting => UiSettingMapper.dbToDomain(uiSetting));
   }
@@ -51,6 +51,10 @@ export class UiSettingRepoSequelizePG implements IUiSettingRepo {
     const dbUiSetting = await UiSettingPG.scope('all').findByPk(id);
     if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${id}`);
     await dbUiSetting.destroy();
+  }
+
+  async removeAll(): Promise<void> {
+    await UiSettingPG.scope('all').destroy({ force: true, where: {} });
   }
 
 }

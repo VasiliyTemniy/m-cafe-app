@@ -18,12 +18,12 @@ export class UiSettingControllerExpressHttp implements IUiSettingController {
     res.status(200).json(uiSetting);
   }
 
-  async getAllByScope(req: RequestWithUserRights, res: Response) {
+  async getByScope(req: RequestWithUserRights, res: Response) {
     const scope = req.rights === 'admin'
       ? 'all'
       : 'nonFalsy';
 
-    const uiSettings = await this.service.getAllByScope(scope);
+    const uiSettings = await this.service.getByScope(scope);
     res.status(200).json(uiSettings);
   }
 
@@ -52,9 +52,6 @@ export class UiSettingControllerExpressHttp implements IUiSettingController {
 
     const { name, value, theme, group } = req.body;
 
-    if (!this.service.update)
-      throw new ApplicationError(`Update method not implemented for service ${this.service.constructor.name}`);
-
     const updatedUiSetting = await this.service.update({
       id: Number(req.params.id),
       name,
@@ -81,11 +78,9 @@ export class UiSettingControllerExpressHttp implements IUiSettingController {
     res.status(200).json(updatedUiSettings);
   }
 
-  async remove(req: Request, res: Response) {
-    if (!this.service.remove)
-      throw new ApplicationError(`Remove method not implemented for service ${this.service.constructor.name}`);
-    await this.service.remove(Number(req.params.id));
-    
-    res.status(204).end();
+  async reset(req: Request, res: Response): Promise<void> {
+    const resettedUiSettings = await this.service.reset();
+
+    res.status(200).json(resettedUiSettings);
   }
 }
