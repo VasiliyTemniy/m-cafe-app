@@ -8,7 +8,7 @@ export interface EntityInmemMapper<DomainEntity, InmemEntity> {
   domainToInmem(instance: DomainEntity): InmemEntity;
 }
 
-export interface EntityHttpMapper<DomainEntity, HttpEntity> {
-  httpToDomain(instance: HttpEntity): DomainEntity;
-  domainToHttp(instance: DomainEntity): HttpEntity;
+export interface EntityDTMapper<DomainEntity, HttpEntity> {
+  dtToDomain(instance: HttpEntity): DomainEntity;
+  domainToDT(instance: DomainEntity): HttpEntity;
 }
