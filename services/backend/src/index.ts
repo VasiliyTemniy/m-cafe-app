@@ -3,14 +3,14 @@ import app from './app.js';
 import http from 'http';
 import logger from './utils/logger.js';
 import { connectToDatabase } from '@m-cafe-app/db';
-import { initSuperAdmin } from './utils/adminInit.js';
 import { connectToRedisSessionDB } from './redis/Session.js';
 import { initFixedLocs } from './utils/initFixedLocs.js';
 import { uiSettingController } from './controllers';
+import { userController } from './controllers';
 
 const start = async () => {
   await connectToDatabase();
-  await initSuperAdmin();
+  await userController.service.initSuperAdmin();
   await connectToRedisSessionDB();
   await uiSettingController.service.initUiSettings();
   await initFixedLocs();
