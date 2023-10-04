@@ -2,21 +2,12 @@ import type { RequestHandler } from 'express';
 import type { FixedLocDT } from '@m-cafe-app/utils';
 import { Router } from 'express';
 import {
-  DatabaseError,
-  hasOwnProperty,
-  ProhibitedError,
-  RequestBodyError,
-  RequestQueryError,
   mapDataToTransit
 } from '@m-cafe-app/utils';
-import { isAdministrateUserBody } from '@m-cafe-app/utils';
 import middleware from '../utils/middleware.js';
-import { FixedLoc, User } from '@m-cafe-app/db';
-import { Session } from '../redis/Session.js';
-import config from '../utils/config.js';
-import { possibleUserRights } from '@m-cafe-app/shared-constants';
+import { FixedLoc } from '@m-cafe-app/db';
 import { initFixedLocs } from '../utils/initFixedLocs.js';
-import { uiSettingController } from '../controllers';
+import { uiSettingController, userController } from '../controllers';
 
 
 const adminRouter = Router();
@@ -28,29 +19,42 @@ adminRouter.get(
   middleware.sessionCheck,
   (async (req, res) => {
 
-    let limit = 20;
-    let offset = 0;
-
-    if (req.query.limit) {
-      if (isNaN(Number(req.query.limit))) throw new RequestQueryError('Incorrect query string');
-      limit = Number(req.query.limit);
-    }
-
-    if (req.query.offset) {
-      if (isNaN(Number(req.query.offset))) throw new RequestQueryError('Incorrect query string');
-      offset = Number(req.query.offset);
-    }
-
-    const userSubjects = await User.scope('all').findAll({
-      attributes: { exclude: ['passwordHash'] },
-      limit,
-      offset
-    });
-
-    res.status(200).json(userSubjects);
+    await userController.getSome(req, res);
 
   }) as RequestHandler
 );
+
+
+// adminRouter.get(
+//   '/user/',
+//   middleware.verifyToken,
+//   middleware.adminCheck,
+//   middleware.sessionCheck,
+//   (async (req, res) => {
+
+//     let limit = 20;
+//     let offset = 0;
+
+//     if (req.query.limit) {
+//       if (isNaN(Number(req.query.limit))) throw new RequestQueryError('Incorrect query string');
+//       limit = Number(req.query.limit);
+//     }
+
+//     if (req.query.offset) {
+//       if (isNaN(Number(req.query.offset))) throw new RequestQueryError('Incorrect query string');
+//       offset = Number(req.query.offset);
+//     }
+
+//     const userSubjects = await User.scope('all').findAll({
+//       attributes: { exclude: ['passwordHash'] },
+//       limit,
+//       offset
+//     });
+
+//     res.status(200).json(userSubjects);
+
+//   }) as RequestHandler
+// );
 
 adminRouter.get(
   '/user/:id',
@@ -60,16 +64,29 @@ adminRouter.get(
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    const userSubject = await User.scope('all').findByPk(req.params.id, {
-      attributes: { exclude: ['passwordHash'] }
-    });
-
-    if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
-
-    res.status(200).json(userSubject);
+    await userController.getById(req, res);
 
   }) as RequestHandler
 );
+
+// adminRouter.get(
+//   '/user/:id',
+//   middleware.verifyToken,
+//   middleware.adminCheck,
+//   middleware.sessionCheck,
+//   middleware.requestParamsCheck,
+//   (async (req, res) => {
+
+//     const userSubject = await User.scope('all').findByPk(req.params.id, {
+//       attributes: { exclude: ['passwordHash'] }
+//     });
+
+//     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
+
+//     res.status(200).json(userSubject);
+
+//   }) as RequestHandler
+// );
 
 adminRouter.put(
   '/user/:id',
@@ -79,37 +96,50 @@ adminRouter.put(
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    if (!isAdministrateUserBody(req.body)) throw new RequestBodyError('Invalid administrate user request body');
-
-    const userSubject = await User.scope('all').findByPk(req.params.id, { paranoid: false });
-
-    if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
-    if (userSubject.phonenumber === config.SUPERADMIN_PHONENUMBER)
-      throw new ProhibitedError('Attempt to alter superadmin');
-
-    if (hasOwnProperty(req.body, 'rights')) {
-      if (possibleUserRights.includes(req.body.rights!))
-        userSubject.rights = req.body.rights!;
-
-      if (userSubject.rights === 'disabled') {
-        await Session.destroy({
-          where: {
-            userId: userSubject.id,
-          }
-        });
-      }
-    }
-
-    if (hasOwnProperty(req.body, 'restore') && req.body.restore) {
-      await userSubject.restore();
-    }
-
-    await userSubject.save();
-
-    res.status(200).json(userSubject);
+    await userController.administrate(req, res);
 
   }) as RequestHandler
 );
+
+// adminRouter.put(
+//   '/user/:id',
+//   middleware.verifyToken,
+//   middleware.adminCheck,
+//   middleware.sessionCheck,
+//   middleware.requestParamsCheck,
+//   (async (req, res) => {
+
+//     if (!isAdministrateUserBody(req.body)) throw new RequestBodyError('Invalid administrate user request body');
+
+//     const userSubject = await User.scope('all').findByPk(req.params.id, { paranoid: false });
+
+//     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
+//     if (userSubject.phonenumber === config.SUPERADMIN_PHONENUMBER)
+//       throw new ProhibitedError('Attempt to alter superadmin');
+
+//     if (hasOwnProperty(req.body, 'rights')) {
+//       if (possibleUserRights.includes(req.body.rights!))
+//         userSubject.rights = req.body.rights!;
+
+//       if (userSubject.rights === 'disabled') {
+//         await Session.destroy({
+//           where: {
+//             userId: userSubject.id,
+//           }
+//         });
+//       }
+//     }
+
+//     if (hasOwnProperty(req.body, 'restore') && req.body.restore) {
+//       await userSubject.restore();
+//     }
+
+//     await userSubject.save();
+
+//     res.status(200).json(userSubject);
+
+//   }) as RequestHandler
+// );
 
 adminRouter.delete(
   '/user/:id',
@@ -119,17 +149,30 @@ adminRouter.delete(
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    const userSubject = await User.scope('allWithTimestamps').findByPk(req.params.id);
-
-    if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
-    if (!userSubject.deletedAt) throw new ProhibitedError('Only voluntarily deleted users can be fully removed by admins');
-
-    await userSubject.destroy({ force: true });
-
-    res.status(204).end();
+    await userController.delete(req, res);
 
   }) as RequestHandler
 );
+
+// adminRouter.delete(
+//   '/user/:id',
+//   middleware.verifyToken,
+//   middleware.adminCheck,
+//   middleware.sessionCheck,
+//   middleware.requestParamsCheck,
+//   (async (req, res) => {
+
+//     const userSubject = await User.scope('allWithTimestamps').findByPk(req.params.id);
+
+//     if (!userSubject) throw new DatabaseError(`No user entry with this id ${req.params.id}`);
+//     if (!userSubject.deletedAt) throw new ProhibitedError('Only voluntarily deleted users can be fully removed by admins');
+
+//     await userSubject.destroy({ force: true });
+
+//     res.status(204).end();
+
+//   }) as RequestHandler
+// );
 
 adminRouter.get(
   '/fixed-loc/reset',

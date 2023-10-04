@@ -1,27 +1,19 @@
-import type { UserDT, AddressDT, NewAddressBody, EditAddressBody } from '@m-cafe-app/utils';
+import type { AddressDT, NewAddressBody, EditAddressBody } from '@m-cafe-app/utils';
 import type { RequestHandler } from 'express';
-import bcryptjs from 'bcryptjs';
 import { Router } from 'express';
 import {
-  CredentialsError,
-  HackError,
-  PasswordLengthError,
   RequestBodyError,
   UnknownError,
-  isEditUserBody,
-  isNewUserBody,
   isNewAddressBody,
   isEditAddressBody,
   DatabaseError,
   isNumber,
-  hasOwnProperty,
   mapDataToTransit
 } from '@m-cafe-app/utils';
 import { isRequestCustom, isRequestWithUser } from '../types/RequestCustom.js';
 import middleware from '../utils/middleware.js';
-import { User, Address, Facility, UserAddress } from '@m-cafe-app/db';
-import { maxPasswordLen, minPasswordLen } from '@m-cafe-app/shared-constants';
-import { Session } from '../redis/Session.js';
+import { Address, Facility, UserAddress } from '@m-cafe-app/db';
+import { userController } from '../controllers';
 
 const usersRouter = Router();
 
@@ -29,91 +21,134 @@ usersRouter.post(
   '/',
   (async (req, res) => {
 
-    if (!isNewUserBody(req.body)) throw new RequestBodyError('Invalid new user request body');
-    if (hasOwnProperty(req.body, 'rights')) throw new HackError('Please do not try this');
-
-    const { username, name, password, phonenumber, email, birthdate } = req.body;
-
-    if (password === undefined || !(minPasswordLen < password.length && password.length < maxPasswordLen))
-      throw new PasswordLengthError(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
-
-    const saltRounds = 10;
-    const passwordHash = await bcryptjs.hash(password, saltRounds);
-
-    const user = {
-      username,
-      name,
-      passwordHash,
-      phonenumber,
-      email,
-      birthdate: birthdate ? new Date(birthdate) : undefined
-    };
-
-    const savedUser = await User.create(user);
-
-    const resBody: UserDT = mapDataToTransit(savedUser.dataValues, { omit: ['passwordHash'] });
-
-    res.status(201).json(resBody);
+    await userController.create(req, res);
 
   }) as RequestHandler
 );
 
+// usersRouter.post(
+//   '/',
+//   (async (req, res) => {
+
+//     if (!isNewUserBody(req.body)) throw new RequestBodyError('Invalid new user request body');
+//     if (hasOwnProperty(req.body, 'rights')) throw new HackError('Please do not try this');
+
+//     const { username, name, password, phonenumber, email, birthdate } = req.body;
+
+//     if (password === undefined || !(minPasswordLen < password.length && password.length < maxPasswordLen))
+//       throw new PasswordLengthError(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
+
+//     const saltRounds = 10;
+//     const passwordHash = await bcryptjs.hash(password, saltRounds);
+
+//     const user = {
+//       username,
+//       name,
+//       passwordHash,
+//       phonenumber,
+//       email,
+//       birthdate: birthdate ? new Date(birthdate) : undefined
+//     };
+
+//     const savedUser = await User.create(user);
+
+//     const resBody: UserDT = mapDataToTransit(savedUser.dataValues, { omit: ['passwordHash'] });
+
+//     res.status(201).json(resBody);
+
+//   }) as RequestHandler
+// );
+
 usersRouter.put(
   '/:id',
   middleware.verifyToken,
+  // middleware.userCheck,
+  // SWAP THESE AFTER AUTH MODULE IS FINISHED
   middleware.userExtractor,
   middleware.sessionCheck,
   middleware.requestParamsCheck,
   (async (req, res) => {
 
-    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
-    if (!isEditUserBody(req.body)) throw new RequestBodyError('Invalid edit user request body');
-    if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
-
-    const { username, name, password, phonenumber, email, birthdate, newPassword } = req.body;
-
-    const passwordCorrect = await bcryptjs.compare(password, req.user.passwordHash);
-
-    if (!passwordCorrect) throw new CredentialsError('Password incorrect');
-
-    if (username) req.user.username = username;
-    if (name) req.user.name = name;
-    if (phonenumber) req.user.phonenumber = phonenumber;
-    if (email) req.user.email = email;
-    if (birthdate) req.user.birthdate = new Date(birthdate);
-    if (newPassword) {
-      if (!(minPasswordLen < newPassword.length && newPassword.length < maxPasswordLen))
-        throw new PasswordLengthError(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
-      const saltRounds = 10;
-      req.user.passwordHash = await bcryptjs.hash(newPassword, saltRounds);
-    }
-
-    await req.user.save();
-
-    const resBody: UserDT = mapDataToTransit(req.user.dataValues, { omit: ['passwordHash'] });
-
-    res.status(200).json(resBody);
+    await userController.update(req, res);
 
   }) as RequestHandler
 );
+
+// usersRouter.put(
+//   '/:id',
+//   middleware.verifyToken,
+//   middleware.userExtractor,
+//   middleware.sessionCheck,
+//   middleware.requestParamsCheck,
+//   (async (req, res) => {
+
+//     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+//     if (!isEditUserBody(req.body)) throw new RequestBodyError('Invalid edit user request body');
+//     if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
+
+//     const { username, name, password, phonenumber, email, birthdate, newPassword } = req.body;
+
+//     const passwordCorrect = await bcryptjs.compare(password, req.user.passwordHash);
+
+//     if (!passwordCorrect) throw new CredentialsError('Password incorrect');
+
+//     if (username) req.user.username = username;
+//     if (name) req.user.name = name;
+//     if (phonenumber) req.user.phonenumber = phonenumber;
+//     if (email) req.user.email = email;
+//     if (birthdate) req.user.birthdate = new Date(birthdate);
+//     if (newPassword) {
+//       if (!(minPasswordLen < newPassword.length && newPassword.length < maxPasswordLen))
+//         throw new PasswordLengthError(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
+//       const saltRounds = 10;
+//       req.user.passwordHash = await bcryptjs.hash(newPassword, saltRounds);
+//     }
+
+//     await req.user.save();
+
+//     const resBody: UserDT = mapDataToTransit(req.user.dataValues, { omit: ['passwordHash'] });
+
+//     res.status(200).json(resBody);
+
+//   }) as RequestHandler
+// );
 
 
 usersRouter.delete(
   '/',
   middleware.verifyToken,
+  // middleware.userCheck,
+  // SWAP THESE AFTER AUTH MODULE IS FInISHED
   middleware.userExtractor,
   middleware.sessionCheck,
   (async (req, res) => {
 
+    // REMOVE THIS DIRTY HACK AFTER AUTH MODULE IS FINISHED
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    req.params.id = String(req.user.id);
 
-    await Session.destroy({ where: { userId: req.user.id } });
-    const deletedUser = await req.user.destroy();
-
-    res.status(200).json(deletedUser);
+    await userController.remove(req, res);
 
   }) as RequestHandler
 );
+
+
+// usersRouter.delete(
+//   '/',
+//   middleware.verifyToken,
+//   middleware.userExtractor,
+//   middleware.sessionCheck,
+//   (async (req, res) => {
+
+//     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+
+//     await Session.destroy({ where: { userId: req.user.id } });
+//     const deletedUser = await req.user.destroy();
+
+//     res.status(200).json(deletedUser);
+
+//   }) as RequestHandler
+// );
 
 
 usersRouter.post(
@@ -289,17 +324,36 @@ usersRouter.delete(
 usersRouter.get(
   '/me',
   middleware.verifyToken,
+  // middleware.userCheck,
+  // SWAP THESE AFTER AUTH MODULE IS FInISHED
   middleware.userExtractor,
   middleware.sessionCheck,
-  ((req, res) => {
+  (async (req, res) => {
 
+    // REMOVE THIS DIRTY HACK AFTER AUTH MODULE IS FINISHED
     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    req.params.id = String(req.user.id);
 
-    const resBody: UserDT = mapDataToTransit(req.user.dataValues, { omit: ['passwordHash'] });
-
-    res.status(200).json(resBody);
+    await userController.getById(req, res);
 
   }) as RequestHandler
 );
+
+
+// usersRouter.get(
+//   '/me',
+//   middleware.verifyToken,
+//   middleware.userExtractor,
+//   middleware.sessionCheck,
+//   ((req, res) => {
+
+//     if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+
+//     const resBody: UserDT = mapDataToTransit(req.user.dataValues, { omit: ['passwordHash'] });
+
+//     res.status(200).json(resBody);
+
+//   }) as RequestHandler
+// );
 
 export default usersRouter;
