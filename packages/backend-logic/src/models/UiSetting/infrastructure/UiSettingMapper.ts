@@ -1,10 +1,10 @@
-import type { EntityDBMapper, EntityHttpMapper } from '../../../utils';
+import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
 import type { UiSettingDT } from '@m-cafe-app/models';
 import { UiSetting } from '@m-cafe-app/models';
 import { UiSetting as UiSettingPG } from '@m-cafe-app/db';
 
 
-export class UiSettingMapper implements EntityDBMapper<UiSetting, UiSettingPG>, EntityHttpMapper<UiSetting, UiSettingDT> {
+export class UiSettingMapper implements EntityDBMapper<UiSetting, UiSettingPG>, EntityDTMapper<UiSetting, UiSettingDT> {
 
   public static domainToDb(domainUiSetting: UiSetting): UiSettingPG {
     const dbUiSetting = new UiSettingPG(domainUiSetting);
@@ -30,27 +30,27 @@ export class UiSettingMapper implements EntityDBMapper<UiSetting, UiSettingPG>, 
     return UiSettingMapper.dbToDomain(dbUiSetting);
   }
 
-  public static httpToDomain(httpUiSetting: UiSettingDT): UiSetting {
-    return httpUiSetting;
+  public static dtToDomain(uiSettingDT: UiSettingDT): UiSetting {
+    return uiSettingDT;
   }
   
-  httpToDomain(httpUiSetting: UiSettingDT): UiSetting {
-    return UiSettingMapper.httpToDomain(httpUiSetting);
+  dtToDomain(uiSettingDT: UiSettingDT): UiSetting {
+    return UiSettingMapper.dtToDomain(uiSettingDT);
   }
 
-  public static domainToHttp(domainUiSetting: UiSetting): UiSettingDT {
-    const httpUiSetting: UiSettingDT = {
+  public static domainToDT(domainUiSetting: UiSetting): UiSettingDT {
+    const uiSettingDT: UiSettingDT = {
       id: domainUiSetting.id,
       name: domainUiSetting.name,
       value: domainUiSetting.value,
       theme: domainUiSetting.theme,
       group: domainUiSetting.group
     };
-    return httpUiSetting;
+    return uiSettingDT;
   }
 
-  domainToHttp(domainUiSetting: UiSetting): UiSetting {
-    return UiSettingMapper.domainToHttp(domainUiSetting);
+  domainToDT(domainUiSetting: UiSetting): UiSettingDT {
+    return UiSettingMapper.domainToDT(domainUiSetting);
   }
 
 }

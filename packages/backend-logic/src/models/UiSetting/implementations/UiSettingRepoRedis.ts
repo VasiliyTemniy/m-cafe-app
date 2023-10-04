@@ -1,6 +1,6 @@
 // import type { UiSetting } from './UiSetting';
 // import type { UiSettingRepo } from './UiSettingRepo';
-// import type { UiSettingDTNU } from './UiSettingDT';
+// import type { UiSettingDTN } from './UiSettingDT';
 // import { DatabaseError } from '@m-cafe-app/utils';
 // import { UiSettingMapper } from './UiSettingMapper';
 // // Change import path to Redis imitator!
@@ -24,7 +24,7 @@
 //     return UiSettingMapper.dbToDomain(dbUiSetting);
 //   }
 
-//   async create(uiSettingDT: UiSettingDTNU): Promise<UiSetting> {
+//   async create(uiSettingDT: UiSettingDTN): Promise<UiSetting> {
 //     const dbUiSetting = await UiSettingRedis.create({
 //       name: uiSettingDT.name,
 //       value: uiSettingDT.value,
@@ -34,7 +34,7 @@
 //     return UiSettingMapper.dbToDomain(dbUiSetting);
 //   }
 
-//   async update(uiSettingDT: UiSettingDTNU): Promise<UiSetting> {
+//   async update(uiSettingDT: UiSettingDTN): Promise<UiSetting> {
 //     const dbUiSetting = uiSettingDT.id
 //       ? await UiSettingRedis.findByPk(uiSettingDT.id)
 //       : await UiSettingRedis.findOne({ where: { name: uiSettingDT.name, theme: uiSettingDT.theme, group: uiSettingDT.group } });
@@ -44,7 +44,7 @@
 //     return UiSettingMapper.dbToDomain(dbUiSetting);
 //   }
 
-//   async updateMany(uiSettingDTs: UiSettingDTNU[]): Promise<UiSetting[]> {
+//   async updateMany(uiSettingDTs: UiSettingDTN[]): Promise<UiSetting[]> {
 //     return await Promise.all(uiSettingDTs.map(uiSettingDT => this.update(uiSettingDT)));
 //   }
 

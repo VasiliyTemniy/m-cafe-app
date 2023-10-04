@@ -1,4 +1,4 @@
-import type { UiSettingDT, UiSettingDTNU } from '@m-cafe-app/models';
+import type { UiSettingDT, UiSettingDTN } from '@m-cafe-app/models';
 import type { IUiSettingService, IUiSettingRepo } from '../interfaces';
 import { ApplicationError } from '@m-cafe-app/utils';
 import { UiSettingMapper } from '../infrastructure';
@@ -19,7 +19,7 @@ export class UiSettingService implements IUiSettingService {
     const uiSettings = await this.dbRepo.getAll();
 
     const res: UiSettingDT[] =
-      uiSettings.map(uiSetting => UiSettingMapper.domainToHttp(uiSetting));
+      uiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
 
     return res;
   }
@@ -27,7 +27,7 @@ export class UiSettingService implements IUiSettingService {
   async getById(id: number) {
     const uiSetting = await this.dbRepo.getById(id);
 
-    const res: UiSettingDT = UiSettingMapper.domainToHttp(uiSetting);
+    const res: UiSettingDT = UiSettingMapper.domainToDT(uiSetting);
 
     return res;
   }
@@ -35,32 +35,32 @@ export class UiSettingService implements IUiSettingService {
   async getByScope(scope: string = 'defaultScope') {
     const uiSettings = await this.dbRepo.getByScope(scope);
 
-    const res: UiSettingDT[] = uiSettings.map(uiSetting => UiSettingMapper.domainToHttp(uiSetting));
+    const res: UiSettingDT[] = uiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
 
     return res;
   }
 
-  async create(uiSettingDTNU: UiSettingDTNU) {
-    const savedUiSetting = await this.dbRepo.create(uiSettingDTNU);
+  async create(uiSettingDTN: UiSettingDTN) {
+    const savedUiSetting = await this.dbRepo.create(uiSettingDTN);
 
-    const res: UiSettingDT = UiSettingMapper.domainToHttp(savedUiSetting);
+    const res: UiSettingDT = UiSettingMapper.domainToDT(savedUiSetting);
     
     return res;
   }
 
-  async update(uiSettingDTNU: UiSettingDTNU) {
-    const updatedUiSetting = await this.dbRepo.update(uiSettingDTNU);
+  async update(uiSettingDT: UiSettingDT) {
+    const updatedUiSetting = await this.dbRepo.update(UiSettingMapper.dtToDomain(uiSettingDT));
 
-    const res: UiSettingDT = UiSettingMapper.domainToHttp(updatedUiSetting);
+    const res: UiSettingDT = UiSettingMapper.domainToDT(updatedUiSetting);
     
     return res;
   }
 
-  async updateMany(uiSettingsDTNU: UiSettingDTNU[]) {
+  async updateMany(uiSettingsDT: UiSettingDT[]) {
     if (!this.dbRepo.updateMany) throw new ApplicationError(`Update many method not implemented for repository ${this.dbRepo.constructor.name}`);
-    const updatedUiSettings = await this.dbRepo.updateMany(uiSettingsDTNU);
+    const updatedUiSettings = await this.dbRepo.updateMany(uiSettingsDT);
 
-    const res: UiSettingDT[] = updatedUiSettings.map(uiSetting => UiSettingMapper.domainToHttp(uiSetting));
+    const res: UiSettingDT[] = updatedUiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
 
     return res;
   }

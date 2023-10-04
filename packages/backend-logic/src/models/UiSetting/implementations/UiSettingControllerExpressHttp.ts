@@ -1,7 +1,7 @@
 import type { IUiSettingController, IUiSettingService } from '../interfaces';
 import type { Request, Response } from 'express';
 import type { RequestWithUserRights } from '../../../utils';
-import { isUiSettingDTMany, isUiSettingDTNU } from '@m-cafe-app/models';
+import { isUiSettingDTMany, isUiSettingDTN } from '@m-cafe-app/models';
 import { ApplicationError, RequestBodyError } from '@m-cafe-app/utils';
 
 
@@ -28,13 +28,10 @@ export class UiSettingControllerExpressHttp implements IUiSettingController {
   }
 
   async create(req: Request, res: Response) {
-    if (!isUiSettingDTNU(req.body))
+    if (!isUiSettingDTN(req.body))
       throw new RequestBodyError('Invalid new ui setting request body');
 
     const { name, value, theme, group } = req.body;
-
-    if (!this.service.create)
-      throw new ApplicationError(`Create method not implemented for service ${this.service.constructor.name}`);
 
     const savedUiSetting = await this.service.create({
       name,
@@ -47,7 +44,7 @@ export class UiSettingControllerExpressHttp implements IUiSettingController {
   }
 
   async update(req: Request, res: Response) {
-    if (!isUiSettingDTNU(req.body))
+    if (!isUiSettingDTN(req.body))
       throw new RequestBodyError('Invalid edit ui setting request body');
 
     const { name, value, theme, group } = req.body;

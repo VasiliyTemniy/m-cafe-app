@@ -1,4 +1,4 @@
-import type { UiSetting, UiSettingDTNU } from '@m-cafe-app/models';
+import type { UiSetting, UiSettingDTN } from '@m-cafe-app/models';
 import type { IUiSettingRepo } from '../interfaces';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { UiSettingMapper } from '../infrastructure';
@@ -22,28 +22,28 @@ export class UiSettingRepoSequelizePG implements IUiSettingRepo {
     return UiSettingMapper.dbToDomain(dbUiSetting);
   }
 
-  async create(uiSettingDT: UiSettingDTNU): Promise<UiSetting> {
+  async create(uiSettingDTN: UiSettingDTN): Promise<UiSetting> {
     const dbUiSetting = await UiSettingPG.create({
-      name: uiSettingDT.name,
-      value: uiSettingDT.value,
-      theme: uiSettingDT.theme,
-      group: uiSettingDT.group
+      name: uiSettingDTN.name,
+      value: uiSettingDTN.value,
+      theme: uiSettingDTN.theme,
+      group: uiSettingDTN.group
     });
     return UiSettingMapper.dbToDomain(dbUiSetting);
   }
 
-  async update(uiSettingDT: UiSettingDTNU): Promise<UiSetting> {
-    const dbUiSetting = uiSettingDT.id
-      ? await UiSettingPG.scope('all').findByPk(uiSettingDT.id)
-      : await UiSettingPG.scope('all').findOne({ where: { name: uiSettingDT.name, theme: uiSettingDT.theme, group: uiSettingDT.group } });
-    if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${uiSettingDT.id}`);
-    dbUiSetting.value = uiSettingDT.value;
+  async update(uiSetting: UiSetting): Promise<UiSetting> {
+    const dbUiSetting = uiSetting.id
+      ? await UiSettingPG.scope('all').findByPk(uiSetting.id)
+      : await UiSettingPG.scope('all').findOne({ where: { name: uiSetting.name, theme: uiSetting.theme, group: uiSetting.group } });
+    if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${uiSetting.id}`);
+    dbUiSetting.value = uiSetting.value;
     await dbUiSetting.save();
     return UiSettingMapper.dbToDomain(dbUiSetting);
   }
 
-  async updateMany(uiSettingDTs: UiSettingDTNU[]): Promise<UiSetting[]> {
-    return await Promise.all(uiSettingDTs.map(uiSettingDT => this.update(uiSettingDT)));
+  async updateMany(uiSettings: UiSetting[]): Promise<UiSetting[]> {
+    return await Promise.all(uiSettings.map(uiSetting => this.update(uiSetting)));
   }
 
   async remove(id: number): Promise<void> {
