@@ -1,4 +1,4 @@
-import type { MapToDT, MapToDTNU } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN } from '@m-cafe-app/utils';
 import type { UiSetting } from '../domain';
 import {
   idOptional,
@@ -9,7 +9,7 @@ import {
 } from '@m-cafe-app/utils';
 
 
-const uiSettingPropertiesGroup = {
+const uiSettingDTPropertiesGroup = {
   properties: ['name', 'group', 'theme', 'value'],
   required: true,
   validator: isString,
@@ -20,7 +20,7 @@ const uiSettingPropertiesGroup = {
 export type UiSettingDT = MapToDT<UiSetting>;
 
 export const isUiSettingDT = (obj: unknown): obj is UiSettingDT =>
-  isEntity(obj, [idRequired, uiSettingPropertiesGroup]);
+  isEntity(obj, [idRequired, uiSettingDTPropertiesGroup]);
 
 
 export const isUiSettingDTMany = (obj: unknown): obj is UiSettingDT[] =>
@@ -28,10 +28,10 @@ export const isUiSettingDTMany = (obj: unknown): obj is UiSettingDT[] =>
 
 
 
-export type UiSettingDTNU = MapToDTNU<UiSetting>;
+export type UiSettingDTN = MapToDTN<UiSetting>;
 
-export const isUiSettingDTNU = (obj: unknown): obj is UiSettingDTNU =>
-  isEntity(obj, [idOptional, uiSettingPropertiesGroup]);
+export const isUiSettingDTN = (obj: unknown): obj is UiSettingDTN =>
+  isEntity(obj, [idOptional, uiSettingDTPropertiesGroup]);
 
-export const isUiSettingDTNUMany = (obj: unknown): obj is UiSettingDTNU[] =>
-  isManyEntity(obj, isUiSettingDTNU);
+export const isUiSettingDTNMany = (obj: unknown): obj is UiSettingDTN[] =>
+  isManyEntity(obj, isUiSettingDTN);
