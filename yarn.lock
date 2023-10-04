@@ -2984,6 +2984,7 @@ __metadata:
     "@m-cafe-app/models": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"
     "@m-cafe-app/utils": "workspace:^"
+    bcryptjs: ^2.4.3
     chai: ^4.3.7
     cross-env: ^7.0.3
     mocha: ^10.2.0
