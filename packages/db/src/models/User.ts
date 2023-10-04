@@ -199,11 +199,20 @@ User.init({
       paranoid: false
     },
     allWithTimestamps: {
+      attributes: {
+        exclude: ['passwordHash']
+      },
       paranoid: false
     },
+    // REMOVE THIS AFTER AUTH MODULE IS READY
     allWithPasswordHash: {
+      // REMOVE THIS AFTER AUTH MODULE IS READY
+      paranoid: false
+      // REMOVE THIS AFTER AUTH MODULE IS READY
+    },
+    passwordHashRights: {
       attributes: {
-        exclude: ['createdAt', 'updatedAt', 'deletedAt']
+        exclude: ['name', 'username', 'phonenumber', 'email', 'birthdate', 'createdAt', 'updatedAt', 'deletedAt']
       },
       paranoid: false
     }
