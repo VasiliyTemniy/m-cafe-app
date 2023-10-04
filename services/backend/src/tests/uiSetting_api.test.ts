@@ -1,4 +1,4 @@
-import type { UiSettingDT, UiSettingDTNU } from '@m-cafe-app/models';
+import type { UiSettingDT, UiSettingDTN } from '@m-cafe-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -115,7 +115,7 @@ describe('UiSetting requests tests', () => {
 
   it('UiSetting PUT /:id updates uiSetting data, can be used by admin', async () => {
 
-    const updUiSetting: UiSettingDTNU = {
+    const updUiSetting: UiSettingDTN = {
       name: 'editTest', // ui settings names must be unmutable, so the name does not get changed even if put for correct ui setting id
       value: 'editTestValue',
       theme: 'light',
