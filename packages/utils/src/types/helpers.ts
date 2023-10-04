@@ -1,3 +1,4 @@
+import type { PropertiesTimestamps } from '@m-cafe-app/shared-constants';
 import { ApplicationError, RedisError } from './Errors.js';
 import { isBoolean, isDate, isNumber, isString } from './typeValidators.js';
 import { timestampsKeys } from '@m-cafe-app/shared-constants';
@@ -13,9 +14,7 @@ export type MapToDT<T> = {
   T[Property]
 };
 
-export type MapToDTNU<T> = Omit<MapToDT<T>, 'id'> & {
-  id?: number
-};
+export type MapToDTN<T> = Omit<MapToDT<T>, 'id' | PropertiesTimestamps>;
 
 export type MapToStrings<T> = {
   [Property in keyof T]: string
@@ -213,3 +212,10 @@ export const mapEmptyStringsToUndefined = <T>(data: T): T => {
 
   return mappedData;
 };
+
+
+export const toOptionalDate = (str: string | undefined): Date | undefined => 
+  str ? new Date(str) : undefined;
+
+export const toOptionalISOString = (date: Date | undefined): string | undefined => 
+  date ? date.toISOString() : undefined;
