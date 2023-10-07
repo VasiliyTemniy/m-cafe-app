@@ -1,5 +1,6 @@
 import type { UserDT, UserDTN } from '@m-cafe-app/models';
 import type { IUserService, IUserRepo } from '../interfaces';
+import type { ISessionService } from '../../Session/interfaces';
 import type { AdministrateUserBody } from '@m-cafe-app/utils';
 import { User } from '@m-cafe-app/models';
 import { CredentialsError, PasswordLengthError, ProhibitedError, hasOwnProperty } from '@m-cafe-app/utils';
@@ -11,10 +12,13 @@ import logger from '../../../utils/logger';
 
 
 export class UserService implements IUserService {
-  constructor( readonly dbRepo: IUserRepo ) {}
+  constructor(
+    readonly repo: IUserRepo,
+    readonly sessionService: ISessionService
+  ) {}
 
   async getAll(): Promise<UserDT[]> {
-    const users = await this.dbRepo.getAll();
+    const users = await this.repo.getAll();
 
     const res: UserDT[] =
       users.map(user => UserMapper.domainToDT(user));
@@ -23,7 +27,7 @@ export class UserService implements IUserService {
   }
 
   async getSome(limit: number, offset: number): Promise<UserDT[]> {
-    const users = await this.dbRepo.getSome(limit, offset);
+    const users = await this.repo.getSome(limit, offset);
 
     const res: UserDT[] =
       users.map(user => UserMapper.domainToDT(user));
@@ -34,7 +38,7 @@ export class UserService implements IUserService {
   async getById(id: number): Promise<UserDT> {
     // Apply Auth check!
 
-    const user = await this.dbRepo.getById(id);
+    const user = await this.repo.getById(id);
 
     const res: UserDT = UserMapper.domainToDT(user);
 
@@ -42,7 +46,7 @@ export class UserService implements IUserService {
   }
 
   async getByScope(scope: string = 'defaultScope'): Promise<UserDT[]> {
-    const users = await this.dbRepo.getByScope(scope);
+    const users = await this.repo.getByScope(scope);
 
     const res: UserDT[] = users.map(user => UserMapper.domainToDT(user));
 
@@ -61,7 +65,7 @@ export class UserService implements IUserService {
     const saltRounds = 10;
     const passwordHash = await bcryptjs.hash(userDTN.password, saltRounds);
 
-    const savedUser = await this.dbRepo.create(userDTN, passwordHash);
+    const savedUser = await this.repo.create(userDTN, passwordHash);
 
     const res: UserDT = UserMapper.domainToDT(savedUser);
     
@@ -70,7 +74,7 @@ export class UserService implements IUserService {
 
   async update(userDT: UserDT, password: string, newPassword?: string): Promise<UserDT> {
 
-    const { passwordHash } = await this.dbRepo.getPasswordHashRights(userDT.id);
+    const { passwordHash } = await this.repo.getPasswordHashRights(userDT.id);
 
     const passwordCorrect = await bcryptjs.compare(password, passwordHash);
 
@@ -86,7 +90,7 @@ export class UserService implements IUserService {
       newPasswordHash = await bcryptjs.hash(newPassword, saltRounds);
     }
 
-    const updatedUser = await this.dbRepo.update(UserMapper.dtToDomain(userDT), newPasswordHash);
+    const updatedUser = await this.repo.update(UserMapper.dtToDomain(userDT), newPasswordHash);
 
     const res: UserDT = UserMapper.domainToDT(updatedUser);
     
@@ -95,7 +99,7 @@ export class UserService implements IUserService {
 
   async administrate(id: number, body: AdministrateUserBody): Promise<UserDT> {
 
-    let userSubject = await this.dbRepo.getById(id);
+    let userSubject = await this.repo.getById(id);
 
     if (userSubject.phonenumber === config.SUPERADMIN_PHONENUMBER)
       throw new ProhibitedError('Attempt to alter superadmin');
@@ -116,7 +120,7 @@ export class UserService implements IUserService {
           body.rights
         );
 
-        userSubject = await this.dbRepo.update(updUserRights);
+        userSubject = await this.repo.update(updUserRights);
       }
 
       if (userSubject.rights === 'disabled') {
@@ -141,13 +145,13 @@ export class UserService implements IUserService {
     // Auth module implement!
     // await Session.destroy({ where: { userId: req.user.id } });
 
-    const res: UserDT = UserMapper.domainToDT(await this.dbRepo.remove(id));
+    const res: UserDT = UserMapper.domainToDT(await this.repo.remove(id));
 
     return res;
   }
 
   private async restore(id: number): Promise<User> {
-    const user = await this.dbRepo.restore(id);
+    const user = await this.repo.restore(id);
 
     const res: User = user;
 
@@ -158,19 +162,19 @@ export class UserService implements IUserService {
    * Remove a user entry from the database entirely.
    */
   async delete(id: number): Promise<void> {
-    await this.dbRepo.delete(id);
+    await this.repo.delete(id);
   }
 
   async removeAll(): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
-    await this.dbRepo.removeAll();
+    await this.repo.removeAll();
   }
 
   async initSuperAdmin() {
 
     // Check for existing superadmin
     try {
-      const existingUser = await this.dbRepo.getByUniqueProperties({
+      const existingUser = await this.repo.getByUniqueProperties({
         phonenumber: config.SUPERADMIN_PHONENUMBER
       });
       if (existingUser) {
@@ -181,7 +185,7 @@ export class UserService implements IUserService {
         ||
         existingUser.phonenumber !== config.SUPERADMIN_PHONENUMBER
         ) {
-          await this.dbRepo.delete(existingUser.id);
+          await this.repo.delete(existingUser.id);
           await this.initSuperAdmin();
         }
       }
@@ -201,7 +205,7 @@ export class UserService implements IUserService {
       rights: 'admin'
     };
   
-    await this.dbRepo.create(user, passwordHash, true, 'admin');
+    await this.repo.create(user, passwordHash, true, 'admin');
   
     process.env.SUPERADMIN_USERNAME = '';
     process.env.SUPERADMIN_PASSWORD = '';

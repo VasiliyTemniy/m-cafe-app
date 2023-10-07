@@ -13,7 +13,10 @@ import {
 import logger from '../../../utils/logger.js';
 
 export class UiSettingService implements IUiSettingService {
-  constructor( readonly dbRepo: IUiSettingRepo ) {}
+  constructor(
+    readonly dbRepo: IUiSettingRepo,
+    // readonly redisRepo: IUiSettingRepo
+  ) {}
 
   async getAll() {
     const uiSettings = await this.dbRepo.getAll();
