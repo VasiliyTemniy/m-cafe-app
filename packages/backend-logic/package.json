@@ -16,7 +16,8 @@
     "@m-cafe-app/models": "workspace:^",
     "@m-cafe-app/shared-constants": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "redis": "^4.6.7"
   },
   "devDependencies": {
     "chai": "^4.3.7",
