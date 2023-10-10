@@ -7,6 +7,8 @@ export class User {
     readonly email?: string,
     readonly rights?: string,
     readonly birthdate?: Date,
+    readonly lookupHash?: string,
+    readonly lookupNoise?: number,
     readonly createdAt?: Date,
     readonly updatedAt?: Date,
     readonly deletedAt?: Date,
@@ -17,4 +19,5 @@ export type UserUniqueProperties = {
   phonenumber?: string,
   username?: string,
   email?: string,
+  lookupHash?: string
 };
