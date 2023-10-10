@@ -1,11 +1,11 @@
-import type { IUiSettingController, IUiSettingService } from '../interfaces';
+import type { IUiSettingControllerHttp, IUiSettingService } from '../interfaces';
 import type { Request, Response } from 'express';
 import type { RequestWithUserRights } from '../../../utils';
 import { isUiSettingDTMany, isUiSettingDTN } from '@m-cafe-app/models';
 import { ApplicationError, RequestBodyError } from '@m-cafe-app/utils';
 
 
-export class UiSettingControllerExpressHttp implements IUiSettingController {
+export class UiSettingControllerExpressHttp implements IUiSettingControllerHttp {
   constructor( readonly service: IUiSettingService ) {}
 
   async getAll(req: Request, res: Response) {
