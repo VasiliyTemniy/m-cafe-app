@@ -1,0 +1,78 @@
+syntax = "proto3";
+package auth;
+option go_package = "simple-micro-auth/proto";
+
+service AuthService {
+  rpc CreateAuth (AuthRequest) returns (AuthResponse);
+  rpc UpdateAuth (UpdateAuthRequest) returns (AuthResponse);
+  rpc DeleteAuth (DeleteAuthRequest) returns (DeleteAuthResponse);
+  rpc GrantAuth (AuthRequest) returns (AuthResponse);
+  rpc VerifyCredentials (CredentialsRequest) returns (VerifyResponse);
+  rpc VerifyToken (TokenRequest) returns (AuthResponse);
+  rpc RefreshToken (TokenRequest) returns (AuthResponse);
+  rpc GetPublicKey (PublicKeyRequest) returns (PublicKeyResponse);
+  rpc FlushDB (FlushDBRequest) returns (FlushDBResponse);
+}
+
+
+// Requests
+
+message AuthRequest {
+  int64 id = 1;
+  string lookupHash = 2;
+  string password = 3;
+}
+
+message UpdateAuthRequest {
+  int64 id = 1;
+  string lookupHash = 2;
+  string oldPassword = 3;
+  string newPassword = 4;
+}
+
+message CredentialsRequest {
+  string lookupHash = 1;
+  string password = 2;
+}
+
+message DeleteAuthRequest {
+  string lookupHash = 1;
+}
+
+message TokenRequest {
+  string token = 1;
+}
+
+message PublicKeyRequest {
+  string target = 1;
+}
+
+message FlushDBRequest {
+  string reason = 1;
+}
+
+
+// Responses
+
+message AuthResponse {
+  int64 id = 1;
+  string token = 2;
+  string error = 3;
+}
+
+message VerifyResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+message DeleteAuthResponse {
+  string error = 1;
+}
+
+message PublicKeyResponse {
+  bytes publicKey = 1;
+}
+
+message FlushDBResponse {
+  string error = 1;
+}
