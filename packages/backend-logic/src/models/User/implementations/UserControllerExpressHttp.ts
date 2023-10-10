@@ -1,8 +1,9 @@
 import type { IUserControllerHttp, IUserService } from '../interfaces';
 import type { Request, Response } from 'express';
 import { isRequestWithUser, type RequestWithUserRights } from '../../../utils';
-import { isUserDTN } from '@m-cafe-app/models';
+import { isUserDTN, isUserDTU, isUserLoginDT, type UserDT } from '@m-cafe-app/models';
 import { HackError, RequestBodyError, RequestQueryError, UnknownError, hasOwnProperty, isAdministrateUserBody } from '@m-cafe-app/utils';
+import config from '../../../config';
 
 
 export class UserControllerExpressHttp implements IUserControllerHttp {
@@ -54,20 +55,29 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
 
     const { username, name, password, phonenumber, email, birthdate } = req.body;
 
-    const savedUser = await this.service.create({
+    const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
+
+    const { user: savedUser, auth } = await this.service.create({
       username,
       name,
       password,
       phonenumber,
       email,
       birthdate
-    });
+    }, userAgent);
+
+    const resBody: UserDT = savedUser;
     
-    res.status(201).json(savedUser);
+    res      
+      .cookie('token', auth.token, {
+        ...config.sessionCookieOptions,
+        expires: new Date(Date.now() + config.cookieExpiracyMS)
+      })
+      .status(201).json(resBody);
   }
 
   async update(req: Request, res: Response) {
-    if (!isUserDTN(req.body))
+    if (!isUserDTU(req.body))
       throw new RequestBodyError('Invalid edit user request body');
 
     // CHANGE THIS TO AUTH CHECK AFTER AUTH MODULE IS FINISHED
@@ -76,16 +86,25 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
 
     const { username, name, password, phonenumber, email, birthdate, newPassword } = req.body;
 
-    const updatedUser = await this.service.update({
+    const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
+
+    const { user: updatedUser, auth } = await this.service.update({
       id: Number(req.params.id),
       username,
       name,
       phonenumber,
       email,
-      birthdate
-    }, password, newPassword);
+      birthdate,
+      password,
+      newPassword
+    }, userAgent);
     
-    res.status(200).json(updatedUser);
+    res
+      .cookie('token', auth.token, {
+        ...config.sessionCookieOptions,
+        expires: new Date(Date.now() + config.cookieExpiracyMS)
+      })
+      .status(200).json(updatedUser);
   }
 
   async administrate(req: Request, res: Response): Promise<void> {
@@ -94,6 +113,30 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
     const userSubject = await this.service.administrate(Number(req.params.id), req.body);
 
     res.status(200).json(userSubject);
+  }
+
+  async login(req: Request, res: Response): Promise<void> {
+    if (!isUserLoginDT(req.body))
+      throw new RequestBodyError('Invalid login request body');
+
+    const { password, phonenumber, username, email } = req.body;
+
+    const { user, auth } = await this.service.authenticate(password, { phonenumber, username, email });
+
+    res
+      .cookie('token', auth.token, {
+        ...config.sessionCookieOptions,
+        expires: new Date(Date.now() + config.cookieExpiracyMS)
+      })
+      .status(200).json(user);
+  }
+
+  async logout(req: Request, res: Response): Promise<void> {
+
+    const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
+
+    await this.service.logout(Number(req.params.id), userAgent);
+    res.clearCookie('token', config.sessionCookieOptions).status(204).end();
   }
 
   async remove(req: Request, res: Response): Promise<void> {
