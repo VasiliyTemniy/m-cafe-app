@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import type { MapToDTN, MapToDT } from './typeMappers.js';
 import type { Request, Response } from 'express';
 
 export interface ICRUDRepo<T, DTN> {
@@ -27,14 +26,14 @@ export interface ICRUDService<DT, DTN> {
 }
 
 export interface ICRUDController {
-  getAll(...args: any): Promise<void>;
-  getById(...args: any): Promise<void>;
-  create?(...args: any): Promise<void>;
-  update?(...args: any): Promise<void>;
-  remove?(...args: any): Promise<void>;
-  createMany?(...args: any): Promise<void>;
-  updateMany?(...args: any): Promise<void>;
-  removeMany?(...args: any): Promise<void>;
+  getAll(...args: any): Promise<any>;
+  getById(...args: any): Promise<any>;
+  create?(...args: any): Promise<any>;
+  update?(...args: any): Promise<any>;
+  remove?(...args: any): Promise<any>;
+  createMany?(...args: any): Promise<any>;
+  updateMany?(...args: any): Promise<any>;
+  removeMany?(...args: any): Promise<any>;
 }
 
 export interface ICRUDControllerHttp extends ICRUDController {
