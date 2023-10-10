@@ -66,7 +66,7 @@ type UnknownObject = {
   [key: string]: unknown
 };
 
-const isUnknownObject = (obj: unknown): obj is UnknownObject => {
+export const isUnknownObject = (obj: unknown): obj is UnknownObject => {
   if (!obj) return false;
   return typeof obj === 'object' && obj !== null;
 };
