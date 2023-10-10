@@ -1,8 +1,9 @@
 import type { User, UserDTN, UserUniqueProperties } from '@m-cafe-app/models';
 import type { IUserRepo } from '../interfaces';
-import { DatabaseError, ProhibitedError, toOptionalDate } from '@m-cafe-app/utils';
+import { ApplicationError, DatabaseError, ProhibitedError, toOptionalDate } from '@m-cafe-app/utils';
 import { UserMapper } from '../infrastructure';
 import { User as UserPG } from '@m-cafe-app/db';
+import sha1 from 'sha1';
 
 export class UserRepoSequelizePG implements IUserRepo {
 
@@ -39,13 +40,29 @@ export class UserRepoSequelizePG implements IUserRepo {
     return UserMapper.dbToDomain(dbUser);
   }
 
-  async getPasswordHashRights(id: number): Promise<{ id: number; rights: string; passwordHash: string }> {
-    const dbUser = await UserPG.scope('passwordHashRights').findByPk(id);
-    if (!dbUser) throw new DatabaseError(`No user entry with this id ${id}`);
-    return { id: dbUser.id, rights: dbUser.rights, passwordHash: dbUser.passwordHash};
-  }
+  async create(
+    userDTN: UserDTN,
+    silent: boolean = true,
+    overrideRights: string = 'customer',
+    lookupNoise: number = 0,
+    tries: number = 0):
+  Promise<User> {
 
-  async create(userDTN: UserDTN, passwordHash: string, silent: boolean = true, overrideRights: string = 'customer'): Promise<User> {
+    if (tries > 5) throw new ApplicationError('Too many tries. This can happen once in an enormous amount of times. Interrupted to avoid data loss. Please, try again manually.');
+
+    const lookupHash = sha1(
+      userDTN.phonenumber +
+      userDTN.username +
+      userDTN.email +
+      lookupNoise
+    );
+
+    const foundDbUser = await UserPG.scope('all').findOne({ where: { lookupHash } });
+
+    if (foundDbUser) {
+      return this.create(userDTN, silent, overrideRights, lookupNoise + Math.round(Math.random() * 100), tries + 1);
+    }
+
     const dbUser = await UserPG.create({ 
       phonenumber: userDTN.phonenumber,
       username: userDTN.username,
@@ -53,14 +70,15 @@ export class UserRepoSequelizePG implements IUserRepo {
       email: userDTN.email,
       rights: overrideRights,
       birthdate: toOptionalDate(userDTN.birthdate),
-      passwordHash
+      lookupHash,
+      lookupNoise
     }, {
       logging: !silent
     });
     return UserMapper.dbToDomain(dbUser);
   }
 
-  async update(user: User, passwordHash?: string): Promise<User> {
+  async update(user: User): Promise<User> {
     const dbUser = await UserPG.scope('all').findByPk(user.id);
     if (!dbUser) throw new DatabaseError(`No user entry with this id ${user.id}`);
     
@@ -70,10 +88,37 @@ export class UserRepoSequelizePG implements IUserRepo {
     if (user.email) dbUser.email = user.email;
     if (user.rights) dbUser.rights = user.rights;
     if (user.birthdate) dbUser.birthdate = user.birthdate;
-    if (passwordHash) dbUser.passwordHash = passwordHash;
 
     await dbUser.save();
     return UserMapper.dbToDomain(dbUser);
+  }
+
+  async updateLookupHash(user: User, lookupNoise: number, tries: number = 0): Promise<User> {
+    
+    if (tries > 5) throw new ProhibitedError('Too many tries. This can happen once in an enormous amount of times. Interrupted to avoid data loss. Please, try again manually.');
+
+    const lookupHash = sha1(
+      user.phonenumber +
+      user.username +
+      user.email +
+      lookupNoise
+    );
+
+    const foundDbUser = await UserPG.scope('all').findOne({ where: { lookupHash } });
+
+    if (foundDbUser) {
+      return this.updateLookupHash(user, lookupNoise + Math.round(Math.random() * 100), tries + 1);
+    }
+
+    const userToUpdate = await UserPG.scope('all').findByPk(user.id);
+    if (!userToUpdate) throw new DatabaseError(`No user entry with this id ${user.id}`);
+
+    userToUpdate.lookupHash = lookupHash;
+    userToUpdate.lookupNoise = lookupNoise;
+
+    await userToUpdate.save();
+    
+    return UserMapper.dbToDomain(userToUpdate);
   }
 
   /**
