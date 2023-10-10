@@ -17,4 +17,5 @@ export interface ISessionService extends Omit<ICRUDService<Session, Session>, 'r
   update(userId: number, token: string, userAgent: string, rights: string): Promise<Session>;
   remove(options: DestroySessionWhere): Promise<void>;
   updateAllByUserId(userId: number, rights: string): Promise<Session[]>;
+  connect(): Promise<void>;
 }

@@ -6,4 +6,5 @@ export interface ISessionRepo extends Omit<ICRUDRepo<Session, Session>, 'remove'
   getAllByUserId(userId: number): Promise<Session[]>;
   getOne(userId: number, userAgentHash: string): Promise<Session | undefined>;
   remove(userId: number, userAgentHash?: string): Promise<void>;
+  connect(): Promise<void>;
 }

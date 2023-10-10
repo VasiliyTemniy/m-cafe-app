@@ -5,6 +5,7 @@ import {
 } from '@m-cafe-app/utils';
 import { Session } from '@m-cafe-app/models';
 import { redisSessionClient } from '../../../config';
+import logger from '../../../utils/logger';
 
 
 export class SessionRepoRedis implements ISessionRepo {
@@ -61,5 +62,17 @@ export class SessionRepoRedis implements ISessionRepo {
     const sessionInfoParts = sessionInfo.split(':');
     if (!sessionInfoParts || sessionInfoParts.length !== 2) throw new RedisError(`Somehow data for userId:${userId} and userAgent:${userAgentOrHash} malformed`);
     return new Session(userId, sessionInfoParts[0], userAgentOrHash, sessionInfoParts[1]);
+  }
+
+  async connect(): Promise<void> {
+    try {
+      await redisSessionClient.connect();
+      logger.info('connected to redis');
+    } catch (err) {
+      logger.error(err as string);
+      logger.shout(err as string);
+      logger.info('failed to connect to redis');
+      return process.exit(1);
+    }
   }
 }

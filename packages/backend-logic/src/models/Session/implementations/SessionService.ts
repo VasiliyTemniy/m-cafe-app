@@ -75,4 +75,8 @@ export class SessionService implements ISessionService {
     }
   }
 
+  async connect(): Promise<void> {
+    await this.repo.connect();
+  }
+
 }
