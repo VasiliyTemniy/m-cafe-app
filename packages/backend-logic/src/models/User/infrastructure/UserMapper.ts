@@ -1,5 +1,5 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { UserDT } from '@m-cafe-app/models';
+import type { UserDT, UserDTU } from '@m-cafe-app/models';
 import { User } from '@m-cafe-app/models';
 import { User as UserPG } from '@m-cafe-app/db';
 import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
@@ -8,14 +8,13 @@ import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
 export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<User, UserDT> {
 
   /**
-   * Caution! Just a mock, passwordHash is not stored in domain instances,
-   * but is necessary for DB. Use service.getById to get passwordHash
+   * Caution! Just a mock
    * 
    * @param domainUser 
    * @returns mock
    */
   public static domainToDb(domainUser: User): UserPG {
-    const dbUser = new UserPG({ ...domainUser, passwordHash: '' });
+    const dbUser = new UserPG({ ...domainUser, lookupHash: '' });
     return dbUser;
   }
 
@@ -24,7 +23,6 @@ export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<
   }
 
   public static dbToDomain(dbUser: UserPG): User {
-    // No password or passwordHash
     const domainUser = new User(
       dbUser.id,
       dbUser.phonenumber,
@@ -33,6 +31,8 @@ export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<
       dbUser.email,
       dbUser.rights,
       dbUser.birthdate,
+      dbUser.lookupHash,
+      dbUser.lookupNoise,
       dbUser.createdAt,
       dbUser.updatedAt,
       dbUser.deletedAt
@@ -44,15 +44,17 @@ export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<
     return UserMapper.dbToDomain(dbUser);
   }
 
-  public static dtToDomain(userDT: UserDT): User {
+  public static dtToDomain(userDT: UserDT | UserDTU): User {
     const domainUser = new User(
       userDT.id,
       userDT.phonenumber,
       userDT.username,
       userDT.name,
       userDT.email,
-      userDT.rights,
+      undefined, // rights are not held on frontend
       toOptionalDate(userDT.birthdate),
+      undefined, // lookupHash is not held on frontend
+      undefined, // lookupNoise is not held on frontend
       toOptionalDate(userDT.createdAt),
       toOptionalDate(userDT.updatedAt),
       toOptionalDate(userDT.deletedAt)
@@ -65,7 +67,6 @@ export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<
   }
 
   public static domainToDT(domainUser: User): UserDT {
-    // No password, passwordHash for http
     const userDT: UserDT = {
       id: domainUser.id,
       phonenumber: domainUser.phonenumber,
