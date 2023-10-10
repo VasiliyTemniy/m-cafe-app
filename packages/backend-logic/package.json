@@ -9,14 +9,17 @@
   "scripts": {
     "build": "tsc --build",
     "test": "cross-env NODE_ENV=test TEST_MODE=self mocha --exit",
-    "eslint": "eslint ./src/**/*.{ts,tsx}"
+    "eslint": "eslint ./src/**/*.{ts,tsx}",
+    "gen-proto": "../../node_modules/.bin/proto-loader-gen-types --longs=String --enums=String  --oneofs --grpcLib=@grpc/grpc-js --outDir=src/external/interfaces src/protos/*.proto"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.9.5",
+    "@grpc/proto-loader": "^0.7.10",
     "@m-cafe-app/db": "workspace:^",
     "@m-cafe-app/models": "workspace:^",
     "@m-cafe-app/shared-constants": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",
-    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
     "redis": "^4.6.7"
   },
   "devDependencies": {
