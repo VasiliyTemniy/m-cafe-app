@@ -91,7 +91,11 @@
     "docker:dev:manager:up": "docker compose -f docker-compose.manager.dev.yml -p m_cafe_dev up --detach",
     "docker:dev:manager:down": "docker compose -f docker-compose.manager.dev.yml -p m_cafe_dev down",
     "docker:prod:up": "docker compose -f docker-compose.yml -p m_cafe up --detach",
-    "docker:prod:down": "docker compose -f docker-compose.yml -p m_cafe down"
+    "docker:prod:down": "docker compose -f docker-compose.yml -p m_cafe down",
+    "//C90": "C9",
+    "//Comment9": "Other scripts",
+    "//C91": "C9",
+    "backend-logic:gen-proto": "yarn workspace @m-cafe-app/backend-logic gen-proto"
   },
   "dependencies": {
     "concurrently": "^8.0.1"
