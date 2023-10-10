@@ -99,6 +99,20 @@ export class RedisError extends Error {
   }
 }
 
+export class GrpcClientError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'GrpcClientError';
+  }
+}
+
+export class AuthServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'AuthServiceError';
+  }
+}
+
 export type SafeyAny = object | string | number | Array<object> | Array<string> | Array<number> | null | undefined;
 
 interface ApplicationErrorMeta {
