@@ -40,10 +40,6 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
         len: [minNameLen, maxNameLen]
       }
     },
-    password_hash: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     phonenumber: {
       type: DataTypes.STRING,
       unique: true,
@@ -76,6 +72,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         isIn: [[...possibleUserRights]]
       }
+    },
+    lookup_hash: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false
+    },
+    lookup_noise: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
     created_at: {
       type: DataTypes.DATE,

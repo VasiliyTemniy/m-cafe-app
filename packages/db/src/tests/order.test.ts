@@ -41,7 +41,7 @@ describe('Database Order model tests', () => {
     });
 
     user = await User.create({
-      passwordHash: 'testlonger',
+      lookupHash: 'testlonger',
       phonenumber: '123123123',
     });
 

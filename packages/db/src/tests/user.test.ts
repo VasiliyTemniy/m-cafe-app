@@ -21,11 +21,11 @@ describe('Database User model tests', () => {
 
     const user = await User.create({
       username: 'test',
-      passwordHash: 'testlonger',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer'
+      rights: 'customer',
+      lookupHash: 'testlonger'
     });
 
     expect(user).to.exist;
@@ -36,11 +36,11 @@ describe('Database User model tests', () => {
     
     const user = await User.create({
       username: 'test',
-      passwordHash: 'testlonger',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer'
+      rights: 'customer',
+      lookupHash: 'testlonger'
     });
 
     user.username = 'test2';
@@ -58,11 +58,11 @@ describe('Database User model tests', () => {
     
     const user = await User.create({
       username: 'test',
-      passwordHash: 'testlonger',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer'
+      rights: 'customer',
+      lookupHash: 'testlonger'
     });
 
     await user.destroy();
@@ -77,47 +77,47 @@ describe('Database User model tests', () => {
     
     const customer = await User.create({
       username: 'test',
-      passwordHash: 'testlonger',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer'
+      rights: 'customer',
+      lookupHash: 'testlonger'
     });
 
     const admin = await User.create({
       username: 'testAdmin',
-      passwordHash: 'testlonger',
       phonenumber: '1231231231',
       email: 'test@testAdmin.com',
       birthdate: new Date(),
-      rights: 'admin'
+      rights: 'admin',
+      lookupHash: 'testlonger1'
     });
 
     const manager = await User.create({
       username: 'testManager',
-      passwordHash: 'testlonger',
       phonenumber: '1231231232',
       email: 'test@testManager.com',
       birthdate: new Date(),
-      rights: 'manager'
+      rights: 'manager',
+      lookupHash: 'testlonger2'
     });
 
     const disabled = await User.create({
       username: 'testDisabled',
-      passwordHash: 'testlonger',
       phonenumber: '1231231233',
       email: 'test@testDisabled.com',
       birthdate: new Date(),
-      rights: 'disabled'
+      rights: 'disabled',
+      lookupHash: 'testlonger3'
     });
 
     const userToDelete = await User.create({
       username: 'testDeletedAt',
-      passwordHash: 'testlonger',
       phonenumber: '1231231234',
       email: 'test@testDeletedAt.com',
       birthdate: new Date(),
-      rights: 'customer'
+      rights: 'customer',
+      lookupHash: 'testlonger4'
     });
 
     await userToDelete.destroy();
@@ -152,11 +152,11 @@ describe('Database User model tests', () => {
     
     const user = await User.create({
       username: 'test',
-      passwordHash: 'testlonger',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer'
+      rights: 'customer',
+      lookupHash: 'testlonger'
     });
 
     const userInDB = await User.scope('all').findByPk(user.id);

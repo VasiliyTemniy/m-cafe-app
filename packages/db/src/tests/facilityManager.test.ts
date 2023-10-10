@@ -40,7 +40,7 @@ describe('Database FacilityManager model tests', () => {
     });
 
     user = await User.create({
-      passwordHash: 'testlonger',
+      lookupHash: 'testlonger',
       phonenumber: '123123123',
     });
   });

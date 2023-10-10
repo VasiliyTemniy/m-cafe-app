@@ -29,7 +29,7 @@ describe('Database UserAddress model tests', () => {
     user = await User.create({
       name: 'тест',
       phonenumber: '123123123',
-      passwordHash: 'testlonger',
+      lookupHash: 'testlonger',
     });
   });
 

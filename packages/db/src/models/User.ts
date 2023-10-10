@@ -32,11 +32,12 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare id: CreationOptional<number>;
   declare username?: string;
   declare name?: string;
-  declare passwordHash: string;
   declare phonenumber: string;
   declare email?: string;
   declare birthdate?: Date;
   declare rights: CreationOptional<string>;
+  declare lookupHash: string;
+  declare lookupNoise?: number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
@@ -73,10 +74,6 @@ User.init({
       len: [minNameLen, maxNameLen]
     }
   },
-  passwordHash: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
   phonenumber: {
     type: DataTypes.STRING,
     unique: true,
@@ -109,6 +106,16 @@ User.init({
     validate: {
       isIn: [[...possibleUserRights]]
     }
+  },
+  lookupHash: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false
+  },
+  lookupNoise: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
   },
   createdAt: {
     type: DataTypes.DATE,
