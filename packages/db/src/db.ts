@@ -1,5 +1,5 @@
 import config from './config.js';
-import logger from './logger.js';
+import { logger } from '@m-cafe-app/utils';
 import { Sequelize } from 'sequelize';
 import { Umzug, SequelizeStorage } from 'umzug';
 import { loadMigrations } from './loadMigrations.js';
@@ -20,18 +20,19 @@ export const sequelize = new Sequelize(config.DATABASE_URL, {
 });
 logger.info('connecting to ' + config.DATABASE_URL);
 
-export const connectToDatabase = async () => {
+export const connectToDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
-    await runMigrations();
+    // await runMigrations(); Remove this once we create DB handler infrastructure in packages/backend-logic
     logger.info('connected to the database');
   } catch (err) {
     logger.error(err as string);
     logger.info('failed to connect to the database');
-    return process.exit(1);
+    if (process.env.NODE_ENV === 'production')
+      return await connectToDatabase();
+    else
+      return process.exit(1);
   }
-
-  return null;
 };
 
 const migrations = await loadMigrations();
