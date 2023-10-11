@@ -1,4 +1,4 @@
-import type { MigrationContext } from '../types/MigrationContext.js';
+import type { MigrationContext } from '../types/Migrations.js';
 import { fixedLocsScopes } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
