@@ -1,6 +1,6 @@
-import type { ProtoGrpcType } from './interfaces/auth.js';
+import type { ProtoGrpcType } from '../interfaces/auth.js';
 import grpc from '@grpc/grpc-js';
-import config from '../config.js';
+import config from '../../config.js';
 
 const authProto = grpc.loadPackageDefinition(config.packageDefinitionAuth) as unknown as ProtoGrpcType;
 
