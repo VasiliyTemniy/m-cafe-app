@@ -1,7 +1,7 @@
 import config from './utils/config.js';
 import app from './app.js';
 import http from 'http';
-import logger from './utils/logger.js';
+import { logger } from '@m-cafe-app/utils';
 import { connectToDatabase } from '@m-cafe-app/db';
 import { connectToRedisSessionDB } from './redis/Session.js';
 import { initFixedLocs } from './utils/initFixedLocs.js';

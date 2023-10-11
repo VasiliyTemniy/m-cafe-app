@@ -1,6 +1,6 @@
 import type { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 import type { JwtPayloadCustom } from '../types/JWTPayloadCustom.js';
-import logger from './logger.js';
+import { logger } from '@m-cafe-app/utils';
 import { Session } from '../redis/Session.js';
 import { hasOwnProperty, isCustomError, isNamedError } from '@m-cafe-app/utils';
 import jwt from 'jsonwebtoken';
@@ -119,6 +119,8 @@ export const errorHandler = (async (error, req: Request, res: Response, next: Ne
   /**
    * CUSTOM ERRORS
    */
+
+  // ADD NEW ERRORS HANDLING HERE !!!
 
   if (!isCustomError(error)) {
     logger.shout('This error has no message, take measures!', error);

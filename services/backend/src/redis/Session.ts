@@ -2,7 +2,7 @@ import type { MapToStrings, MapToUnknown } from '@m-cafe-app/utils';
 import type { InferAttributes } from 'sequelize';
 import { createClient } from 'redis';
 import config from '../utils/config.js';
-import logger from '../utils/logger.js';
+import { logger } from '@m-cafe-app/utils';
 import sha1 from 'sha1';
 import {
   ApplicationError,

@@ -22,4 +22,4 @@ const shout = (message?: any, ...optionalParams: any[]) => {
   console.log('END OF SHOUT');
 };
 
-export default { info, error, shout };
+export const logger = { info, error, shout };

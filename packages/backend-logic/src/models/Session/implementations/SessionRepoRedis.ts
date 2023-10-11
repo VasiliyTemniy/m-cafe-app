@@ -5,7 +5,7 @@ import {
 } from '@m-cafe-app/utils';
 import { Session } from '@m-cafe-app/models';
 import { redisSessionClient } from '../../../config';
-import logger from '../../../utils/logger';
+import { logger } from '@m-cafe-app/utils';
 
 
 export class SessionRepoRedis implements ISessionRepo {

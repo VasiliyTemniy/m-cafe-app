@@ -5,3 +5,4 @@ export * from './types/typeValidators.js';
 export * from './types/helpers.js';
 export * from './types/validationHelpers.js';
 export * from './models/index.js';
+export * from './logger.js';

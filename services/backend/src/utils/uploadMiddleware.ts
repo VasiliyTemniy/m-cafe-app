@@ -1,7 +1,7 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import logger from './logger.js';
+import { logger } from '@m-cafe-app/utils';
 
 const __dirname = path.resolve();
 

@@ -15,7 +15,7 @@ import {
   UploadFileError
 } from '@m-cafe-app/utils';
 import { LocString, Picture, FoodPicture, DynamicModule, Food } from '@m-cafe-app/db';
-import logger from '../utils/logger.js';
+import { logger } from '@m-cafe-app/utils';
 
 const pictureRouter = Router();
 

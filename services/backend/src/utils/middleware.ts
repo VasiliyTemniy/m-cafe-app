@@ -1,6 +1,6 @@
 import type { RequestMiddle } from '../types/RequestCustom.js';
 import type { RequestHandler, Request, Response, NextFunction } from 'express';
-import logger from './logger.js';
+import { logger } from '@m-cafe-app/utils';
 import jwt from 'jsonwebtoken';
 import config from './config.js';
 import { isCustomPayload } from '../types/JWTPayloadCustom.js';

@@ -4,7 +4,7 @@
 
 import type { MigrationContext } from './types/MigrationContext.js';
 import { glob } from 'glob';
-import logger from './logger.js';
+import { logger } from '@m-cafe-app/utils';
 import path from 'path';
 
 type MigrationFn = ({ context }: MigrationContext) => Promise<void>;

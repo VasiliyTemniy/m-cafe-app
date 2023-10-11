@@ -10,7 +10,7 @@ import {
   specificUiSettingsReadonly,
   uiSettingTypesReadonly
 } from '@m-cafe-app/shared-constants';
-import logger from '../../../utils/logger.js';
+import { logger } from '@m-cafe-app/utils';
 
 export class UiSettingService implements IUiSettingService {
   constructor(
