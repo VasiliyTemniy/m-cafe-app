@@ -6,7 +6,7 @@ import { authServiceExternalGRPC } from '../external';
 import { UserRepoSequelizePG, UserService } from '../models/User';
 import { SessionRepoRedis, SessionService } from '../models/Session';
 import { AuthControllerInternal, AuthServiceInternal } from '../models/Auth';
-import { connectToDatabase } from '@m-cafe-app/db';
+import { dbHandler } from '@m-cafe-app/db';
 import { initialUsers, newUserInfo } from './user_helper';
 import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
 import { User as UserPG } from '@m-cafe-app/db';
@@ -31,8 +31,8 @@ const userService = new UserService(
 describe('UserService implementation tests', () => {
 
   before(async () => {
+    await dbHandler.pingDb();
     await userService.sessionService.connect();
-    await connectToDatabase();
     await userService.authController.getPublicKey();
   });
   
