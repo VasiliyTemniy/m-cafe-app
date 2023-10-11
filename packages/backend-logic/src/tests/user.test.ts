@@ -2,12 +2,15 @@ import type { UserDTU } from '@m-cafe-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import { authServiceExternalGRPC } from '../external';
-// import logger from '../utils/logger';
+// import { logger } from '@m-cafe-app/utils';
 import { UserRepoSequelizePG, UserService } from '../models/User';
 import { SessionRepoRedis, SessionService } from '../models/Session';
 import { AuthControllerInternal, AuthServiceInternal } from '../models/Auth';
 import { connectToDatabase } from '@m-cafe-app/db';
 import { initialUsers, newUserInfo } from './user_helper';
+import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
+import { User as UserPG } from '@m-cafe-app/db';
+import sha1 from 'sha1';
 
 
 
@@ -30,6 +33,7 @@ describe('UserService implementation tests', () => {
   before(async () => {
     await userService.sessionService.connect();
     await connectToDatabase();
+    await userService.authController.getPublicKey();
   });
   
   beforeEach(async () => {
@@ -49,7 +53,81 @@ describe('UserService implementation tests', () => {
     expect(auth.token).to.exist;
     expect(auth.token).to.not.equal('');
     expect(auth.error).to.equal('');
+  });
 
+  it('should prevent creation of user with duplicate unique properties', async () => {
+    await userService.create(newUserInfo, 'test');
+
+    try {
+      const newUserDoublerUsername = {
+        ...newUserInfo,
+        phonenumber: '89881234561', // not the same as newUserInfo.phonenumber
+        email: 'newTest@test.test', // not the same as newUserInfo.email
+      };
+
+      await userService.create(newUserDoublerUsername, 'test');
+    } catch (e) {
+      if (!(e instanceof Error)) return expect(true).to.equal(false);
+      expect(e.name).to.equal('SequelizeUniqueConstraintError');
+    }
+
+    try {
+      const newUserDoublerEmail = {
+        ...newUserInfo,
+        phonenumber: '89881234561', // not the same as newUserInfo.phonenumber
+        username: 'newTest', // not the same as newUserInfo.username
+      };
+
+      await userService.create(newUserDoublerEmail, 'test');
+    } catch (e) {
+      if (!(e instanceof Error)) return expect(true).to.equal(false);
+      expect(e.name).to.equal('SequelizeUniqueConstraintError');
+    }
+
+    try {
+      const newUserDoublerPhonenumber = {
+        ...newUserInfo,
+        email: 'newTest@test.test', // not the same as newUserInfo.email
+        username: 'newTest', // not the same as newUserInfo.username
+      };
+
+      await userService.create(newUserDoublerPhonenumber, 'test');
+    } catch (e) {
+      if (!(e instanceof Error)) return expect(true).to.equal(false);
+      expect(e.name).to.equal('SequelizeUniqueConstraintError');
+    }
+  });
+
+  it('should resolve lookupHash doubling problems occured in the app', async () => {
+    const somehowAlreadyCreatedUser = await UserPG.create({
+      phonenumber: '1231231231', // definitely not the same as newUserInfo.phonenumber
+      birthdate: toOptionalDate(newUserInfo.birthdate),
+      lookupHash: sha1( // Must be the same as newUserInfo.lookupHash
+        newUserInfo.phonenumber +
+        newUserInfo.username +
+        newUserInfo.email +
+        0 // lookupNoise
+      ),
+      lookupNoise: 0 // Must be zero by default in DB, but to make sure
+    });
+
+    // Must resolve lookupHash doubling problems
+    const { user: anotherSomehowSameLookupHashUserInfo, auth } = await userService.create(newUserInfo, 'test');
+
+    expect(auth.id).to.equal(anotherSomehowSameLookupHashUserInfo.id);
+
+    const foundInDBToCheckLookupHash = await userService.repo.getById(anotherSomehowSameLookupHashUserInfo.id);
+
+    expect(anotherSomehowSameLookupHashUserInfo.id).to.not.equal(somehowAlreadyCreatedUser.id);
+    expect(foundInDBToCheckLookupHash.lookupHash).to.not.equal(somehowAlreadyCreatedUser.lookupHash);
+    expect(foundInDBToCheckLookupHash.lookupNoise).to.not.equal(somehowAlreadyCreatedUser.lookupNoise);
+    expect(somehowAlreadyCreatedUser.lookupNoise).to.equal(0);
+    expect(foundInDBToCheckLookupHash.lookupNoise).to.not.equal(0);
+
+    // Both users must persist in DB
+    const users = await userService.repo.getAll();
+
+    expect(users.length).to.equal(2);
   });
 
   it('should authenticate user with correct password provided', async () => {
@@ -70,8 +148,8 @@ describe('UserService implementation tests', () => {
       await userService.authenticate('wrongPassword', { phonenumber: user.phonenumber, email: user.email });
     } catch (e) {
       if (!(e instanceof Error)) return expect(true).to.equal(false);
-      expect(e.name).to.equal('AuthServiceError');
-      expect(e.message).to.equal('invalid password');
+      expect(e.name).to.equal('CredentialsError');
+      expect(e.message).to.equal('Invalid password');
     }
   });
 
@@ -127,6 +205,63 @@ describe('UserService implementation tests', () => {
     expect(auth.token).to.exist;
     expect(auth.token).to.not.equal('');
     expect(auth.error).to.equal('');
+  });
+
+  it('should prevent user update with incorrect password', async () => {
+
+    const { user } = await userService.create(newUserInfo, 'test');
+
+    const userInfoToUpdate: UserDTU = {
+      id: user.id,
+      phonenumber: user.phonenumber,
+      username: user.username,
+      name: 'updatedName',
+      email: 'newTest@test.test',
+      birthdate: user.birthdate,
+      password: 'wrongPassword',
+      newPassword: 'updatedPassword123'
+    };
+
+    try {
+      await userService.update(userInfoToUpdate, 'test');
+    } catch (e) {
+      if (!(e instanceof Error)) return expect(true).to.equal(false);
+      expect(e.name).to.equal('CredentialsError');
+      expect(e.message).to.equal('Invalid password');
+    }
+  });
+
+  it('should not authenticate or provide access to user update if no lookupHash was found on auth microservice', async () => {
+
+    const user = await userService.repo.create(newUserInfo);
+
+    try {
+      await userService.authenticate(newUserInfo.password, { phonenumber: newUserInfo.phonenumber, email: newUserInfo.email });
+    } catch (e) {
+      if (!(e instanceof Error)) return expect(true).to.equal(false);
+      expect(e.name).to.equal('CredentialsError');
+      expect(e.message).to.equal('User not found on auth server. Please, contact the admins to resolve this problem');
+    }
+
+    try {
+      const userInfoToUpdate: UserDTU = {
+        id: user.id,
+        phonenumber: user.phonenumber,
+        username: user.username,
+        name: 'updatedName',
+        email: 'newTest@test.test',
+        birthdate: toOptionalISOString(user.birthdate),
+        password: 'wrongPassword',
+        newPassword: 'updatedPassword123'
+      };
+
+      await userService.update(userInfoToUpdate, 'test');
+    } catch (e) {
+      if (!(e instanceof Error)) return expect(true).to.equal(false);
+      expect(e.name).to.equal('CredentialsError');
+      expect(e.message).to.equal('User not found on auth server. Please, contact the admins to resolve this problem');
+    }
+
   });
 
   it('should delete user', async () => {
