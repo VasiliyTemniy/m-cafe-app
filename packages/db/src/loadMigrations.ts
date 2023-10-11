@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// umzug did not work with .ts import export "type": "module" system and so on
-// workaround with custom file imports
+
+// UNCOMMENT THESE LOGGERS AFTER FINISHING THE DOMAIN MODEL DEFINITIONS
+// Now imports from @m-cafe-app/utils will cause circular dependency
 
 import type { MigrationContext } from './types/MigrationContext.js';
 import { glob } from 'glob';
-import { logger } from '@m-cafe-app/utils';
+// import { logger } from '@m-cafe-app/utils';
 import path from 'path';
 
 type MigrationFn = ({ context }: MigrationContext) => Promise<void>;
@@ -55,7 +56,7 @@ export const loadMigrations = async () => {
     migrations = await Promise.all(migrationsPromise);
 
   } catch (error) {
-    logger.shout(error);
+    // logger.shout(error);
     throw new Error('Migrations failed to load!');
   }
 
