@@ -1,10 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { Picture, LocString, DynamicModule } from '../models';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database DynamicModule model tests', () => {
@@ -14,6 +12,8 @@ describe('Database DynamicModule model tests', () => {
   let dynamicModuleLocString: LocString;
 
   before(async () => {
+    await dbHandler.pingDb();
+
     pictureAltTextLoc = await LocString.create({
       mainStr: 'тест',
       secStr: 'тест',

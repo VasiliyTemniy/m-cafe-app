@@ -1,10 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { Address, User, UserAddress } from '../models';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database UserAddress model tests', () => {
@@ -13,6 +11,8 @@ describe('Database UserAddress model tests', () => {
   let user: User;
 
   before(async () => {
+    await dbHandler.pingDb();
+
     address = await Address.create({
       region: 'тест',
       regionDistrict: 'тест',

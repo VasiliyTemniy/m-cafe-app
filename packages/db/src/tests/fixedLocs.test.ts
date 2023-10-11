@@ -1,11 +1,9 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { FixedLoc, LocString } from '../models';
 import { fixedLocFilter, fixedLocsScopes } from '@m-cafe-app/shared-constants';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database FixedLoc model tests', () => {
@@ -13,6 +11,8 @@ describe('Database FixedLoc model tests', () => {
   let locString: LocString;
 
   before(async () => {
+    await dbHandler.pingDb();
+
     locString = await LocString.create({
       mainStr: 'тест',
       secStr: 'тест',

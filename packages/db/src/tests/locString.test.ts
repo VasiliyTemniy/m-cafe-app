@@ -1,13 +1,15 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { LocString } from '../models';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database LocString model tests', () => {
+
+  before(async () => {
+    await dbHandler.pingDb();
+  });
 
   beforeEach(async () => {
     await LocString.destroy({ force: true, where: {} });

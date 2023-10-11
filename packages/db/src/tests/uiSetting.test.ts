@@ -1,14 +1,16 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { UiSetting } from '../models';
 import { allowedThemes, componentGroups } from '@m-cafe-app/shared-constants';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database UiSetting model tests', () => {
+
+  before(async () => {
+    await dbHandler.pingDb();
+  });
 
   beforeEach(async () => {
     await UiSetting.destroy({ force: true, where: {} });

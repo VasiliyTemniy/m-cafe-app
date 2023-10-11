@@ -1,13 +1,15 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { Address } from '../models';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database Address model tests', () => {
+
+  before(async () => {
+    await dbHandler.pingDb();
+  });
 
   beforeEach(async () => {
     await Address.scope('all').destroy({ force: true, where: {} });

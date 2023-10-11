@@ -1,13 +1,15 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { User } from '../models';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database User model tests', () => {
+
+  before(async () => {
+    await dbHandler.pingDb();
+  });
 
   beforeEach(async () => {
     await User.scope('all').destroy({ force: true, where: {} });

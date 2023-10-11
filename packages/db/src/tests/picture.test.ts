@@ -1,10 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { Picture, LocString } from '../models';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database Picture model tests', () => {
@@ -12,6 +10,8 @@ describe('Database Picture model tests', () => {
   let pictureAltTextLoc: LocString;
 
   before(async () => {
+    await dbHandler.pingDb();
+
     pictureAltTextLoc = await LocString.create({
       mainStr: 'тест',
       secStr: 'тест',

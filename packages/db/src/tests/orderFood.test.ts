@@ -1,10 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase } from '../db';
 import { Address, Facility, LocString, Order, User, OrderFood, Food, FoodType } from '../models';
+import { dbHandler } from '../db';
 
-
-await connectToDatabase();
 
 
 describe('Database OrderFood model tests', () => {
@@ -22,6 +20,8 @@ describe('Database OrderFood model tests', () => {
   let food: Food;
 
   before(async () => {
+    await dbHandler.pingDb();
+
     facilityNameLoc = await LocString.create({
       mainStr: 'тест',
       secStr: 'тест',
