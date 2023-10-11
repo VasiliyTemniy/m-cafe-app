@@ -4,11 +4,11 @@ import type { ISessionService } from '../../Session';
 import type { IAuthControllerInternal } from '../../Auth';
 import type { AdministrateUserBody } from '@m-cafe-app/utils';
 import { User } from '@m-cafe-app/models';
-import { ApplicationError, AuthServiceError, BannedError, CredentialsError, PasswordLengthError, ProhibitedError, UnknownError, hasOwnProperty } from '@m-cafe-app/utils';
+import { ApplicationError, AuthServiceError, BannedError, CredentialsError, DatabaseError, PasswordLengthError, ProhibitedError, UnknownError, hasOwnProperty } from '@m-cafe-app/utils';
 import { UserMapper } from '../infrastructure';
 import { maxPasswordLen, minPasswordLen, possibleUserRights } from '@m-cafe-app/shared-constants';
 import config from '../../../config.js';
-import logger from '../../../utils/logger';
+import { logger } from '@m-cafe-app/utils';
 
 
 export class UserService implements IUserService {
@@ -94,17 +94,11 @@ export class UserService implements IUserService {
     });
 
     if (!checkCredentials.success || checkCredentials.error !== '') {
-      console.log(checkCredentials);
-      // ACHTUNG CHECK actual error texts coming from AuthController
-      if (checkCredentials.error === 'User not found')
-        // HERE! Change error to createAuthRequest instead after actual error codes investigation
-        throw new ApplicationError('User not found on auth server. Please, contact the admins to resolve this problem');
-        // HERE! Change error to createAuthRequest instead after actual error codes investigation
-      else if (checkCredentials.error === 'Wrong password')
-        throw new CredentialsError('Password incorrect');
-      else 
-        throw new UnknownError(checkCredentials.error);
-        // ACHTUNG CHECK actual error texts coming from AuthController
+      if (checkCredentials.error === 'invalid password')
+        throw new CredentialsError('Invalid password');
+      if (checkCredentials.error === 'lookupHash not found')
+        throw new CredentialsError('User not found on auth server. Please, contact the admins to resolve this problem');
+      throw new AuthServiceError(checkCredentials.error);
     }
 
     if (userDTU.newPassword)
@@ -155,8 +149,13 @@ export class UserService implements IUserService {
 
     const auth = await this.authController.grant({ id: user.id, lookupHash: user.lookupHash, password });
 
-    if (!auth.token || auth.error || auth.id !== user.id)
+    if (!auth.token || auth.error || auth.id !== user.id) {
+      if (auth.error === 'invalid password')
+        throw new CredentialsError('Invalid password');
+      if (auth.error === 'lookupHash not found')
+        throw new CredentialsError('User not found on auth server. Please, contact the admins to resolve this problem');
       throw new AuthServiceError(auth.error);
+    }
 
     const res: { user: UserDT; auth: AuthResponse; } = {
       user: UserMapper.domainToDT(user),
@@ -236,6 +235,7 @@ export class UserService implements IUserService {
    * Remove a user entry from the database entirely.
    */
   async delete(id: number): Promise<void> {
+    // ADD DELETE QUERY FOR AUTH MICROSERVICE!
     await this.repo.delete(id);
   }
 
@@ -264,8 +264,10 @@ export class UserService implements IUserService {
         }
       }
     } catch (e) {
-      logger.shout('Could not update superadmin rights', e);
-      process.exit(1);
+      if (!(e instanceof DatabaseError)) {
+        logger.shout('Could not update superadmin rights', e);
+        process.exit(1);
+      }
     }
 
     const superAdminPassword = process.env.SUPERADMIN_PASSWORD;
