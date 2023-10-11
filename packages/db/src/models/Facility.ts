@@ -1,11 +1,11 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
+import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import Address from './Address.js';
-import LocString from './LocString.js';
-import Stock from './Stock.js';
-import User from './User.js';
-import { sequelize } from '../db.js';
+import { Address } from './Address.js';
+import { LocString } from './LocString.js';
+import { Stock } from './Stock.js';
+import { User } from './User.js';
 
 
 export class Facility extends Model<InferAttributes<Facility>, InferCreationAttributes<Facility>> {
@@ -26,54 +26,62 @@ export class Facility extends Model<InferAttributes<Facility>, InferCreationAttr
 export type FacilityData = Omit<InferAttributes<Facility>, PropertiesCreationOptional>
   & { id: number; };
 
-  
-Facility.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  addressId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'addresses', key: 'id' },
-  },
-  nameLocId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'loc_strings', key: 'id' }
-  },
-  descriptionLocId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'loc_strings', key: 'id' }
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: true,
-  modelName: 'facility',
-  defaultScope: {
-    attributes: {
-      exclude: ['createdAt', 'updatedAt']
+
+export const initFacilityModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      Facility.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        addressId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'addresses', key: 'id' },
+        },
+        nameLocId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'loc_strings', key: 'id' }
+        },
+        descriptionLocId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'loc_strings', key: 'id' }
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: true,
+        modelName: 'facility',
+        defaultScope: {
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        },
+        scopes: {
+          all: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
+          allWithTimestamps: {}
+        }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
     }
-  },
-  scopes: {
-    all: {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    },
-    allWithTimestamps: {}
-  }
-});
-  
-export default Facility;
+  });
+};

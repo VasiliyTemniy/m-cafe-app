@@ -1,8 +1,8 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
+import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import LocString from './LocString.js';
-import { sequelize } from '../db.js';
+import { LocString } from './LocString.js';
 import { Op } from 'sequelize';
 import { fixedLocFilter, fixedLocsScopes } from '@m-cafe-app/shared-constants';
 
@@ -21,112 +21,120 @@ export type FixedLocData = Omit<InferAttributes<FixedLoc>, PropertiesCreationOpt
   & { id: number; };
 
 
-const includeLocString = {
-  model: LocString,
-  as: 'locString',
-  where: {
-    mainStr: {
-      [Op.ne]: fixedLocFilter
-    }
-  }
-};
+export const initFixedLocModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
 
-  
-FixedLoc.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: 'unique_fixed_loc'
-  },
-  namespace: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: 'unique_fixed_loc'
-  },
-  scope: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      isIn: [fixedLocsScopes]
-    },
-    unique: 'unique_fixed_loc'
-  },
-  locStringId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'loc_strings', key: 'id' },
-    onUpdate: 'CASCADE',
-    onDelete: 'RESTRICT'
-  }
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: false,
-  modelName: 'fixed_loc',
-  indexes: [
-    {
-      unique: true,
-      fields: ['name', 'namespace', 'scope']
-    }
-  ],
-  defaultScope: {
-    where: {
-      scope: {
-        [Op.or]: [
-          'all',
-          'customer',
-        ]
-      }
-    },
-    include: includeLocString,
-    attributes: {
-      exclude: ['scope', 'locStringId']
-    }
-  },
-  scopes: {
-    customer: {
-      where: {
-        scope: {
-          [Op.or]: [
-            'all',
-            'customer',
-          ]
+      const includeLocString = {
+        model: LocString,
+        as: 'locString',
+        where: {
+          mainStr: {
+            [Op.ne]: fixedLocFilter
+          }
         }
-      },
-      include: includeLocString,
-      attributes: {
-        exclude: ['scope', 'locStringId']
-      }
-    },
-    admin: {
-      where: {},
-      include: {
-        ...includeLocString,
-        // do not exclude filtered fixed locs for admin:
-        where: {}
-      }
-    },
-    manager: {
-      where: {
+      };      
+
+      FixedLoc.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: 'unique_fixed_loc'
+        },
+        namespace: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: 'unique_fixed_loc'
+        },
         scope: {
-          [Op.ne]: 'admin'
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [fixedLocsScopes]
+          },
+          unique: 'unique_fixed_loc'
+        },
+        locStringId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'loc_strings', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         }
-      },
-      include: includeLocString,
-      attributes: {
-        exclude: ['scope', 'locStringId']
-      }
-    },
-    all: {
-      where: {},
-      include: includeLocString
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: false,
+        modelName: 'fixed_loc',
+        indexes: [
+          {
+            unique: true,
+            fields: ['name', 'namespace', 'scope']
+          }
+        ],
+        defaultScope: {
+          where: {
+            scope: {
+              [Op.or]: [
+                'all',
+                'customer',
+              ]
+            }
+          },
+          include: includeLocString,
+          attributes: {
+            exclude: ['scope', 'locStringId']
+          }
+        },
+        scopes: {
+          customer: {
+            where: {
+              scope: {
+                [Op.or]: [
+                  'all',
+                  'customer',
+                ]
+              }
+            },
+            include: includeLocString,
+            attributes: {
+              exclude: ['scope', 'locStringId']
+            }
+          },
+          admin: {
+            where: {},
+            include: {
+              ...includeLocString,
+              // do not exclude filtered fixed locs for admin:
+              where: {}
+            }
+          },
+          manager: {
+            where: {
+              scope: {
+                [Op.ne]: 'admin'
+              }
+            },
+            include: includeLocString,
+            attributes: {
+              exclude: ['scope', 'locStringId']
+            }
+          },
+          all: {
+            where: {},
+            include: includeLocString
+          }
+        }
+      });
+      
+      resolve();
+    } catch (err) {
+      reject(err);
     }
-  }
-});
-  
-export default FixedLoc;
+  });
+};

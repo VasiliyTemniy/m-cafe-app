@@ -1,7 +1,7 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
+import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db.js';
 import { Op } from 'sequelize';
 import { allowedThemes, componentGroups } from '@m-cafe-app/shared-constants';
 
@@ -18,86 +18,94 @@ export class UiSetting extends Model<InferAttributes<UiSetting>, InferCreationAt
 export type UiSettingData = Omit<InferAttributes<UiSetting>, PropertiesCreationOptional>
   & { id: number; };
 
-  
-UiSetting.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: 'unique_ui_setting'
-  },
-  group: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      isIn: [componentGroups]
-    },
-    unique: 'unique_ui_setting'
-  },
-  theme: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      isIn: [allowedThemes]
-    },
-    unique: 'unique_ui_setting'
-  },
-  value: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: false,
-  modelName: 'ui_setting',
-  indexes: [
-    {
-      unique: true,
-      fields: ['name', 'group', 'theme']
-    }
-  ],
-  defaultScope: {
-    where: {
-      value: {
-        [Op.ne]: 'false'
-      }
-    }
-  },
-  scopes: {
-    light: {
-      where: {
+
+export const initUiSettingModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      UiSetting.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: 'unique_ui_setting'
+        },
+        group: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [componentGroups]
+          },
+          unique: 'unique_ui_setting'
+        },
         theme: {
-          [Op.eq]: 'light'
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [allowedThemes]
+          },
+          unique: 'unique_ui_setting'
         },
         value: {
-          [Op.ne]: 'false'
+          type: DataTypes.STRING,
+          allowNull: false
         }
-      }
-    },
-    dark: {
-      where: {
-        theme: {
-          [Op.eq]: 'dark'
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: false,
+        modelName: 'ui_setting',
+        indexes: [
+          {
+            unique: true,
+            fields: ['name', 'group', 'theme']
+          }
+        ],
+        defaultScope: {
+          where: {
+            value: {
+              [Op.ne]: 'false'
+            }
+          }
         },
-        value: {
-          [Op.ne]: 'false'
+        scopes: {
+          light: {
+            where: {
+              theme: {
+                [Op.eq]: 'light'
+              },
+              value: {
+                [Op.ne]: 'false'
+              }
+            }
+          },
+          dark: {
+            where: {
+              theme: {
+                [Op.eq]: 'dark'
+              },
+              value: {
+                [Op.ne]: 'false'
+              }
+            }
+          },
+          nonFalsy: {
+            where: {
+              value: {
+                [Op.ne]: 'false'
+              }
+            }
+          },
+          all: {}
         }
-      }
-    },
-    nonFalsy: {
-      where: {
-        value: {
-          [Op.ne]: 'false'
-        }
-      }
-    },
-    all: {}
-  }
-});
-  
-export default UiSetting;
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

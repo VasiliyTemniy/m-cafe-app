@@ -1,7 +1,7 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
+import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db.js';
 import {
   cityRegExp,
   districtRegExp,
@@ -53,134 +53,142 @@ export type AddressData = Omit<InferAttributes<Address>, PropertiesCreationOptio
   & { id: number; };
 
 
-Address.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  region: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      is: [regionRegExp, 'i'],
-      len: [minRegionLen, maxRegionLen]
-    },
-    unique: 'unique_address'
-  },
-  regionDistrict: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      is: [districtRegExp, 'i'],
-      len: [minDistrictLen, maxDistrictLen]
-    },
-    unique: 'unique_address'
-  },
-  city: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      is: [cityRegExp, 'i'],
-      len: [minCityLen, maxCityLen]
-    },
-    unique: 'unique_address'
-  },
-  cityDistrict: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      is: [districtRegExp, 'i'],
-      len: [minDistrictLen, maxDistrictLen]
-    },
-    unique: 'unique_address'
-  },
-  street: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      is: [streetRegExp, 'i'],
-      len: [minStreetLen, maxStreetLen]
-    },
-    unique: 'unique_address'
-  },
-  house: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      is: [houseRegExp, 'i'],
-      len: [minHouseLen, maxHouseLen]
-    },
-    unique: 'unique_address'
-  },
-  entrance: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      is: [entranceRegExp, 'i'],
-      len: [minEntranceLen, maxEntranceLen]
-    },
-    unique: 'unique_address'
-  },
-  floor: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    validate: {
-      isNumeric: true,
-      len: [minFloorLen, maxFloorLen]
-    },
-    unique: 'unique_address'
-  },
-  flat: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      is: [flatRegExp, 'i'],
-      len: [minFlatLen, maxFlatLen]
-    },
-    unique: 'unique_address'
-  },
-  entranceKey: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      is: [entranceKeyRegExp, 'i'],
-      len: [minEntranceKeyLen, maxEntranceKeyLen]
-    },
-    unique: 'unique_address'
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: true,
-  modelName: 'address',
-  indexes: [
-    {
-      unique: true,
-      fields: ['region', 'region_district', 'city', 'city_district', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
+export const initAddressModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      Address.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        region: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [regionRegExp, 'i'],
+            len: [minRegionLen, maxRegionLen]
+          },
+          unique: 'unique_address'
+        },
+        regionDistrict: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [districtRegExp, 'i'],
+            len: [minDistrictLen, maxDistrictLen]
+          },
+          unique: 'unique_address'
+        },
+        city: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            is: [cityRegExp, 'i'],
+            len: [minCityLen, maxCityLen]
+          },
+          unique: 'unique_address'
+        },
+        cityDistrict: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [districtRegExp, 'i'],
+            len: [minDistrictLen, maxDistrictLen]
+          },
+          unique: 'unique_address'
+        },
+        street: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            is: [streetRegExp, 'i'],
+            len: [minStreetLen, maxStreetLen]
+          },
+          unique: 'unique_address'
+        },
+        house: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [houseRegExp, 'i'],
+            len: [minHouseLen, maxHouseLen]
+          },
+          unique: 'unique_address'
+        },
+        entrance: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [entranceRegExp, 'i'],
+            len: [minEntranceLen, maxEntranceLen]
+          },
+          unique: 'unique_address'
+        },
+        floor: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          validate: {
+            isNumeric: true,
+            len: [minFloorLen, maxFloorLen]
+          },
+          unique: 'unique_address'
+        },
+        flat: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [flatRegExp, 'i'],
+            len: [minFlatLen, maxFlatLen]
+          },
+          unique: 'unique_address'
+        },
+        entranceKey: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [entranceKeyRegExp, 'i'],
+            len: [minEntranceKeyLen, maxEntranceKeyLen]
+          },
+          unique: 'unique_address'
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: true,
+        modelName: 'address',
+        indexes: [
+          {
+            unique: true,
+            fields: ['region', 'region_district', 'city', 'city_district', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
+          }
+        ],
+        defaultScope: {
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        },
+        scopes: {
+          all: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
+          allWithTimestamps: {}
+        }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
     }
-  ],
-  defaultScope: {
-    attributes: {
-      exclude: ['createdAt', 'updatedAt']
-    }
-  },
-  scopes: {
-    all: {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    },
-    allWithTimestamps: {}
-  }
-});
-  
-export default Address;
+  });
+};

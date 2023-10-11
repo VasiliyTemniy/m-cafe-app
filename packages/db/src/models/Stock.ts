@@ -1,9 +1,9 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
+import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import Facility from './Facility.js';
-import Ingredient from './Ingredient.js';
-import { sequelize } from '../db.js';
+import { Facility } from './Facility.js';
+import { Ingredient } from './Ingredient.js';
 
 
 export class Stock extends Model<InferAttributes<Stock>, InferCreationAttributes<Stock>> {
@@ -20,60 +20,68 @@ export type StockData = Omit<InferAttributes<Stock>, PropertiesCreationOptional>
 & { id: number; };
 
 
-Stock.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  ingredientId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'ingredients', key: 'id' },
-    unique: 'unique_stock'
-  },
-  facilityId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'facilities', key: 'id' },
-    unique: 'unique_stock'
-  },
-  amount: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: true,
-  modelName: 'stock',
-  indexes: [
-    {
-      unique: true,
-      fields: ['ingredient_id', 'facility_id']
-    }
-  ],
-  defaultScope: {
-    attributes: {
-      exclude: ['createdAt', 'updatedAt']
-    }
-  },
-  scopes: {
-    all: {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    },
-    allWithTimestamps: {}
-  }
-});
+export const initStockModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      Stock.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        ingredientId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'ingredients', key: 'id' },
+          unique: 'unique_stock'
+        },
+        facilityId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'facilities', key: 'id' },
+          unique: 'unique_stock'
+        },
+        amount: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: true,
+        modelName: 'stock',
+        indexes: [
+          {
+            unique: true,
+            fields: ['ingredient_id', 'facility_id']
+          }
+        ],
+        defaultScope: {
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        },
+        scopes: {
+          all: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
+          allWithTimestamps: {}
+        }
+      });
 
-export default Stock;
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

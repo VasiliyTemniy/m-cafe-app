@@ -1,11 +1,11 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
+import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import User from './User.js';
-import Address from './Address.js';
-import OrderFood from './OrderFood.js';
-import Facility from './Facility.js';
-import { sequelize } from '../db.js';
+import { User } from './User.js';
+import { Address } from './Address.js';
+import { OrderFood } from './OrderFood.js';
+import { Facility } from './Facility.js';
 
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
@@ -31,87 +31,95 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
 export type OrderData = Omit<InferAttributes<Order>, PropertiesCreationOptional>
   & { id: number; };
 
-  
-Order.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    references: { model: 'users', key: 'id' },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
-  },
-  addressId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    references: { model: 'addresses', key: 'id' },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
-  },
-  facilityId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'facilities', key: 'id' },
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  },
-  deliverAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    validate: {
-      isDate: true
+
+export const initOrderModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      Order.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        userId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL'
+        },
+        addressId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'addresses', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL'
+        },
+        facilityId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'facilities', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
+        deliverAt: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          validate: {
+            isDate: true
+          }
+        },
+        status: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
+        totalCost: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        archiveAddress: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
+        customerName: {
+          type: DataTypes.STRING,
+          allowNull: true
+        },
+        customerPhonenumber: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: true,
+        modelName: 'order',
+        defaultScope: {
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        },
+        scopes: {
+          all: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
+          allWithTimestamps: {}
+        }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
     }
-  },
-  status: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  totalCost: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  archiveAddress: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  customerName: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  customerPhonenumber: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: true,
-  modelName: 'order',
-  defaultScope: {
-    attributes: {
-      exclude: ['createdAt', 'updatedAt']
-    }
-  },
-  scopes: {
-    all: {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    },
-    allWithTimestamps: {}
-  }
-});
-  
-export default Order;
+  });
+};

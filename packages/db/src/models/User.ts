@@ -6,10 +6,10 @@ import type {
   HasManyAddAssociationMixin,
   HasManyRemoveAssociationMixin
 } from 'sequelize';
+import type { Sequelize } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
-import Address from './Address.js';
-import { sequelize } from '../db.js';
+import { Address } from './Address.js';
 import {
   emailRegExp,
   maxEmailLen,
@@ -51,179 +51,181 @@ export type UserData = Omit<InferAttributes<User>, PropertiesCreationOptional | 
   & { id: number; rights: string; };
 
 
-User.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  username: {
-    type: DataTypes.STRING,
-    unique: true,
-    allowNull: true,
-    validate: {
-      is: [usernameRegExp, 'i'],
-      len: [minUsernameLen, maxUsernameLen]
-    }
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      is: [nameRegExp, 'i'],
-      len: [minNameLen, maxNameLen]
-    }
-  },
-  phonenumber: {
-    type: DataTypes.STRING,
-    unique: true,
-    allowNull: false,
-    validate: {
-      is: [phonenumberRegExp, 'i'],
-      len: [minPhonenumberLen, maxPhonenumberLen]
-    }
-  },
-  email: {
-    type: DataTypes.STRING,
-    unique: true,
-    allowNull: true,
-    validate: {
-      is: [emailRegExp, 'i'],
-      len: [minEmailLen, maxEmailLen]
-    }
-  },
-  birthdate: {
-    type: DataTypes.DATE,
-    allowNull: true,
-    validate: {
-      isDate: true
-    }
-  },
-  rights: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    defaultValue: 'customer',
-    validate: {
-      isIn: [[...possibleUserRights]]
-    }
-  },
-  lookupHash: {
-    type: DataTypes.STRING,
-    unique: true,
-    allowNull: false
-  },
-  lookupNoise: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 0
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  deletedAt: {
-    type: DataTypes.DATE,
-    allowNull: true
-  }
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: true,
-  paranoid: true,
-  modelName: 'user',
-  defaultScope: {
-    where: {
-      rights: {
-        [Op.ne]: 'disabled'
-      }
-    },
-    attributes: {
-      exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-    }
-  },
-  scopes: {
-    customer: {
-      where: {
+export const initUserModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      User.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        username: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: true,
+          validate: {
+            is: [usernameRegExp, 'i'],
+            len: [minUsernameLen, maxUsernameLen]
+          }
+        },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [nameRegExp, 'i'],
+            len: [minNameLen, maxNameLen]
+          }
+        },
+        phonenumber: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: false,
+          validate: {
+            is: [phonenumberRegExp, 'i'],
+            len: [minPhonenumberLen, maxPhonenumberLen]
+          }
+        },
+        email: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: true,
+          validate: {
+            is: [emailRegExp, 'i'],
+            len: [minEmailLen, maxEmailLen]
+          }
+        },
+        birthdate: {
+          type: DataTypes.DATE,
+          allowNull: true,
+          validate: {
+            isDate: true
+          }
+        },
         rights: {
-          [Op.eq]: 'customer'
-        }
-      },
-      attributes: {
-        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-      }
-    },
-    admin: {
-      where: {
-        rights: {
-          [Op.eq]: 'admin'
-        }
-      },
-      attributes: {
-        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-      }
-    },
-    manager: {
-      where: {
-        rights: {
-          [Op.eq]: 'manager'
-        }
-      },
-      attributes: {
-        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-      }
-    },
-    disabled: {
-      where: {
-        rights: {
-          [Op.eq]: 'disabled'
-        }
-      },
-      attributes: {
-        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-      }
-    },
-    deleted: {
-      where: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          defaultValue: 'customer',
+          validate: {
+            isIn: [[...possibleUserRights]]
+          }
+        },
+        lookupHash: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: false
+        },
+        lookupNoise: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
         deletedAt: {
-          [Op.not]: {
-            [Op.is]: undefined
+          type: DataTypes.DATE,
+          allowNull: true
+        }
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: true,
+        paranoid: true,
+        modelName: 'user',
+        defaultScope: {
+          where: {
+            rights: {
+              [Op.ne]: 'disabled'
+            }
+          },
+          attributes: {
+            exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+          }
+        },
+        scopes: {
+          customer: {
+            where: {
+              rights: {
+                [Op.eq]: 'customer'
+              }
+            },
+            attributes: {
+              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+            }
+          },
+          admin: {
+            where: {
+              rights: {
+                [Op.eq]: 'admin'
+              }
+            },
+            attributes: {
+              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+            }
+          },
+          manager: {
+            where: {
+              rights: {
+                [Op.eq]: 'manager'
+              }
+            },
+            attributes: {
+              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+            }
+          },
+          disabled: {
+            where: {
+              rights: {
+                [Op.eq]: 'disabled'
+              }
+            },
+            attributes: {
+              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+            }
+          },
+          deleted: {
+            where: {
+              deletedAt: {
+                [Op.not]: {
+                  [Op.is]: undefined
+                }
+              }
+            },
+            attributes: {
+              exclude: ['passwordHash']
+            },
+            paranoid: false
+          },
+          all: {
+            attributes: {
+              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+            },
+            paranoid: false
+          },
+          allWithTimestamps: {
+            attributes: {
+              exclude: ['passwordHash']
+            },
+            paranoid: false
+          },
+          passwordHashRights: {
+            attributes: {
+              exclude: ['name', 'username', 'phonenumber', 'email', 'birthdate', 'createdAt', 'updatedAt', 'deletedAt']
+            },
+            paranoid: false
           }
         }
-      },
-      attributes: {
-        exclude: ['passwordHash']
-      },
-      paranoid: false
-    },
-    all: {
-      attributes: {
-        exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-      },
-      paranoid: false
-    },
-    allWithTimestamps: {
-      attributes: {
-        exclude: ['passwordHash']
-      },
-      paranoid: false
-    },
-    // REMOVE THIS AFTER AUTH MODULE IS READY
-    allWithPasswordHash: {
-      // REMOVE THIS AFTER AUTH MODULE IS READY
-      paranoid: false
-      // REMOVE THIS AFTER AUTH MODULE IS READY
-    },
-    passwordHashRights: {
-      attributes: {
-        exclude: ['name', 'username', 'phonenumber', 'email', 'birthdate', 'createdAt', 'updatedAt', 'deletedAt']
-      },
-      paranoid: false
+      });    
+
+      resolve();
+    } catch (err) {
+      reject(err);
     }
-  }
-});
-  
-export default User;
+  });
+};

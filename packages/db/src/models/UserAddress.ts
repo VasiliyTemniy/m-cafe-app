@@ -1,8 +1,8 @@
 import type { InferAttributes, InferCreationAttributes, ForeignKey } from 'sequelize';
+import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import User from './User.js';
-import Address from './Address.js';
-import { sequelize } from '../db.js';
+import { User } from './User.js';
+import { Address } from './Address.js';
 
 
 export class UserAddress extends Model<InferAttributes<UserAddress>, InferCreationAttributes<UserAddress>> {
@@ -11,22 +11,30 @@ export class UserAddress extends Model<InferAttributes<UserAddress>, InferCreati
 }
 
 
-UserAddress.init({
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'users', key: 'id' }
-  },
-  addressId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'addresses', key: 'id' }
-  }
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: false,
-  modelName: 'user_address'
-});
+export const initUserAddressModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      UserAddress.init({
+        userId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' }
+        },
+        addressId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'addresses', key: 'id' }
+        }
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: false,
+        modelName: 'user_address'
+      });
 
-export default UserAddress;
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

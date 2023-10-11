@@ -1,8 +1,8 @@
 import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
+import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import LocString from './LocString.js';
-import { sequelize } from '../db.js';
+import { LocString } from './LocString.js';
 
 
 export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
@@ -23,65 +23,73 @@ export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreation
 export type IngredientData = Omit<InferAttributes<Ingredient>, PropertiesCreationOptional>
   & { id: number; };
 
-  
-Ingredient.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  nameLocId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'loc_strings', key: 'id' }
-  },
-  stockMeasureLocId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'loc_strings', key: 'id' }
-  },
-  proteins: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  fats: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  carbohydrates: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  calories: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: true,
-  modelName: 'ingredient',
-  defaultScope: {
-    attributes: {
-      exclude: ['createdAt', 'updatedAt']
+
+export const initIngredientModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      Ingredient.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        nameLocId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'loc_strings', key: 'id' }
+        },
+        stockMeasureLocId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'loc_strings', key: 'id' }
+        },
+        proteins: {
+          type: DataTypes.INTEGER,
+          allowNull: true
+        },
+        fats: {
+          type: DataTypes.INTEGER,
+          allowNull: true
+        },
+        carbohydrates: {
+          type: DataTypes.INTEGER,
+          allowNull: true
+        },
+        calories: {
+          type: DataTypes.INTEGER,
+          allowNull: true
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: true,
+        modelName: 'ingredient',
+        defaultScope: {
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        },
+        scopes: {
+          all: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
+          allWithTimestamps: {}
+        }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
     }
-  },
-  scopes: {
-    all: {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    },
-    allWithTimestamps: {}
-  }
-});
-  
-export default Ingredient;
+  });
+};
