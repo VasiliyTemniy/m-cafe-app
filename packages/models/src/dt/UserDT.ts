@@ -7,7 +7,8 @@ import {
   isEntity,
   idRequired,
   passwordRequired,
-  isUnknownObject
+  isUnknownObject,
+  isBoolean
 } from '@m-cafe-app/utils';
 
 
@@ -98,4 +99,18 @@ export const isUserLoginDT = (obj: unknown): obj is UserLoginDT => {
   if (hasOwnProperty(obj, 'email') && isString(obj.email)) return true;
 
   return false;
+};
+
+
+export interface AdministrateUserBody {
+  rights?: string;
+  restore?: boolean;
+}
+
+export const isAdministrateUserBody = (obj: unknown): obj is AdministrateUserBody => {
+  if (!isUnknownObject(obj)) return false;
+  if (!hasOwnProperty(obj, 'rights') && !hasOwnProperty(obj, 'restore')) return false;
+  if (hasOwnProperty(obj, 'rights') && !isString(obj.rights)) return false;
+  if (hasOwnProperty(obj, 'restore') && !isBoolean(obj.restore)) return false;
+  return true;
 };
