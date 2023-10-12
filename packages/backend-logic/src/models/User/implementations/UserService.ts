@@ -1,7 +1,7 @@
 import type { AuthResponse, UserDT, UserDTN, UserDTU, UserUniqueProperties } from '@m-cafe-app/models';
 import type { IUserService, IUserRepo } from '../interfaces';
 import type { ISessionService } from '../../Session';
-import type { IAuthControllerInternal } from '../../Auth';
+import type { IAuthController } from '../../Auth';
 import type { AdministrateUserBody } from '@m-cafe-app/utils';
 import { User } from '@m-cafe-app/models';
 import { ApplicationError, AuthServiceError, BannedError, CredentialsError, DatabaseError, PasswordLengthError, ProhibitedError, UnknownError, hasOwnProperty } from '@m-cafe-app/utils';
@@ -15,7 +15,7 @@ export class UserService implements IUserService {
   constructor(
     readonly repo: IUserRepo,
     readonly sessionService: ISessionService,
-    readonly authController: IAuthControllerInternal
+    readonly authController: IAuthController
   ) {}
 
   async getAll(): Promise<UserDT[]> {
