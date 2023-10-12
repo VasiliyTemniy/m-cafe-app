@@ -1,8 +1,9 @@
 import type { IUserControllerHttp, IUserService } from '../interfaces';
 import type { Request, Response } from 'express';
+import type { UserDT } from '@m-cafe-app/models';
 import { isRequestWithUser, type RequestWithUserRights } from '../../../utils';
-import { isUserDTN, isUserDTU, isUserLoginDT, type UserDT } from '@m-cafe-app/models';
-import { HackError, RequestBodyError, RequestQueryError, UnknownError, hasOwnProperty, isAdministrateUserBody } from '@m-cafe-app/utils';
+import { isAdministrateUserBody, isUserDTN, isUserDTU, isUserLoginDT } from '@m-cafe-app/models';
+import { HackError, RequestBodyError, RequestQueryError, UnknownError, hasOwnProperty } from '@m-cafe-app/utils';
 import config from '../../../config';
 
 
