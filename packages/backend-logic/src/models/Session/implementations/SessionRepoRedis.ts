@@ -70,9 +70,32 @@ export class SessionRepoRedis implements ISessionRepo {
       logger.info('connected to redis');
     } catch (err) {
       logger.error(err as string);
-      logger.shout(err as string);
       logger.info('failed to connect to redis');
+      if (process.env.NODE_ENV === 'production') {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await this.connect();
+      }
       return process.exit(1);
     }
+  }
+
+  async ping(): Promise<void> {
+    try {
+      await redisSessionClient.ping();
+    } catch (err) {
+      logger.error(err as string);
+      logger.info('failed to ping redis');
+      if (process.env.NODE_ENV === 'production') {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await this.close();
+        await this.connect();
+        await this.ping();
+      }
+      return process.exit(1);
+    }
+  }
+
+  async close(): Promise<void> {
+    await redisSessionClient.quit();
   }
 }

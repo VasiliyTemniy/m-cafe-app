@@ -79,4 +79,12 @@ export class SessionService implements ISessionService {
     await this.repo.connect();
   }
 
+  async ping(): Promise<void> {
+    await this.repo.ping();
+  }
+
+  async close(): Promise<void> {
+    await this.repo.close();
+  }
+
 }
