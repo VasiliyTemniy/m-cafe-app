@@ -231,6 +231,8 @@ export class AuthController implements IAuthController {
             return reject(new GrpcClientError(err.message));
           if (!response)
             return reject(new GrpcClientError('No response from external service'));
+          if (response.error)
+            return reject(new GrpcClientError(response.error));
           if (!response.publicKey)
             return reject(new GrpcClientError('Invalid response from external service'));
 
