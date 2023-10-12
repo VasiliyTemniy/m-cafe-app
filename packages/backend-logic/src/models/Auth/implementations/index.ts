@@ -1,2 +1,2 @@
-export * from './AuthControllerInternal.js';
+export * from './AuthController.js';
 export * from './AuthServiceInternal.js';

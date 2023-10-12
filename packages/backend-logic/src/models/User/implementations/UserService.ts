@@ -235,7 +235,11 @@ export class UserService implements IUserService {
    * Remove a user entry from the database entirely.
    */
   async delete(id: number): Promise<void> {
-    // ADD DELETE QUERY FOR AUTH MICROSERVICE!
+    const user = await this.repo.getById(id);
+    if (!user.lookupHash)
+      throw new ApplicationError('User data corrupt: lookupHash is missing');
+
+    await this.authController.remove({ lookupHash: user.lookupHash });
     await this.repo.delete(id);
   }
 
@@ -259,9 +263,11 @@ export class UserService implements IUserService {
           ||
           existingUser.phonenumber !== config.SUPERADMIN_PHONENUMBER
         ) {
+          await this.repo.remove(existingUser.id);
           await this.repo.delete(existingUser.id);
           await this.initSuperAdmin();
         }
+        return;
       }
     } catch (e) {
       if (!(e instanceof DatabaseError)) {

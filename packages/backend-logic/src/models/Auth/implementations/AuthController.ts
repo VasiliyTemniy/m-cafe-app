@@ -5,7 +5,7 @@ import type { IAuthConnectionHandler } from '../infrastructure';
 import { isAuthDTResponse } from '@m-cafe-app/models';
 import { ApplicationError, GrpcClientError, isBoolean, isString } from '@m-cafe-app/utils';
 
-export class AuthControllerInternal implements IAuthController {
+export class AuthController implements IAuthController {
 
   private authServiceExternal: AuthServiceClient | undefined = undefined;
   private tokenPublicKeyPem: string = '';
