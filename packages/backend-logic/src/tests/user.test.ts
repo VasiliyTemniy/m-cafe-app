@@ -1,7 +1,6 @@
 import type { UserDTU } from '@m-cafe-app/models';
 import { expect } from 'chai';
 import 'mocha';
-import { authServiceExternalGRPC } from '../external';
 // import { logger } from '@m-cafe-app/utils';
 import { UserRepoSequelizePG, UserService } from '../models/User';
 import { SessionRepoRedis, SessionService } from '../models/Session';
@@ -11,6 +10,8 @@ import { initialUsers, newUserInfo } from './user_helper';
 import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
 import { User as UserPG } from '@m-cafe-app/db';
 import sha1 from 'sha1';
+import { AuthConnectionHandler } from '../models/Auth/infrastructure';
+import config from '../config';
 
 
 
@@ -23,7 +24,10 @@ const userService = new UserService(
     new SessionRepoRedis()
   ),
   new AuthControllerInternal(
-    authServiceExternalGRPC,
+    new AuthConnectionHandler(
+      config.authUrl,
+      config.authGrpcCredentials,
+    ),
     new AuthServiceInternal()
   )
 );
@@ -33,6 +37,9 @@ describe('UserService implementation tests', () => {
   before(async () => {
     await dbHandler.pingDb();
     await userService.sessionService.connect();
+    await userService.sessionService.ping();
+    await userService.authController.connect();
+    await userService.authController.ping();
     await userService.authController.getPublicKey();
   });
   
@@ -98,7 +105,7 @@ describe('UserService implementation tests', () => {
     }
   });
 
-  it('should resolve lookupHash doubling problems occured in the app', async () => {
+  it('should resolve lookupHash doubling problems if ever occured in the app', async () => {
     const somehowAlreadyCreatedUser = await UserPG.create({
       phonenumber: '1231231231', // definitely not the same as newUserInfo.phonenumber
       birthdate: toOptionalDate(newUserInfo.birthdate),
@@ -356,6 +363,64 @@ describe('UserService implementation tests', () => {
     expect(allWithTimestamps.length).to.equal(users.length);
     expect(allWithTimestamps[0].createdAt).to.exist;
 
+  });
+
+  it('should verify tokens both internally and on auth server', async () => {
+    
+    const { auth } = await userService.create(newUserInfo, 'test');
+
+    const authResponse = await userService.authController.verifyToken({ token: auth.token });
+
+    expect(authResponse.id).to.equal(auth.id);
+    expect(authResponse.token).to.equal(auth.token);
+    expect(authResponse.error).to.equal('');
+
+    const internalAuthResponse = userService.authController.verifyTokenInternal({ token: auth.token });
+
+    console.log(internalAuthResponse.error);
+
+    expect(internalAuthResponse.id).to.equal(auth.id);
+    expect(internalAuthResponse.token).to.equal(auth.token);
+    expect(internalAuthResponse.error).to.equal('');
+
+  });
+
+  it('should fail verification if token is invalid both internally and on auth server', async () => {
+    
+    const token = 'TotallyInvalidToken';
+
+    const authResponse = await userService.authController.verifyToken({ token });
+
+    expect(authResponse.id).to.equal(0);
+    expect(authResponse.token).to.equal('');
+    expect(authResponse.error).to.equal('invalid token or signature');
+
+    const internalAuthResponse = userService.authController.verifyTokenInternal({ token });
+
+    expect(internalAuthResponse.id).to.equal(0);
+    expect(internalAuthResponse.token).to.equal('');
+    expect(internalAuthResponse.error).to.equal('AuthorizationError: jwt malformed');
+
+  });
+
+  it('should refresh tokens', async () => {
+
+    const { auth } = await userService.create(newUserInfo, 'test');
+
+    const authResponse = await userService.authController.refreshToken({ token: auth.token });
+
+    expect(authResponse.id).to.equal(auth.id);
+    expect(authResponse.token).to.not.equal(auth.token);
+    expect(authResponse.error).to.equal('');
+
+  });
+
+  it('should get public key', async () => {
+    try {
+      await userService.authController.getPublicKey();
+    } catch (e) {
+      expect(e).to.not.exist;
+    }
   });
 
 });
