@@ -1,14 +1,19 @@
-import { isAuthDTResponse, type AuthDTRequest, type AuthDTURequest, type AuthResponse, type CredentialsRequest, type VerifyResponse } from '@m-cafe-app/models';
-import type { IAuthControllerInternal, IAuthService, IAuthServiceExternalGrpcClient } from '../interfaces';
+import type { AuthDTRequest, AuthDTURequest, AuthResponse, CredentialsRequest, VerifyResponse } from '@m-cafe-app/models';
+import type { IAuthController, IAuthService } from '../interfaces';
+import type { AuthServiceClient } from '../../../external';
+import type { IAuthConnectionHandler } from '../infrastructure';
+import { isAuthDTResponse } from '@m-cafe-app/models';
 import { ApplicationError, GrpcClientError, isBoolean, isString } from '@m-cafe-app/utils';
 
-export class AuthControllerInternal implements IAuthControllerInternal {
+export class AuthControllerInternal implements IAuthController {
+
+  private authServiceExternal: AuthServiceClient | undefined = undefined;
+  private tokenPublicKeyPem: string = '';
+
   constructor(
-    private readonly authServiceExternal: IAuthServiceExternalGrpcClient,
+    private readonly authConnectionHandler: IAuthConnectionHandler,
     private readonly authServiceInternal: IAuthService
   ) {}
-
-  private tokenPublicKey: Buffer = Buffer.from('');
 
   getAll(): Promise<void> {
     throw new ApplicationError('Method not implemented.');
@@ -18,12 +23,29 @@ export class AuthControllerInternal implements IAuthControllerInternal {
     throw new ApplicationError('Method not implemented.');
   }
 
-  create(req: AuthDTRequest): Promise<AuthResponse> {
+  async connect(): Promise<void> {
+    await this.authConnectionHandler.connect();
+    this.authServiceExternal = this.authConnectionHandler.authService;
+  }
+
+  async ping(): Promise<void> {
+    await this.authConnectionHandler.ping();
+  }
+
+  async close(): Promise<void> {
+    await this.authConnectionHandler.close();
+  }
+
+  async create(req: AuthDTRequest): Promise<AuthResponse> {
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.create(req);
+    }
 
     const { id, lookupHash, password } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal.createAuth({ id, lookupHash, password }, 
+      this.authServiceExternal?.createAuth({ id, lookupHash, password }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -42,12 +64,16 @@ export class AuthControllerInternal implements IAuthControllerInternal {
     });
   }
 
-  update(req: AuthDTURequest): Promise<AuthResponse> {
+  async update(req: AuthDTURequest): Promise<AuthResponse> {
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.update(req);
+    }
     
     const { id, lookupHash, oldPassword, newPassword } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal.updateAuth({ id, lookupHash, oldPassword, newPassword }, 
+      this.authServiceExternal?.updateAuth({ id, lookupHash, oldPassword, newPassword }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -66,12 +92,16 @@ export class AuthControllerInternal implements IAuthControllerInternal {
     });
   }
 
-  grant(req: AuthDTRequest): Promise<AuthResponse> {
+  async grant(req: AuthDTRequest): Promise<AuthResponse> {
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.grant(req);
+    }
     
     const { id, lookupHash, password } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal.grantAuth({ id, lookupHash, password }, 
+      this.authServiceExternal?.grantAuth({ id, lookupHash, password }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -90,12 +120,16 @@ export class AuthControllerInternal implements IAuthControllerInternal {
     });
   }
 
-  verifyCredentials(req: CredentialsRequest): Promise<VerifyResponse> {
+  async verifyCredentials(req: CredentialsRequest): Promise<VerifyResponse> {
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.verifyCredentials(req);
+    }
     
     const { lookupHash, password } = req;
 
     return new Promise<VerifyResponse>((resolve, reject) => {
-      this.authServiceExternal.verifyCredentials({ lookupHash, password }, 
+      this.authServiceExternal?.verifyCredentials({ lookupHash, password }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -115,12 +149,16 @@ export class AuthControllerInternal implements IAuthControllerInternal {
     });
   }
 
-  verifyToken(req: { token: string }): Promise<AuthResponse> {
+  async verifyToken(req: { token: string }): Promise<AuthResponse> {
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.verifyToken(req);
+    }
     
     const { token } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal.verifyToken({ token }, 
+      this.authServiceExternal?.verifyToken({ token }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -146,18 +184,22 @@ export class AuthControllerInternal implements IAuthControllerInternal {
     if (!this.authServiceInternal.verifyTokenInternal)
       throw new ApplicationError('Method not implemented, please use external service');
 
-    if (!this.tokenPublicKey)
-      throw new ApplicationError('tokenPublicKey was not initialized');
+    if (!this.tokenPublicKeyPem)
+      throw new ApplicationError('tokenPublicKeyPem was not initialized');
 
-    return this.authServiceInternal.verifyTokenInternal(token, this.tokenPublicKey, 'simple-micro-auth');
+    return this.authServiceInternal.verifyTokenInternal(token, this.tokenPublicKeyPem, 'simple-micro-auth');
   }
 
-  refreshToken(req: { token: string }): Promise<AuthResponse> {
+  async refreshToken(req: { token: string }): Promise<AuthResponse> {
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.refreshToken(req);
+    }
     
     const { token } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal.refreshToken({ token }, 
+      this.authServiceExternal?.refreshToken({ token }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -177,8 +219,13 @@ export class AuthControllerInternal implements IAuthControllerInternal {
   }
 
   async getPublicKey(): Promise<void> {
-    await new Promise<void>((resolve, reject) => {
-      this.authServiceExternal.getPublicKey({ target: 'token' },
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.getPublicKey();
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      this.authServiceExternal?.getPublicKey({ target: 'token' },
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -187,19 +234,30 @@ export class AuthControllerInternal implements IAuthControllerInternal {
           if (!response.publicKey)
             return reject(new GrpcClientError('Invalid response from external service'));
 
-          this.tokenPublicKey = response.publicKey;
+          const b64_publicKey = response.publicKey.toString('base64');
+          const pemKey = `
+-----BEGIN PUBLIC KEY-----
+${b64_publicKey}
+-----END PUBLIC KEY-----
+`;
+
+          this.tokenPublicKeyPem = pemKey;
           resolve();
         }
       );
     });
   }
 
-  remove(req: { lookupHash: string }): Promise<{ error: string }> {
+  async remove(req: { lookupHash: string }): Promise<{ error: string }> {
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.remove(req);
+    }
 
     const { lookupHash } = req;
 
     return new Promise<{ error: string }>((resolve, reject) => {
-      this.authServiceExternal.deleteAuth({ lookupHash }, 
+      this.authServiceExternal?.deleteAuth({ lookupHash }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -218,12 +276,17 @@ export class AuthControllerInternal implements IAuthControllerInternal {
     });
   }
 
-  flushExternalDB(): Promise<{ error: string }> {
+  async flushExternalDB(): Promise<{ error: string }> {
     if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'development')
       throw new ApplicationError('Attempt to flush DB in prod!');
 
+    if (!this.authServiceExternal) {
+      await this.connect();
+      return this.flushExternalDB();
+    }
+
     return new Promise<{ error: string }>((resolve, reject) => {
-      this.authServiceExternal.FlushDB({ reason: 'test' },
+      this.authServiceExternal?.FlushDB({ reason: 'test' },
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));

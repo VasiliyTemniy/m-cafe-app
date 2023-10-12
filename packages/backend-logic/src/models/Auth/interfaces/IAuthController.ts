@@ -1,7 +1,10 @@
 import type { AuthDTRequest, AuthDTURequest, AuthResponse, CredentialsRequest, VerifyResponse } from '@m-cafe-app/models';
 import type { ICRUDController } from '../../../utils';
 
-export interface IAuthControllerInternal extends ICRUDController {
+export interface IAuthController extends ICRUDController {
+  connect(): Promise<void>;
+  ping(): Promise<void>;
+  close(): Promise<void>;
   create(req: AuthDTRequest): Promise<AuthResponse>;
   update(req: AuthDTURequest): Promise<AuthResponse>;
   grant(req: AuthDTRequest): Promise<AuthResponse>;
