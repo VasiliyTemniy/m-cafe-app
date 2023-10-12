@@ -4,7 +4,7 @@ import 'mocha';
 // import { logger } from '@m-cafe-app/utils';
 import { UserRepoSequelizePG, UserService } from '../models/User';
 import { SessionRepoRedis, SessionService } from '../models/Session';
-import { AuthControllerInternal, AuthServiceInternal } from '../models/Auth';
+import { AuthController, AuthServiceInternal } from '../models/Auth';
 import { dbHandler } from '@m-cafe-app/db';
 import { initialUsers, newUserInfo } from './user_helper';
 import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
@@ -23,7 +23,7 @@ const userService = new UserService(
   new SessionService(
     new SessionRepoRedis()
   ),
-  new AuthControllerInternal(
+  new AuthController(
     new AuthConnectionHandler(
       config.authUrl,
       config.authGrpcCredentials,
@@ -271,9 +271,12 @@ describe('UserService implementation tests', () => {
 
   });
 
-  it('should delete user', async () => {
+  it(`should delete user. If user was not removed, he does not get deleted.
+After deletion, user's credentials are removed from auth server`, async () => {
 
     const { user } = await userService.create(newUserInfo, 'test');
+    const userInDb = await userService.repo.getById(user.id);
+    if (!userInDb.lookupHash) return expect(true).to.equal(false);
 
     try {
       await userService.delete(user.id);
@@ -298,6 +301,11 @@ describe('UserService implementation tests', () => {
       expect(e.name).to.equal('DatabaseError');
       expect(e.message).to.equal(`No user entry with this id ${user.id}`);
     }
+
+    const authResponse = await userService.authController.verifyCredentials({ lookupHash: userInDb.lookupHash, password: newUserInfo.password });
+
+    expect(authResponse.success).to.equal(false);
+    expect(authResponse.error).to.equal('lookupHash not found');
 
   });
 
@@ -377,8 +385,6 @@ describe('UserService implementation tests', () => {
 
     const internalAuthResponse = userService.authController.verifyTokenInternal({ token: auth.token });
 
-    console.log(internalAuthResponse.error);
-
     expect(internalAuthResponse.id).to.equal(auth.id);
     expect(internalAuthResponse.token).to.equal(auth.token);
     expect(internalAuthResponse.error).to.equal('');
@@ -421,6 +427,29 @@ describe('UserService implementation tests', () => {
     } catch (e) {
       expect(e).to.not.exist;
     }
+  });
+
+  it('should create superadmin', async () => {
+
+    await userService.initSuperAdmin();
+
+    const foundSuperAdmin = await userService.repo.getByUniqueProperties({ phonenumber: config.SUPERADMIN_PHONENUMBER });
+
+    expect(foundSuperAdmin).to.exist;
+
+    expect(process.env.SUPERADMIN_USERNAME).to.equal('');
+    expect(process.env.SUPERADMIN_PASSWORD).to.equal('');
+
+    process.env.SUPERADMIN_USERNAME = 'MOCKityMOCK';
+    process.env.SUPERADMIN_PASSWORD = 'MOCKityMOCK';
+
+    try {
+      await userService.initSuperAdmin();
+    } catch (e) {
+      console.log(e);
+      expect(e).to.not.exist;
+    }
+
   });
 
 });
