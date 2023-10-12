@@ -44,25 +44,41 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
   async connect(): Promise<void> {
 
-    if (this.dbInstance)
-      throw new Error('Database connection is already initialized');
-      // throw new ApplicationError('Database connection is already initialized');
+    if (this.dbInstance) return Promise.resolve();
 
+    const connection = new Promise<void>((resolve, reject) => {
+      try {
+        this.dbInstance = new Sequelize(
+          DATABASE_URL,
+          this.dbConf
+        );
 
-    this.dbInstance = new Sequelize(
-      DATABASE_URL,
-      this.dbConf
-    );
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
+
+    try {
+      await connection;
+    } catch (err) {
+      if (process.env.NODE_ENV === 'production') {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        return await this.connect();
+      } else {
+        return process.exit(1);
+      }
+    }
 
     await this.initModels();
   }
 
   async pingDb(): Promise<void> {
 
-    if (!this.dbInstance)
-      throw new Error('Database connection is not initialized');
-      // throw new ApplicationError('Database connection is not initialized');
-
+    if (!this.dbInstance) {
+      await this.connect();
+      return this.pingDb();
+    }
 
     try {
       await this.dbInstance.authenticate();
@@ -81,10 +97,7 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
   async close(): Promise<void> {
 
-    if (!this.dbInstance)
-      throw new Error('Database connection is not initialized');
-      // throw new ApplicationError('Database connection is not initialized');
-
+    if (!this.dbInstance) return Promise.resolve();
 
     try {
       await this.dbInstance.close();
@@ -104,10 +117,10 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
   async loadMigrations(): Promise<void> {
 
-    if (!this.dbInstance)
-      throw new Error('Database connection is not initialized');
-      // throw new ApplicationError('Database connection is not initialized');
-
+    if (!this.dbInstance) {
+      await this.connect();
+      return this.loadMigrations();
+    }
 
     this.migrations = await this.migrationLoader();
     this.migrationConf = {
@@ -120,10 +133,10 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
   async runMigrations(): Promise<void> {
 
-    if (!this.migrationConf)
-      throw new Error('Migration configuration is not initialized. Load migrations first.');
-      // throw new ApplicationError('Migration configuration is not initialized. Load migrations first.');
-
+    if (!this.migrationConf) {
+      await this.loadMigrations();
+      return this.runMigrations();
+    }
 
     await this.pingDb();
     const migrator = new Umzug(this.migrationConf);
@@ -136,10 +149,10 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
   async rollbackMigration(): Promise<void> {
 
-    if (!this.migrationConf)
-      throw new Error('Migration configuration is not initialized. Load migrations first.');
-      // throw new ApplicationError('Migration configuration is not initialized. Load migrations first.');
-
+    if (!this.migrationConf) {
+      await this.loadMigrations();
+      return this.rollbackMigration();
+    }
 
     await this.pingDb();
     const migrator = new Umzug(this.migrationConf);
@@ -148,11 +161,11 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
   private async initModels(): Promise<void> {
 
-    if (!this.dbInstance)
-      throw new Error('Database connection is not initialized');
-      // throw new ApplicationError('Database connection is not initialized');
+    if (!this.dbInstance) {
+      await this.connect();
+      return Promise.resolve(); // Init models is called in connect
+    }
 
-    
     await initUserModel(this.dbInstance);
     await initAddressModel(this.dbInstance);
     await initUserAddressModel(this.dbInstance);
