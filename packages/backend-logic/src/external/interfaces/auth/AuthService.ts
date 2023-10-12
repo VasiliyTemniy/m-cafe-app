@@ -9,6 +9,8 @@ import type { DeleteAuthRequest as _auth_DeleteAuthRequest, DeleteAuthRequest__O
 import type { DeleteAuthResponse as _auth_DeleteAuthResponse, DeleteAuthResponse__Output as _auth_DeleteAuthResponse__Output } from '../auth/DeleteAuthResponse';
 import type { FlushDBRequest as _auth_FlushDBRequest, FlushDBRequest__Output as _auth_FlushDBRequest__Output } from '../auth/FlushDBRequest';
 import type { FlushDBResponse as _auth_FlushDBResponse, FlushDBResponse__Output as _auth_FlushDBResponse__Output } from '../auth/FlushDBResponse';
+import type { PingRequest as _auth_PingRequest, PingRequest__Output as _auth_PingRequest__Output } from '../auth/PingRequest';
+import type { PingResponse as _auth_PingResponse, PingResponse__Output as _auth_PingResponse__Output } from '../auth/PingResponse';
 import type { PublicKeyRequest as _auth_PublicKeyRequest, PublicKeyRequest__Output as _auth_PublicKeyRequest__Output } from '../auth/PublicKeyRequest';
 import type { PublicKeyResponse as _auth_PublicKeyResponse, PublicKeyResponse__Output as _auth_PublicKeyResponse__Output } from '../auth/PublicKeyResponse';
 import type { TokenRequest as _auth_TokenRequest, TokenRequest__Output as _auth_TokenRequest__Output } from '../auth/TokenRequest';
@@ -61,6 +63,15 @@ export interface AuthServiceClient extends grpc.Client {
   grantAuth(argument: _auth_AuthRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
   grantAuth(argument: _auth_AuthRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
   
+  Ping(argument: _auth_PingRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
+  Ping(argument: _auth_PingRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
+  Ping(argument: _auth_PingRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
+  Ping(argument: _auth_PingRequest, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
+  ping(argument: _auth_PingRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
+  ping(argument: _auth_PingRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
+  ping(argument: _auth_PingRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
+  ping(argument: _auth_PingRequest, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
+  
   RefreshToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
   RefreshToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
   RefreshToken(argument: _auth_TokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
@@ -110,6 +121,8 @@ export interface AuthServiceHandlers extends grpc.UntypedServiceImplementation {
   
   GrantAuth: grpc.handleUnaryCall<_auth_AuthRequest__Output, _auth_AuthResponse>;
   
+  Ping: grpc.handleUnaryCall<_auth_PingRequest__Output, _auth_PingResponse>;
+  
   RefreshToken: grpc.handleUnaryCall<_auth_TokenRequest__Output, _auth_AuthResponse>;
   
   UpdateAuth: grpc.handleUnaryCall<_auth_UpdateAuthRequest__Output, _auth_AuthResponse>;
@@ -126,6 +139,7 @@ export interface AuthServiceDefinition extends grpc.ServiceDefinition {
   FlushDB: MethodDefinition<_auth_FlushDBRequest, _auth_FlushDBResponse, _auth_FlushDBRequest__Output, _auth_FlushDBResponse__Output>
   GetPublicKey: MethodDefinition<_auth_PublicKeyRequest, _auth_PublicKeyResponse, _auth_PublicKeyRequest__Output, _auth_PublicKeyResponse__Output>
   GrantAuth: MethodDefinition<_auth_AuthRequest, _auth_AuthResponse, _auth_AuthRequest__Output, _auth_AuthResponse__Output>
+  Ping: MethodDefinition<_auth_PingRequest, _auth_PingResponse, _auth_PingRequest__Output, _auth_PingResponse__Output>
   RefreshToken: MethodDefinition<_auth_TokenRequest, _auth_AuthResponse, _auth_TokenRequest__Output, _auth_AuthResponse__Output>
   UpdateAuth: MethodDefinition<_auth_UpdateAuthRequest, _auth_AuthResponse, _auth_UpdateAuthRequest__Output, _auth_AuthResponse__Output>
   VerifyCredentials: MethodDefinition<_auth_CredentialsRequest, _auth_VerifyResponse, _auth_CredentialsRequest__Output, _auth_VerifyResponse__Output>

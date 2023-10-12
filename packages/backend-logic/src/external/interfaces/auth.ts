@@ -18,6 +18,8 @@ export interface ProtoGrpcType {
     DeleteAuthResponse: MessageTypeDefinition
     FlushDBRequest: MessageTypeDefinition
     FlushDBResponse: MessageTypeDefinition
+    PingRequest: MessageTypeDefinition
+    PingResponse: MessageTypeDefinition
     PublicKeyRequest: MessageTypeDefinition
     PublicKeyResponse: MessageTypeDefinition
     TokenRequest: MessageTypeDefinition
