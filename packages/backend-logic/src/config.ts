@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 import { createClient } from 'redis';
 import { loadSync } from '@grpc/proto-loader';
+import grpc from '@grpc/grpc-js';
 
 export const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 
@@ -42,7 +43,8 @@ const redisConfig: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts
     tls: redisUseTLS,
     key: redisUseTLS ? readFileSync('./cert/redis_user_private.key') : undefined,
     cert: redisUseTLS ? readFileSync('./cert/redis_user.crt') : undefined,
-    ca: redisUseTLS ? [readFileSync('./cert/redis_ca.pem')] : undefined
+    ca: redisUseTLS ? [readFileSync('./cert/redis_ca.pem')] : undefined,
+    reconnectStrategy: retries => Math.min(retries * 50, 1000)
   },
 };
 
@@ -55,8 +57,6 @@ const __dirname = process.cwd();
 const authProtoPath = process.platform === 'win32'
   ? __dirname + '\\src\\protos\\auth.proto'
   : __dirname + '/src/protos/auth.proto';
-
-console.log(authProtoPath, __dirname);
 
 const packageDefinitionAuth = loadSync(
   authProtoPath,
@@ -72,11 +72,14 @@ const packageDefinitionAuth = loadSync(
 const authUrl = process.env.AUTH_MICROSERVICE_URL;
 if (!authUrl) throw new ApplicationError('AUTH_MICROSERVICE_URL not set');
 
+const authGrpcCredentials = grpc.credentials.createInsecure();
+
 
 export default {
   SUPERADMIN_PHONENUMBER,
   cookieExpiracyMS,
   sessionCookieOptions,
   packageDefinitionAuth,
-  authUrl
+  authUrl,
+  authGrpcCredentials
 };
