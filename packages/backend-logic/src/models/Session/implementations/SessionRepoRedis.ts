@@ -1,6 +1,5 @@
 import type { ISessionRepo } from '../interfaces';
 import {
-  ApplicationError,
   RedisError
 } from '@m-cafe-app/utils';
 import { Session } from '@m-cafe-app/models';
@@ -9,14 +8,6 @@ import { logger } from '@m-cafe-app/utils';
 
 
 export class SessionRepoRedis implements ISessionRepo {
-
-  getAll(): Promise<Session[]> {
-    throw new ApplicationError('Not implemented');
-  }
-
-  getById(): Promise<Session> {
-    throw new ApplicationError('Not implemented');
-  }
 
   async getAllByUserId(userId: number): Promise<Session[]> {
     const userSessions = await redisSessionClient.hGetAll(`user:${String(userId)}`);
@@ -43,7 +34,7 @@ export class SessionRepoRedis implements ISessionRepo {
   }
 
   async update(session: Session) {
-    await this.remove(session.userId, session.userAgentHash);
+    // await this.remove(session.userId, session.userAgentHash);
     return await this.create(session);
   }
 
