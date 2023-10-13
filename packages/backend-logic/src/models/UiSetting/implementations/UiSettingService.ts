@@ -83,7 +83,7 @@ export class UiSettingService implements IUiSettingService {
   async removeAll(): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
     await this.dbRepo.removeAll();
-    // Maybe add refresh for inmem?
+    await this.inmemRepo.removeAll();
   }
 
   /**
