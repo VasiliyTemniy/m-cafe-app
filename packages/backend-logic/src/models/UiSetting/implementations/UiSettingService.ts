@@ -1,5 +1,5 @@
-import type { UiSettingDT, UiSettingDTN } from '@m-cafe-app/models';
-import type { IUiSettingService, IUiSettingRepo } from '../interfaces';
+import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingInmemDT } from '@m-cafe-app/models';
+import type { IUiSettingService, IUiSettingRepo, IUiSettingInmemRepo } from '../interfaces';
 import { ApplicationError } from '@m-cafe-app/utils';
 import { UiSettingMapper } from '../infrastructure';
 import {
@@ -15,10 +15,10 @@ import { logger } from '@m-cafe-app/utils';
 export class UiSettingService implements IUiSettingService {
   constructor(
     readonly dbRepo: IUiSettingRepo,
-    // readonly redisRepo: IUiSettingRepo
+    readonly inmemRepo: IUiSettingInmemRepo
   ) {}
 
-  async getAll() {
+  async getAll(): Promise<UiSettingDT[]> {
     const uiSettings = await this.dbRepo.getAll();
 
     const res: UiSettingDT[] =
@@ -27,7 +27,7 @@ export class UiSettingService implements IUiSettingService {
     return res;
   }
 
-  async getById(id: number) {
+  async getById(id: number): Promise<UiSettingDT> {
     const uiSetting = await this.dbRepo.getById(id);
 
     const res: UiSettingDT = UiSettingMapper.domainToDT(uiSetting);
@@ -35,7 +35,7 @@ export class UiSettingService implements IUiSettingService {
     return res;
   }
 
-  async getByScope(scope: string = 'defaultScope') {
+  async getByScope(scope: string = 'defaultScope'): Promise<UiSettingDT[]> {
     const uiSettings = await this.dbRepo.getByScope(scope);
 
     const res: UiSettingDT[] = uiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
@@ -43,39 +43,47 @@ export class UiSettingService implements IUiSettingService {
     return res;
   }
 
-  async create(uiSettingDTN: UiSettingDTN) {
+  async create(uiSettingDTN: UiSettingDTN): Promise<UiSettingDT> {
     const savedUiSetting = await this.dbRepo.create(uiSettingDTN);
+
+    await this.storeToInmem([savedUiSetting]);
 
     const res: UiSettingDT = UiSettingMapper.domainToDT(savedUiSetting);
     
     return res;
   }
 
-  async update(uiSettingDT: UiSettingDT) {
+  async update(uiSettingDT: UiSettingDT): Promise<UiSettingDT> {
     const updatedUiSetting = await this.dbRepo.update(UiSettingMapper.dtToDomain(uiSettingDT));
+
+    await this.storeToInmem([updatedUiSetting]);
 
     const res: UiSettingDT = UiSettingMapper.domainToDT(updatedUiSetting);
     
     return res;
   }
 
-  async updateMany(uiSettingsDT: UiSettingDT[]) {
+  async updateMany(uiSettingsDT: UiSettingDT[]): Promise<UiSettingDT[]> {
     if (!this.dbRepo.updateMany) throw new ApplicationError(`Update many method not implemented for repository ${this.dbRepo.constructor.name}`);
     const updatedUiSettings = await this.dbRepo.updateMany(uiSettingsDT);
+
+    await this.storeToInmem(updatedUiSettings);
 
     const res: UiSettingDT[] = updatedUiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
 
     return res;
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
     await this.dbRepo.remove(id);
+    // Maybe add refresh for inmem?
   }
 
-  async removeAll() {
+  async removeAll(): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
     await this.dbRepo.removeAll();
+    // Maybe add refresh for inmem?
   }
 
   /**
@@ -86,7 +94,7 @@ export class UiSettingService implements IUiSettingService {
    *
    * @return {Promise<void>} Promise that resolves once all the UI settings are added to the database
    */
-  async initUiSettings() {
+  async initUiSettings(): Promise<void> {
     for (const theme of allowedThemesReadonly) {
       for (const componentGroup of componentGroupsReadonly) {
         for (const uiSettingType of uiSettingTypesReadonly) {
@@ -129,12 +137,52 @@ export class UiSettingService implements IUiSettingService {
         logger.shout('Error adding specific UI settings to database. Check componentGroup name in specificUiSettingsReadonly', error);
       }
     }
+
+    await this.storeToInmem(await this.getAll());
   }
 
-  async reset() {
+  async reset(): Promise<UiSettingDT[]> {
     await this.dbRepo.removeAll();
     await this.initUiSettings();
     return await this.getAll();
+  }
+
+  /**
+   * Retrieves all UiSettingInmemDT objects from the in-memory repository.
+   *
+   * @param {string} theme - The theme to filter the UiSettingInmemDT objects by. Optional.
+   * @return {Promise<UiSettingInmemDT[]>} An array of UiSettingInmemDT objects that match the specified theme,
+   * or all UiSettingInmemDT objects if no theme is specified.
+   */
+  async getFromInmem(theme?: string): Promise<UiSettingInmemDT[]> {
+    return await this.inmemRepo.getAllThemed(theme);
+  }
+
+  async flushInmem(): Promise<void> {
+    await this.inmemRepo.removeAll();
+  }
+
+  /**
+   * Stores all the provided non-falsy `uiSettings` in memory for fast access for non-admin users.
+   *
+   * @param {UiSetting[]} uiSettings - An array of `UiSetting` objects to be filtered and stored.
+   * @return {Promise<void>} A promise that resolves when the operation is complete.
+   */
+  async storeToInmem(uiSettings: UiSetting[]): Promise<void> {
+    const nonFalsyUiSettings = uiSettings.filter(uiSetting => uiSetting.value !== 'false');
+    await this.inmemRepo.storeAll(nonFalsyUiSettings);
+  }
+
+  async connectInmem(): Promise<void> {
+    await this.inmemRepo.connect();
+  }
+
+  async pingInmem(): Promise<void> {
+    await this.inmemRepo.ping();
+  }
+
+  async closeInmem(): Promise<void> {
+    await this.inmemRepo.close();
   }
 
 }

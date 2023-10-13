@@ -1,8 +1,14 @@
-import type { UiSettingDT, UiSettingDTN } from '@m-cafe-app/models';
+import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingInmemDT } from '@m-cafe-app/models';
 import type { ICRUDService } from '../../../utils';
 
 export interface IUiSettingService extends ICRUDService<UiSettingDT, UiSettingDTN> {
-  getByScope(scope: string): Promise<UiSettingDT[]>
-  initUiSettings(): Promise<void>
-  reset(): Promise<UiSettingDT[]>
+  getByScope(scope: string): Promise<UiSettingDT[]>;
+  initUiSettings(): Promise<void>;
+  reset(): Promise<UiSettingDT[]>;
+  getFromInmem(theme?: string): Promise<UiSettingInmemDT[]>;
+  storeToInmem(uiSettings: UiSetting[]): Promise<void>;
+  flushInmem(): Promise<void>;
+  connectInmem(): Promise<void>;
+  pingInmem(): Promise<void>;
+  closeInmem(): Promise<void>;
 }
