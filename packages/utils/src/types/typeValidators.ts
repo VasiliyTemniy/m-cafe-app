@@ -71,6 +71,13 @@ export const isUnknownObject = (obj: unknown): obj is UnknownObject => {
   return typeof obj === 'object' && obj !== null;
 };
 
+type UnknownArray = unknown[];
+
+export const isUnknownArray = (arr: unknown): arr is UnknownArray => {
+  if (!arr) return false;
+  return Array.isArray(arr) && arr !== null;
+};
+
 interface CheckPropertiesArgs {
   obj: unknown;
   properties: string[];
@@ -128,29 +135,43 @@ export const checkProperties = ({
 };
 
 
-interface PropertyGroup {
+/**
+ * Represents a group of properties to be validated.
+ * 
+ * By default, properties are required and are not arrays.
+ */
+export interface PropertyGroup {
   properties: string[];
-  required: boolean;
+  required?: boolean;
   validator: (value: unknown) => boolean;
-  isArray: boolean;
+  isArray?: boolean;
 }
 
+/**
+ * Checks if the given object is an entity by validating its properties against the provided PropertyGroups.
+ * By default, properties are required and are not arrays.
+ *
+ * @param {unknown} obj - The object to be checked.
+ * @param {PropertyGroup[]} propertiesGroups - An array of PropertyGroups containing the properties, validators, and other configurations.
+ * @return {boolean} Returns true if the object is an entity, otherwise false.
+ */
 export const isEntity = <T>(obj: unknown, propertiesGroups: PropertyGroup[]): obj is T => {
   if (!isUnknownObject(obj)) return false;
   for (const propertyGroup of propertiesGroups) {
+    const { properties, required = true, validator, isArray = false } = propertyGroup;
     if (!checkProperties({
       obj,
-      properties: propertyGroup.properties,
-      required: propertyGroup.required,
-      validator: propertyGroup.validator,
-      isArray: propertyGroup.isArray
+      properties,
+      required,
+      validator,
+      isArray
     })) return false;
   }
   return true;
 };
 
 export const isManyEntity = <T>(obj: unknown, validator: (value: unknown) => boolean): obj is T[] => {
-  if (!isUnknownObject(obj)) return false;
+  if (!isUnknownArray(obj)) return false;
   if (!Array.isArray(obj)) return false;
   for (const item of obj) {
     if (!validator(item)) return false;
