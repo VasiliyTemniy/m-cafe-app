@@ -124,7 +124,9 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
 
     const { password, phonenumber, username, email } = req.body;
 
-    const { user, auth } = await this.service.authenticate(password, { phonenumber, username, email });
+    const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
+
+    const { user, auth } = await this.service.authenticate(password, { phonenumber, username, email }, userAgent);
 
     const resBody: UserDT = user;
 

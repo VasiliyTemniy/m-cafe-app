@@ -129,7 +129,7 @@ export class UserService implements IUserService {
     return res;
   }
 
-  async authenticate(password: string, credential: UserUniqueProperties): Promise<{ user: UserDT; auth: AuthResponse; }> {
+  async authenticate(password: string, credential: UserUniqueProperties, userAgent: string): Promise<{ user: UserDT; auth: AuthResponse; }> {
 
     if (credential.phonenumber === config.SUPERADMIN_PHONENUMBER) throw new ProhibitedError('Superadmin must login only with a username');
 
@@ -142,6 +142,8 @@ export class UserService implements IUserService {
 
     if (!user.lookupHash)
       throw new ApplicationError('User data corrupt: lookupHash is missing. Please, contact the admins to resolve this problem');
+    if (!user.rights)
+      throw new ApplicationError('User data corrupt: rights are missing. Please, contact the admins to resolve this problem');
     if (user.rights === 'disabled')
       throw new BannedError('Your account have been banned. Contact admin to unblock account');
     if (user.deletedAt)
@@ -156,6 +158,8 @@ export class UserService implements IUserService {
         throw new CredentialsError('User not found on auth server. Please, contact the admins to resolve this problem');
       throw new AuthServiceError(auth.error);
     }
+
+    await this.sessionService.update(user.id, auth.token, userAgent, user.rights);
 
     const res: { user: UserDT; auth: AuthResponse; } = {
       user: UserMapper.domainToDT(user),
