@@ -4,6 +4,7 @@ This package is separated from backend-logic package to cut circular dependencie
 
 ## Attention! Acronym suffixes:
 
+- S === Simple (some properties are cut)
 - DT === Data Transit (or data in transfer)
 - DTS === Data Transit Simple (some properties are cut)
 - DTN === Data Transit New
