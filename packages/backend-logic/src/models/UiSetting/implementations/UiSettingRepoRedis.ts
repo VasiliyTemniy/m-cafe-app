@@ -3,7 +3,7 @@ import type { IUiSettingSRepo } from '../interfaces';
 import { logger } from '@m-cafe-app/utils';
 import { redisUiSettingsClient } from '../../../config';
 
-export class UiSettingRepoSequelizePG implements IUiSettingSRepo {
+export class UiSettingRepoRedis implements IUiSettingSRepo {
 
   async getAllThemed(theme?: string): Promise<UiSettingS[]> {
     const uiSettingsInmem: UiSettingS[] = [];
