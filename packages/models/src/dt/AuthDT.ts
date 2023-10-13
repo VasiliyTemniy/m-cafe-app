@@ -1,17 +1,16 @@
-import type { MapToDT } from '@m-cafe-app/utils';
+import type { MapToDT, PropertyGroup } from '@m-cafe-app/utils';
 import type { AuthRequest, AuthResponse, CredentialsRequest, VerifyResponse } from '../domain';
-import { isEntity, isString, idRequired, isBoolean } from '@m-cafe-app/utils';
+import { isEntity, isString, isBoolean } from '@m-cafe-app/utils';
+import { idRequired } from './validationHelpers';
 
 
 export type AuthDTRequest = Omit<MapToDT<AuthRequest>, 'newPassword' | 'oldPassword'> & {
   password: string
 };
 
-const authDTRequestPropertiesGroup = {
+const authDTRequestPropertiesGroup: PropertyGroup = {
   properties: ['password', 'lookupHash'],
-  required: true,
   validator: isString,
-  isArray: false
 };
 
 export const isAuthDTRequest = (obj: unknown): obj is AuthDTRequest => 
@@ -23,11 +22,9 @@ export type AuthDTURequest = Omit<MapToDT<AuthRequest>, 'password'> & {
   newPassword: string
 };
 
-const authDTURequestPropertiesGroup = {
+const authDTURequestPropertiesGroup: PropertyGroup = {
   properties: ['oldPassword', 'newPassword', 'lookupHash'],
-  required: true,
   validator: isString,
-  isArray: false
 };
 
 export const isAuthDTURequest = (obj: unknown): obj is AuthDTURequest => 
@@ -42,11 +39,9 @@ export const isCredentialsDTRequest = (obj: unknown): obj is CredentialsDTReques
 
 export type AuthDTResponse = MapToDT<AuthResponse>;
 
-const authDTResponsePropertiesGroup = {
+const authDTResponsePropertiesGroup: PropertyGroup = {
   properties: ['id', 'token', 'error'], // id comes as string because of grpc-js
-  required: true,
   validator: isString,
-  isArray: false
 };
 
 export const isAuthDTResponse = (obj: unknown): obj is AuthDTResponse =>
@@ -55,16 +50,12 @@ export const isAuthDTResponse = (obj: unknown): obj is AuthDTResponse =>
 
 export type VerifyDTResponse = MapToDT<VerifyResponse>;
 
-const verifyDTResponsePropertiesGroups = [{
+const verifyDTResponsePropertiesGroups: PropertyGroup[] = [{
   properties: ['error'],
-  required: true,
   validator: isString,
-  isArray: false
 }, {
   properties: ['success'],
-  required: true,
   validator: isBoolean,
-  isArray: false
 }];
 
 export const isVerifyDTResponse = (obj: unknown): obj is VerifyDTResponse =>

@@ -1,18 +1,16 @@
-import type { MapToDT, MapToDTN } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
 import type { UiSetting, UiSettingS } from '../domain';
 import {
-  idRequired,
   isEntity,
   isManyEntity,
   isString
 } from '@m-cafe-app/utils';
+import { idRequired } from './validationHelpers';
 
 
-const uiSettingDTPropertiesGroup = {
+const uiSettingDTPropertiesGroup: PropertyGroup = {
   properties: ['name', 'group', 'theme', 'value'],
-  required: true,
   validator: isString,
-  isArray: false  
 };
 
 

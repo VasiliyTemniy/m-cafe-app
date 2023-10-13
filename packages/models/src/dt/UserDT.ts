@@ -1,27 +1,23 @@
-import type { MapToDT, MapToDTN } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
 import type { User } from '../domain';
 import {
   isString,
   hasOwnProperty,
   ApplicationError,
   isEntity,
-  idRequired,
-  passwordRequired,
   isUnknownObject,
   isBoolean
 } from '@m-cafe-app/utils';
+import { idRequired, passwordRequired } from './validationHelpers';
 
 
-const userDTPropertiesGroups = [{
+const userDTPropertiesGroups: PropertyGroup[] = [{
   properties: ['phonenumber'],
-  required: true,
   validator: isString,
-  isArray: false
 }, {
   properties: ['username', 'name', 'email', 'rights', 'birthdate'],
   required: false,
   validator: isString,
-  isArray: false
 }];
 
 export type UserDT = Omit<MapToDT<User>, 'lookupHash' | 'lookupNoise'>;
@@ -36,16 +32,13 @@ export const isUserDT = (obj: unknown): obj is UserDT => {
 };
 
 
-const userDTNUPropertiesGroups = [{
+const userDTNUPropertiesGroups: PropertyGroup[] = [{
   properties: ['phonenumber'],
-  required: true,
   validator: isString,
-  isArray: false
 }, {
   properties: ['username', 'name', 'email', 'birthdate'],
   required: false,
   validator: isString,
-  isArray: false
 }];
 
 export type UserDTN = Omit<MapToDTN<User>, 'lookupHash' | 'lookupNoise' | 'rights'> & {
@@ -63,11 +56,10 @@ export const isUserDTN = (obj: unknown): obj is UserDTN => {
 
 
 
-const newPasswordOptional = {
+const newPasswordOptional: PropertyGroup = {
   properties: ['newPassword'],
   required: false,
   validator: isString,
-  isArray: false
 };
 
 export type UserDTU = Omit<MapToDT<User>, 'lookupHash' | 'lookupNoise' | 'rights'> & {
