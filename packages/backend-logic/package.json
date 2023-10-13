@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc --build",
     "test": "cross-env NODE_ENV=test TEST_MODE=self mocha --exit",
-    "eslint": "eslint ./src/**/*.{ts,tsx}",
+    "eslint": "eslint \"./src/**/*.{ts,tsx}\"",
     "gen-proto": "../../node_modules/.bin/proto-loader-gen-types --longs=String --enums=String  --oneofs --grpcLib=@grpc/grpc-js --outDir=src/external/interfaces src/protos/*.proto"
   },
   "dependencies": {

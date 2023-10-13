@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc --build",
     "test": "cross-env NODE_ENV=test TEST_MODE=self mocha --exit",
-    "eslint": "eslint ./src/**/*.{ts,tsx}"
+    "eslint": "eslint \"./src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@m-cafe-app/shared-backend-deps": "workspace:^",

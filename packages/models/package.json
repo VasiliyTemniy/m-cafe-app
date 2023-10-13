@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "build": "tsc --build",
-    "eslint": "eslint ./src/**/*.{ts,tsx}"
+    "eslint": "eslint \"./src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "@m-cafe-app/shared-constants": "workspace:^",

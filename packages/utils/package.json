@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc --build",
     "test": "cross-env NODE_ENV=test mocha --exit",
-    "eslint": "eslint ./src/**/*.{ts,tsx}"
+    "eslint": "eslint \"./src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "@m-cafe-app/db": "workspace:^",
