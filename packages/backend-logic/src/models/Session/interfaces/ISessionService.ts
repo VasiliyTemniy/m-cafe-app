@@ -10,7 +10,7 @@ export type DestroySessionWhere = {
 };
 
 // SessionDT, SessionDTN does not exist so the arguments are Session
-export interface ISessionService extends Omit<ICRUDService<Session, Session>, 'remove' | 'create' | 'update'> {
+export interface ISessionService extends Omit<ICRUDService<Session, Session>, 'remove' | 'create' | 'update' | 'getAll' | 'getById'> {
   getAllByUserId(userId: number): Promise<Session[]>;
   getOne(userId: number, userAgent: string): Promise<Session | undefined>;
   create(userId: number, token: string, userAgent: string, rights: string): Promise<Session>;

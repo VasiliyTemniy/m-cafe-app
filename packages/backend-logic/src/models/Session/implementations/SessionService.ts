@@ -6,20 +6,6 @@ import sha1 from 'sha1';
 
 export class SessionService implements ISessionService {
   constructor( readonly repo: ISessionRepo ) {}
-  
-  /**
-   * Not implemented!
-   */
-  getAll(): Promise<Session[]> {
-    throw new ApplicationError('Not implemented');
-  }
-
-  /**
-   * Not implemented!
-   */
-  getById(): Promise<Session> {
-    throw new ApplicationError('Not implemented');
-  }
 
   async getAllByUserId(userId: number): Promise<Session[]> {
     return await this.repo.getAllByUserId(userId);
