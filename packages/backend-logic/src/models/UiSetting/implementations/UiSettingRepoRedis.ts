@@ -1,57 +1,77 @@
-// import type { UiSetting } from './UiSetting';
-// import type { UiSettingRepo } from './UiSettingRepo';
-// import type { UiSettingDTN } from './UiSettingDT';
-// import { DatabaseError } from '@m-cafe-app/utils';
-// import { UiSettingMapper } from './UiSettingMapper';
-// // Change import path to Redis imitator!
-// import { UiSetting as UiSettingRedis } from '@m-cafe-app/db';
+import type { UiSetting, UiSettingInmem } from '@m-cafe-app/models';
+import type { IUiSettingInmemRepo } from '../interfaces';
+import { logger } from '@m-cafe-app/utils';
+import { redisUiSettingsClient } from '../../../config';
 
-// export class UiSettingRepoSequelizeRedis implements UiSettingRepo {
+export class UiSettingRepoSequelizePG implements IUiSettingInmemRepo {
 
-//   async getAll(): Promise<UiSetting[]> {
-//     const dbUiSettings = await UiSettingRedis.scope('all').findAll();
-//     return dbUiSettings.map(uiSetting => UiSettingMapper.dbToDomain(uiSetting));
-//   }
+  async getAllThemed(theme?: string): Promise<UiSettingInmem[]> {
+    const uiSettingsInmem: UiSettingInmem[] = [];
 
-//   async getByScope(scope: string = 'defaultScope'): Promise<UiSetting[]> {
-//     const dbUiSettings = await UiSettingRedis.scope(scope).findAll();
-//     return dbUiSettings.map(uiSetting => UiSettingMapper.dbToDomain(uiSetting));
-//   }
+    for await (const key of redisUiSettingsClient.scanIterator()) {
+      const response = await redisUiSettingsClient.hGetAll(key);
 
-//   async getById(id: number): Promise<UiSetting> {
-//     const dbUiSetting = await UiSettingRedis.scope('all').findByPk(id);
-//     if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${id}`);
-//     return UiSettingMapper.dbToDomain(dbUiSetting);
-//   }
+      if (theme && response.theme !== theme)
+        continue;
 
-//   async create(uiSettingDT: UiSettingDTN): Promise<UiSetting> {
-//     const dbUiSetting = await UiSettingRedis.create({
-//       name: uiSettingDT.name,
-//       value: uiSettingDT.value,
-//       theme: uiSettingDT.theme,
-//       group: uiSettingDT.group
-//     });
-//     return UiSettingMapper.dbToDomain(dbUiSetting);
-//   }
+      uiSettingsInmem.push({
+        name: key,
+        value: response.value,
+        group: response.group,
+        theme: response.theme
+      });
+    }
 
-//   async update(uiSettingDT: UiSettingDTN): Promise<UiSetting> {
-//     const dbUiSetting = uiSettingDT.id
-//       ? await UiSettingRedis.findByPk(uiSettingDT.id)
-//       : await UiSettingRedis.findOne({ where: { name: uiSettingDT.name, theme: uiSettingDT.theme, group: uiSettingDT.group } });
-//     if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${uiSettingDT.id}`);
-//     dbUiSetting.value = uiSettingDT.value;
-//     await dbUiSetting.save();
-//     return UiSettingMapper.dbToDomain(dbUiSetting);
-//   }
+    return uiSettingsInmem;
+  }
 
-//   async updateMany(uiSettingDTs: UiSettingDTN[]): Promise<UiSetting[]> {
-//     return await Promise.all(uiSettingDTs.map(uiSettingDT => this.update(uiSettingDT)));
-//   }
+  async storeAll(uiSettings: UiSetting[]): Promise<void> {
+    const multi = redisUiSettingsClient.multi();
 
-//   async remove(id: number): Promise<void> {
-//     const dbUiSetting = await UiSettingRedis.scope('all').findByPk(id);
-//     if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${id}`);
-//     await dbUiSetting.destroy();
-//   }
+    for (const uiSetting of uiSettings) {
+      multi.hSet(`${uiSetting.name}`, { value: uiSetting.value, group: uiSetting.group, theme: uiSetting.theme });
+    }
 
-// }
+    await multi.exec();
+  }
+
+  async removeAll(): Promise<void> {
+    await redisUiSettingsClient.flushDb();
+  }
+
+  async connect(): Promise<void> {
+    try {
+      await redisUiSettingsClient.connect();
+      logger.info('connected to redis');
+    } catch (err) {
+      logger.error(err as string);
+      logger.info('failed to connect to redis');
+      if (process.env.NODE_ENV === 'production') {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await this.connect();
+      }
+      return process.exit(1);
+    }
+  }
+
+  async ping(): Promise<void> {
+    try {
+      await redisUiSettingsClient.ping();
+    } catch (err) {
+      logger.error(err as string);
+      logger.info('failed to ping redis');
+      if (process.env.NODE_ENV === 'production') {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await this.close();
+        await this.connect();
+        await this.ping();
+      }
+      return process.exit(1);
+    }
+  }
+
+  async close(): Promise<void> {
+    await redisUiSettingsClient.quit();
+  }
+
+}
