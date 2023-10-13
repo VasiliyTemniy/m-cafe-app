@@ -140,7 +140,7 @@ describe('UserService implementation tests', () => {
   it('should authenticate user with correct password provided', async () => {
     const { user } = await userService.create(newUserInfo, 'test');
 
-    const { auth } = await userService.authenticate(newUserInfo.password, { phonenumber: user.phonenumber, email: user.email });
+    const { auth } = await userService.authenticate(newUserInfo.password, { phonenumber: user.phonenumber, email: user.email }, 'test');
 
     expect(auth.id).to.equal(user.id);
     expect(auth.token).to.exist;
@@ -152,7 +152,7 @@ describe('UserService implementation tests', () => {
     const { user } = await userService.create(newUserInfo, 'test');
 
     try {
-      await userService.authenticate('wrongPassword', { phonenumber: user.phonenumber, email: user.email });
+      await userService.authenticate('wrongPassword', { phonenumber: user.phonenumber, email: user.email }, 'test');
     } catch (e) {
       if (!(e instanceof Error)) return expect(true).to.equal(false);
       expect(e.name).to.equal('CredentialsError');
@@ -243,7 +243,7 @@ describe('UserService implementation tests', () => {
     const user = await userService.repo.create(newUserInfo);
 
     try {
-      await userService.authenticate(newUserInfo.password, { phonenumber: newUserInfo.phonenumber, email: newUserInfo.email });
+      await userService.authenticate(newUserInfo.password, { phonenumber: newUserInfo.phonenumber, email: newUserInfo.email }, 'test');
     } catch (e) {
       if (!(e instanceof Error)) return expect(true).to.equal(false);
       expect(e.name).to.equal('CredentialsError');
@@ -271,7 +271,7 @@ describe('UserService implementation tests', () => {
 
   });
 
-  it(`should delete user. If user was not removed, he does not get deleted.
+  it(`should delete user. If user was not removed, he does not get deleted. \
 After deletion, user's credentials are removed from auth server`, async () => {
 
     const { user } = await userService.create(newUserInfo, 'test');
@@ -450,6 +450,111 @@ After deletion, user's credentials are removed from auth server`, async () => {
       expect(e).to.not.exist;
     }
 
+  });
+
+  it('should store correct Session information', async () => {
+
+    const { auth } = await userService.create(newUserInfo, 'test');
+
+    const userIdFromToken = userService.authController.verifyTokenInternal({ token: auth.token }).id;
+
+    const session = await userService.sessionService.getOne(userIdFromToken, 'test');
+    if (!session) return expect(true).to.equal(false);
+
+    expect(session.token).to.equal(auth.token);
+    expect(session.userId).to.equal(userIdFromToken);
+    expect(session.userAgentHash).to.equal(sha1('test'));
+    expect(session.rights).to.equal('customer');
+
+  });
+
+  it('should update Session information', async () => {
+
+    const { user, auth } = await userService.create(newUserInfo, 'test');
+
+    const userIdFromToken = userService.authController.verifyTokenInternal({ token: auth.token }).id;
+
+    const session = await userService.sessionService.getOne(userIdFromToken, 'test');
+    if (!session) return expect(true).to.equal(false);
+
+
+    await userService.authenticate(newUserInfo.password, { phonenumber: user.phonenumber, email: user.email }, 'test');
+
+    const newSession = await userService.sessionService.getOne(userIdFromToken, 'test');
+    if (!newSession) return expect(true).to.equal(false);
+
+    expect(newSession.token).to.not.equal(session.token);
+    expect(newSession.userId).to.equal(userIdFromToken);
+    expect(newSession.userId).to.equal(session.userId);
+    expect(newSession.userAgentHash).to.equal(sha1('test'));
+    expect(newSession.rights).to.equal('customer');
+
+    const userInfoToUpdate: UserDTU = {
+      id: user.id,
+      phonenumber: user.phonenumber,
+      username: user.username,
+      name: 'updatedName',
+      email: 'newTest@test.test',
+      password: newUserInfo.password,
+      newPassword: 'updatedPassword123'
+    };
+
+    const { user: updatedUser } = await userService.update(userInfoToUpdate, 'test');
+
+    const updSession = await userService.sessionService.getOne(userIdFromToken, 'test');
+    if (!updSession) return expect(true).to.equal(false);
+
+    expect(updatedUser.name).to.equal('updatedName');
+    expect(updSession.userId).to.equal(userIdFromToken);
+    expect(updSession.userId).to.equal(session.userId);
+    expect(updSession.userAgentHash).to.equal(sha1('test'));
+    expect(updSession.rights).to.equal('customer');
+    expect(updSession.token).to.not.equal(session.token);
+    expect(updSession.token).to.not.equal(newSession.token);
+
+  });
+
+  it(`should remove Session information upon user deletion or logout. \
+Upon logout, Sessions get deleted only for specific userAgent`, async () => {
+
+    // Create user via userAgent 'test'
+    const { user, auth } = await userService.create(newUserInfo, 'test');
+
+    const userIdFromToken = userService.authController.verifyTokenInternal({ token: auth.token }).id;
+
+    const session = await userService.sessionService.getOne(userIdFromToken, 'test');
+    if (!session) return expect(true).to.equal(false);
+
+    // Authenticate user via userAgent 'test123'
+    const { auth: newAuth } = await userService.authenticate(newUserInfo.password, { phonenumber: user.phonenumber, email: user.email }, 'test123');
+
+    const newSession = await userService.sessionService.getOne(userIdFromToken, 'test123');
+    if (!newSession) return expect(true).to.equal(false);
+
+    expect(auth.id).to.equal(newAuth.id);
+    expect(auth.token).to.not.equal(newAuth.token);
+    expect(auth.error).to.equal('');
+    expect(newAuth.error).to.equal('');
+
+    expect(session.token).to.equal(auth.token);
+    expect(newSession.token).to.equal(newAuth.token);
+
+    // Logout cause deletion of Session with userAgent 'test'
+    await userService.logout(userIdFromToken, 'test');
+
+    const allUserSessions = await userService.sessionService.getAllByUserId(userIdFromToken);
+
+    // Found Session with userAgent 'test123'
+    expect(allUserSessions.length).to.equal(1);
+    expect(allUserSessions[0].token).to.equal(newAuth.token);
+    expect(allUserSessions[0].userAgentHash).to.equal(sha1('test123'));
+
+    // Remove user
+    await userService.remove(userIdFromToken);
+
+    const allUserSessionsAfterRemoval = await userService.sessionService.getAllByUserId(userIdFromToken);
+
+    expect(allUserSessionsAfterRemoval.length).to.equal(0);
   });
 
 });
