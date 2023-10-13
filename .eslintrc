@@ -22,6 +22,24 @@
       2, "single", {
         "avoidEscape": true, "allowTemplateLiterals": true
       }
+    ],
+    "max-len": [
+      "warn",
+      {
+        "code": 130,
+        "tabWidth": 2,
+        "ignoreComments": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
+    "object-curly-spacing": [
+      "warn",
+      "always",
+      {
+        "arraysInObjects": true
+      }
     ]
   },
   "env": {
