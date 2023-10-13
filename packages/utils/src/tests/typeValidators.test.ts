@@ -1,4 +1,4 @@
-import { isString, isNumber, checkProperties } from '../types/typeValidators';
+import { isString, isNumber, checkProperties, isEntity, type PropertyGroup, isBoolean, isDate } from '../types/typeValidators';
 import { expect } from 'chai';
 import 'mocha';
 
@@ -102,4 +102,368 @@ describe('Type validators tests: checkProperties', () => {
 
     expect(result).to.equal(true);
   });
+});
+
+
+describe('Type validators tests: isEntity', () => {
+
+  it('should return true if all properties are present and valid', () => {
+    const obj = {
+      id: 1,
+      name: 'John Doe',
+      age: 30,
+      married: true,
+      hobbies: ['coding', 'reading'],
+      createdAt: new Date('2022-01-01')
+    };
+
+    const propertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id', 'age'],
+        validator: isNumber
+      },
+      {
+        properties: ['hobbies'],
+        validator: isString,
+        isArray: true
+      },
+      {
+        properties: ['married'],
+        validator: isBoolean
+      },
+      {
+        properties: ['createdAt'],
+        validator: isDate
+      }
+    ];
+
+    const result = isEntity(obj, propertiesGroups);
+    expect(result).to.equal(true);
+  });
+
+  it('should return false if any required property is missing', () => {
+    const obj = {
+      id: 1,
+      name: 'John Doe'
+    };
+
+    const propertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id', 'age'],
+        validator: isNumber
+      }
+    ];
+
+    const result = isEntity(obj, propertiesGroups);
+    expect(result).to.equal(false);
+  });
+
+  it('should not return false if any optional property is missing', () => {
+    const obj = {
+      id: 1,
+      name: 'John Doe'
+    };
+
+    const propertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id'],
+        validator: isNumber
+      },
+      {
+        properties: ['age'],
+        required: false,
+        validator: isNumber
+      }
+    ];
+
+    const result = isEntity(obj, propertiesGroups);
+    expect(result).to.equal(true);
+  });
+
+  it('should return false if any property is invalid', () => {
+    // Test case 1: wrong type of required age property
+    const obj1 = {
+      id: 1,
+      name: 'John Doe',
+      age: '30'
+    };
+    
+    const propertiesGroups1: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id', 'age'],
+        validator: isNumber
+      }
+    ];
+
+    const result1 = isEntity(obj1, propertiesGroups1);
+    expect(result1).to.equal(false);
+
+    // Test case 2: wrong type of optional age property
+    const obj2 = {
+      id: 1,
+      name: 'John Doe',
+      age: true
+    };
+    
+    const propertiesGroups2: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id', 'age'],
+        required: false,
+        validator: isNumber
+      }
+    ];
+
+    const result2 = isEntity(obj2, propertiesGroups2);
+    expect(result2).to.equal(false);
+
+  });
+
+  it('should return true if array properties are valid', () => {
+    const obj = {
+      id: 1,
+      name: 'John Doe',
+      hobbies: ['coding', 'reading']
+    };
+
+    const propertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id'],
+        validator: isNumber
+      },
+      {
+        properties: ['hobbies'],
+        validator: isString,
+        isArray: true
+      }
+    ];
+
+    const result = isEntity(obj, propertiesGroups);
+    expect(result).to.equal(true);
+  });
+
+  it('should return false if array properties are invalid', () => {
+    // Not is Array
+    const obj1 = {
+      id: 1,
+      name: 'John Doe',
+      hobbies: 'coding'
+    };
+
+    // Arrays with wrong typed items below
+    const obj2 = {
+      id: 1,
+      name: 'John Doe',
+      hobbies: [123, 456]
+    };
+
+    const obj3 = {
+      id: 1,
+      name: 'John Doe',
+      hobbies: ['coding', 123]
+    };
+
+    const obj4 = {
+      id: 1,
+      name: 'John Doe',
+      hobbies: ['coding', true, 123]
+    };
+
+    const obj5 = {
+      id: 1,
+      name: 'John Doe',
+      hobbies: [true, false, true, 123]
+    };
+
+    const obj6 = {
+      id: 1,
+      name: 'John Doe',
+      hobbies: [true, false]
+    };
+
+    const propertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id'],
+        validator: isNumber
+      },
+      {
+        properties: ['hobbies'],
+        validator: isString,
+        isArray: true
+      }
+    ];
+
+    const result1 = isEntity(obj1, propertiesGroups);
+    expect(result1).to.equal(false);
+
+    const result2 = isEntity(obj2, propertiesGroups);
+    expect(result2).to.equal(false);
+
+    const result3 = isEntity(obj3, propertiesGroups);
+    expect(result3).to.equal(false);
+
+    const result4 = isEntity(obj4, propertiesGroups);
+    expect(result4).to.equal(false);
+
+    const result5 = isEntity(obj5, propertiesGroups);
+    expect(result5).to.equal(false);
+
+    const result6 = isEntity(obj6, propertiesGroups);
+    expect(result6).to.equal(false);
+
+  });
+
+  it('should work for nested isEntity validators', () => {
+
+    type User = {
+      id: number;
+      name: string;
+      age: number;
+      married: boolean;
+      hobbies: string[];
+      createdAt: Date;
+    };
+
+    type Car = {
+      id: number;
+      make: string;
+      model: string;
+      year: number;
+    };
+
+    type Address = {
+      street: string;
+      city: string;
+      state: string;
+      country: string;
+    };
+
+    type NestedObject = {
+      user: User;
+      car: Car;
+      address: Address;
+    };
+
+    const obj: NestedObject = {
+      user: {
+        id: 1,
+        name: 'John Doe',
+        age: 30,
+        married: true,
+        hobbies: ['coding', 'reading'],
+        createdAt: new Date('2022-01-01')
+      },
+      car: {
+        id: 101,
+        make: 'Toyota',
+        model: 'Corolla',
+        year: 2020
+      },
+      address: {
+        street: 'Main Street',
+        city: 'New York',
+        state: 'NY',
+        country: 'USA'
+      }
+    };
+
+    const userPropertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id', 'age'],
+        validator: isNumber
+      },
+      {
+        properties: ['hobbies'],
+        validator: isString,
+        isArray: true
+      },
+      {
+        properties: ['married'],
+        validator: isBoolean
+      },
+      {
+        properties: ['createdAt'],
+        validator: isDate
+      }
+    ];
+
+    const isUser = (obj: unknown): obj is User =>
+      isEntity(obj, userPropertiesGroups);
+
+    const carPropertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['make', 'model'],
+        validator: isString
+      },
+      {
+        properties: ['id', 'year'],
+        validator: isNumber
+      }
+    ];
+
+    const isCar = (obj: unknown): obj is Car =>
+      isEntity(obj, carPropertiesGroups);
+
+    const addressPropertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['street', 'city', 'state', 'country'],
+        validator: isString
+      }
+    ];
+
+    const isAddress = (obj: unknown): obj is Address =>
+      isEntity(obj, addressPropertiesGroups);
+
+
+    const nestedObjectPropertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['user'],
+        validator: isUser
+      },
+      {
+        properties: ['car'],
+        validator: isCar
+      },
+      {
+        properties: ['address'],
+        validator: isAddress
+      }
+    ];
+
+    const result = isEntity(obj, nestedObjectPropertiesGroups);
+    expect(result).to.equal(true);
+
+  });
+
 });
