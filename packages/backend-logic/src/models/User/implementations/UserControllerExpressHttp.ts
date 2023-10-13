@@ -11,7 +11,7 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
   constructor( readonly service: IUserService ) {}
 
   async getAll(req: Request, res: Response) {
-    const users = await this.service.getAll();
+    const users: UserDT[] = await this.service.getAll();
     res.status(200).json(users);
   }
 
@@ -30,12 +30,12 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
       offset = Number(req.query.offset);
     }
 
-    const users = await this.service.getSome(limit, offset);
+    const users: UserDT[] = await this.service.getSome(limit, offset);
     res.status(200).json(users);
   }
 
   async getById(req: Request, res: Response) {
-    const user = await this.service.getById(Number(req.params.id));
+    const user: UserDT = await this.service.getById(Number(req.params.id));
     res.status(200).json(user);
   }
 
@@ -44,7 +44,7 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
       ? 'all'
       : 'nonFalsy';
 
-    const users = await this.service.getByScope(scope);
+    const users: UserDT[] = await this.service.getByScope(scope);
     res.status(200).json(users);
   }
 
@@ -99,19 +99,21 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
       password,
       newPassword
     }, userAgent);
+
+    const resBody: UserDT = updatedUser;
     
     res
       .cookie('token', auth.token, {
         ...config.sessionCookieOptions,
         expires: new Date(Date.now() + config.cookieExpiracyMS)
       })
-      .status(200).json(updatedUser);
+      .status(200).json(resBody);
   }
 
   async administrate(req: Request, res: Response): Promise<void> {
     if (!isAdministrateUserBody(req.body)) throw new RequestBodyError('Invalid administrate user request body');
 
-    const userSubject = await this.service.administrate(Number(req.params.id), req.body);
+    const userSubject: UserDT = await this.service.administrate(Number(req.params.id), req.body);
 
     res.status(200).json(userSubject);
   }
@@ -124,12 +126,14 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
 
     const { user, auth } = await this.service.authenticate(password, { phonenumber, username, email });
 
+    const resBody: UserDT = user;
+
     res
       .cookie('token', auth.token, {
         ...config.sessionCookieOptions,
         expires: new Date(Date.now() + config.cookieExpiracyMS)
       })
-      .status(200).json(user);
+      .status(200).json(resBody);
   }
 
   async logout(req: Request, res: Response): Promise<void> {
@@ -141,7 +145,7 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
   }
 
   async remove(req: Request, res: Response): Promise<void> {
-    const deletedUser = await this.service.remove(Number(req.params.id));
+    const deletedUser: UserDT = await this.service.remove(Number(req.params.id));
     res.status(200).json(deletedUser);
   }
 
