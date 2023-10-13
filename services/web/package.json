@@ -16,7 +16,7 @@
     "build:manager": "cross-env NODE_ENV=production FRONTEND_MODULE=manager NODE_OPTIONS=\"--loader ts-node/esm\" webpack --config webpack_config/webpack.config.ts",
     "dev:manager": "cross-env NODE_ENV=development FRONTEND_MODULE=manager NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve --config webpack_config/webpack.config.ts",
     "start:manager": "cross-env NODE_ENV=development FRONTEND_MODULE=manager NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve --config webpack_config/webpack.config.ts",
-    "eslint": "eslint ./{customer,admin,manager}/src/**/*.{ts,tsx}",
+    "eslint": "eslint \"./{customer,admin,manager}/src/**/*.{ts,tsx}\"",
     "stylelint": "stylelint \"**/*.scss\""
   },
   "repository": "https://github.com/VasiliyTemniy/m-cafe-app.git",
