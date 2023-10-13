@@ -11,6 +11,7 @@ export interface IUserService extends Omit<ICRUDService<UserDT, UserDTN>, 'creat
   authenticate(password: string, credential: UserUniqueProperties): Promise<{ user: UserDT, auth: AuthResponse }>
   logout(id: number, userAgent: string): Promise<void>
   administrate(id: number, body: AdministrateUserBody): Promise<UserDT>
+  remove(id: number): Promise<UserDT>
   delete(id: number): Promise<void>
   initSuperAdmin(): Promise<void>
   // resolveAuthLookupHashConflict(user: User, password: string, tries?: number): Promise<{ user: User, auth: AuthResponse }> : private! Thank you, TS!
