@@ -1,7 +1,7 @@
 import type { IUiSettingControllerHttp, IUiSettingService } from '../interfaces';
 import type { Request, Response } from 'express';
 import type { RequestWithUserRights } from '../../../utils';
-import type { UiSettingDT, UiSettingInmemDT } from '@m-cafe-app/models';
+import type { UiSettingDT, UiSettingDTS } from '@m-cafe-app/models';
 import { isUiSettingDTMany, isUiSettingDTN } from '@m-cafe-app/models';
 import { ApplicationError, RequestBodyError, isString } from '@m-cafe-app/utils';
 
@@ -32,7 +32,7 @@ export class UiSettingControllerExpressHttp implements IUiSettingControllerHttp 
 
       if (isString(req.query.theme)) theme = req.query.theme;
 
-      const uiSettings: UiSettingInmemDT[] = await this.service.getFromInmem(theme);
+      const uiSettings: UiSettingDTS[] = await this.service.getFromInmem(theme);
       res.status(200).json(uiSettings);
     }
   }

@@ -1,5 +1,5 @@
-import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingInmemDT } from '@m-cafe-app/models';
-import type { IUiSettingService, IUiSettingRepo, IUiSettingInmemRepo } from '../interfaces';
+import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingDTS } from '@m-cafe-app/models';
+import type { IUiSettingService, IUiSettingRepo, IUiSettingSRepo } from '../interfaces';
 import { ApplicationError } from '@m-cafe-app/utils';
 import { UiSettingMapper } from '../infrastructure';
 import {
@@ -15,7 +15,7 @@ import { logger } from '@m-cafe-app/utils';
 export class UiSettingService implements IUiSettingService {
   constructor(
     readonly dbRepo: IUiSettingRepo,
-    readonly inmemRepo: IUiSettingInmemRepo
+    readonly inmemRepo: IUiSettingSRepo
   ) {}
 
   async getAll(): Promise<UiSettingDT[]> {
@@ -148,13 +148,13 @@ export class UiSettingService implements IUiSettingService {
   }
 
   /**
-   * Retrieves all UiSettingInmemDT objects from the in-memory repository.
+   * Retrieves all UiSettingDTS objects from the in-memory repository.
    *
-   * @param {string} theme - The theme to filter the UiSettingInmemDT objects by. Optional.
-   * @return {Promise<UiSettingInmemDT[]>} An array of UiSettingInmemDT objects that match the specified theme,
-   * or all UiSettingInmemDT objects if no theme is specified.
+   * @param {string} theme - The theme to filter the UiSettingDTS objects by. Optional.
+   * @return {Promise<UiSettingDTS[]>} An array of UiSettingDTS objects that match the specified theme,
+   * or all UiSettingDTS objects if no theme is specified.
    */
-  async getFromInmem(theme?: string): Promise<UiSettingInmemDT[]> {
+  async getFromInmem(theme?: string): Promise<UiSettingDTS[]> {
     return await this.inmemRepo.getAllThemed(theme);
   }
 

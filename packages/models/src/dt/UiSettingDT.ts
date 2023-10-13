@@ -1,7 +1,6 @@
 import type { MapToDT, MapToDTN } from '@m-cafe-app/utils';
-import type { UiSetting, UiSettingInmem } from '../domain';
+import type { UiSetting, UiSettingS } from '../domain';
 import {
-  idOptional,
   idRequired,
   isEntity,
   isManyEntity,
@@ -28,20 +27,17 @@ export const isUiSettingDTMany = (obj: unknown): obj is UiSettingDT[] =>
 
 
 
+export type UiSettingDTS = MapToDT<UiSettingS>;
+
+export const isUiSettingDTS = (obj: unknown): obj is UiSettingDTS =>
+  isEntity(obj, [uiSettingDTPropertiesGroup]);
+
+export const isUiSettingDTSMany = (obj: unknown): obj is UiSettingDTS[] =>
+  isManyEntity(obj, isUiSettingDTS);
+
+
+
 export type UiSettingDTN = MapToDTN<UiSetting>;
 
 export const isUiSettingDTN = (obj: unknown): obj is UiSettingDTN =>
-  isEntity(obj, [idOptional, uiSettingDTPropertiesGroup]);
-
-export const isUiSettingDTNMany = (obj: unknown): obj is UiSettingDTN[] =>
-  isManyEntity(obj, isUiSettingDTN);
-
-
-
-export type UiSettingInmemDT = MapToDT<UiSettingInmem>;
-
-export const isUiSettingInmemDT = (obj: unknown): obj is UiSettingInmemDT =>
   isEntity(obj, [uiSettingDTPropertiesGroup]);
-
-export const isUiSettingInmemDTMany = (obj: unknown): obj is UiSettingInmemDT[] =>
-  isManyEntity(obj, isUiSettingInmemDT);

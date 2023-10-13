@@ -1,12 +1,12 @@
-import type { UiSetting, UiSettingInmem } from '@m-cafe-app/models';
-import type { IUiSettingInmemRepo } from '../interfaces';
+import type { UiSetting, UiSettingS } from '@m-cafe-app/models';
+import type { IUiSettingSRepo } from '../interfaces';
 import { logger } from '@m-cafe-app/utils';
 import { redisUiSettingsClient } from '../../../config';
 
-export class UiSettingRepoSequelizePG implements IUiSettingInmemRepo {
+export class UiSettingRepoSequelizePG implements IUiSettingSRepo {
 
-  async getAllThemed(theme?: string): Promise<UiSettingInmem[]> {
-    const uiSettingsInmem: UiSettingInmem[] = [];
+  async getAllThemed(theme?: string): Promise<UiSettingS[]> {
+    const uiSettingsInmem: UiSettingS[] = [];
 
     for await (const key of redisUiSettingsClient.scanIterator()) {
       const response = await redisUiSettingsClient.hGetAll(key);

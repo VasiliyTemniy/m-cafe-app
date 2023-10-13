@@ -8,7 +8,7 @@ export class UiSetting {
   ) {}
 }
 
-export class UiSettingInmem {
+export class UiSettingS {
   constructor(
     readonly name: string,
     readonly value: string,
