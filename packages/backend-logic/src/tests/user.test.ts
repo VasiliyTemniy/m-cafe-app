@@ -1,7 +1,6 @@
 import type { UserDTU } from '@m-cafe-app/models';
 import { expect } from 'chai';
 import 'mocha';
-// import { logger } from '@m-cafe-app/utils';
 import { UserRepoSequelizePG, UserService } from '../models/User';
 import { SessionRepoRedis, SessionService } from '../models/Session';
 import { AuthController, AuthServiceInternal } from '../models/Auth';
@@ -470,7 +469,7 @@ After deletion, user's credentials are removed from auth server`, async () => {
 
   });
 
-  it('should update Session information', async () => {
+  it('should update Session information upon login / authentication or user update', async () => {
 
     const { user, auth } = await userService.create(newUserInfo, 'test');
 
