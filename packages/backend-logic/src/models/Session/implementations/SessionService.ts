@@ -42,7 +42,7 @@ export class SessionService implements ISessionService {
     const userAgent = options.where.userAgent;
 
     if (userId && userAgent) {
-      return await this.repo.remove(userId, userAgent);
+      return await this.repo.remove(userId, sha1(userAgent));
     }
 
     if (userId) {
