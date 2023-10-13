@@ -248,7 +248,7 @@ export class UserService implements IUserService {
     await this.repo.removeAll();
   }
 
-  async initSuperAdmin() {
+  async initSuperAdmin(): Promise<void> {
 
     // Check for existing superadmin
     try {
