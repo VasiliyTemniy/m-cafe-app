@@ -14,25 +14,25 @@ export type FoodComponentDT = Omit<MapToDT<FoodComponentData>, 'foodId' | 'compo
 
 export const isFoodComponentDT = (obj: unknown): obj is FoodComponentDT =>{
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'component'
-  ], required: true, validator: isFoodDTS}))
+  ], required: true, validator: isFoodDTS }))
     if
-    (!checkProperties({obj, properties: [
+    (!checkProperties({ obj, properties: [
       'component'
-    ], required: true, validator: isIngredientDTS})) return false;
+    ], required: true, validator: isIngredientDTS })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'amount'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'compositeFood'
-  ], required: false, validator: isBoolean})) return false;
+  ], required: false, validator: isBoolean })) return false;
 
   return true;
 };

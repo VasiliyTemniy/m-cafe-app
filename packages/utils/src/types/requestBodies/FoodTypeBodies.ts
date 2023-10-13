@@ -11,9 +11,9 @@ export type NewFoodTypeBody = Omit<FoodTypeDT, 'id' | 'nameLoc' | 'descriptionLo
 
 export const isNewFoodTypeBody = (obj: unknown): obj is NewFoodTypeBody => {
   
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc', 'descriptionLoc'
-  ], required: true, validator: isNewLocString})) return false;
+  ], required: true, validator: isNewLocString })) return false;
   
   return true;
 };
@@ -27,9 +27,9 @@ export type EditFoodTypeBody = Omit<NewFoodTypeBody, 'nameLoc' | 'descriptionLoc
   
 export const isEditFoodTypeBody = (obj: unknown): obj is EditFoodTypeBody => {
   
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc', 'descriptionLoc'
-  ], required: true, validator: isEditLocString})) return false;
+  ], required: true, validator: isEditLocString })) return false;
   
   return true;
 };

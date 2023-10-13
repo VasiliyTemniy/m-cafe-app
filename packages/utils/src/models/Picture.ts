@@ -12,17 +12,17 @@ export type PictureDT = Omit<MapToDT<PictureData>, 'altTextLocId'>
 
 export const isPictureDT = (obj: unknown): obj is PictureDT => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'src'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'altTextLoc'
-  ], required: true, validator: isLocStringDT})) return false;
+  ], required: true, validator: isLocStringDT })) return false;
 
   return true;
 };

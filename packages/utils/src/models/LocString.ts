@@ -7,17 +7,17 @@ export type LocStringDT = MapToDT<LocStringData>;
 
 export const isLocStringDT = (obj: unknown): obj is LocStringDT => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'mainStr'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'secStr', 'altStr'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };
@@ -26,13 +26,13 @@ export type NewLocString = Omit<LocStringDT, 'id'>;
 
 export const isNewLocString = (obj: unknown): obj is NewLocString => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'mainStr'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'secStr', 'altStr'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };

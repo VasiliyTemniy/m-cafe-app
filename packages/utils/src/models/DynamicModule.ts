@@ -15,25 +15,25 @@ export type DynamicModuleDT = Omit<MapToDT<DynamicModuleData>, 'locStringId' | '
 
 export const isDynamicModuleDT = (obj: unknown): obj is DynamicModuleDT => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id', 'moduleType', 'page', 'placementType'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'placement'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'className', 'inlineCss', 'url'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'locString'
-  ], required: false, validator: isLocStringDT})) return false;
+  ], required: false, validator: isLocStringDT })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'picture'
-  ], required: false, validator: isPictureDT})) return false;
+  ], required: false, validator: isPictureDT })) return false;
 
   return true;
 };

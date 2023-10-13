@@ -5,17 +5,17 @@ export type NewAddressBody = Omit<AddressDT, 'id'>;
 
 export const isNewAddressBody = (obj: unknown): obj is NewAddressBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'city', 'street'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'cityDistrict', 'region', 'regionDistrict', 'house', 'entrance', 'flat', 'entranceKey'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'floor'
-  ], required: false, validator: isNumber})) return false;
+  ], required: false, validator: isNumber })) return false;
 
   return true;
 };

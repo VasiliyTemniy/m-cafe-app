@@ -11,13 +11,13 @@ export type NewFixedLocBody = Omit<FixedLocDT, 'id' | 'locString'>
 
 export const isNewFixedLocBody = (obj: unknown): obj is NewFixedLocBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'name', 'namespace', 'scope'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'locString'
-  ], required: true, validator: isNewLocString})) return false;
+  ], required: true, validator: isNewLocString })) return false;
 
   return true;
 };
@@ -30,13 +30,13 @@ export type EditFixedLocBody = Omit<NewFixedLocBody, 'locString'>
   
 export const isEditFixedLocBody = (obj: unknown): obj is EditFixedLocBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'name', 'namespace', 'scope'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'locString'
-  ], required: true, validator: isEditLocString})) return false;
+  ], required: true, validator: isEditLocString })) return false;
 
   return true;
 };
@@ -48,9 +48,9 @@ export type EditManyFixedLocBody = {
   
 export const isEditManyFixedLocBody = (obj: unknown): obj is EditManyFixedLocBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'updLocs'
-  ], required: true, validator: isFixedLocDT})) return false;
+  ], required: true, validator: isFixedLocDT })) return false;
 
   return true;
 };

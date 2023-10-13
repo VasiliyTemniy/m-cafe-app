@@ -12,17 +12,17 @@ export type OrderFoodDT = Omit<MapToDT<OrderFoodData>, 'foodId' | 'orderId'>
 
 export const isOrderFoodDT = (obj: unknown): obj is OrderFoodDT => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id', 'amount', 'archivePrice'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'archiveFoodName'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'food'
-  ], required: false, validator: isFoodDTS})) return false;
+  ], required: false, validator: isFoodDTS })) return false;
   
   return true;
 };

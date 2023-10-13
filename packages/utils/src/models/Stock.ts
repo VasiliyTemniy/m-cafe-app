@@ -14,17 +14,17 @@ export type StockDT = Omit<MapToDT<StockData>, 'ingredientId' | 'facilityId'>
 
 export const isStockDT = (obj: unknown): obj is StockDT => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id', 'amount'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'ingredient'
-  ], required: false, validator: isIngredientDT})) return false;
+  ], required: false, validator: isIngredientDT })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'ingredientId', 'facilityId'
-  ], required: false, validator: isNumber})) return false;
+  ], required: false, validator: isNumber })) return false;
 
   return true;
 };

@@ -11,17 +11,17 @@ export const isUserDT = (obj: unknown): obj is UserDT => {
 
   if (hasOwnProperty(obj, 'passwordHash')) throw new ApplicationError('User data transit passwordHash detected! Please, contact admins');
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'phonenumber'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'username', 'name', 'email', 'birthdate', 'rights'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };

@@ -21,33 +21,33 @@ export type OrderDT = Omit<MapToDT<OrderData>, 'userId' | 'addressId' | 'facilit
 
 export const isOrderDT = (obj: unknown): obj is OrderDT => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id', 'totalCost'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'deliverAt', 'status', 'archiveAddress', 'customerPhonenumber'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'orderFoods'
-  ], required: true, validator: isOrderFoodDT, isArray: true})) return false;
+  ], required: true, validator: isOrderFoodDT, isArray: true })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'facility'
-  ], required: true, validator: isFacilityDTS})) return false;
+  ], required: true, validator: isFacilityDTS })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'user'
-  ], required: false, validator: isUserDT})) return false;
+  ], required: false, validator: isUserDT })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'address'
-  ], required: false, validator: isAddressDT})) return false;
+  ], required: false, validator: isAddressDT })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'customerName'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };
@@ -60,17 +60,17 @@ export type OrderDTS = Omit<OrderDT, 'user' | 'orderFoods' | 'address' | 'facili
 
 export const isOrderDTS = (obj: unknown): obj is OrderDTS => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id', 'totalCost', 'facilityId'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'deliverAt', 'status', 'archiveAddress', 'customerPhonenumber'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'customerName'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };

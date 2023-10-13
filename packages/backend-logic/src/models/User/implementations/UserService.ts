@@ -4,7 +4,16 @@ import type { ISessionService } from '../../Session';
 import type { IAuthController } from '../../Auth';
 import type { AdministrateUserBody } from '@m-cafe-app/utils';
 import { User } from '@m-cafe-app/models';
-import { ApplicationError, AuthServiceError, BannedError, CredentialsError, DatabaseError, PasswordLengthError, ProhibitedError, UnknownError, hasOwnProperty } from '@m-cafe-app/utils';
+import {
+  ApplicationError,
+  AuthServiceError,
+  BannedError,
+  CredentialsError,
+  DatabaseError,
+  PasswordLengthError,
+  ProhibitedError,
+  UnknownError
+} from '@m-cafe-app/utils';
 import { UserMapper } from '../infrastructure';
 import { maxPasswordLen, minPasswordLen, possibleUserRights } from '@m-cafe-app/shared-constants';
 import config from '../../../config.js';
@@ -62,7 +71,8 @@ export class UserService implements IUserService {
 
     const savedUser = await this.repo.create(userDTN);
 
-    const { user: authorizedUser, auth: userAuth } = await this.resolveAuthLookupHashConflict(savedUser, userDTN.password);
+    const { user: authorizedUser, auth: userAuth }
+      = await this.resolveAuthLookupHashConflict(savedUser, userDTN.password);
 
     if (!authorizedUser.rights)
       throw new ApplicationError('Failed to create user');
@@ -129,7 +139,11 @@ export class UserService implements IUserService {
     return res;
   }
 
-  async authenticate(password: string, credential: UserUniqueProperties, userAgent: string): Promise<{ user: UserDT; auth: AuthResponse; }> {
+  async authenticate(
+    password: string,
+    credential: UserUniqueProperties,
+    userAgent: string
+  ): Promise<{ user: UserDT; auth: AuthResponse; }> {
 
     if (credential.phonenumber === config.SUPERADMIN_PHONENUMBER) throw new ProhibitedError('Superadmin must login only with a username');
 
@@ -180,12 +194,12 @@ export class UserService implements IUserService {
     if (userSubject.phonenumber === config.SUPERADMIN_PHONENUMBER)
       throw new ProhibitedError('Attempt to alter superadmin');
 
-    if (hasOwnProperty(body, 'restore') && body.restore) {
+    if (body.restore) {
       userSubject = await this.restore(id);
     }
 
-    if (hasOwnProperty(body, 'rights')) {
-      if (possibleUserRights.includes(body.rights!)) {
+    if (body.rights) {
+      if (possibleUserRights.includes(body.rights)) {
 
         const updUserRights = new User(
           id,
@@ -197,6 +211,8 @@ export class UserService implements IUserService {
         );
 
         userSubject = await this.repo.update(updUserRights);
+
+        await this.sessionService.updateAllByUserId(id, body.rights);
       }
 
       if (userSubject.rights === 'disabled') {
@@ -313,7 +329,11 @@ export class UserService implements IUserService {
     return logger.info('Super admin user successfully created!');
   }
 
-  private async resolveAuthLookupHashConflict(user: User, password: string, tries: number = 0): Promise<{ user: User; auth: AuthResponse; }> {
+  private async resolveAuthLookupHashConflict(
+    user: User,
+    password: string,
+    tries: number = 0
+  ): Promise<{ user: User; auth: AuthResponse; }> {
 
     if (tries > 5) throw new ApplicationError('Too many tries. This can happen once in an enormous amount of times. Interrupted to avoid data loss. Please, try again manually.');
 

@@ -12,13 +12,13 @@ export type NewFoodBody = Omit<FoodDT, 'id' | 'nameLoc' | 'descriptionLoc' | 'fo
 
 export const isNewFoodBody = (obj: unknown): obj is NewFoodBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc', 'descriptionLoc'
-  ], required: true, validator: isNewLocString})) return false;
+  ], required: true, validator: isNewLocString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'price', 'foodTypeId'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
   return true;
 };
@@ -31,13 +31,13 @@ export type EditFoodBody = Omit<NewFoodBody, 'nameLoc' | 'descriptionLoc'>
     
 export const isEditFoodBody = (obj: unknown): obj is EditFoodBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc', 'descriptionLoc'
-  ], required: true, validator: isEditLocString})) return false;
+  ], required: true, validator: isEditLocString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'price', 'foodTypeId'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
   return true;
 };

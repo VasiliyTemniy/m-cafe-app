@@ -102,20 +102,20 @@ export class UiSettingService implements IUiSettingService {
           switch (uiSettingType) {
             case 'classNames':
               for (const className of allowedClassNamesUiSettingsReadonly) {
-                await this.create({ name: className, value: 'false', group: componentGroup, theme});
+                await this.create({ name: className, value: 'false', group: componentGroup, theme });
               }
               break;
             case 'specific':
               break;
             case 'baseVariant':
-              await this.create({ name: 'baseVariant', value: 'alpha', group: componentGroup, theme});
+              await this.create({ name: 'baseVariant', value: 'alpha', group: componentGroup, theme });
               break;
             case 'baseColorVariant':
-              await this.create({ name: 'baseColorVariant', value: 'alpha-color', group: componentGroup, theme});
+              await this.create({ name: 'baseColorVariant', value: 'alpha-color', group: componentGroup, theme });
               break;
             case 'inlineCSS':
               for (const inlineCSSKey of allowedCSSPropertiesKeys) {
-                await this.create({ name: inlineCSSKey, value: 'false', group: componentGroup, theme});
+                await this.create({ name: inlineCSSKey, value: 'false', group: componentGroup, theme });
               }
               break;
             default:
@@ -130,7 +130,7 @@ export class UiSettingService implements IUiSettingService {
           const specificUiSetting = specificUiSettingsReadonly[componentGroup as keyof typeof specificUiSettingsReadonly];
           for (const specificUiSettingKey in specificUiSetting) {
             const value = specificUiSetting[specificUiSettingKey as keyof typeof specificUiSetting];
-            await this.create({ name: specificUiSettingKey, value, group: componentGroup, theme});
+            await this.create({ name: specificUiSettingKey, value, group: componentGroup, theme });
           }
         }
       } catch (error) {

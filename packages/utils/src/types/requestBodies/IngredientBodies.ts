@@ -11,13 +11,13 @@ export type NewIngredientBody = Omit<IngredientDT, 'id' | 'nameLoc' | 'stockMeas
 
 export const isNewIngredientBody = (obj: unknown): obj is NewIngredientBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc', 'stockMeasureLoc'
-  ], required: true, validator: isNewLocString})) return false;
+  ], required: true, validator: isNewLocString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'proteins', 'fats', 'carbohydrates', 'calories'
-  ], required: false, validator: isNumber})) return false;
+  ], required: false, validator: isNumber })) return false;
 
   return true;
 };
@@ -31,13 +31,13 @@ export type EditIngredientBody = Omit<NewIngredientBody, 'nameLoc' | 'stockMeasu
   
 export const isEditIngredientBody = (obj: unknown): obj is EditIngredientBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc', 'stockMeasureLoc'
-  ], required: true, validator: isEditLocString})) return false;
+  ], required: true, validator: isEditLocString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'proteins', 'fats', 'carbohydrates', 'calories'
-  ], required: false, validator: isNumber})) return false;
+  ], required: false, validator: isNumber })) return false;
 
   return true;
 };

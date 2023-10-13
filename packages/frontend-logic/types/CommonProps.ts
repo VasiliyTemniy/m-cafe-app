@@ -1,19 +1,3 @@
-export type InputSpecificValue = {
-  labelAsPlaceholder: boolean,
-  useBarBelow: boolean,
-  firefoxFix: boolean
-} | undefined;
-
-export type NotificationSpecificValue = {
-  animate: boolean,
-  hidden: boolean
-} | undefined;
-
-export type LCSpecificValue =
-  undefined |
-  InputSpecificValue |
-  NotificationSpecificValue;
-
 export interface CommonProps {
   classNameOverride?: string;
   classNameAddon?: string;

@@ -1,4 +1,4 @@
-import {Food} from './Food.js';
+import { Food } from './Food.js';
 import { FoodComponent } from './FoodComponent.js';
 
 

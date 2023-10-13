@@ -22,25 +22,25 @@ export type FacilityDT = Omit<MapToDT<FacilityData>, 'nameLocId' | 'descriptionL
 
 export const isFacilityDT = (obj: unknown): obj is FacilityDT => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc', 'descriptionLoc'
-  ], required: true, validator: isLocStringDT})) return false;
+  ], required: true, validator: isLocStringDT })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'address'
-  ], required: true, validator: isAddressDT})) return false;
+  ], required: true, validator: isAddressDT })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'managers'
-  ], required: false, validator: isUserDT, isArray: true})) return false;
+  ], required: false, validator: isUserDT, isArray: true })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'stocks'
-  ], required: false, validator: isStockDT, isArray: true})) return false;
+  ], required: false, validator: isStockDT, isArray: true })) return false;
 
   return true;
 };
@@ -53,13 +53,13 @@ export type FacilityDTS = Omit<FacilityDT, 'descriptionLoc' | 'address' | 'manag
 };
 
 export const isFacilityDTS = (obj: unknown): obj is FacilityDTS =>{
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc'
-  ], required: true, validator: isLocStringDT})) return false;
+  ], required: true, validator: isLocStringDT })) return false;
 
   return true;
 };

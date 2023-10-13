@@ -302,7 +302,9 @@ After deletion, user's credentials are removed from auth server`, async () => {
       expect(e.message).to.equal(`No user entry with this id ${user.id}`);
     }
 
-    const authResponse = await userService.authController.verifyCredentials({ lookupHash: userInDb.lookupHash, password: newUserInfo.password });
+    const authResponse = await userService.authController.verifyCredentials({
+      lookupHash: userInDb.lookupHash, password: newUserInfo.password
+    });
 
     expect(authResponse.success).to.equal(false);
     expect(authResponse.error).to.equal('lookupHash not found');

@@ -16,13 +16,13 @@ export interface RequestCustom extends Request {
 }
 
 export const isRequestCustom = (req: Request): req is RequestCustom => {
-  if (!checkProperties({obj: req, properties: [
+  if (!checkProperties({ obj: req, properties: [
     'token'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj: req, properties: [
+  if (!checkProperties({ obj: req, properties: [
     'userId'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
   return true;
 };
@@ -47,9 +47,9 @@ export interface RequestWithUserRights extends Request {
 }
 
 export const isRequestWithUserRights = (req: Request): req is RequestWithUserRights => {
-  if (!checkProperties({obj: req, properties: [
+  if (!checkProperties({ obj: req, properties: [
     'rights'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
   return true;
 };

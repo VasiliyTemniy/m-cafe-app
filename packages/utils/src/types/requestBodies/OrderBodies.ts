@@ -13,9 +13,9 @@ export type NewOrderFood = Omit<OrderFoodDT, 'id' | 'archivePrice' | 'archiveFoo
 
 export const isNewOrderFood = (obj: unknown): obj is NewOrderFood => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'amount', 'foodId'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
   return true;
 };
@@ -30,29 +30,29 @@ export type NewOrderBody = Omit<OrderDT, 'id' | 'totalCost' | 'user' | 'orderFoo
 
 export const isNewOrderBody = (obj: unknown): obj is NewOrderBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'orderFoods'
-  ], required: true, validator: isNewOrderFood, isArray: true})) return false;
+  ], required: true, validator: isNewOrderFood, isArray: true })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'deliverAt', 'customerPhonenumber'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'facilityId'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'address'
-  ], required: false, validator: isAddressDT}))
-    if (!checkProperties({obj, properties: [
+  ], required: false, validator: isAddressDT }))
+    if (!checkProperties({ obj, properties: [
       'newAddress'
-    ], required: false, validator: isNewAddressBody}))
+    ], required: false, validator: isNewAddressBody }))
       return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'customerName'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };
@@ -66,29 +66,29 @@ export type EditOrderBody = Omit<NewOrderBody, 'orderFoods'>
 export const isEditOrderBody = (obj: unknown): obj is EditOrderBody => {
 
   
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'orderFoods'
-  ], required: true, validator: isNewOrderFood, isArray: true})) return false;
+  ], required: true, validator: isNewOrderFood, isArray: true })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'deliverAt', 'customerPhonenumber'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'facilityId'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'address'
-  ], required: false, validator: isAddressDT}))
-    if (!checkProperties({obj, properties: [
+  ], required: false, validator: isAddressDT }))
+    if (!checkProperties({ obj, properties: [
       'newAddress'
-    ], required: false, validator: isNewAddressBody}))
+    ], required: false, validator: isNewAddressBody }))
       return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'customerName'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };
@@ -100,9 +100,9 @@ export type EditOrderStatusBody = {
 
 export const isEditOrderStatusBody = (obj: unknown): obj is EditOrderStatusBody => {
   
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'status'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
   return true;
 };

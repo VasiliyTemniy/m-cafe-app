@@ -11,21 +11,21 @@ export type NewDynamicModuleBody = Omit<DynamicModuleDT, 'id' | 'locString' | 'p
 
 export const isNewDynamicModuleBody = (obj: unknown): obj is NewDynamicModuleBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'moduleType', 'page'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'placement'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'locString'
-  ], required: false, validator: isNewLocString})) return false;
+  ], required: false, validator: isNewLocString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'placementType', 'className', 'inlineCss', 'url'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };
@@ -38,21 +38,21 @@ export type EditDynamicModuleBody = Omit<NewDynamicModuleBody, 'locString'>
 
 export const isEditDynamicModuleBody = (obj: unknown): obj is EditDynamicModuleBody => {
   
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'moduleType', 'page'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'placement'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'locString'
-  ], required: false, validator: isEditLocString})) return false;
+  ], required: false, validator: isEditLocString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'placementType', 'className', 'inlineCss', 'url'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
   return true;
 };

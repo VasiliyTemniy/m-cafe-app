@@ -11,17 +11,17 @@ describe('Type validators tests: checkProperties', () => {
       hobbies: ['reading', 'running']
     };
 
-    const result1 = checkProperties({obj, properties: [
+    const result1 = checkProperties({ obj, properties: [
       'name'
-    ], required: true, validator: isString});
+    ], required: true, validator: isString });
 
-    const result2 = checkProperties({obj, properties: [
+    const result2 = checkProperties({ obj, properties: [
       'age'
-    ], required: true, validator: isNumber});
+    ], required: true, validator: isNumber });
 
-    const result3 = checkProperties({obj, properties: [
+    const result3 = checkProperties({ obj, properties: [
       'hobbies'
-    ], required: true, validator: isString, isArray: true});
+    ], required: true, validator: isString, isArray: true });
 
     expect(result1).to.equal(true);
     expect(result2).to.equal(true);
@@ -34,9 +34,9 @@ describe('Type validators tests: checkProperties', () => {
       age: '25'
     };
 
-    const result = checkProperties({obj, properties: [
+    const result = checkProperties({ obj, properties: [
       'name', 'age', 'hobbies'
-    ], required: true, validator: isString});
+    ], required: true, validator: isString });
 
     expect(result).to.equal(false);
   });
@@ -48,13 +48,13 @@ describe('Type validators tests: checkProperties', () => {
       hobbies: ['reading', 'running']
     };
 
-    const result1 = checkProperties({obj, properties: [
+    const result1 = checkProperties({ obj, properties: [
       'name', 'age'
-    ], required: true, validator: isString});
+    ], required: true, validator: isString });
 
-    const result2 = checkProperties({obj, properties: [
+    const result2 = checkProperties({ obj, properties: [
       'hobbies'
-    ], required: true, validator: isNumber, isArray: true});
+    ], required: true, validator: isNumber, isArray: true });
 
     expect(result1).to.equal(false);
     expect(result2).to.equal(false);
@@ -68,9 +68,9 @@ describe('Type validators tests: checkProperties', () => {
       weight: '80'
     };
 
-    const result = checkProperties({obj, properties: [
+    const result = checkProperties({ obj, properties: [
       'name', 'age', 'height', 'weight', 'hobbies', 'hobby', 'hobby2'
-    ], required: false, validator: isString});
+    ], required: false, validator: isString });
 
     expect(result).to.equal(true);
   });
@@ -82,9 +82,9 @@ describe('Type validators tests: checkProperties', () => {
       hobbies: ['reading', 'running', 30]
     };
 
-    const result = checkProperties({obj, properties: [
+    const result = checkProperties({ obj, properties: [
       'hobbies'
-    ], required: true, validator: isNumber, isArray: true});
+    ], required: true, validator: isNumber, isArray: true });
 
     expect(result).to.equal(false);
   });
@@ -96,9 +96,9 @@ describe('Type validators tests: checkProperties', () => {
       hobbies: ['reading', 'running']
     };
     
-    const result = checkProperties({obj, properties: [
+    const result = checkProperties({ obj, properties: [
       'hobbies'
-    ], required: true, validator: isString, isArray: true});
+    ], required: true, validator: isString, isArray: true });
 
     expect(result).to.equal(true);
   });

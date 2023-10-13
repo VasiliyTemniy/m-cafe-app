@@ -6,9 +6,9 @@ export type EditOrderFoodBody = NewOrderFood & { id: number };
 
 export const isEditOrderFoodBody = (obj: unknown): obj is EditOrderFoodBody => {
   
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'amount', 'foodId', 'id'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
   return true;
 };

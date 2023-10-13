@@ -1,6 +1,6 @@
 import { User } from './User.js';
 import { Address } from './Address.js';
-import {Food} from './Food.js';
+import { Food } from './Food.js';
 import { Ingredient } from './Ingredient.js';
 import { Order } from './Order.js';
 import { FoodComponent } from './FoodComponent.js';

@@ -20,8 +20,11 @@ export type MapToStrings<T> = {
   [Property in keyof T]: string
 };
 
-export const hasOwnProperty = (obj: unknown, property: string): property is keyof typeof obj => Object.prototype.hasOwnProperty.call(obj, property);
-export const hasOwnProperties = (obj: unknown, properties: string[]) => properties.every(property => hasOwnProperty(obj, property));
+export const hasOwnProperty = (obj: unknown, property: string): property is keyof typeof obj =>
+  Object.prototype.hasOwnProperty.call(obj, property);
+  
+export const hasOwnProperties = (obj: unknown, properties: string[]) =>
+  properties.every(property => hasOwnProperty(obj, property));
 
 
 /**

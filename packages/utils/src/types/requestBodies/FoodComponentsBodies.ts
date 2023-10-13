@@ -8,13 +8,13 @@ export type NewFoodComponent = Omit<FoodComponentDT, 'id' | 'component'>
 
 export const isNewFoodComponent = (obj: unknown): obj is NewFoodComponent => {
   
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'componentId', 'amount'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'compositeFood'
-  ], required: true, validator: isBoolean})) return false;
+  ], required: true, validator: isBoolean })) return false;
 
   return true;
 };
@@ -26,9 +26,9 @@ export type AddFoodComponentsBody = {
 
 export const isAddFoodComponentsBody = (obj: unknown): obj is AddFoodComponentsBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'foodComponents'
-  ], required: true, validator: isNewFoodComponent, isArray: true})) return false;
+  ], required: true, validator: isNewFoodComponent, isArray: true })) return false;
 
   return true;
 };

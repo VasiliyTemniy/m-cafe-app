@@ -13,13 +13,13 @@ export type FoodTypeDT = Omit<MapToDT<FoodTypeData>, 'nameLocId' | 'descriptionL
 
 export const isFoodTypeDT = (obj: unknown): obj is FoodTypeDT => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'id'
-  ], required: true, validator: isNumber})) return false;
+  ], required: true, validator: isNumber })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'nameLoc', 'descriptionLoc'
-  ], required: true, validator: isLocStringDT})) return false;
+  ], required: true, validator: isLocStringDT })) return false;
 
   return true;
 };

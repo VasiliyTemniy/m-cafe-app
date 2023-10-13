@@ -16,17 +16,17 @@ export type NewPictureBody = {
 
 export const isNewPictureBody = (obj: unknown): obj is NewPictureBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'altTextMainStr', 'subjectId', 'type'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'altTextSecStr', 'altTextAltStr'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'orderNumber'
-  ], required: false, validator: (value) => !isNaN(Number(value))})) return false;
+  ], required: false, validator: (value) => !isNaN(Number(value)) })) return false;
 
   return true;
 };
@@ -36,17 +36,17 @@ export type EditPictureBody = Omit<NewPictureBody, 'subjectId'>;
 
 export const isEditPictureBody = (obj: unknown): obj is EditPictureBody => {
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'altTextMainStr', 'type'
-  ], required: true, validator: isString})) return false;
+  ], required: true, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'altTextSecStr', 'altTextAltStr'
-  ], required: false, validator: isString})) return false;
+  ], required: false, validator: isString })) return false;
 
-  if (!checkProperties({obj, properties: [
+  if (!checkProperties({ obj, properties: [
     'orderNumber'
-  ], required: false, validator: (value) => !isNaN(Number(value))})) return false;
+  ], required: false, validator: (value) => !isNaN(Number(value)) })) return false;
 
   return true;
 };
