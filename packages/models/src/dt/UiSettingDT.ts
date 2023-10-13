@@ -1,5 +1,5 @@
 import type { MapToDT, MapToDTN } from '@m-cafe-app/utils';
-import type { UiSetting } from '../domain';
+import type { UiSetting, UiSettingInmem } from '../domain';
 import {
   idOptional,
   idRequired,
@@ -35,3 +35,13 @@ export const isUiSettingDTN = (obj: unknown): obj is UiSettingDTN =>
 
 export const isUiSettingDTNMany = (obj: unknown): obj is UiSettingDTN[] =>
   isManyEntity(obj, isUiSettingDTN);
+
+
+
+export type UiSettingInmemDT = MapToDT<UiSettingInmem>;
+
+export const isUiSettingInmemDT = (obj: unknown): obj is UiSettingInmemDT =>
+  isEntity(obj, [uiSettingDTPropertiesGroup]);
+
+export const isUiSettingInmemDTMany = (obj: unknown): obj is UiSettingInmemDT[] =>
+  isManyEntity(obj, isUiSettingInmemDT);
