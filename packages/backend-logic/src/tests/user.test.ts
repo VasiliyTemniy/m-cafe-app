@@ -1,4 +1,4 @@
-import type { UserDTU } from '@m-cafe-app/models';
+import type { AuthDTRequest, UserDTU } from '@m-cafe-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import { UserRepoSequelizePG, UserService } from '../models/User';
@@ -414,7 +414,7 @@ After deletion, user's credentials are removed from auth server`, async () => {
 
     const { auth } = await userService.create(newUserInfo, 'test');
 
-    const authResponse = await userService.authController.refreshToken({ token: auth.token });
+    const authResponse = await userService.authController.refreshToken({ token: auth.token, ttl: '3600s' });
 
     expect(authResponse.id).to.equal(auth.id);
     expect(authResponse.token).to.not.equal(auth.token);
@@ -556,6 +556,59 @@ Upon logout, Sessions get deleted only for specific userAgent`, async () => {
     const allUserSessionsAfterRemoval = await userService.sessionService.getAllByUserId(userIdFromToken);
 
     expect(allUserSessionsAfterRemoval.length).to.equal(0);
+  });
+
+  it('should clean up expired and malformed Sessions. Test awaits 1 second to expire tokens', async () => {
+
+    // Create user, auth and Session with recieved token under the hood. Token TTL is taken from config here
+    const { user, auth } = await userService.create(newUserInfo, 'test');
+    if (!user.rights) return expect(true).to.equal(false);
+
+    const lookupHash = (await userService.repo.getById(user.id)).lookupHash;
+    if (!lookupHash) return expect(true).to.equal(false);
+
+    // Make a request with quickly expired token
+    const authRequest2: AuthDTRequest = {
+      id: user.id,
+      lookupHash,
+      password: newUserInfo.password,
+      ttl: '1s'
+    };
+
+    const auth2 = await userService.authController.grant(authRequest2);
+
+    await userService.sessionService.create(user.id, auth2.token, 'test2', user.rights);
+
+    // Make a request with quickly expired token: another one for sure
+    const authRequest3: AuthDTRequest = {
+      id: user.id,
+      lookupHash,
+      password: newUserInfo.password,
+      ttl: '1s'
+    };
+
+    const auth3 = await userService.authController.grant(authRequest3);
+
+    await userService.sessionService.create(user.id, auth3.token, 'test3', user.rights);
+
+    // Create malformed Session
+    await userService.sessionService.create(user.id, 'malformed', 'test4', user.rights);
+
+    // Await 1 second for tokens to expire
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const userSessionsBeforeCleanup = await userService.sessionService.getAllByUserId(user.id);
+
+    expect(userSessionsBeforeCleanup.length).to.equal(4);
+
+    await userService.cleanSessionRepo();
+
+    const userSessions = await userService.sessionService.getAllByUserId(user.id);
+
+    // Only original auth Session must be left
+    expect(userSessions.length).to.equal(1);
+    expect(userSessions[0].token).to.equal(auth.token);
+
   });
 
 });
