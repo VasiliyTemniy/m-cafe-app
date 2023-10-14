@@ -82,6 +82,7 @@ const fixedLocsPath = __dirname + '/src/locales';
 
 export default {
   SUPERADMIN_PHONENUMBER,
+  TOKEN_TTL,
   cookieExpiracyMS,
   sessionCookieOptions,
   packageDefinitionAuth,
