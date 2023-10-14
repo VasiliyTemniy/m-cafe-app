@@ -7,6 +7,7 @@ export interface UpdateAuthRequest {
   'lookupHash'?: (string);
   'oldPassword'?: (string);
   'newPassword'?: (string);
+  'ttl'?: (string);
 }
 
 export interface UpdateAuthRequest__Output {
@@ -14,4 +15,5 @@ export interface UpdateAuthRequest__Output {
   'lookupHash'?: (string);
   'oldPassword'?: (string);
   'newPassword'?: (string);
+  'ttl'?: (string);
 }

@@ -3,7 +3,6 @@ import type { MessageTypeDefinition } from '@grpc/proto-loader';
 
 import type { AuthServiceClient as _auth_AuthServiceClient, AuthServiceDefinition as _auth_AuthServiceDefinition } from './auth/AuthService';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> = {
   new(...args: ConstructorParameters<Constructor>): Subtype;
 };
@@ -22,9 +21,10 @@ export interface ProtoGrpcType {
     PingResponse: MessageTypeDefinition
     PublicKeyRequest: MessageTypeDefinition
     PublicKeyResponse: MessageTypeDefinition
-    TokenRequest: MessageTypeDefinition
+    RefreshTokenRequest: MessageTypeDefinition
     UpdateAuthRequest: MessageTypeDefinition
     VerifyResponse: MessageTypeDefinition
+    VerifyTokenRequest: MessageTypeDefinition
   }
 }
 

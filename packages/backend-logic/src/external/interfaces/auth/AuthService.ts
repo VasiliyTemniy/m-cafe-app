@@ -1,7 +1,7 @@
 // Original file: src/protos/auth.proto
 
-import type * as grpc from '@grpc/grpc-js';
-import type { MethodDefinition } from '@grpc/proto-loader';
+import type * as grpc from '@grpc/grpc-js'
+import type { MethodDefinition } from '@grpc/proto-loader'
 import type { AuthRequest as _auth_AuthRequest, AuthRequest__Output as _auth_AuthRequest__Output } from '../auth/AuthRequest';
 import type { AuthResponse as _auth_AuthResponse, AuthResponse__Output as _auth_AuthResponse__Output } from '../auth/AuthResponse';
 import type { CredentialsRequest as _auth_CredentialsRequest, CredentialsRequest__Output as _auth_CredentialsRequest__Output } from '../auth/CredentialsRequest';
@@ -13,9 +13,10 @@ import type { PingRequest as _auth_PingRequest, PingRequest__Output as _auth_Pin
 import type { PingResponse as _auth_PingResponse, PingResponse__Output as _auth_PingResponse__Output } from '../auth/PingResponse';
 import type { PublicKeyRequest as _auth_PublicKeyRequest, PublicKeyRequest__Output as _auth_PublicKeyRequest__Output } from '../auth/PublicKeyRequest';
 import type { PublicKeyResponse as _auth_PublicKeyResponse, PublicKeyResponse__Output as _auth_PublicKeyResponse__Output } from '../auth/PublicKeyResponse';
-import type { TokenRequest as _auth_TokenRequest, TokenRequest__Output as _auth_TokenRequest__Output } from '../auth/TokenRequest';
+import type { RefreshTokenRequest as _auth_RefreshTokenRequest, RefreshTokenRequest__Output as _auth_RefreshTokenRequest__Output } from '../auth/RefreshTokenRequest';
 import type { UpdateAuthRequest as _auth_UpdateAuthRequest, UpdateAuthRequest__Output as _auth_UpdateAuthRequest__Output } from '../auth/UpdateAuthRequest';
 import type { VerifyResponse as _auth_VerifyResponse, VerifyResponse__Output as _auth_VerifyResponse__Output } from '../auth/VerifyResponse';
+import type { VerifyTokenRequest as _auth_VerifyTokenRequest, VerifyTokenRequest__Output as _auth_VerifyTokenRequest__Output } from '../auth/VerifyTokenRequest';
 
 export interface AuthServiceClient extends grpc.Client {
   CreateAuth(argument: _auth_AuthRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
@@ -72,14 +73,14 @@ export interface AuthServiceClient extends grpc.Client {
   ping(argument: _auth_PingRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
   ping(argument: _auth_PingRequest, callback: grpc.requestCallback<_auth_PingResponse__Output>): grpc.ClientUnaryCall;
   
-  RefreshToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  RefreshToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  RefreshToken(argument: _auth_TokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  RefreshToken(argument: _auth_TokenRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  refreshToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  refreshToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  refreshToken(argument: _auth_TokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  refreshToken(argument: _auth_TokenRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  RefreshToken(argument: _auth_RefreshTokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  RefreshToken(argument: _auth_RefreshTokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  RefreshToken(argument: _auth_RefreshTokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  RefreshToken(argument: _auth_RefreshTokenRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  refreshToken(argument: _auth_RefreshTokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  refreshToken(argument: _auth_RefreshTokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  refreshToken(argument: _auth_RefreshTokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  refreshToken(argument: _auth_RefreshTokenRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
   
   UpdateAuth(argument: _auth_UpdateAuthRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
   UpdateAuth(argument: _auth_UpdateAuthRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
@@ -99,14 +100,14 @@ export interface AuthServiceClient extends grpc.Client {
   verifyCredentials(argument: _auth_CredentialsRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_VerifyResponse__Output>): grpc.ClientUnaryCall;
   verifyCredentials(argument: _auth_CredentialsRequest, callback: grpc.requestCallback<_auth_VerifyResponse__Output>): grpc.ClientUnaryCall;
   
-  VerifyToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  VerifyToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  VerifyToken(argument: _auth_TokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  VerifyToken(argument: _auth_TokenRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  verifyToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  verifyToken(argument: _auth_TokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  verifyToken(argument: _auth_TokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
-  verifyToken(argument: _auth_TokenRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  VerifyToken(argument: _auth_VerifyTokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  VerifyToken(argument: _auth_VerifyTokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  VerifyToken(argument: _auth_VerifyTokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  VerifyToken(argument: _auth_VerifyTokenRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  verifyToken(argument: _auth_VerifyTokenRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  verifyToken(argument: _auth_VerifyTokenRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  verifyToken(argument: _auth_VerifyTokenRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
+  verifyToken(argument: _auth_VerifyTokenRequest, callback: grpc.requestCallback<_auth_AuthResponse__Output>): grpc.ClientUnaryCall;
   
 }
 
@@ -123,13 +124,13 @@ export interface AuthServiceHandlers extends grpc.UntypedServiceImplementation {
   
   Ping: grpc.handleUnaryCall<_auth_PingRequest__Output, _auth_PingResponse>;
   
-  RefreshToken: grpc.handleUnaryCall<_auth_TokenRequest__Output, _auth_AuthResponse>;
+  RefreshToken: grpc.handleUnaryCall<_auth_RefreshTokenRequest__Output, _auth_AuthResponse>;
   
   UpdateAuth: grpc.handleUnaryCall<_auth_UpdateAuthRequest__Output, _auth_AuthResponse>;
   
   VerifyCredentials: grpc.handleUnaryCall<_auth_CredentialsRequest__Output, _auth_VerifyResponse>;
   
-  VerifyToken: grpc.handleUnaryCall<_auth_TokenRequest__Output, _auth_AuthResponse>;
+  VerifyToken: grpc.handleUnaryCall<_auth_VerifyTokenRequest__Output, _auth_AuthResponse>;
   
 }
 
@@ -140,8 +141,8 @@ export interface AuthServiceDefinition extends grpc.ServiceDefinition {
   GetPublicKey: MethodDefinition<_auth_PublicKeyRequest, _auth_PublicKeyResponse, _auth_PublicKeyRequest__Output, _auth_PublicKeyResponse__Output>
   GrantAuth: MethodDefinition<_auth_AuthRequest, _auth_AuthResponse, _auth_AuthRequest__Output, _auth_AuthResponse__Output>
   Ping: MethodDefinition<_auth_PingRequest, _auth_PingResponse, _auth_PingRequest__Output, _auth_PingResponse__Output>
-  RefreshToken: MethodDefinition<_auth_TokenRequest, _auth_AuthResponse, _auth_TokenRequest__Output, _auth_AuthResponse__Output>
+  RefreshToken: MethodDefinition<_auth_RefreshTokenRequest, _auth_AuthResponse, _auth_RefreshTokenRequest__Output, _auth_AuthResponse__Output>
   UpdateAuth: MethodDefinition<_auth_UpdateAuthRequest, _auth_AuthResponse, _auth_UpdateAuthRequest__Output, _auth_AuthResponse__Output>
   VerifyCredentials: MethodDefinition<_auth_CredentialsRequest, _auth_VerifyResponse, _auth_CredentialsRequest__Output, _auth_VerifyResponse__Output>
-  VerifyToken: MethodDefinition<_auth_TokenRequest, _auth_AuthResponse, _auth_TokenRequest__Output, _auth_AuthResponse__Output>
+  VerifyToken: MethodDefinition<_auth_VerifyTokenRequest, _auth_AuthResponse, _auth_VerifyTokenRequest__Output, _auth_AuthResponse__Output>
 }
