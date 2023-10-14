@@ -11,7 +11,7 @@ const fixedLocPropertiesGroup: PropertyGroup = {
 };
 
 
-export type FixedLocDT = MapToDT<FixedLoc> & {
+export type FixedLocDT = Omit<MapToDT<FixedLoc>, 'locString'> & {
   locString: LocStringDT;
 };
 
@@ -19,7 +19,7 @@ export const isFixedLocDT = (obj: unknown): obj is FixedLocDT =>
   isEntity(obj, [ idRequired, fixedLocPropertiesGroup, locStringProperty ]);
 
 
-export type FixedLocDTS = MapToDT<FixedLocS> & {
+export type FixedLocDTS = Omit<MapToDT<FixedLocS>, 'locString'> & {
   locString: LocStringDTS;
 };
 
@@ -27,7 +27,7 @@ export const isFixedLocDTS = (obj: unknown): obj is FixedLocDTS =>
   isEntity(obj, [ fixedLocPropertiesGroup, locStringSimpleProperty ]);
 
 
-export type FixedLocDTN = MapToDTN<FixedLoc> & {
+export type FixedLocDTN = Omit<MapToDTN<FixedLoc>, 'locString'> & {
   locString: LocStringDTN;
 };
 
