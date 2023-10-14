@@ -7,6 +7,4 @@ export interface IUiSettingRepo extends ICRUDRepo<UiSetting, UiSettingDTN> {
 
 export interface IUiSettingSRepo extends IInmemRepo<UiSetting, UiSettingS> {
   getMany(theme?: string): Promise<UiSettingS[]>;
-  storeMany(uiSettings: UiSetting[]): Promise<void>;
-  remove(name: string): Promise<void>;
 }
