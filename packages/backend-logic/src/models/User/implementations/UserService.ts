@@ -126,7 +126,8 @@ export class UserService implements IUserService {
       id: updatedUser.id,
       lookupHash: updatedUser.lookupHash,
       oldPassword: userDTU.password,
-      newPassword: userDTU.newPassword ? userDTU.newPassword : userDTU.password
+      newPassword: userDTU.newPassword ? userDTU.newPassword : userDTU.password,
+      ttl: config.TOKEN_TTL
     });
 
     await this.sessionService.update(updatedUser.id, userAuth.token, userAgent, updatedUser.rights);
@@ -163,7 +164,12 @@ export class UserService implements IUserService {
     if (user.deletedAt)
       throw new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin');
 
-    const auth = await this.authController.grant({ id: user.id, lookupHash: user.lookupHash, password });
+    const auth = await this.authController.grant({
+      id: user.id,
+      lookupHash: user.lookupHash,
+      password,
+      ttl: config.TOKEN_TTL
+    });
 
     if (!auth.token || auth.error || auth.id !== user.id) {
       if (auth.error === 'invalid password')
@@ -320,7 +326,8 @@ export class UserService implements IUserService {
     await this.authController.create({
       id: savedSuperAdmin.id,
       lookupHash: savedSuperAdmin.lookupHash,
-      password: superAdminPassword
+      password: superAdminPassword,
+      ttl: config.TOKEN_TTL
     });
   
     process.env.SUPERADMIN_USERNAME = '';
@@ -340,7 +347,12 @@ export class UserService implements IUserService {
     if (!user.lookupHash)
       throw new ApplicationError('User data corrupt: lookupHash is missing');
     
-    const auth = await this.authController.create({ id: user.id, lookupHash: user.lookupHash, password });
+    const auth = await this.authController.create({
+      id: user.id,
+      lookupHash: user.lookupHash,
+      password,
+      ttl: config.TOKEN_TTL
+    });
 
     if (!auth.token || auth.error || auth.id !== user.id) {
       logger.shout('Failed to create auth token', auth);  // ACHTUNG! REMOVE THIS WHEN ACTUAL ERROR TEXT IS KNOWN
