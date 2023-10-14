@@ -10,7 +10,7 @@ import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
 import { User as UserPG } from '@m-cafe-app/db';
 import sha1 from 'sha1';
 import { AuthConnectionHandler } from '../models/Auth/infrastructure';
-import config from '../config';
+import config, { redisSessionClient } from '../config';
 
 
 
@@ -20,7 +20,7 @@ import config from '../config';
 const userService = new UserService(
   new UserRepoSequelizePG(),
   new SessionService(
-    new SessionRepoRedis()
+    new SessionRepoRedis(redisSessionClient)
   ),
   new AuthController(
     new AuthConnectionHandler(

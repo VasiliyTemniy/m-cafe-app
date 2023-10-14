@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 import { UiSettingRepoRedis, UiSettingRepoSequelizePG, UiSettingService } from '../models/UiSetting';
 import { dbHandler } from '@m-cafe-app/db';
+import { redisUiSettingsClient } from '../config';
 
 
 // No mocking, no unit testing for this package. Only integration tests ->
@@ -9,7 +10,7 @@ import { dbHandler } from '@m-cafe-app/db';
 // in these tests
 const uiSettingService = new UiSettingService(
   new UiSettingRepoSequelizePG(),
-  new UiSettingRepoRedis()
+  new UiSettingRepoRedis(redisUiSettingsClient)
 );
 
 describe('UiSettingService implementation tests', () => {
