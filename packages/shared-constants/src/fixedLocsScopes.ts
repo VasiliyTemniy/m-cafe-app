@@ -2,7 +2,7 @@ import { possibleUserRights } from './possibleUserRights';
 
 export const fixedLocsScopesReadonly = [
   ...possibleUserRights,
-  'all',
+  'shared',
   'staff'
 ] as const;
 
