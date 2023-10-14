@@ -7,6 +7,12 @@ import {
   allowedClassNamesUiSettingsReadonly,
   allowedThemesReadonly,
   componentGroupsReadonly,
+  isAllowedClassNameUiSetting,
+  isAllowedTheme,
+  isCSSPropertyKey,
+  isComponentType,
+  isLayoutComponentName,
+  isUiSettingType,
   specificUiSettingsReadonly,
   uiSettingTypesReadonly
 } from '@m-cafe-app/shared-constants';
@@ -46,6 +52,22 @@ export class UiSettingService implements IUiSettingService {
   async create(uiSettingDTN: UiSettingDTN): Promise<UiSettingDT> {
 
     // CHECK if ui setting name, group and theme are allowed
+    if (!isUiSettingType(uiSettingDTN.name) &&
+        !isAllowedClassNameUiSetting(uiSettingDTN.name) &&
+        !isCSSPropertyKey(uiSettingDTN.name)
+    ) {
+      throw new ApplicationError(`Ui setting name ${uiSettingDTN.name} is not allowed`);
+    }
+
+    if (!isAllowedTheme(uiSettingDTN.theme)) {
+      throw new ApplicationError(`Ui setting theme ${uiSettingDTN.theme} is not allowed`);
+    }
+
+    if (!isComponentType(uiSettingDTN.group) &&
+        !isLayoutComponentName(uiSettingDTN.group)
+    ) {
+      throw new ApplicationError(`Ui setting group ${uiSettingDTN.group} is not allowed`);
+    }
 
     const savedUiSetting = await this.dbRepo.create(uiSettingDTN);
 
@@ -107,20 +129,20 @@ export class UiSettingService implements IUiSettingService {
           switch (uiSettingType) {
             case 'classNames':
               for (const className of allowedClassNamesUiSettingsReadonly) {
-                await this.create({ name: className, value: 'false', group: componentGroup, theme });
+                await this.dbRepo.create({ name: className, value: 'false', group: componentGroup, theme });
               }
               break;
             case 'specific':
               break;
             case 'baseVariant':
-              await this.create({ name: 'baseVariant', value: 'alpha', group: componentGroup, theme });
+              await this.dbRepo.create({ name: 'baseVariant', value: 'alpha', group: componentGroup, theme });
               break;
             case 'baseColorVariant':
-              await this.create({ name: 'baseColorVariant', value: 'alpha-color', group: componentGroup, theme });
+              await this.dbRepo.create({ name: 'baseColorVariant', value: 'alpha-color', group: componentGroup, theme });
               break;
             case 'inlineCSS':
               for (const inlineCSSKey of allowedCSSPropertiesKeys) {
-                await this.create({ name: inlineCSSKey, value: 'false', group: componentGroup, theme });
+                await this.dbRepo.create({ name: inlineCSSKey, value: 'false', group: componentGroup, theme });
               }
               break;
             default:
@@ -135,7 +157,7 @@ export class UiSettingService implements IUiSettingService {
           const specificUiSetting = specificUiSettingsReadonly[componentGroup as keyof typeof specificUiSettingsReadonly];
           for (const specificUiSettingKey in specificUiSetting) {
             const value = specificUiSetting[specificUiSettingKey as keyof typeof specificUiSetting];
-            await this.create({ name: specificUiSettingKey, value, group: componentGroup, theme });
+            await this.dbRepo.create({ name: specificUiSettingKey, value, group: componentGroup, theme });
           }
         }
       } catch (error) {
