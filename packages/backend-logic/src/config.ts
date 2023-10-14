@@ -52,6 +52,8 @@ export const redisSessionClient = createClient({ ...redisConfig, database: 0 });
 export const redisUiSettingsClient = createClient({ ...redisConfig, database: 1 });
 export const redisFixedLocsClient = createClient({ ...redisConfig, database: 2 });
 
+export type MyRedisClientType = typeof redisSessionClient;
+
 const __dirname = process.cwd();
 
 const authProtoPath = process.platform === 'win32'
