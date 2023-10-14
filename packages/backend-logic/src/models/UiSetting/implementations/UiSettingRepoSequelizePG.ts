@@ -33,9 +33,15 @@ export class UiSettingRepoSequelizePG implements IUiSettingRepo {
   }
 
   async update(uiSetting: UiSetting): Promise<UiSetting> {
-    const dbUiSetting = uiSetting.id
-      ? await UiSettingPG.scope('all').findByPk(uiSetting.id)
-      : await UiSettingPG.scope('all').findOne({ where: { name: uiSetting.name, theme: uiSetting.theme, group: uiSetting.group } });
+    const dbUiSetting = await UiSettingPG.scope('all').findByPk(uiSetting.id);
+
+    // Why did I do this id check? Update of ui settings should be done by admin;
+    // Admin _must_ have id on frontend, so why omit it in request body?
+    // Delete this some time
+    // const dbUiSetting = uiSetting.id
+    //   ? await UiSettingPG.scope('all').findByPk(uiSetting.id)
+    //   : await UiSettingPG.scope('all').findOne({ where: { name: uiSetting.name, theme: uiSetting.theme, group: uiSetting.group } });
+
     if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${uiSetting.id}`);
     dbUiSetting.value = uiSetting.value;
     await dbUiSetting.save();

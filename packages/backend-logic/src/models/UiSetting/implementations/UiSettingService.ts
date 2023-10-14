@@ -44,6 +44,9 @@ export class UiSettingService implements IUiSettingService {
   }
 
   async create(uiSettingDTN: UiSettingDTN): Promise<UiSettingDT> {
+
+    // CHECK if ui setting name, group and theme are allowed
+
     const savedUiSetting = await this.dbRepo.create(uiSettingDTN);
 
     await this.storeToInmem([savedUiSetting]);
@@ -75,9 +78,11 @@ export class UiSettingService implements IUiSettingService {
   }
 
   async remove(id: number): Promise<void> {
+    // Maybe add some variant for using in premium version? If yes, next line should be removed
     if (process.env.NODE_ENV !== 'test') return;
-    await this.dbRepo.remove(id);
-    // Maybe add refresh for inmem?
+    const removed = await this.dbRepo.remove(id);
+    if (removed && removed.name)
+      await this.inmemRepo.remove(removed.name);
   }
 
   async removeAll(): Promise<void> {
@@ -155,7 +160,7 @@ export class UiSettingService implements IUiSettingService {
    * or all UiSettingDTS objects if no theme is specified.
    */
   async getFromInmem(theme?: string): Promise<UiSettingDTS[]> {
-    return await this.inmemRepo.getAllThemed(theme);
+    return await this.inmemRepo.getMany(theme);
   }
 
   async flushInmem(): Promise<void> {
@@ -170,7 +175,7 @@ export class UiSettingService implements IUiSettingService {
    */
   async storeToInmem(uiSettings: UiSetting[]): Promise<void> {
     const nonFalsyUiSettings = uiSettings.filter(uiSetting => uiSetting.value !== 'false');
-    await this.inmemRepo.storeAll(nonFalsyUiSettings);
+    await this.inmemRepo.storeMany(nonFalsyUiSettings);
   }
 
   async connectInmem(): Promise<void> {

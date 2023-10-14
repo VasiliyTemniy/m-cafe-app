@@ -5,7 +5,7 @@ import { redisUiSettingsClient } from '../../../config';
 
 export class UiSettingRepoRedis implements IUiSettingSRepo {
 
-  async getAllThemed(theme?: string): Promise<UiSettingS[]> {
+  async getMany(theme?: string): Promise<UiSettingS[]> {
     const uiSettingsInmem: UiSettingS[] = [];
 
     for await (const key of redisUiSettingsClient.scanIterator()) {
@@ -25,7 +25,7 @@ export class UiSettingRepoRedis implements IUiSettingSRepo {
     return uiSettingsInmem;
   }
 
-  async storeAll(uiSettings: UiSetting[]): Promise<void> {
+  async storeMany(uiSettings: UiSetting[]): Promise<void> {
     const multi = redisUiSettingsClient.multi();
 
     for (const uiSetting of uiSettings) {
@@ -33,6 +33,10 @@ export class UiSettingRepoRedis implements IUiSettingSRepo {
     }
 
     await multi.exec();
+  }
+
+  async remove(name: string): Promise<void> {
+    await redisUiSettingsClient.del(name);
   }
 
   async removeAll(): Promise<void> {
