@@ -1,12 +1,9 @@
 import type { Session } from '@m-cafe-app/models';
-import type { ICRUDRepo } from '../../../utils';
+import type { ICRUDRepo, IInmemRepoBase } from '../../../utils';
 
 // SessionDT, SessionDTN does not exist so the arguments are Session
-export interface ISessionRepo extends Omit<ICRUDRepo<Session, Session>, 'remove' | 'getAll' | 'getById'> {
+export interface ISessionRepo extends Omit<ICRUDRepo<Session, Session>, 'remove' | 'getAll' | 'getById'>, IInmemRepoBase {
   getAllByUserId(userId: number): Promise<Session[]>;
   getOne(userId: number, userAgentHash: string): Promise<Session | undefined>;
   remove(userId: number, userAgentHash?: string): Promise<void>;
-  connect(): Promise<void>;
-  ping(): Promise<void>;
-  close(): Promise<void>;
 }
