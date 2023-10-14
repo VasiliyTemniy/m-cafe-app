@@ -77,11 +77,15 @@ if (!authUrl) throw new ApplicationError('AUTH_MICROSERVICE_URL not set');
 const authGrpcCredentials = grpc.credentials.createInsecure();
 
 
+const fixedLocsPath = __dirname + '/src/locales';
+
+
 export default {
   SUPERADMIN_PHONENUMBER,
   cookieExpiracyMS,
   sessionCookieOptions,
   packageDefinitionAuth,
   authUrl,
-  authGrpcCredentials
+  authGrpcCredentials,
+  fixedLocsPath
 };
