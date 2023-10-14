@@ -5,3 +5,4 @@ export * from './RequestCustom.js';
 export * from './JWTPayloadCustom.js';
 export * from './RedisRepoBase.js';
 export * from './IHasInmemRepoService.js';
+export * from './getFileReadPromises.js';
