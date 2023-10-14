@@ -185,10 +185,6 @@ export class UiSettingService implements IUiSettingService {
     return await this.inmemRepo.getMany(theme);
   }
 
-  async flushInmem(): Promise<void> {
-    await this.inmemRepo.removeAll();
-  }
-
   /**
    * Stores all the provided non-falsy `uiSettings` in memory for fast access for non-admin users.
    *
@@ -198,6 +194,10 @@ export class UiSettingService implements IUiSettingService {
   async storeToInmem(uiSettings: UiSetting[]): Promise<void> {
     const nonFalsyUiSettings = uiSettings.filter(uiSetting => uiSetting.value !== 'false');
     await this.inmemRepo.storeMany(nonFalsyUiSettings);
+  }
+
+  async flushInmem(): Promise<void> {
+    await this.inmemRepo.removeAll();
   }
 
   async connectInmem(): Promise<void> {
