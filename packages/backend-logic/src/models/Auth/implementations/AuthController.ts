@@ -1,4 +1,12 @@
-import type { AuthDTRequest, AuthDTURequest, AuthResponse, CredentialsRequest, VerifyResponse } from '@m-cafe-app/models';
+import type {
+  AuthDTRequest,
+  AuthDTURequest,
+  AuthResponse,
+  CredentialsRequest,
+  RefreshTokenRequest,
+  VerifyResponse,
+  VerifyTokenRequest
+} from '@m-cafe-app/models';
 import type { IAuthController, IAuthService } from '../interfaces';
 import type { AuthServiceClient } from '../../../external';
 import type { IAuthConnectionHandler } from '../infrastructure';
@@ -42,10 +50,10 @@ export class AuthController implements IAuthController {
       return this.create(req);
     }
 
-    const { id, lookupHash, password } = req;
+    const { id, lookupHash, password, ttl } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal?.createAuth({ id, lookupHash, password }, 
+      this.authServiceExternal?.createAuth({ id, lookupHash, password, ttl }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -70,10 +78,10 @@ export class AuthController implements IAuthController {
       return this.update(req);
     }
     
-    const { id, lookupHash, oldPassword, newPassword } = req;
+    const { id, lookupHash, oldPassword, newPassword, ttl } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal?.updateAuth({ id, lookupHash, oldPassword, newPassword }, 
+      this.authServiceExternal?.updateAuth({ id, lookupHash, oldPassword, newPassword, ttl }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -98,10 +106,10 @@ export class AuthController implements IAuthController {
       return this.grant(req);
     }
     
-    const { id, lookupHash, password } = req;
+    const { id, lookupHash, password, ttl } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal?.grantAuth({ id, lookupHash, password }, 
+      this.authServiceExternal?.grantAuth({ id, lookupHash, password, ttl }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
@@ -149,7 +157,7 @@ export class AuthController implements IAuthController {
     });
   }
 
-  async verifyToken(req: { token: string }): Promise<AuthResponse> {
+  async verifyToken(req: VerifyTokenRequest): Promise<AuthResponse> {
     if (!this.authServiceExternal) {
       await this.connect();
       return this.verifyToken(req);
@@ -177,7 +185,7 @@ export class AuthController implements IAuthController {
     });
   }
 
-  verifyTokenInternal(req: { token: string; }): AuthResponse {
+  verifyTokenInternal(req: VerifyTokenRequest): AuthResponse {
     
     const { token } = req;
 
@@ -190,16 +198,16 @@ export class AuthController implements IAuthController {
     return this.authServiceInternal.verifyTokenInternal(token, this.tokenPublicKeyPem, 'simple-micro-auth');
   }
 
-  async refreshToken(req: { token: string }): Promise<AuthResponse> {
+  async refreshToken(req: RefreshTokenRequest): Promise<AuthResponse> {
     if (!this.authServiceExternal) {
       await this.connect();
       return this.refreshToken(req);
     }
     
-    const { token } = req;
+    const { token, ttl } = req;
 
     return new Promise<AuthResponse>((resolve, reject) => {
-      this.authServiceExternal?.refreshToken({ token }, 
+      this.authServiceExternal?.refreshToken({ token, ttl }, 
         (err, response) => {
           if (err)
             return reject(new GrpcClientError(err.message));
