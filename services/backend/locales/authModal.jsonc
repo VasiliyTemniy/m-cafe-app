@@ -1,7 +1,7 @@
 // You can edit your locales here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for tNodePath
 {
   "ns": "authModal",
-  "sc": "all",
+  "sc": "shared",
   "loginForm": {
     "title": {
       "mainStr": "Вход в систему",
