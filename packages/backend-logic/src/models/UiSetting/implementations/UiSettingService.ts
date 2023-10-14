@@ -166,6 +166,7 @@ export class UiSettingService implements IUiSettingService {
     }
 
     await this.storeToInmem(await this.getAll());
+    logger.info('UI settings initialized');
   }
 
   async reset(): Promise<UiSettingDT[]> {
