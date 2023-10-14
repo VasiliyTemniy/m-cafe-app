@@ -66,14 +66,14 @@ export class SessionRepoRedis extends RedisRepoBase implements ISessionRepo {
         if (!validationResult.error) continue;
   
         if (validationResult.error.startsWith('TokenExpiredError')) {
-          await this.redisClient.del(key);
+          await this.redisClient.hDel(key, userAgentHash);
         } else {
           logger.error(
             'Attention! Invalid token for user: ', userId,
             'userAgent: ', userAgentHash,
             'got through initial validation, but now got: ', validationResult.error
           );
-          await this.redisClient.del(key);
+          await this.redisClient.hDel(key, userAgentHash);
         }
       }
 
