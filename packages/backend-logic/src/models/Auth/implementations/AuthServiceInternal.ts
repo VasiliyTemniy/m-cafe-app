@@ -13,7 +13,10 @@ export class AuthServiceInternal implements IAuthService {
     try {
       payload = jwt.verify(token, tokenPublicKeyPem, { algorithms: ['RS256'], issuer });
     } catch (e) {
-      if (e instanceof jwt.JsonWebTokenError) return new AuthResponse(0, '', `AuthorizationError: ${e.message}`);
+      if (e instanceof jwt.JsonWebTokenError) {
+        if (e.name === 'TokenExpiredError') return new AuthResponse(0, '', `TokenExpiredError: ${e.message}`);
+        else return new AuthResponse(0, '', `AuthorizationError: ${e.message}`);
+      }
       throw new UnknownError('Error while verifying token');
     }
 
