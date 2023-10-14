@@ -1,7 +1,7 @@
 import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils'; 
 import type { FixedLoc, FixedLocS } from '../domain';
 import type { LocStringDTN, LocStringDT, LocStringDTS } from './LocStringDT';
-import { isEntity, isString } from '@m-cafe-app/utils';
+import { isEntity, isManyEntity, isString } from '@m-cafe-app/utils';
 import { idRequired, locStringProperty, locStringSimpleProperty, locStringNewProperty } from './validationHelpers';
 
 
@@ -18,6 +18,9 @@ export type FixedLocDT = Omit<MapToDT<FixedLoc>, 'locString'> & {
 export const isFixedLocDT = (obj: unknown): obj is FixedLocDT =>
   isEntity(obj, [ idRequired, fixedLocPropertiesGroup, locStringProperty ]);
 
+export const isFixedLocDTMany = (obj: unknown): obj is FixedLocDT[] =>
+  isManyEntity(obj, isFixedLocDT);
+  
 
 export type FixedLocDTS = Omit<MapToDT<FixedLocS>, 'locString'> & {
   locString: LocStringDTS;

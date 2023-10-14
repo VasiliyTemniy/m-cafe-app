@@ -19,3 +19,9 @@ export class FixedLocS {
     readonly locString: LocStringS
   ) {}
 }
+
+export type FixedLocUniquePropertiesGroup = {
+  name: string,
+  namespace: string,
+  scope: string,
+};
