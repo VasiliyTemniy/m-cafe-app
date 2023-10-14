@@ -1,4 +1,4 @@
-import type { Session } from '@m-cafe-app/models';
+import type { AuthResponse, Session } from '@m-cafe-app/models';
 import type { ICRUDService } from '../../../utils';
 
 export type DestroySessionWhere = {
@@ -20,4 +20,5 @@ export interface ISessionService extends Omit<ICRUDService<Session, Session>, 'r
   connect(): Promise<void>;
   ping(): Promise<void>;
   close(): Promise<void>;
+  cleanRepo(tokenValidator: (req: { token: string }) => AuthResponse): Promise<void>;
 }

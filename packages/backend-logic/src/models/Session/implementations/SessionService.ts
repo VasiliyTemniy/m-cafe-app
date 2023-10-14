@@ -1,5 +1,5 @@
 import type { DestroySessionWhere, ISessionRepo, ISessionService } from '../interfaces';
-import { Session } from '@m-cafe-app/models';
+import { AuthResponse, Session } from '@m-cafe-app/models';
 import { ApplicationError } from '@m-cafe-app/utils';
 import sha1 from 'sha1';
 
@@ -71,6 +71,10 @@ export class SessionService implements ISessionService {
 
   async close(): Promise<void> {
     await this.repo.close();
+  }
+
+  async cleanRepo(tokenValidator: (req: { token: string; }) => AuthResponse): Promise<void> {
+    await this.repo.cleanRepo(tokenValidator);
   }
 
 }

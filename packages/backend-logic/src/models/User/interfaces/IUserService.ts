@@ -19,4 +19,5 @@ export interface IUserService extends Omit<ICRUDService<UserDT, UserDTN>, 'creat
   delete(id: number): Promise<void>
   initSuperAdmin(): Promise<void>
   // resolveAuthLookupHashConflict(user: User, password: string, tries?: number): Promise<{ user: User, auth: AuthResponse }> : private! Thank you, TS!
+  cleanSessionRepo(): Promise<void>
 }

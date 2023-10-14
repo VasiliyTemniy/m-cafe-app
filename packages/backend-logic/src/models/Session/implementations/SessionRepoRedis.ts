@@ -1,6 +1,6 @@
 import type { ISessionRepo } from '../interfaces';
-import { RedisError } from '@m-cafe-app/utils';
-import { Session } from '@m-cafe-app/models';
+import { RedisError, logger } from '@m-cafe-app/utils';
+import { AuthResponse, Session } from '@m-cafe-app/models';
 import { RedisRepoBase } from '../../../utils';
 
 
@@ -45,5 +45,38 @@ export class SessionRepoRedis extends RedisRepoBase implements ISessionRepo {
     const sessionInfoParts = sessionInfo.split(':');
     if (!sessionInfoParts || sessionInfoParts.length !== 2) throw new RedisError(`Somehow data for userId:${userId} and userAgent:${userAgentOrHash} malformed`);
     return new Session(userId, sessionInfoParts[0], userAgentOrHash, sessionInfoParts[1]);
+  }
+
+  async cleanRepo(tokenValidator: (req: { token: string; }) => AuthResponse): Promise<void> {
+    for await (const key of this.redisClient.scanIterator()) {
+
+      const keyParts = key.split(':');
+      if (!keyParts || keyParts.length !== 2) throw new RedisError(`Somehow data for key:${key} malformed`);
+
+      const userId = Number(keyParts[1]);
+      if (isNaN(userId)) throw new RedisError(`Somehow data for key:${key} malformed`);
+
+      const userSessions = await this.redisClient.hGetAll(key);
+
+      for (const userAgentHash in userSessions) {
+        const sessionInfo = userSessions[userAgentHash];
+        const token = this.parseSessionInfo(userId, userAgentHash, sessionInfo).token;
+
+        const validationResult = tokenValidator({ token });
+        if (!validationResult.error) continue;
+  
+        if (validationResult.error.startsWith('TokenExpiredError')) {
+          await this.redisClient.del(key);
+        } else {
+          logger.error(
+            'Attention! Invalid token for user: ', userId,
+            'userAgent: ', userAgentHash,
+            'got through initial validation, but now got: ', validationResult.error
+          );
+          await this.redisClient.del(key);
+        }
+      }
+
+    }
   }
 }

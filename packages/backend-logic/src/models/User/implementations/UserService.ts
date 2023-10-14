@@ -354,4 +354,8 @@ export class UserService implements IUserService {
 
     return { user, auth };
   }
+
+  async cleanSessionRepo(): Promise<void> {
+    await this.sessionService.cleanRepo((req: { token: string }) => this.authController.verifyTokenInternal(req));
+  }
 }
