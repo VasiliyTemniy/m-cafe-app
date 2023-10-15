@@ -1,9 +1,11 @@
 import type { Options } from 'sequelize';
 import * as dotenv from 'dotenv';
+import path from 'path';
 
 export const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 
 dotenv.config({
+  path: path.resolve('../../services/backend/.env'),
   override: isDockerized ? false : true
 });
 

@@ -6,10 +6,12 @@ import { readFileSync } from 'fs';
 import { createClient } from 'redis';
 import { loadSync } from '@grpc/proto-loader';
 import grpc from '@grpc/grpc-js';
+import path from 'path';
 
 export const isDockerized = (process.env.DOCKERIZED_DEV === 'true' || process.env.DOCKERIZED === 'true');
 
 dotenv.config({
+  path: path.resolve('../../services/backend/.env'),
   override: isDockerized ? false : true
 });
 
