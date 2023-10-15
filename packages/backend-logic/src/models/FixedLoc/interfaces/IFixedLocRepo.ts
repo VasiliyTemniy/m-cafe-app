@@ -3,7 +3,7 @@ import type { ICRUDRepo, IInmemRepo } from '../../../utils';
 
 export interface IFixedLocRepo extends ICRUDRepo<FixedLoc, FixedLocDTN> {
   getByScope(scope: string): Promise<FixedLoc[]>
-  getByUniqueProperties(properties: FixedLocUniquePropertiesGroup): Promise<FixedLoc>
+  getByUniqueProperties(properties: FixedLocUniquePropertiesGroup): Promise<FixedLoc | undefined>
 }
 
 export interface IFixedLocSRepo extends IInmemRepo<FixedLoc, FixedLocS> {
