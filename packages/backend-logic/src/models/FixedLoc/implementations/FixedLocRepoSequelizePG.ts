@@ -22,9 +22,9 @@ export class FixedLocRepoSequelizePG implements IFixedLocRepo {
     return FixedLocMapper.dbToDomain(dbFixedLoc);
   }
 
-  async getByUniqueProperties(properties: FixedLocUniquePropertiesGroup): Promise<FixedLoc> {
+  async getByUniqueProperties(properties: FixedLocUniquePropertiesGroup): Promise<FixedLoc | undefined> {
     const dbFixedLoc = await FixedLocPG.scope('all').findOne({ where: properties });
-    if (!dbFixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${properties}`);
+    if (!dbFixedLoc) return undefined;
     return FixedLocMapper.dbToDomain(dbFixedLoc);
   }
 
