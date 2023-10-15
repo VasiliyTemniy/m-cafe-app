@@ -1,3 +1,4 @@
+import '../config';
 import { dbHandler } from '@m-cafe-app/db';
 import { expect } from 'chai';
 import 'mocha';
