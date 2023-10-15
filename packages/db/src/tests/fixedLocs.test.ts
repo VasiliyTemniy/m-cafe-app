@@ -89,7 +89,7 @@ describe('Database FixedLoc model tests', () => {
     await FixedLoc.create({
       name: 'test',
       namespace: 'test',
-      scope: 'all',
+      scope: 'shared',
       locStringId: locString.id
     });
 
@@ -100,7 +100,7 @@ describe('Database FixedLoc model tests', () => {
     await FixedLoc.create({
       name: 'test2',
       namespace: 'test',
-      scope: 'all',
+      scope: 'shared',
       locStringId: filteredLocString.id
     });
 
@@ -123,7 +123,7 @@ describe('Database FixedLoc model tests', () => {
     await FixedLoc.create({
       name: 'test',
       namespace: 'test',
-      scope: 'all',
+      scope: 'shared',
       locStringId: locString.id
     });
 

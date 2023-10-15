@@ -81,7 +81,7 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
           where: {
             scope: {
               [Op.or]: [
-                'all',
+                'shared',
                 'customer',
               ]
             }
@@ -96,7 +96,7 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
             where: {
               scope: {
                 [Op.or]: [
-                  'all',
+                  'shared',
                   'customer',
                 ]
               }
