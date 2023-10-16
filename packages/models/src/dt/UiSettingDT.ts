@@ -5,7 +5,7 @@ import {
   isManyEntity,
   isString
 } from '@m-cafe-app/utils';
-import { idRequired } from './validationHelpers';
+import { idRequired } from './validationHelpers.js';
 
 
 const uiSettingDTPropertiesGroup: PropertyGroup = {
