@@ -8,7 +8,7 @@ import {
   isUnknownObject,
   isBoolean
 } from '@m-cafe-app/utils';
-import { idRequired, passwordRequired } from './validationHelpers';
+import { idRequired, passwordRequired } from './validationHelpers.js';
 
 
 const userDTPropertiesGroups: PropertyGroup[] = [{
