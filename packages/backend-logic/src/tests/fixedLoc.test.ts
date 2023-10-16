@@ -26,7 +26,7 @@ describe('FixedLocService implementation tests', () => {
     await fixedLocService.removeAll();
   });
 
-  it('should initialize ui settings properly, store them in db and redis', async () => {
+  it('should initialize fixed locs properly, store them in db and redis', async () => {
 
     // Path relative from backend-logic root
     await fixedLocService.initFixedLocs('../../services/backend/locales', 'jsonc');
@@ -40,6 +40,94 @@ describe('FixedLocService implementation tests', () => {
     expect(inmemFixedLocs.length).to.be.above(0);
 
     expect(fixedLocs.length).to.equal(inmemFixedLocs.length);
+
+  });
+
+  it('should update fixed locs in both redis and db', async () => {
+
+    await fixedLocService.initFixedLocs('../../services/backend/locales', 'jsonc');
+
+    const fixedLocs = await fixedLocService.getAll();
+
+    const randomFixedLoc = fixedLocs[Math.floor(Math.random() * (fixedLocs.length - 1))];
+
+    await fixedLocService.update({
+      id: randomFixedLoc.id,
+      name: randomFixedLoc.name,
+      namespace: randomFixedLoc.namespace,
+      scope: randomFixedLoc.scope,
+      locString: {
+        id: randomFixedLoc.locString.id,
+        mainStr: 'testupd1',
+        secStr: 'testupd2',
+        altStr: 'testupd3'
+      }
+    });
+
+    const updatedFixedLocs = await fixedLocService.getAll();
+
+    const updatedInmemFixedLocs = await fixedLocService.getFromInmem();
+
+    expect(updatedFixedLocs.length).to.equal(fixedLocs.length);
+    expect(updatedInmemFixedLocs.length).to.equal(fixedLocs.length);
+
+    const foundFixedLoc = updatedFixedLocs.find(fixedLoc => fixedLoc.id === randomFixedLoc.id);
+    if (!foundFixedLoc) return expect(true).to.equal(false);
+
+    expect(foundFixedLoc.name).to.equal(randomFixedLoc.name);
+    expect(foundFixedLoc.namespace).to.equal(randomFixedLoc.namespace);
+    expect(foundFixedLoc.scope).to.equal(randomFixedLoc.scope);
+    expect(foundFixedLoc.locString.mainStr).to.equal('testupd1');
+    expect(foundFixedLoc.locString.secStr).to.equal('testupd2');
+    expect(foundFixedLoc.locString.altStr).to.equal('testupd3');
+
+    const foundInInmemFixedLoc = updatedInmemFixedLocs.find(fixedLoc =>
+      fixedLoc.name === randomFixedLoc.name &&
+      fixedLoc.namespace === randomFixedLoc.namespace &&
+      fixedLoc.scope === randomFixedLoc.scope
+    );
+    if (!foundInInmemFixedLoc) return expect(true).to.equal(false);
+
+    expect(foundInInmemFixedLoc.locString.mainStr).to.equal('testupd1');
+    expect(foundInInmemFixedLoc.locString.secStr).to.equal('testupd2');
+    expect(foundInInmemFixedLoc.locString.altStr).to.equal('testupd3');
+
+  });
+
+  it('should update only loc strings of fixed locs, never other properties', async () => {
+
+    await fixedLocService.initFixedLocs('../../services/backend/locales', 'jsonc');
+
+    const fixedLocs = await fixedLocService.getAll();
+
+    const randomFixedLoc = fixedLocs[Math.floor(Math.random() * (fixedLocs.length - 1))];
+
+    await fixedLocService.update({
+      id: randomFixedLoc.id,
+      name: 'testupd',
+      namespace: 'testupd',
+      scope: 'testupd',
+      locString: {
+        id: randomFixedLoc.locString.id,
+        mainStr: 'testupd1',
+        secStr: 'testupd2',
+        altStr: 'testupd3'
+      }
+    });
+
+    const updatedFixedLocs = await fixedLocService.getAll();
+
+    expect(updatedFixedLocs.length).to.equal(fixedLocs.length);
+
+    const updFixedLoc = updatedFixedLocs.find(fixedLoc => fixedLoc.id === randomFixedLoc.id);
+    if (!updFixedLoc) return expect(true).to.equal(false);
+
+    expect(updFixedLoc.name).to.equal(randomFixedLoc.name);
+    expect(updFixedLoc.namespace).to.equal(randomFixedLoc.namespace);
+    expect(updFixedLoc.scope).to.equal(randomFixedLoc.scope);
+    expect(updFixedLoc.locString.mainStr).to.equal('testupd1');
+    expect(updFixedLoc.locString.secStr).to.equal('testupd2');
+    expect(updFixedLoc.locString.altStr).to.equal('testupd3');
 
   });
 
