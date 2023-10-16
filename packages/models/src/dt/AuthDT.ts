@@ -1,7 +1,7 @@
 import type { MapToDT, PropertyGroup } from '@m-cafe-app/utils';
 import type { AuthRequest, AuthResponse, VerifyResponse } from '../domain';
 import { isEntity, isString, isBoolean } from '@m-cafe-app/utils';
-import { idRequired } from './validationHelpers';
+import { idRequired } from './validationHelpers.js';
 
 
 export type AuthDTRequest = Omit<MapToDT<AuthRequest>, 'newPassword' | 'oldPassword'> & {
