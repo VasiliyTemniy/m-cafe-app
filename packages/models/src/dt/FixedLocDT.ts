@@ -2,7 +2,7 @@ import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
 import type { FixedLoc, FixedLocS } from '../domain';
 import type { LocStringDTN, LocStringDT, LocStringDTS } from './LocStringDT';
 import { isEntity, isManyEntity, isString } from '@m-cafe-app/utils';
-import { idRequired, locStringProperty, locStringSimpleProperty, locStringNewProperty } from './validationHelpers';
+import { idRequired, locStringProperty, locStringSimpleProperty, locStringNewProperty } from './validationHelpers.js';
 
 
 const fixedLocPropertiesGroup: PropertyGroup = {
