@@ -1,7 +1,7 @@
 import type { LocString, LocStringS } from '../domain';
 import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
 import { isEntity, isString } from '@m-cafe-app/utils';
-import { idRequired } from './validationHelpers';
+import { idRequired } from './validationHelpers.js';
 
 
 const locStringPropertiesGroups: PropertyGroup[] = [{
@@ -19,6 +19,9 @@ export const isLocStringDT = (obj: unknown): obj is LocStringDT =>
   isEntity(obj, [ idRequired, ...locStringPropertiesGroups ]);
 
 
+/**
+ * Contains only translations itself, no id
+ */
 export type LocStringDTS = MapToDT<LocStringS>;
 
 export const isLocStringDTS = (obj: unknown): obj is LocStringDTS =>
