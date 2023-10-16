@@ -1,3 +1,5 @@
+import type { Address } from './Address';
+
 export class User {
   constructor (
     readonly id: number,
@@ -7,6 +9,7 @@ export class User {
     readonly email?: string,
     readonly rights?: string,
     readonly birthdate?: Date,
+    readonly addresses?: Address[],
     readonly lookupHash?: string,
     readonly lookupNoise?: number,
     readonly createdAt?: Date,
