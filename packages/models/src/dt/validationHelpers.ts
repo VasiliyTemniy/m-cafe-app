@@ -1,6 +1,6 @@
 import type { PropertyGroup } from '@m-cafe-app/utils';
 import { isNumber, isString } from '@m-cafe-app/utils';
-import { isLocStringDT, isLocStringDTN, isLocStringDTS } from './LocStringDT';
+import { isLocStringDT, isLocStringDTN, isLocStringDTS } from './LocStringDT.js';
 
 export const idRequired: PropertyGroup = {
   properties: ['id'],
@@ -37,4 +37,34 @@ export const locStringNewProperty: PropertyGroup = {
 export const locStringSimpleProperty: PropertyGroup = {
   properties: ['locString'],
   validator: isLocStringDTS,
+};
+
+export const nameLocProperty: PropertyGroup = {
+  properties: ['nameLoc'],
+  validator: isLocStringDT,
+};
+
+export const nameLocNewProperty: PropertyGroup = {
+  properties: ['nameLoc'],
+  validator: isLocStringDTN,
+};
+
+export const descriptionLocProperty: PropertyGroup = {
+  properties: ['descriptionLoc'],
+  validator: isLocStringDT,
+};
+
+export const descriptionLocNewProperty: PropertyGroup = {
+  properties: ['descriptionLoc'],
+  validator: isLocStringDTN,
+};
+
+export const stockMeasureLocProperty: PropertyGroup = {
+  properties: ['stockMeasureLoc'],
+  validator: isLocStringDT,
+};
+
+export const stockMeasureLocNewProperty: PropertyGroup = {
+  properties: ['stockMeasureLoc'],
+  validator: isLocStringDTN,
 };
