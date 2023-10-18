@@ -1,4 +1,5 @@
 import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { AddressDT } from './AddressDT.js';
 import type { User } from '../domain';
 import {
   isString,
@@ -20,7 +21,9 @@ const userDTPropertiesGroups: PropertyGroup[] = [{
   validator: isString,
 }];
 
-export type UserDT = Omit<MapToDT<User>, 'lookupHash' | 'lookupNoise'>;
+export type UserDT = Omit<MapToDT<User>, 'lookupHash' | 'lookupNoise' | 'addresses'> & {
+  addresses?: AddressDT[];
+};
 
 /**
  * Checks if the given object is of type UserDT. Throws an error if it has passwordHash.
@@ -41,7 +44,10 @@ const userDTNUPropertiesGroups: PropertyGroup[] = [{
   validator: isString,
 }];
 
-export type UserDTN = Omit<MapToDTN<User>, 'lookupHash' | 'lookupNoise' | 'rights'> & {
+/**
+ * Addresses are not added during user creation
+ */
+export type UserDTN = Omit<MapToDTN<User>, 'lookupHash' | 'lookupNoise' | 'rights' | 'addresses'> & {
   password: string;
 };
 
@@ -62,9 +68,13 @@ const newPasswordOptional: PropertyGroup = {
   validator: isString,
 };
 
-export type UserDTU = Omit<MapToDT<User>, 'lookupHash' | 'lookupNoise' | 'rights'> & {
+/**
+ * Addresses are not created or updated during user update. Explicitly set to undefined to help typescript
+ */
+export type UserDTU = Omit<MapToDT<User>, 'lookupHash' | 'lookupNoise' | 'rights' | 'addresses'> & {
   password: string;
   newPassword?: string;
+  addresses?: undefined;
 };
 
 export const isUserDTU = (obj: unknown): obj is UserDTU => {
