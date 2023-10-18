@@ -6,7 +6,7 @@ import type {
   HasManyAddAssociationMixin,
   HasManyRemoveAssociationMixin
 } from 'sequelize';
-import type { Sequelize } from 'sequelize';
+import type { Sequelize, NonAttribute } from 'sequelize';
 import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Address } from './Address.js';
@@ -41,6 +41,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
+  declare addresses?: NonAttribute<Address>[];
   declare addAddress: HasManyAddAssociationMixin<Address, number>;
   declare getAddresses: HasManyGetAssociationsMixin<Address>;
   declare removeAddress: HasManyRemoveAssociationMixin<Address, number>;
