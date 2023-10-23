@@ -1,8 +1,18 @@
-import type { AuthResponse, UserDT, UserDTN, UserDTU, UserUniqueProperties } from '@m-cafe-app/models';
+import type {
+  AuthResponse,
+  UserDT,
+  UserDTN,
+  UserDTU,
+  UserUniqueProperties,
+  AdministrateUserBody,
+  AddressDTN,
+  AddressDT
+} from '@m-cafe-app/models';
 import type { IUserService, IUserRepo } from '../interfaces';
 import type { ISessionService } from '../../Session';
 import type { IAuthController } from '../../Auth';
-import type { AdministrateUserBody } from '@m-cafe-app/utils';
+import type { IAddressRepo } from '../../Address';
+import { AddressMapper } from '../../Address';
 import { User } from '@m-cafe-app/models';
 import {
   ApplicationError,
@@ -12,7 +22,7 @@ import {
   DatabaseError,
   PasswordLengthError,
   ProhibitedError,
-  UnknownError
+  UnknownError,
 } from '@m-cafe-app/utils';
 import { UserMapper } from '../infrastructure';
 import { maxPasswordLen, minPasswordLen, possibleUserRights } from '@m-cafe-app/shared-constants';
@@ -23,6 +33,7 @@ import { logger } from '@m-cafe-app/utils';
 export class UserService implements IUserService {
   constructor(
     readonly repo: IUserRepo,
+    readonly addressRepo: IAddressRepo,
     readonly sessionService: ISessionService,
     readonly authController: IAuthController
   ) {}
@@ -369,5 +380,33 @@ export class UserService implements IUserService {
 
   async cleanSessionRepo(): Promise<void> {
     await this.sessionService.cleanRepo((req: { token: string }) => this.authController.verifyTokenInternal(req));
+  }
+
+  async createAddress(userId: number, address: AddressDTN): Promise<{ address: AddressDT, created: boolean }> {
+    const { address: savedAddress } = await this.addressRepo.create(address);
+
+    const { created } = await this.addressRepo.createUserAddress(userId, savedAddress.id);
+
+    return { address: AddressMapper.domainToDT(savedAddress), created };
+  }
+
+  async updateAddress(userId: number, address: AddressDT): Promise<{ address: AddressDT, updated: boolean }> {
+    const { address: updatedAddress } = await this.addressRepo.update(address);
+
+    const { updated } = await this.addressRepo.updateUserAddress(userId, updatedAddress.id, address.id);
+
+    return { address: AddressMapper.domainToDT(updatedAddress), updated };
+  }
+
+  async removeAddress(userId: number, addressId: number): Promise<void> {
+    await this.addressRepo.removeUserAddress(userId, addressId);
+  }
+
+  async getWithAddress(id: number): Promise<UserDT> {
+    const user = await this.repo.getById(id);
+
+    const res: UserDT = UserMapper.domainToDT(user);
+
+    return res;
   }
 }
