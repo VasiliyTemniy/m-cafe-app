@@ -1,6 +1,7 @@
 export interface EntityDBMapper<DomainEntity, DBEntity> {
   dbToDomain(instance: DBEntity): DomainEntity;
-  domainToDb(instance: DomainEntity): DBEntity;
+  // domain to db seems problematic and useless
+  // domainToDb(instance: DomainEntity): DBEntity;
 }
 
 export interface EntityInmemMapper<DomainEntity, InmemEntity> {

@@ -3,24 +3,10 @@ import type { UserDT, UserDTU } from '@m-cafe-app/models';
 import { User } from '@m-cafe-app/models';
 import { User as UserPG } from '@m-cafe-app/db';
 import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
+import { AddressMapper } from '../../Address';
 
 
 export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<User, UserDT> {
-
-  /**
-   * Caution! Just a mock
-   * 
-   * @param domainUser 
-   * @returns mock
-   */
-  public static domainToDb(domainUser: User): UserPG {
-    const dbUser = new UserPG({ ...domainUser, lookupHash: '' });
-    return dbUser;
-  }
-
-  domainToDb(domainUser: User): UserPG {
-    return UserMapper.domainToDb(domainUser);
-  }
 
   public static dbToDomain(dbUser: UserPG): User {
     const domainUser = new User(
@@ -31,6 +17,7 @@ export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<
       dbUser.email,
       dbUser.rights,
       dbUser.birthdate,
+      dbUser.addresses?.map(address => AddressMapper.dbToDomain(address)),
       dbUser.lookupHash,
       dbUser.lookupNoise,
       dbUser.createdAt,
@@ -53,11 +40,13 @@ export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<
       userDT.email,
       undefined, // rights are not held on frontend
       toOptionalDate(userDT.birthdate),
+      userDT.addresses?.map(address => AddressMapper.dtToDomain(address)),
       undefined, // lookupHash is not held on frontend
       undefined, // lookupNoise is not held on frontend
-      toOptionalDate(userDT.createdAt),
-      toOptionalDate(userDT.updatedAt),
-      toOptionalDate(userDT.deletedAt)
+      // timestamps should not be passed to domain from frontend
+      // toOptionalDate(userDT.createdAt),
+      // toOptionalDate(userDT.updatedAt),
+      // toOptionalDate(userDT.deletedAt)
     );
     return domainUser;
   }
@@ -75,6 +64,7 @@ export class UserMapper implements EntityDBMapper<User, UserPG>, EntityDTMapper<
       email: domainUser.email,
       rights: domainUser.rights,
       birthdate: toOptionalISOString(domainUser.birthdate),
+      addresses: domainUser.addresses?.map(address => AddressMapper.domainToDT(address)),
       createdAt: toOptionalISOString(domainUser.createdAt),
       updatedAt: toOptionalISOString(domainUser.updatedAt),
       deletedAt: toOptionalISOString(domainUser.deletedAt)
