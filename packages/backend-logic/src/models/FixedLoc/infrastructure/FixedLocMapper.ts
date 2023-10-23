@@ -2,22 +2,10 @@ import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
 import type { FixedLocDT } from '@m-cafe-app/models';
 import { FixedLoc } from '@m-cafe-app/models';
 import { FixedLoc as FixedLocPG } from '@m-cafe-app/db';
-import { ApplicationError } from '@m-cafe-app/utils';
+import { ApplicationError, toOptionalISOString } from '@m-cafe-app/utils';
 
 
 export class FixedLocMapper implements EntityDBMapper<FixedLoc, FixedLocPG>, EntityDTMapper<FixedLoc, FixedLocDT> {
-
-  public static domainToDb(domainFixedLoc: FixedLoc): FixedLocPG {
-    const dbFixedLoc = new FixedLocPG({
-      ...domainFixedLoc,
-      locStringId: domainFixedLoc.locString.id
-    });
-    return dbFixedLoc;
-  }
-
-  domainToDb(domainFixedLoc: FixedLoc): FixedLocPG {
-    return FixedLocMapper.domainToDb(domainFixedLoc);
-  }
 
   public static dbToDomain(dbFixedLoc: FixedLocPG): FixedLoc {
     if (!dbFixedLoc.locString)
@@ -32,7 +20,9 @@ export class FixedLocMapper implements EntityDBMapper<FixedLoc, FixedLocPG>, Ent
         id: dbFixedLoc.locString.id,
         mainStr: dbFixedLoc.locString.mainStr,
         secStr: dbFixedLoc.locString.secStr,
-        altStr: dbFixedLoc.locString.altStr
+        altStr: dbFixedLoc.locString.altStr,
+        createdAt: dbFixedLoc.locString.createdAt,
+        updatedAt: dbFixedLoc.locString.updatedAt
       }
     );
     return domainFixedLoc;
@@ -43,7 +33,22 @@ export class FixedLocMapper implements EntityDBMapper<FixedLoc, FixedLocPG>, Ent
   }
 
   public static dtToDomain(fixedLocDT: FixedLocDT): FixedLoc {
-    return fixedLocDT;
+    const domainFixedLoc = new FixedLoc(
+      fixedLocDT.id,
+      fixedLocDT.name,
+      fixedLocDT.namespace,
+      fixedLocDT.scope,
+      {
+        id: fixedLocDT.locString.id,
+        mainStr: fixedLocDT.locString.mainStr,
+        secStr: fixedLocDT.locString.secStr,
+        altStr: fixedLocDT.locString.altStr,
+        // timestamps should not be passed to domain from frontend
+        // createdAt: fixedLocDT.locString.createdAt,
+        // updatedAt: fixedLocDT.locString.updatedAt
+      }
+    );
+    return domainFixedLoc;
   }
   
   dtToDomain(fixedLocDT: FixedLocDT): FixedLoc {
@@ -56,7 +61,14 @@ export class FixedLocMapper implements EntityDBMapper<FixedLoc, FixedLocPG>, Ent
       name: domainFixedLoc.name,
       namespace: domainFixedLoc.namespace,
       scope: domainFixedLoc.scope,
-      locString: domainFixedLoc.locString
+      locString: {
+        id: domainFixedLoc.locString.id,
+        mainStr: domainFixedLoc.locString.mainStr,
+        secStr: domainFixedLoc.locString.secStr,
+        altStr: domainFixedLoc.locString.altStr,
+        createdAt: toOptionalISOString(domainFixedLoc.locString.createdAt),
+        updatedAt: toOptionalISOString(domainFixedLoc.locString.updatedAt)
+      }
     };
     return fixedLocDT;
   }
