@@ -11,4 +11,5 @@ export interface IUserRepo extends Omit<ICRUDRepo<User, UserDTN>, 'create'> {
   restore(id: number): Promise<User>;
   delete(id: number): Promise<void>;
   remove(id: number): Promise<User>;
+  getWithAddresses(id: number): Promise<User>;
 }
