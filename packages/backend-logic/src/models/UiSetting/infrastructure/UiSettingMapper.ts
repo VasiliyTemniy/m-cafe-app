@@ -6,15 +6,6 @@ import { UiSetting as UiSettingPG } from '@m-cafe-app/db';
 
 export class UiSettingMapper implements EntityDBMapper<UiSetting, UiSettingPG>, EntityDTMapper<UiSetting, UiSettingDT> {
 
-  public static domainToDb(domainUiSetting: UiSetting): UiSettingPG {
-    const dbUiSetting = new UiSettingPG(domainUiSetting);
-    return dbUiSetting;
-  }
-
-  domainToDb(domainUiSetting: UiSetting): UiSettingPG {
-    return UiSettingMapper.domainToDb(domainUiSetting);
-  }
-
   public static dbToDomain(dbUiSetting: UiSettingPG): UiSetting {
     const domainUiSetting = new UiSetting(
       dbUiSetting.id,
