@@ -1,9 +1,10 @@
 import type { IUserControllerHttp, IUserService } from '../interfaces';
 import type { Request, Response } from 'express';
-import type { UserDT } from '@m-cafe-app/models';
-import { isRequestWithUser, type RequestWithUserRights } from '../../../utils';
-import { isAdministrateUserBody, isUserDTN, isUserDTU, isUserLoginDT } from '@m-cafe-app/models';
-import { HackError, RequestBodyError, RequestQueryError, UnknownError, hasOwnProperty } from '@m-cafe-app/utils';
+import type { AddressDT, UserDT } from '@m-cafe-app/models';
+import type { RequestWithUserRights } from '../../../utils';
+import { isRequestCustom, isRequestWithUser } from '../../../utils';
+import { isAddressDT, isAddressDTN, isAdministrateUserBody, isUserDTN, isUserDTU, isUserLoginDT } from '@m-cafe-app/models';
+import { HackError, RequestBodyError, RequestQueryError, UnknownError, hasOwnProperty, isNumber } from '@m-cafe-app/utils';
 import config from '../../../config';
 
 
@@ -146,13 +147,71 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
     res.clearCookie('token', config.sessionCookieOptions).status(204).end();
   }
 
+  /**
+   * Common user route for self deletedAt stamp
+   */
   async remove(req: Request, res: Response): Promise<void> {
-    const deletedUser: UserDT = await this.service.remove(Number(req.params.id));
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+    const deletedUser: UserDT = await this.service.remove(Number(req.userId));
     res.status(200).json(deletedUser);
   }
 
+  /**
+   * Admin route for deleting user with deletedAt stamp
+   */
   async delete(req: Request, res: Response) {
     await this.service.delete(Number(req.params.id));
     res.status(204).end();
+  }
+
+  async createAddress(req: Request, res: Response): Promise<void> {
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+    if (!isAddressDTN(req.body)) throw new RequestBodyError('Invalid address request body');
+
+    const addressToCreate = req.body;
+
+    const { address: savedAddress, created } = await this.service.createAddress(req.userId, addressToCreate);
+
+    const statusCode = created ?
+      201 : 409;
+
+    const resBody: AddressDT = savedAddress;
+
+    res.status(statusCode).json(resBody);
+  }
+
+  async updateAddress(req: Request, res: Response): Promise<void> {
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+    if (!isAddressDT(req.body)) throw new RequestBodyError('Invalid address request body');
+
+    const addressToUpdate = req.body;
+
+    const { address: updatedAddress, updated } =
+      await this.service.updateAddress(req.userId, addressToUpdate);
+
+    const statusCode = updated ?
+      200 : 409;
+
+    const resBody: AddressDT = updatedAddress;
+
+    res.status(statusCode).json(resBody);
+  }
+
+  async removeAddress(req: Request, res: Response): Promise<void> {
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+    if (!isNumber(Number(req.params.id))) throw new RequestBodyError('Invalid delete user address params id');
+
+    const oldAddressId = Number(req.params.id);
+
+    await this.service.removeAddress(req.userId, oldAddressId);
+
+    res.status(204).end();
+  }
+
+  async getWithAddress(req: Request, res: Response): Promise<void> {
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+
+    const user: UserDT = await this.service.getWithAddress(Number(req.userId));
+    res.status(200).json(user);
   }
 }
