@@ -67,7 +67,8 @@ export class FixedLocService implements IFixedLocService {
 
   async updateMany(fixedLocsDT: FixedLocDT[]): Promise<FixedLocDT[]> {
     if (!this.dbRepo.updateMany) throw new ApplicationError(`Update many method not implemented for repository ${this.dbRepo.constructor.name}`);
-    const updatedFixedLocs = await this.dbRepo.updateMany(fixedLocsDT);
+    const domainFixedLocs = fixedLocsDT.map(fixedLocDT => FixedLocMapper.dtToDomain(fixedLocDT));
+    const updatedFixedLocs = await this.dbRepo.updateMany(domainFixedLocs);
 
     await this.storeToInmem(updatedFixedLocs);
 
@@ -119,7 +120,7 @@ export class FixedLocService implements IFixedLocService {
       logger.error(error);
     }
 
-    await this.storeToInmem(await this.getAll());
+    await this.storeToInmem(await this.dbRepo.getAll());
     logger.info('Fixed locs initialized');
   }
 
