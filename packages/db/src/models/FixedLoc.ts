@@ -125,6 +125,9 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
               exclude: ['scope', 'locStringId']
             }
           },
+          raw: {
+            where: {}
+          },
           all: {
             where: {},
             include: includeLocString
