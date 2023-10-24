@@ -1,8 +1,9 @@
-import type { FixedLoc, FixedLocDTN, FixedLocUniquePropertiesGroup } from '@m-cafe-app/models';
+import type { FixedLocDTN, FixedLocUniquePropertiesGroup } from '@m-cafe-app/models';
 import type { IFixedLocRepo } from '../interfaces';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { FixedLocMapper } from '../infrastructure';
 import { FixedLoc as FixedLocPG, LocString as LocStringPG } from '@m-cafe-app/db';
+import { FixedLoc } from '@m-cafe-app/models';
 
 export class FixedLocRepoSequelizePG implements IFixedLocRepo {
 
@@ -50,6 +51,9 @@ export class FixedLocRepoSequelizePG implements IFixedLocRepo {
    * Updates only locString, other fields are not changed
    */
   async update(fixedLoc: FixedLoc): Promise<FixedLoc> {
+    const dbFixedLoc = await FixedLocPG.scope('raw').findByPk(fixedLoc.id);
+    if (!dbFixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${fixedLoc.id}`);
+
     const dbLocString = await LocStringPG.scope('all').findByPk(fixedLoc.locString.id);
     if (!dbLocString) throw new DatabaseError(`No loc string entry with this id ${fixedLoc.locString.id}; reinit fixed locs.`);
     
@@ -57,8 +61,19 @@ export class FixedLocRepoSequelizePG implements IFixedLocRepo {
     dbLocString.secStr = fixedLoc.locString.secStr;
     dbLocString.altStr = fixedLoc.locString.altStr;
 
-    await dbLocString.save();
-    return fixedLoc;
+    const updatedLocString = await dbLocString.save();
+    return new FixedLoc(
+      dbFixedLoc.id,
+      dbFixedLoc.name,
+      dbFixedLoc.namespace,
+      dbFixedLoc.scope,
+      {
+        id: updatedLocString.id,
+        mainStr: updatedLocString.mainStr,
+        secStr: updatedLocString.secStr,
+        altStr: updatedLocString.altStr
+      }
+    );
   }
 
   async updateMany(fixedLocs: FixedLoc[]): Promise<FixedLoc[]> {
