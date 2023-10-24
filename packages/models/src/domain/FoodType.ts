@@ -1,4 +1,4 @@
-import type { LocString } from './LocString';
+import type { LocString } from './LocString.js';
 
 export class FoodType {
   constructor (
