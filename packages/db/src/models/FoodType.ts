@@ -63,6 +63,27 @@ export const initFoodTypeModel = (dbInstance: Sequelize) => {
           all: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
+            },
+            include: [
+              {
+                model: LocString,
+                as: 'nameLoc',
+                attributes: {
+                  exclude: ['createdAt', 'updatedAt']
+                }
+              },
+              {
+                model: LocString,
+                as: 'descriptionLoc',
+                attributes: {
+                  exclude: ['createdAt', 'updatedAt']
+                }
+              }
+            ]
+          },
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
             }
           },
           allWithTimestamps: {}
