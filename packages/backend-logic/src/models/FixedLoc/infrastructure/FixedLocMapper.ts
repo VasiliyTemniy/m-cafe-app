@@ -2,7 +2,8 @@ import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
 import type { FixedLocDT } from '@m-cafe-app/models';
 import { FixedLoc } from '@m-cafe-app/models';
 import { FixedLoc as FixedLocPG } from '@m-cafe-app/db';
-import { ApplicationError, toOptionalISOString } from '@m-cafe-app/utils';
+import { ApplicationError } from '@m-cafe-app/utils';
+import { LocStringMapper } from '../../LocString';
 
 
 export class FixedLocMapper implements EntityDBMapper<FixedLoc, FixedLocPG>, EntityDTMapper<FixedLoc, FixedLocDT> {
@@ -16,14 +17,7 @@ export class FixedLocMapper implements EntityDBMapper<FixedLoc, FixedLocPG>, Ent
       dbFixedLoc.name,
       dbFixedLoc.namespace,
       dbFixedLoc.scope,
-      {
-        id: dbFixedLoc.locString.id,
-        mainStr: dbFixedLoc.locString.mainStr,
-        secStr: dbFixedLoc.locString.secStr,
-        altStr: dbFixedLoc.locString.altStr,
-        createdAt: dbFixedLoc.locString.createdAt,
-        updatedAt: dbFixedLoc.locString.updatedAt
-      }
+      LocStringMapper.dbToDomain(dbFixedLoc.locString)
     );
     return domainFixedLoc;
   }
@@ -38,15 +32,7 @@ export class FixedLocMapper implements EntityDBMapper<FixedLoc, FixedLocPG>, Ent
       fixedLocDT.name,
       fixedLocDT.namespace,
       fixedLocDT.scope,
-      {
-        id: fixedLocDT.locString.id,
-        mainStr: fixedLocDT.locString.mainStr,
-        secStr: fixedLocDT.locString.secStr,
-        altStr: fixedLocDT.locString.altStr,
-        // timestamps should not be passed to domain from frontend
-        // createdAt: fixedLocDT.locString.createdAt,
-        // updatedAt: fixedLocDT.locString.updatedAt
-      }
+      LocStringMapper.dtToDomain(fixedLocDT.locString)
     );
     return domainFixedLoc;
   }
@@ -61,14 +47,7 @@ export class FixedLocMapper implements EntityDBMapper<FixedLoc, FixedLocPG>, Ent
       name: domainFixedLoc.name,
       namespace: domainFixedLoc.namespace,
       scope: domainFixedLoc.scope,
-      locString: {
-        id: domainFixedLoc.locString.id,
-        mainStr: domainFixedLoc.locString.mainStr,
-        secStr: domainFixedLoc.locString.secStr,
-        altStr: domainFixedLoc.locString.altStr,
-        createdAt: toOptionalISOString(domainFixedLoc.locString.createdAt),
-        updatedAt: toOptionalISOString(domainFixedLoc.locString.updatedAt)
-      }
+      locString: LocStringMapper.domainToDT(domainFixedLoc.locString)
     };
     return fixedLocDT;
   }
