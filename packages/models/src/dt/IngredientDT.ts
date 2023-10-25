@@ -1,11 +1,12 @@
 import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
 import type { LocStringDT, LocStringDTN } from './LocStringDT';
-import type { Ingredient } from '../domain';
+import type { Ingredient, IngredientS } from '../domain';
 import { isEntity, isNumber } from '@m-cafe-app/utils';
 import { idRequired, nameLocNewProperty, nameLocProperty, stockMeasureLocNewProperty, stockMeasureLocProperty } from './validationHelpers.js';
 
 const ingredientPropertiesGroup: PropertyGroup = {
   properties: ['proteins', 'fats', 'carbohydrates', 'calories'],
+  required: false,
   validator: isNumber,
 };
 
@@ -31,7 +32,10 @@ export const isIngredientDTN = (obj: unknown): obj is IngredientDTN =>
 /**
  * Simple Ingredient data to be included in foodComponent
  */
-export type IngredientDTS = Omit<MapToDT<Ingredient>, 'stockMeasureLoc'>;
+export type IngredientDTS = Omit<MapToDT<IngredientS>, 'nameLoc'> & {
+  nameLoc: LocStringDT;
+};
 
 export const isIngredientDTS = (obj: unknown): obj is IngredientDTS =>
-  isEntity(obj, [ nameLocProperty, ingredientPropertiesGroup ]); // If id is required, add it here
+  isEntity(obj, [ idRequired, nameLocProperty ]); // If needed, add ingredientPropertiesGroup here
+  // isEntity(obj, [ idRequired, nameLocProperty, ingredientPropertiesGroup ]);
