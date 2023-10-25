@@ -13,3 +13,10 @@ export interface EntityDTMapper<DomainEntity, HttpEntity> {
   dtToDomain(instance: HttpEntity): DomainEntity;
   domainToDT(instance: DomainEntity): HttpEntity;
 }
+
+export interface EntitySimpleMapper<DomainEntity, DomainSimpleEntity, DBEntity, HttpSimpleEntity> {
+  domainToSimple(instance: DomainEntity): DomainSimpleEntity;
+  dbToSimple(instance: DBEntity): DomainSimpleEntity;
+  dtsToSimple(instance: HttpSimpleEntity): DomainSimpleEntity;
+  simpleToDTS(instance: DomainSimpleEntity): HttpSimpleEntity;
+}
