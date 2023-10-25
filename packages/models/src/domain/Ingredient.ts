@@ -24,11 +24,11 @@ export class Ingredient {
  */
 export class IngredientS {
   constructor (
-    // readonly id: number, // CHECK if actually id is needed here
+    readonly id: number,
     readonly nameLoc: LocString,
-    readonly proteins?: number,
-    readonly fats?: number,
-    readonly carbohydrates?: number,
-    readonly calories?: number,
+    // readonly proteins?: number, // Possibly remove these
+    // readonly fats?: number,
+    // readonly carbohydrates?: number,
+    // readonly calories?: number,
   ) {}
 }
