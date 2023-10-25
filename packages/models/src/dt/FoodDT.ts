@@ -76,7 +76,9 @@ export const isFoodDTN = (obj: unknown): obj is FoodDTN =>
 /**
  * Simple food data includes only id and name locale
  */
-export type FoodDTS = MapToDT<FoodS>;
+export type FoodDTS = Omit<MapToDT<FoodS>, 'nameLoc'> & {
+  nameLoc: LocStringDT;
+};
 
 export const isFoodDTS = (obj: unknown): obj is FoodDTS =>
   isEntity(obj, [ idRequired, nameLocProperty ]);
