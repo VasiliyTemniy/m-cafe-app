@@ -1,0 +1,1 @@
+export * from './FoodPictureMapper.js';
