@@ -15,3 +15,4 @@ export * from './Facility.js';
 export * from './DynamicModule.js';
 export * from './Order.js';
 export * from './OrderFood.js';
+export * from './FoodPicture.js';

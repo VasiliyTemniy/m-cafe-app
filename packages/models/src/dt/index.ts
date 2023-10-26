@@ -14,3 +14,4 @@ export * from './StockDT.js';
 export * from './DynamicModuleDT.js';
 export * from './OrderDT.js';
 export * from './OrderFoodDT.js';
+export * from './FoodPictureDT.js';
