@@ -1,7 +1,7 @@
 import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
 import type { LocStringDT, LocStringDTN } from './LocStringDT.js';
 import type { FoodTypeDT } from './FoodTypeDT.js';
-import type { PictureDT } from './PictureDT.js';
+import type { FoodPictureDT } from './FoodPictureDT.js';
 import type { FoodComponentDT } from './FoodComponentDT.js';
 import type { Food, FoodS } from '../domain';
 import { isEntity, isNumber } from '@m-cafe-app/utils';
@@ -44,8 +44,8 @@ export type FoodDT = Omit<MapToDT<Food>, 'nameLoc' | 'descriptionLoc' | 'foodTyp
   descriptionLoc: LocStringDT;
   foodType: FoodTypeDT;
   foodComponents?: FoodComponentDT[];
-  mainPicture?: PictureDT;
-  gallery?: PictureDT[];
+  mainPicture?: FoodPictureDT;
+  gallery?: FoodPictureDT[];
 };
 
 export const isFoodDT = (obj: unknown): obj is FoodDT =>
