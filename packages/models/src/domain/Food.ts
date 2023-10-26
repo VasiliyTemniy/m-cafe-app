@@ -1,6 +1,6 @@
 import type { FoodType } from './FoodType.js';
 import type { LocString } from './LocString.js';
-import type { Picture } from './Picture.js';
+import type { FoodPicture } from './FoodPicture.js';
 import type { FoodComponent } from './FoodComponent.js';
 
 export class Food {
@@ -10,8 +10,8 @@ export class Food {
     readonly descriptionLoc: LocString,
     readonly foodType: FoodType,
     readonly foodComponents?: FoodComponent[],
-    readonly mainPicture?: Picture,
-    readonly gallery?: Picture[],
+    readonly mainPicture?: FoodPicture,
+    readonly gallery?: FoodPicture[],
     readonly createdAt?: Date,
     readonly updatedAt?: Date
   ) {}
