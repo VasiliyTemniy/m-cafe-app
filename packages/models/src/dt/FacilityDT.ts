@@ -3,6 +3,7 @@ import type { LocStringDT, LocStringDTN } from './LocStringDT';
 import type { Facility, FacilityS } from '../domain';
 import type { UserDT } from './UserDT.js';
 import type { StockDTS } from './StockDT.js';
+import type { AddressDT, AddressDTN } from './AddressDT.js';
 import { isEntity } from '@m-cafe-app/utils';
 import { isAddressDT } from './AddressDT.js';
 import { isStockDTS } from './StockDT.js';
@@ -31,9 +32,10 @@ const facilityPropertiesGroups: PropertyGroup[] = [{
   isArray: true
 }];
 
-export type FacilityDT = Omit<MapToDT<Facility>, 'nameLoc' | 'descriptionLoc' | 'managers' | 'stocks'> & {
+export type FacilityDT = Omit<MapToDT<Facility>, 'nameLoc' | 'descriptionLoc' | 'managers' | 'stocks' | 'address'> & {
   nameLoc: LocStringDT;
   descriptionLoc: LocStringDT;
+  address: AddressDT;
   managers?: UserDT[];
   stocks?: StockDTS[];
 };
@@ -44,9 +46,10 @@ export const isFacilityDT = (obj: unknown): obj is FacilityDT =>
 
 
 
-export type FacilityDTN = Omit<MapToDTN<Facility>, 'nameLoc' | 'descriptionLoc' | 'managers' | 'stocks'> & {
+export type FacilityDTN = Omit<MapToDTN<Facility>, 'nameLoc' | 'descriptionLoc' | 'managers' | 'stocks' | 'address'> & {
   nameLoc: LocStringDTN;
   descriptionLoc: LocStringDTN;
+  address: AddressDTN;
 };
 
 export const isFacilityDTN = (obj: unknown): obj is FacilityDTN =>
