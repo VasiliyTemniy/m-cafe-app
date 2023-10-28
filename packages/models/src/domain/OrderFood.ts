@@ -1,4 +1,4 @@
-import type { Food } from './Food.js';
+import type { FoodS } from './Food.js';
 
 export class OrderFood {
   constructor (
@@ -7,7 +7,7 @@ export class OrderFood {
     readonly amount: number,
     readonly archivePrice: number,
     readonly archiveFoodName: string,
-    readonly food?: Food
+    readonly food?: FoodS
   ) {}
 }
 
@@ -20,6 +20,6 @@ export class OrderFoodS {
     readonly amount: number,
     readonly archivePrice: number,
     readonly archiveFoodName: string,
-    readonly food?: Food
+    readonly food?: FoodS
   ) {}
 }
