@@ -35,6 +35,7 @@ export class FoodMapper implements EntityDBMapper<Food, FoodPG>, EntityDTMapper<
       LocStringMapper.dbToDomain(dbFood.nameLoc),
       LocStringMapper.dbToDomain(dbFood.descriptionLoc),
       FoodTypeMapper.dbToDomain(dbFood.foodType),
+      dbFood.price,
       foodComponents,
       mainPicture,
       gallery,
@@ -66,6 +67,7 @@ export class FoodMapper implements EntityDBMapper<Food, FoodPG>, EntityDTMapper<
       LocStringMapper.dtToDomain(foodDT.nameLoc),
       LocStringMapper.dtToDomain(foodDT.descriptionLoc),
       FoodTypeMapper.dtToDomain(foodDT.foodType),
+      foodDT.price,
       foodComponents,
       mainPicture,
       gallery
@@ -98,6 +100,7 @@ export class FoodMapper implements EntityDBMapper<Food, FoodPG>, EntityDTMapper<
       nameLoc: LocStringMapper.domainToDT(domainFood.nameLoc),
       descriptionLoc: LocStringMapper.domainToDT(domainFood.descriptionLoc),
       foodType: FoodTypeMapper.domainToDT(domainFood.foodType),
+      price: domainFood.price,
       foodComponents,
       mainPicture,
       gallery,

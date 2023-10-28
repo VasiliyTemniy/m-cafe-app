@@ -9,6 +9,7 @@ export class Food {
     readonly nameLoc: LocString,
     readonly descriptionLoc: LocString,
     readonly foodType: FoodType,
+    readonly price: number,
     readonly foodComponents?: FoodComponent[],
     readonly mainPicture?: FoodPicture,
     readonly gallery?: FoodPicture[],
