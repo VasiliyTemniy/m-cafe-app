@@ -9,10 +9,10 @@ import { LocStringMapper } from '../../LocString';
 export class FoodSimpleMapper implements EntitySimpleMapper<Food, FoodS, FoodPG, FoodDTS> {
 
   public static domainToSimple(domainFood: Food): FoodS {
-    const foodS: FoodS = {
-      id: domainFood.id,
-      nameLoc: domainFood.nameLoc
-    };
+    const foodS = new FoodS(
+      domainFood.id,
+      domainFood.nameLoc
+    );
     return foodS;
   }
 
@@ -37,10 +37,10 @@ export class FoodSimpleMapper implements EntitySimpleMapper<Food, FoodS, FoodPG,
   }
 
   public static dtsToSimple(foodDTS: FoodDTS): FoodS {
-    const foodS: FoodS = {
-      id: foodDTS.id,
-      nameLoc: LocStringMapper.dtToDomain(foodDTS.nameLoc)
-    };
+    const foodS = new FoodS(
+      foodDTS.id,
+      LocStringMapper.dtToDomain(foodDTS.nameLoc)
+    );
     return foodS;
   }
 
