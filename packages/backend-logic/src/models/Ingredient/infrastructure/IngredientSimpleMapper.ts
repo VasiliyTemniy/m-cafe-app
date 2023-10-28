@@ -1,14 +1,14 @@
 import type { EntitySimpleMapper } from '../../../utils';
 import type { Ingredient as IngredientPG } from '@m-cafe-app/db';
-import type { IngredientS, Ingredient, IngredientDTS } from '@m-cafe-app/models';
+import { IngredientS, type Ingredient, type IngredientDTS } from '@m-cafe-app/models';
 import { LocStringMapper } from '../../LocString';
 
 export class IngredientSimpleMapper implements EntitySimpleMapper<Ingredient, IngredientS, IngredientPG, IngredientDTS> {
   public static domainToSimple(domainIngredient: Ingredient): IngredientS {
-    const ingredientS: IngredientS = {
-      id: domainIngredient.id,
-      nameLoc: domainIngredient.nameLoc
-    };
+    const ingredientS = new IngredientS(
+      domainIngredient.id,
+      domainIngredient.nameLoc
+    );
     return ingredientS;
   }
 
@@ -20,10 +20,10 @@ export class IngredientSimpleMapper implements EntitySimpleMapper<Ingredient, In
     if (!dbIngredient.nameLoc)
       throw new Error('Ingredient simple data corrupt: nameLoc is missing check for wrong db include clause');
 
-    const ingredientS: IngredientS = {
-      id: dbIngredient.id,
-      nameLoc: LocStringMapper.dbToDomain(dbIngredient.nameLoc)
-    };
+    const ingredientS = new IngredientS(
+      dbIngredient.id,
+      LocStringMapper.dbToDomain(dbIngredient.nameLoc)
+    );
 
     return ingredientS;
   }
@@ -33,10 +33,10 @@ export class IngredientSimpleMapper implements EntitySimpleMapper<Ingredient, In
   }
 
   public static dtsToSimple(ingredientDTS: IngredientDTS): IngredientS {
-    const ingredientS: IngredientS = {
-      id: ingredientDTS.id,
-      nameLoc: LocStringMapper.dtToDomain(ingredientDTS.nameLoc)
-    };
+    const ingredientS = new IngredientS(
+      ingredientDTS.id,
+      LocStringMapper.dtToDomain(ingredientDTS.nameLoc)
+    );
     return ingredientS;
   }
 
