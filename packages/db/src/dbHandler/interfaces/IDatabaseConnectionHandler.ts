@@ -1,4 +1,7 @@
+import { Sequelize } from 'sequelize';
+
 export interface IDatabaseConnectionHandler {
+  dbInstance: Sequelize | undefined;
   connect(): Promise<void>;
   pingDb(): Promise<void>;
   close(): Promise<void>;
