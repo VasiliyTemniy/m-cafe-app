@@ -1,13 +1,28 @@
 import type { IFoodRepo } from '../interfaces';
 import type { FoodDTN } from '@m-cafe-app/models';
+import type { IDatabaseConnectionHandler } from '@m-cafe-app/db';
+import type { Sequelize } from 'sequelize';
+import type { ILocStringRepo } from '../../LocString';
 import { Food } from '@m-cafe-app/models';
 import { Food as FoodPG, LocString as LocStringPG, FoodType as FoodTypePG } from '@m-cafe-app/db';
 import { FoodMapper } from '../infrastructure';
-import { ApplicationError, DatabaseError } from '@m-cafe-app/utils';
-import { LocStringMapper } from '../../LocString';
+import { DatabaseError } from '@m-cafe-app/utils';
 import { FoodTypeMapper } from '../../FoodType';
 
 export class FoodRepoSequelizePG implements IFoodRepo {
+
+  private dbInstance: Sequelize;
+
+  constructor(
+    readonly dbHandler: IDatabaseConnectionHandler,
+    readonly locStringRepo: ILocStringRepo
+  ) {
+    if (!dbHandler.dbInstance) {
+      throw new DatabaseError('No database connection');
+    }
+    this.dbInstance = dbHandler.dbInstance;
+  }
+
   async getAll(): Promise<Food[]> {
     const dbFoods = await FoodPG.scope('all').findAll();
     return dbFoods.map(food => FoodMapper.dbToDomain(food));
@@ -24,16 +39,8 @@ export class FoodRepoSequelizePG implements IFoodRepo {
     const existingFoodType = await FoodTypePG.scope('raw').findByPk(foodDTN.foodTypeId);
     if (!existingFoodType) throw new DatabaseError(`No food type entry with this id ${foodDTN.foodTypeId}`); 
 
-    const dbNameLoc = await LocStringPG.create({
-      mainStr: foodDTN.nameLoc.mainStr,
-      secStr: foodDTN.nameLoc.secStr,
-      altStr: foodDTN.nameLoc.altStr
-    });
-    const dbDescriptionLoc = await LocStringPG.create({
-      mainStr: foodDTN.descriptionLoc.mainStr,
-      secStr: foodDTN.descriptionLoc.secStr,
-      altStr: foodDTN.descriptionLoc.altStr
-    });
+    const dbNameLoc = await this.locStringRepo.create(foodDTN.nameLoc);
+    const dbDescriptionLoc = await this.locStringRepo.create(foodDTN.descriptionLoc);
 
     const dbFood = await FoodPG.create({
       nameLocId: dbNameLoc.id,
@@ -45,39 +52,33 @@ export class FoodRepoSequelizePG implements IFoodRepo {
     return FoodMapper.dbToDomain(dbFood);
   }
 
-  async update(food: Food): Promise<Food> {
-    const dbFood = await FoodPG.scope('raw').findByPk(food.id);
-    if (!dbFood) throw new DatabaseError(`No food type entry with this id ${food.id}; reinit food types.`);
-    if (!dbFood.foodType) throw new ApplicationError(`No food type property: check for wrong db include clause`);
+  async update(updFood: Food): Promise<Food> {
+    const updatedFoodType = await this.dbInstance.transaction(async (t) => {
 
-    const existingFoodType = await FoodTypePG.scope('raw').findByPk(food.foodType.id);
-    if (!existingFoodType) throw new DatabaseError(`No food type entry with this id ${food.foodType.id}`); 
+      const dbFood = await FoodPG.scope('raw').findByPk(updFood.id);
+      if (!dbFood) {
+        await t.rollback();
+        throw new DatabaseError(`No food entry with this id ${updFood.id}`);
+      }
 
-    const dbNameLoc = await LocStringPG.scope('all').findByPk(food.nameLoc.id);
-    if (!dbNameLoc) throw new DatabaseError(`No name loc entry with this id ${food.nameLoc.id}; reinit food types.`);
+      // Check for existence of updated food type
+      const updatedFoodType = await FoodTypePG.scope('raw').findByPk(updFood.foodType.id);
+      if (!updatedFoodType) throw new DatabaseError(`No food type entry with this id ${updFood.foodType.id}`); 
 
-    const dbDescriptionLoc = await LocStringPG.scope('all').findByPk(food.descriptionLoc.id);
-    if (!dbDescriptionLoc) throw new DatabaseError(`No description loc entry with this id ${food.descriptionLoc.id}; reinit food types.`);
-    
-    dbNameLoc.mainStr = food.nameLoc.mainStr;
-    dbNameLoc.secStr = food.nameLoc.secStr;
-    dbNameLoc.altStr = food.nameLoc.altStr;
+      const updatedNameLoc = await this.locStringRepo.update(updFood.nameLoc);
 
-    const updatedNameLoc = await dbNameLoc.save();
+      const updatedDescriptionLoc = await this.locStringRepo.update(updFood.descriptionLoc);
 
-    dbDescriptionLoc.mainStr = food.descriptionLoc.mainStr;
-    dbDescriptionLoc.secStr = food.descriptionLoc.secStr;
-    dbDescriptionLoc.altStr = food.descriptionLoc.altStr;
+      return new Food(
+        updFood.id,
+        updatedNameLoc,
+        updatedDescriptionLoc,
+        FoodTypeMapper.dbToDomain(updatedFoodType),
+        updFood.price
+      );
+    });
 
-    const updatedDescriptionLoc = await dbDescriptionLoc.save();
-
-    return new Food(
-      food.id,
-      LocStringMapper.dbToDomain(updatedNameLoc),
-      LocStringMapper.dbToDomain(updatedDescriptionLoc),
-      FoodTypeMapper.dbToDomain(dbFood.foodType),
-      food.price
-    );
+    return updatedFoodType;
   }
 
   async remove(id: number): Promise<void> {
