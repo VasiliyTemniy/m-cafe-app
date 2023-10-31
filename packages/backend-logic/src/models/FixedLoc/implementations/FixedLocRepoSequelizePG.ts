@@ -1,11 +1,26 @@
 import type { FixedLocDTN, FixedLocUniquePropertiesGroup } from '@m-cafe-app/models';
 import type { IFixedLocRepo } from '../interfaces';
+import type { IDatabaseConnectionHandler } from '@m-cafe-app/db';
+import type { Sequelize } from 'sequelize';
+import type { ILocStringRepo } from '../../LocString';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { FixedLocMapper } from '../infrastructure';
 import { FixedLoc as FixedLocPG, LocString as LocStringPG } from '@m-cafe-app/db';
 import { FixedLoc } from '@m-cafe-app/models';
 
 export class FixedLocRepoSequelizePG implements IFixedLocRepo {
+
+  private dbInstance: Sequelize;
+
+  constructor(
+    readonly dbHandler: IDatabaseConnectionHandler,
+    readonly locStringRepo: ILocStringRepo
+  ) {
+    if (!dbHandler.dbInstance) {
+      throw new DatabaseError('No database connection');
+    }
+    this.dbInstance = dbHandler.dbInstance;
+  }
 
   async getAll(): Promise<FixedLoc[]> {
     const dbFixedLocs = await FixedLocPG.scope('all').findAll();
@@ -50,30 +65,26 @@ export class FixedLocRepoSequelizePG implements IFixedLocRepo {
   /**
    * Updates only locString, other fields are not changed
    */
-  async update(fixedLoc: FixedLoc): Promise<FixedLoc> {
-    const dbFixedLoc = await FixedLocPG.scope('raw').findByPk(fixedLoc.id);
-    if (!dbFixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${fixedLoc.id}`);
+  async update(fixedLocToUpd: FixedLoc): Promise<FixedLoc> {
+    const updatedFixedLoc = await this.dbInstance.transaction(async (t) => {
 
-    const dbLocString = await LocStringPG.scope('all').findByPk(fixedLoc.locString.id);
-    if (!dbLocString) throw new DatabaseError(`No loc string entry with this id ${fixedLoc.locString.id}; reinit fixed locs.`);
-    
-    dbLocString.mainStr = fixedLoc.locString.mainStr;
-    dbLocString.secStr = fixedLoc.locString.secStr;
-    dbLocString.altStr = fixedLoc.locString.altStr;
-
-    const updatedLocString = await dbLocString.save();
-    return new FixedLoc(
-      dbFixedLoc.id,
-      dbFixedLoc.name,
-      dbFixedLoc.namespace,
-      dbFixedLoc.scope,
-      {
-        id: updatedLocString.id,
-        mainStr: updatedLocString.mainStr,
-        secStr: updatedLocString.secStr,
-        altStr: updatedLocString.altStr
+      const dbFixedLoc = await FixedLocPG.scope('raw').findByPk(fixedLocToUpd.id);
+      if (!dbFixedLoc) {
+        await t.rollback();
+        throw new DatabaseError(`No fixed loc entry with this id ${fixedLocToUpd.id}`);
       }
-    );
+      const updatedLocString = await this.locStringRepo.update(fixedLocToUpd.locString);
+
+      return new FixedLoc(
+        dbFixedLoc.id,
+        dbFixedLoc.name,
+        dbFixedLoc.namespace,
+        dbFixedLoc.scope,
+        updatedLocString
+      );
+    });
+
+    return updatedFixedLoc;
   }
 
   async updateMany(fixedLocs: FixedLoc[]): Promise<FixedLoc[]> {
