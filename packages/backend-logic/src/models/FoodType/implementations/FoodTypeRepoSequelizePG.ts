@@ -43,7 +43,13 @@ export class FoodTypeRepoSequelizePG implements IFoodTypeRepo {
       descriptionLocId: dbDescriptionLoc.id
     });
 
-    return FoodTypeMapper.dbToDomain(dbFoodType);
+    // Not using mapper here because of inability to include returning locs
+    // Only other way is to use afterCreate hook for Sequelize
+    return new FoodType(
+      dbFoodType.id,
+      dbNameLoc,
+      dbDescriptionLoc
+    );
   }
 
   async update(updFoodType: FoodType): Promise<FoodType> {
@@ -56,15 +62,19 @@ export class FoodTypeRepoSequelizePG implements IFoodTypeRepo {
         throw new DatabaseError(`No food type entry with this id ${updFoodType.id}`);
       }
   
-      const updatedNameLoc = await this.locStringRepo.update(updFoodType.nameLoc);
+      try {
+        const updatedNameLoc = await this.locStringRepo.update(updFoodType.nameLoc);
+        const updatedDescriptionLoc = await this.locStringRepo.update(updFoodType.descriptionLoc);
   
-      const updatedDescriptionLoc = await this.locStringRepo.update(updFoodType.descriptionLoc);
-  
-      return new FoodType(
-        updFoodType.id,
-        updatedNameLoc,
-        updatedDescriptionLoc,
-      );
+        return new FoodType(
+          updFoodType.id,
+          updatedNameLoc,
+          updatedDescriptionLoc,
+        );
+      } catch (err) {
+        await t.rollback();
+        throw err;
+      }
     });
 
     return updatedFoodType;
