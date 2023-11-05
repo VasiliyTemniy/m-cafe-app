@@ -23,6 +23,24 @@ export type FoodTypeData = Omit<InferAttributes<FoodType>, PropertiesCreationOpt
 
 
 export const initFoodTypeModel = (dbInstance: Sequelize) => {
+
+  const includeLocStrings = [
+    {
+      model: LocString,
+      as: 'nameLoc',
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    {
+      model: LocString,
+      as: 'descriptionLoc',
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    }
+  ];
+
   return new Promise<void>((resolve, reject) => {
     try {
       FoodType.init({
@@ -57,29 +75,15 @@ export const initFoodTypeModel = (dbInstance: Sequelize) => {
         defaultScope: {
           attributes: {
             exclude: ['createdAt', 'updatedAt']
-          }
+          },
+          include: includeLocStrings
         },
         scopes: {
           all: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
             },
-            include: [
-              {
-                model: LocString,
-                as: 'nameLoc',
-                attributes: {
-                  exclude: ['createdAt', 'updatedAt']
-                }
-              },
-              {
-                model: LocString,
-                as: 'descriptionLoc',
-                attributes: {
-                  exclude: ['createdAt', 'updatedAt']
-                }
-              }
-            ]
+            include: includeLocStrings
           },
           raw: {
             attributes: {
