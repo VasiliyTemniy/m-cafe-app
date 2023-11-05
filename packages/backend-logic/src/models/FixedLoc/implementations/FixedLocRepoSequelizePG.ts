@@ -73,15 +73,21 @@ export class FixedLocRepoSequelizePG implements IFixedLocRepo {
         await t.rollback();
         throw new DatabaseError(`No fixed loc entry with this id ${fixedLocToUpd.id}`);
       }
-      const updatedLocString = await this.locStringRepo.update(fixedLocToUpd.locString);
 
-      return new FixedLoc(
-        dbFixedLoc.id,
-        dbFixedLoc.name,
-        dbFixedLoc.namespace,
-        dbFixedLoc.scope,
-        updatedLocString
-      );
+      try {
+        const updatedLocString = await this.locStringRepo.update(fixedLocToUpd.locString);
+
+        return new FixedLoc(
+          dbFixedLoc.id,
+          dbFixedLoc.name,
+          dbFixedLoc.namespace,
+          dbFixedLoc.scope,
+          updatedLocString
+        );
+      } catch (err) {
+        await t.rollback();
+        throw err;
+      }
     });
 
     return updatedFixedLoc;
