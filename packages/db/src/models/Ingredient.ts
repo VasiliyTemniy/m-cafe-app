@@ -25,6 +25,24 @@ export type IngredientData = Omit<InferAttributes<Ingredient>, PropertiesCreatio
 
 
 export const initIngredientModel = async (dbInstance: Sequelize) => {
+
+  const includeLocStrings = [
+    {
+      model: LocString,
+      as: 'nameLoc',
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
+    {
+      model: LocString,
+      as: 'stockMeasureLoc',
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    }
+  ];
+
   return new Promise<void>((resolve, reject) => {
     try {
       Ingredient.init({
@@ -75,13 +93,15 @@ export const initIngredientModel = async (dbInstance: Sequelize) => {
         defaultScope: {
           attributes: {
             exclude: ['createdAt', 'updatedAt']
-          }
+          },
+          include: includeLocStrings
         },
         scopes: {
           all: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
-            }
+            },
+            include: includeLocStrings
           },
           allWithTimestamps: {}
         }
