@@ -36,7 +36,7 @@ export class FoodRepoSequelizePG implements IFoodRepo {
 
   async create(foodDTN: FoodDTN): Promise<Food> {
 
-    const existingFoodType = await FoodTypePG.scope('raw').findByPk(foodDTN.foodTypeId);
+    const existingFoodType = await FoodTypePG.scope('all').findByPk(foodDTN.foodTypeId);
     if (!existingFoodType) throw new DatabaseError(`No food type entry with this id ${foodDTN.foodTypeId}`); 
 
     const dbNameLoc = await this.locStringRepo.create(foodDTN.nameLoc);
@@ -49,36 +49,61 @@ export class FoodRepoSequelizePG implements IFoodRepo {
       price: foodDTN.price
     });
 
-    return FoodMapper.dbToDomain(dbFood);
+    // Not using mapper here because of inability to include returning locs
+    // Only other way is to use afterCreate hook for Sequelize
+    return new Food(
+      dbFood.id,
+      dbNameLoc,
+      dbDescriptionLoc,
+      FoodTypeMapper.dbToDomain(existingFoodType),
+      dbFood.price
+    );
   }
 
   async update(updFood: Food): Promise<Food> {
-    const updatedFoodType = await this.dbInstance.transaction(async (t) => {
+    const updatedFood = await this.dbInstance.transaction(async (t) => {
 
-      const dbFood = await FoodPG.scope('raw').findByPk(updFood.id);
+      const dbFood = await FoodPG.scope('all').findByPk(updFood.id);
       if (!dbFood) {
         await t.rollback();
         throw new DatabaseError(`No food entry with this id ${updFood.id}`);
       }
+      if (!dbFood.foodType) {
+        await t.rollback();
+        throw new DatabaseError(`No food type entry with this id ${dbFood.foodTypeId}`);
+      }
 
-      // Check for existence of updated food type
-      const updatedFoodType = await FoodTypePG.scope('raw').findByPk(updFood.foodType.id);
-      if (!updatedFoodType) throw new DatabaseError(`No food type entry with this id ${updFood.foodType.id}`); 
+      try {
 
-      const updatedNameLoc = await this.locStringRepo.update(updFood.nameLoc);
+        if (updFood.foodType.id !== dbFood.foodTypeId) {
+          const updatedFoodType = await FoodTypePG.scope('all').findByPk(updFood.foodType.id);
+          if (!updatedFoodType) {
+            await t.rollback();
+            throw new DatabaseError(`No food type entry with this id ${updFood.foodType.id}`);
+          }
+  
+          dbFood.foodTypeId = updFood.foodType.id;
+          dbFood.foodType = updatedFoodType;
+          await dbFood.save({ transaction: t });
+        }
 
-      const updatedDescriptionLoc = await this.locStringRepo.update(updFood.descriptionLoc);
+        const updatedNameLoc = await this.locStringRepo.update(updFood.nameLoc);
+        const updatedDescriptionLoc = await this.locStringRepo.update(updFood.descriptionLoc);
 
-      return new Food(
-        updFood.id,
-        updatedNameLoc,
-        updatedDescriptionLoc,
-        FoodTypeMapper.dbToDomain(updatedFoodType),
-        updFood.price
-      );
+        return new Food(
+          updFood.id,
+          updatedNameLoc,
+          updatedDescriptionLoc,
+          FoodTypeMapper.dbToDomain(dbFood.foodType),
+          updFood.price
+        );
+      } catch (err) {
+        await t.rollback();
+        throw err;
+      }
     });
 
-    return updatedFoodType;
+    return updatedFood;
   }
 
   async remove(id: number): Promise<void> {
