@@ -48,6 +48,7 @@ export class LocStringRepoSequelizePG implements ILocStringRepo {
       },
       {
         where: { id: locString.id },
+        transaction: t,
         returning: true
       });
       if (count === 0) {
