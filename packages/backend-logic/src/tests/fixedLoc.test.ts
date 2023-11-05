@@ -3,21 +3,27 @@ import 'mocha';
 import { FixedLocRepoRedis, FixedLocRepoSequelizePG, FixedLocService } from '../models/FixedLoc';
 import { dbHandler } from '@m-cafe-app/db';
 import { redisFixedLocsClient } from '../config';
+import { LocStringRepoSequelizePG } from '../models/LocString';
 
 
 // No mocking, no unit testing for this package. Only integration tests ->
 // If tests fail after dependency injection, change dependencies accordingly
 // in these tests
-const fixedLocService = new FixedLocService(
-  new FixedLocRepoSequelizePG(),
-  new FixedLocRepoRedis(redisFixedLocsClient)
-);
 
 
 describe('FixedLocService implementation tests', () => {
 
+  let fixedLocService: FixedLocService;
+
   before(async () => {
     await dbHandler.pingDb();
+    fixedLocService = new FixedLocService(
+      new FixedLocRepoSequelizePG(
+        dbHandler,
+        new LocStringRepoSequelizePG(dbHandler)
+      ),
+      new FixedLocRepoRedis(redisFixedLocsClient)
+    );
     await fixedLocService.connectInmem();
     await fixedLocService.pingInmem();
   });
