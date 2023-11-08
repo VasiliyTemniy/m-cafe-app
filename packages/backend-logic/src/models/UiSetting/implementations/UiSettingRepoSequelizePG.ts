@@ -1,10 +1,23 @@
 import type { UiSetting, UiSettingDTN } from '@m-cafe-app/models';
 import type { IUiSettingRepo } from '../interfaces';
+import type { IDatabaseConnectionHandler } from '@m-cafe-app/db';
+import type { Sequelize } from 'sequelize';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { UiSettingMapper } from '../infrastructure';
 import { UiSetting as UiSettingPG } from '@m-cafe-app/db';
 
 export class UiSettingRepoSequelizePG implements IUiSettingRepo {
+
+  private dbInstance: Sequelize;
+
+  constructor(
+    readonly dbHandler: IDatabaseConnectionHandler,
+  ) {
+    if (!dbHandler.dbInstance) {
+      throw new DatabaseError('No database connection');
+    }
+    this.dbInstance = dbHandler.dbInstance;
+  }
 
   async getAll(): Promise<UiSetting[]> {
     const dbUiSettings = await UiSettingPG.scope('all').findAll();
@@ -23,32 +36,53 @@ export class UiSettingRepoSequelizePG implements IUiSettingRepo {
   }
 
   async create(uiSettingDTN: UiSettingDTN): Promise<UiSetting> {
-    const dbUiSetting = await UiSettingPG.create({
-      name: uiSettingDTN.name,
-      value: uiSettingDTN.value,
-      theme: uiSettingDTN.theme,
-      group: uiSettingDTN.group
+    const createdUiSetting = await this.dbInstance.transaction(async (t) => {
+      try {
+        const dbUiSetting = await UiSettingPG.create({
+          name: uiSettingDTN.name,
+          value: uiSettingDTN.value,
+          theme: uiSettingDTN.theme,
+          group: uiSettingDTN.group
+        }, {
+          transaction: t
+        });
+
+        return UiSettingMapper.dbToDomain(dbUiSetting);
+      } catch (err) {
+        await t.rollback();
+        throw err;
+      }
     });
-    return UiSettingMapper.dbToDomain(dbUiSetting);
+
+    return createdUiSetting;
   }
 
   async update(uiSetting: UiSetting): Promise<UiSetting> {
-    const dbUiSetting = await UiSettingPG.scope('all').findByPk(uiSetting.id);
+    const updatedUiSetting = await this.dbInstance.transaction(async (t) => {
+      
+      const [ count, updated ] = await UiSettingPG.update({
+        value: uiSetting.value
+      }, {
+        where: {
+          id: uiSetting.id
+        },
+        transaction: t,
+        returning: true
+      });
 
-    // Why did I do this id check? Update of ui settings should be done by admin;
-    // Admin _must_ have id on frontend, so why omit it in request body?
-    // Delete this some time
-    // const dbUiSetting = uiSetting.id
-    //   ? await UiSettingPG.scope('all').findByPk(uiSetting.id)
-    //   : await UiSettingPG.scope('all').findOne({ where: { name: uiSetting.name, theme: uiSetting.theme, group: uiSetting.group } });
+      if (count === 0) {
+        await t.rollback();
+        throw new DatabaseError(`No ui setting entry with this id ${uiSetting.id}`);
+      }
 
-    if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${uiSetting.id}`);
-    dbUiSetting.value = uiSetting.value;
-    await dbUiSetting.save();
-    return UiSettingMapper.dbToDomain(dbUiSetting);
+      return UiSettingMapper.dbToDomain(updated[0]);
+    });
+
+    return updatedUiSetting;
   }
 
   async updateMany(uiSettings: UiSetting[]): Promise<UiSetting[]> {
+    // Maybe add top-level transaction to prevent partial updating?
     return await Promise.all(uiSettings.map(uiSetting => this.update(uiSetting)));
   }
 
