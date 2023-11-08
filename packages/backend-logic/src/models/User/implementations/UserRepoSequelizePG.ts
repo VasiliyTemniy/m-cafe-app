@@ -2,10 +2,7 @@ import type { User, UserDTN, UserUniqueProperties } from '@m-cafe-app/models';
 import type { IUserRepo } from '../interfaces';
 import { ApplicationError, DatabaseError, ProhibitedError, toOptionalDate } from '@m-cafe-app/utils';
 import { UserMapper } from '../infrastructure';
-import {
-  User as UserPG,
-  Address as AddressPG,
-} from '@m-cafe-app/db';
+import { User as UserPG } from '@m-cafe-app/db';
 import sha1 from 'sha1';
 
 export class UserRepoSequelizePG implements IUserRepo {
@@ -159,17 +156,7 @@ export class UserRepoSequelizePG implements IUserRepo {
   }
 
   async getWithAddresses(id: number): Promise<User> {
-    const dbUser = await UserPG.scope('allWithTimestamps').findByPk(id, {
-      include: [
-        {
-          model: AddressPG,
-          as: 'addresses',
-          through: {
-            attributes: []
-          }
-        }
-      ]
-    });
+    const dbUser = await UserPG.scope('allWithAddresses').findByPk(id);
     if (!dbUser) throw new DatabaseError(`No user entry with this id ${id}`);
 
     return UserMapper.dbToDomain(dbUser);
