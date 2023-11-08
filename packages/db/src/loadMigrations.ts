@@ -2,11 +2,9 @@
 // umzug did not work with .ts import export "type": "module" system and so on
 // workaround with custom file imports
 
-// UNCOMMENT LOGGER AFTER FINISHING WITH REFACTOR OF BACKEND-LOGIC
-
 import type { MigrationFn } from './types/Migrations.js';
 import { glob } from 'glob';
-// import { logger } from '@m-cafe-app/utils';
+import { logger } from '@m-cafe-app/utils';
 import path from 'path';
 
 export const loadMigrations = async () => {
@@ -55,7 +53,7 @@ export const loadMigrations = async () => {
     migrations = await Promise.all(migrationsPromise);
 
   } catch (error) {
-    // logger.shout(error);
+    logger.error(error);
     throw new Error('Migrations failed to load!');
   }
 

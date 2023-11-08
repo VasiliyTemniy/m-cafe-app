@@ -1,10 +1,8 @@
-// UNCOMMENT LOGGER AND APPLICATION ERROR AFTER FINISHING WITH REFACTOR OF BACKEND-LOGIC
-
 import type { IDatabaseConnectionHandler, IMigration, IMigrationConf } from '../interfaces';
 import type { Options } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { Umzug, SequelizeStorage } from 'umzug';
-// import { ApplicationError, logger } from '@m-cafe-app/utils';
+import { logger } from '@m-cafe-app/utils';
 import { DATABASE_URL } from '../../config';
 import {
   initUserModel,
@@ -82,10 +80,10 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
     try {
       await this.dbInstance.authenticate();
-      // logger.info('connected to the database');
+      logger.info('connected to the database');
     } catch (err) {
-      // logger.error(err as string);
-      // logger.info('failed to connect to the database');
+      logger.error(err as string);
+      logger.info('failed to connect to the database');
       if (process.env.NODE_ENV === 'production') {
         await new Promise((resolve) => setTimeout(resolve, 5000));
         return await this.pingDb();
@@ -101,11 +99,11 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
     try {
       await this.dbInstance.close();
-      // logger.info('closed the database connection');
+      logger.info('closed the database connection');
       this.dbInstance = undefined;
     } catch (err) {
-      // logger.error(err as string);
-      // logger.info('failed to close the database connection');
+      logger.error(err as string);
+      logger.info('failed to close the database connection');
       if (process.env.NODE_ENV === 'production') {
         await new Promise((resolve) => setTimeout(resolve, 5000));
         return await this.close();
@@ -140,11 +138,10 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
     await this.pingDb();
     const migrator = new Umzug(this.migrationConf);
-    await migrator.up();
-    // const migrationsDone = await migrator.up();
-    // logger.info('Migrations up to date', {
-    //   files: migrationsDone.map((mig) => mig.name),
-    // });
+    const migrationsDone = await migrator.up();
+    logger.info('Migrations up to date', {
+      files: migrationsDone.map((mig) => mig.name),
+    });
   }
 
   async rollbackMigration(): Promise<void> {
