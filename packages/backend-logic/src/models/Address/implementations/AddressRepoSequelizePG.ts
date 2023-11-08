@@ -1,5 +1,6 @@
 import type { IAddressRepo } from '../interfaces';
 import type { AddressDT, AddressDTN } from '@m-cafe-app/models';
+import type { Transaction } from 'sequelize';
 import {
   Address as AddressPG,
   User as UserPG,
@@ -38,7 +39,7 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     return res;
   }
 
-  async create(addressDTN: AddressDTN): Promise<{ address: Address, created: boolean }> {
+  async create(addressDTN: AddressDTN, t?: Transaction): Promise<{ address: Address, created: boolean }> {
     // If I do just const address = req.body, some other malformed keys can happen to go through
     const { city, cityDistrict, street, region, regionDistrict, house, entrance, floor, flat, entranceKey } = addressDTN;
     // If I do const address = { city, strees, region, distric, house, entrance, floor, flat, entranceKey }
@@ -60,13 +61,18 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     // If I make all fields not nullable and put some defaultValue like '' , validations fail for each and every of these empty strings
     // So, I decided to make this 'unique' check by hand, because I do not want to make user fill every fricking detail
     // and will leave most fields of address as nullables
-    const [savedAddress, created] = await AddressPG.findOrCreate({
-      where: newAddress
-    });
+    const [savedAddress, created] = t ?
+      await AddressPG.findOrCreate({
+        where: newAddress,
+        transaction: t
+      }) :
+      await AddressPG.findOrCreate({
+        where: newAddress
+      });
     return { address: AddressMapper.dbToDomain(savedAddress), created };
   }
 
-  async update(addressDT: AddressDT): Promise<{ address: Address; updated: boolean; }> {
+  async update(addressToUpdate: Address, t?: Transaction): Promise<{ address: Address; updated: boolean; }> {
     // check this.createAddress above for explanation of this bulk
     const {
       id: oldAddressId,
@@ -80,7 +86,7 @@ export class AddressRepoSequelizePG implements IAddressRepo {
       floor,
       flat,
       entranceKey
-    } = addressDT;
+    } = addressToUpdate;
     
     const updAddress: AddressDT = { id: oldAddressId, city, street };
         
@@ -97,27 +103,36 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     if (!oldAddress) throw new DatabaseError(`No address entry with this id ${oldAddressId}`);
     
     // Check for this address, must be unique
-    const [savedAddress, created] = await AddressPG.findOrCreate({
-      where: updAddress
-    });
+    const [savedAddress, created] = t ?
+      await AddressPG.findOrCreate({
+        where: updAddress,
+        transaction: t
+      }) :
+      await AddressPG.findOrCreate({
+        where: updAddress
+      });
 
+    await this.removeIfUnused(oldAddressId);
+
+    return { address: AddressMapper.dbToDomain(savedAddress), updated: created };
+  }
+
+  async removeIfUnused(addressId: number): Promise<void> {
     // Check if anything still uses old address
     // One of any is enough for check, findAll is not needed
     const addressUser = await UserAddressPG.findOne({
       where: {
-        addressId: oldAddressId
+        addressId
       }
     });
     const addressFacility = await FacilityPG.findOne({
       where: {
-        addressId: oldAddressId
+        addressId
       }
     });
     
-    // If nothing and nobody users old address, delete it
-    if (!addressUser && !addressFacility) await oldAddress.destroy();
-
-    return { address: AddressMapper.dbToDomain(savedAddress), updated: created };
+    // If nothing and nobody uses old address, delete it
+    if (!addressUser && !addressFacility) await AddressPG.destroy({ where: { id: addressId } });
   }
 
   async createUserAddress(userId: number, addressId: number): Promise<{ created: boolean }> {
@@ -161,21 +176,7 @@ export class AddressRepoSequelizePG implements IAddressRepo {
 
     await UserAddressPG.destroy({ where: { userId, addressId } });
 
-    // Check if anything still uses old address
-    // One of any is enough for check, findAll is not needed
-    const addressUser = await UserAddressPG.findOne({
-      where: {
-        addressId
-      }
-    });
-    const addressFacility = await FacilityPG.findOne({
-      where: {
-        addressId
-      }
-    });
-    
-    // If nothing and nobody users old address, delete it
-    if (!addressUser && !addressFacility) await address.destroy();
+    await this.removeIfUnused(addressId);
   }
 
   async removeAll(): Promise<void> {
