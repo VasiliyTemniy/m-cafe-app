@@ -4,7 +4,7 @@ import type { IDatabaseConnectionHandler } from '@m-cafe-app/db';
 import type { Sequelize } from 'sequelize';
 import type { ILocStringRepo } from '../../LocString';
 import { Ingredient } from '@m-cafe-app/models';
-import { Ingredient as IngredientPG, LocString as LocStringPG } from '@m-cafe-app/db';
+import { Ingredient as IngredientPG } from '@m-cafe-app/db';
 import { IngredientMapper } from '../infrastructure';
 import { DatabaseError } from '@m-cafe-app/utils';
 
@@ -35,65 +35,72 @@ export class IngredientRepoSequelizePG implements IIngredientRepo {
   }
 
   async create(ingredientDTN: IngredientDTN): Promise<Ingredient> {
-
-    const dbNameLoc = await this.locStringRepo.create(ingredientDTN.nameLoc);
-    const dbStockMeasureLoc = await this.locStringRepo.create(ingredientDTN.stockMeasureLoc);
-
-    const dbIngredient = await IngredientPG.create({
-      nameLocId: dbNameLoc.id,
-      stockMeasureLocId: dbStockMeasureLoc.id,
-      proteins: ingredientDTN.proteins,
-      fats: ingredientDTN.fats,
-      carbohydrates: ingredientDTN.carbohydrates,
-      calories: ingredientDTN.calories
+    const createdIngredient = await this.dbInstance.transaction(async (t) => {
+      try {
+        const nameLoc = await this.locStringRepo.create(ingredientDTN.nameLoc, t);
+        const stockMeasureLoc = await this.locStringRepo.create(ingredientDTN.stockMeasureLoc, t);
+  
+        const dbIngredient = await IngredientPG.create({
+          nameLocId: nameLoc.id,
+          stockMeasureLocId: stockMeasureLoc.id,
+          proteins: ingredientDTN.proteins,
+          fats: ingredientDTN.fats,
+          carbohydrates: ingredientDTN.carbohydrates,
+          calories: ingredientDTN.calories
+        }, {
+          transaction: t
+        });
+  
+        // Not using mapper here because of inability to include returning locs
+        // Only other way is to use afterCreate hook for Sequelize
+        return new Ingredient(
+          dbIngredient.id,
+          nameLoc,
+          stockMeasureLoc,
+          dbIngredient.proteins,
+          dbIngredient.fats,
+          dbIngredient.carbohydrates,
+          dbIngredient.calories
+        );
+      } catch (err) {
+        await t.rollback();
+        throw err;
+      }
     });
 
-    // Not using mapper here because of inability to include returning locs
-    // Only other way is to use afterCreate hook for Sequelize
-    return new Ingredient(
-      dbIngredient.id,
-      dbNameLoc,
-      dbStockMeasureLoc,
-      dbIngredient.proteins,
-      dbIngredient.fats,
-      dbIngredient.carbohydrates,
-      dbIngredient.calories
-    );
+    return createdIngredient;
   }
 
   async update(updIngredient: Ingredient): Promise<Ingredient> {
     const updatedIngredient = await this.dbInstance.transaction(async (t) => {
-
-      // const dbIngredient = await IngredientPG.scope('raw').findByPk(updIngredient.id);
-      // if (!dbIngredient) {
-      //   await t.rollback();
-      //   throw new DatabaseError(`No ingredient type entry with this id ${updIngredient.id}`);
-      // }
-
-      // const dbNameLoc = await LocStringPG.scope('all').findByPk(updIngredient.nameLoc.id);
-      // if (!dbNameLoc) {
-      //   await t.rollback();
-      //   throw new DatabaseError(`No name loc entry with this id ${updIngredient.nameLoc.id}`);
-      // }
-
-      // const dbStockMeasureLoc = await LocStringPG.scope('all').findByPk(updIngredient.stockMeasureLoc.id);
-      // if (!dbStockMeasureLoc) {
-      //   await t.rollback();
-      //   throw new DatabaseError(`No stock measure loc entry with this id ${updIngredient.stockMeasureLoc.id}`);
-      // }
-    
       try {
         const updatedNameLoc = await this.locStringRepo.update(updIngredient.nameLoc);
         const updatedStockMeasureLoc = await this.locStringRepo.update(updIngredient.stockMeasureLoc);
+
+        const [ count, updated ] = await IngredientPG.update({
+          proteins: updIngredient.proteins,
+          fats: updIngredient.fats,
+          carbohydrates: updIngredient.carbohydrates,
+          calories: updIngredient.calories
+        }, {
+          where: { id: updIngredient.id },
+          transaction: t,
+          returning: true
+        });
+
+        if (count === 0) {
+          await t.rollback();
+          throw new DatabaseError(`No ingredient entry with this id ${updIngredient.id}`);
+        }
 
         return new Ingredient(
           updIngredient.id,
           updatedNameLoc,
           updatedStockMeasureLoc,
-          updIngredient.proteins,
-          updIngredient.fats,
-          updIngredient.carbohydrates,
-          updIngredient.calories
+          updated[0].proteins,
+          updated[0].fats,
+          updated[0].carbohydrates,
+          updated[0].calories
         );
       } catch (err) {
         await t.rollback();
@@ -108,8 +115,9 @@ export class IngredientRepoSequelizePG implements IIngredientRepo {
     const dbIngredient = await IngredientPG.scope('raw').findByPk(id);
     if (!dbIngredient) throw new DatabaseError(`No ingredient type entry with this id ${id}`);
 
-    await LocStringPG.scope('all').destroy({ where: { id: dbIngredient.nameLocId } });
-    await LocStringPG.scope('all').destroy({ where: { id: dbIngredient.stockMeasureLocId } });
+    // Remove loc strings. If needed, add logging of deleted count
+    await this.locStringRepo.removeWithCount(dbIngredient.nameLocId);
+    await this.locStringRepo.removeWithCount(dbIngredient.stockMeasureLocId);
 
     await dbIngredient.destroy();
   }
