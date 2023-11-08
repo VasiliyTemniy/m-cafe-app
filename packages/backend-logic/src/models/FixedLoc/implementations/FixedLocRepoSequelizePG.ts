@@ -5,7 +5,7 @@ import type { Sequelize } from 'sequelize';
 import type { ILocStringRepo } from '../../LocString';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { FixedLocMapper } from '../infrastructure';
-import { FixedLoc as FixedLocPG, LocString as LocStringPG } from '@m-cafe-app/db';
+import { FixedLoc as FixedLocPG } from '@m-cafe-app/db';
 import { FixedLoc } from '@m-cafe-app/models';
 
 export class FixedLocRepoSequelizePG implements IFixedLocRepo {
@@ -49,17 +49,33 @@ export class FixedLocRepoSequelizePG implements IFixedLocRepo {
    * and unforseen purposes
    */
   async create(fixedLocDTN: FixedLocDTN): Promise<FixedLoc> {
-    const dbLocString = await LocStringPG.create(fixedLocDTN.locString);
-    const dbFixedLoc = await FixedLocPG.create({
-      name: fixedLocDTN.name,
-      namespace: fixedLocDTN.namespace,
-      scope: fixedLocDTN.scope,
-      locStringId: dbLocString.id
+    const createdFixedLoc = await this.dbInstance.transaction(async (t) => {
+      try {
+        const locString = await this.locStringRepo.create(fixedLocDTN.locString, t);
+
+        const dbFixedLoc = await FixedLocPG.create({
+          name: fixedLocDTN.name,
+          namespace: fixedLocDTN.namespace,
+          scope: fixedLocDTN.scope,
+          locStringId: locString.id
+        }, {
+          transaction: t
+        });
+  
+        return new FixedLoc(
+          dbFixedLoc.id,
+          dbFixedLoc.name,
+          dbFixedLoc.namespace,
+          dbFixedLoc.scope,
+          locString
+        );
+      } catch (err) {
+        await t.rollback();
+        throw err;
+      }
     });
 
-    dbFixedLoc.locString = dbLocString;
-
-    return FixedLocMapper.dbToDomain(dbFixedLoc);
+    return createdFixedLoc;
   }
 
   /**
@@ -75,7 +91,7 @@ export class FixedLocRepoSequelizePG implements IFixedLocRepo {
       }
 
       try {
-        const updatedLocString = await this.locStringRepo.update(fixedLocToUpd.locString);
+        const updatedLocString = await this.locStringRepo.update(fixedLocToUpd.locString, t);
 
         return new FixedLoc(
           dbFixedLoc.id,
