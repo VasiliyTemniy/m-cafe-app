@@ -391,7 +391,7 @@ export class UserService implements IUserService {
   }
 
   async updateAddress(userId: number, address: AddressDT): Promise<{ address: AddressDT, updated: boolean }> {
-    const { address: updatedAddress } = await this.addressRepo.update(address);
+    const { address: updatedAddress } = await this.addressRepo.update(AddressMapper.dtToDomain(address));
 
     const { updated } = await this.addressRepo.updateUserAddress(userId, updatedAddress.id, address.id);
 
