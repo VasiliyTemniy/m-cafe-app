@@ -54,6 +54,18 @@ export type UserData = Omit<InferAttributes<User>, PropertiesCreationOptional | 
 
 export const initUserModel = async (dbInstance: Sequelize) => {
   return new Promise<void>((resolve, reject) => {
+
+    const includeAddresses = {
+      model: Address,
+      as: 'addresses',
+      through: {
+        attributes: []
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    };
+
     try {
       User.init({
         id: {
@@ -204,6 +216,13 @@ export const initUserModel = async (dbInstance: Sequelize) => {
             paranoid: false
           },
           all: {
+            attributes: {
+              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+            },
+            paranoid: false
+          },
+          allWithAddresses: {
+            include: [includeAddresses],
             attributes: {
               exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
             },
