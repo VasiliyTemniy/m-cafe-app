@@ -6,4 +6,5 @@ export interface IFoodComponentRepo extends Omit<ICRUDRepo<FoodComponent, FoodCo
   createMany(foodComponentDTNs: FoodComponentDTN[]): Promise<FoodComponent[]>
   update(updFoodComponent: FoodComponent, foodId: number): Promise<FoodComponent>
   rewriteAllForOneFood(updFoodComponents: FoodComponentDTN[], foodId: number): Promise<FoodComponent[]>
+  removeWithCount(ids: number[]): Promise<number>
 }
