@@ -12,7 +12,6 @@
     "eslint": "eslint \"./src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
-    "@m-cafe-app/db": "workspace:^",
     "@m-cafe-app/shared-constants": "workspace:^",
     "chai": "^4.3.7",
     "cross-env": "^7.0.3",
