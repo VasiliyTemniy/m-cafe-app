@@ -3025,6 +3025,7 @@ __metadata:
   dependencies:
     "@m-cafe-app/shared-backend-deps": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"
+    "@m-cafe-app/utils": "workspace:^"
     chai: ^4.3.7
     cross-env: ^7.0.3
     mocha: ^10.2.0
@@ -3102,7 +3103,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@m-cafe-app/utils@workspace:packages/utils"
   dependencies:
-    "@m-cafe-app/db": "workspace:^"
     "@m-cafe-app/shared-constants": "workspace:^"
     chai: ^4.3.7
     cross-env: ^7.0.3
