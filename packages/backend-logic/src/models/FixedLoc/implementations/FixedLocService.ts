@@ -20,26 +20,19 @@ export class FixedLocService implements IFixedLocService {
   async getAll(): Promise<FixedLocDT[]> {
     const fixedLocs = await this.dbRepo.getAll();
 
-    const res: FixedLocDT[] =
-      fixedLocs.map(fixedLoc => FixedLocMapper.domainToDT(fixedLoc));
-
-    return res;
+    return fixedLocs.map(fixedLoc => FixedLocMapper.domainToDT(fixedLoc));
   }
 
   async getById(id: number): Promise<FixedLocDT> {
     const fixedLoc = await this.dbRepo.getById(id);
 
-    const res: FixedLocDT = FixedLocMapper.domainToDT(fixedLoc);
-
-    return res;
+    return FixedLocMapper.domainToDT(fixedLoc);
   }
 
   async getByScope(scope: string = 'defaultScope'): Promise<FixedLocDT[]> {
     const fixedLocs = await this.dbRepo.getByScope(scope);
 
-    const res: FixedLocDT[] = fixedLocs.map(fixedLoc => FixedLocMapper.domainToDT(fixedLoc));
-
-    return res;
+    return fixedLocs.map(fixedLoc => FixedLocMapper.domainToDT(fixedLoc));
   }
 
   async create(fixedLocDTN: FixedLocDTN): Promise<FixedLocDT> {
@@ -49,20 +42,16 @@ export class FixedLocService implements IFixedLocService {
     const savedFixedLoc = await this.dbRepo.create(fixedLocDTN);
 
     await this.storeToInmem([savedFixedLoc]);
-
-    const res: FixedLocDT = FixedLocMapper.domainToDT(savedFixedLoc);
     
-    return res;
+    return FixedLocMapper.domainToDT(savedFixedLoc);
   }
 
   async update(fixedLocDT: FixedLocDT): Promise<FixedLocDT> {
     const updatedFixedLoc = await this.dbRepo.update(FixedLocMapper.dtToDomain(fixedLocDT));
 
     await this.storeToInmem([updatedFixedLoc]);
-
-    const res: FixedLocDT = FixedLocMapper.domainToDT(updatedFixedLoc);
     
-    return res;
+    return FixedLocMapper.domainToDT(updatedFixedLoc);
   }
 
   async updateMany(fixedLocsDT: FixedLocDT[]): Promise<FixedLocDT[]> {
@@ -72,9 +61,7 @@ export class FixedLocService implements IFixedLocService {
 
     await this.storeToInmem(updatedFixedLocs);
 
-    const res: FixedLocDT[] = updatedFixedLocs.map(fixedLoc => FixedLocMapper.domainToDT(fixedLoc));
-
-    return res;
+    return updatedFixedLocs.map(fixedLoc => FixedLocMapper.domainToDT(fixedLoc));
   }
 
   async remove(id: number): Promise<void> {

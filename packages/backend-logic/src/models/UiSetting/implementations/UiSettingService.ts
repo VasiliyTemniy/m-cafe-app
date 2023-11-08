@@ -27,26 +27,19 @@ export class UiSettingService implements IUiSettingService {
   async getAll(): Promise<UiSettingDT[]> {
     const uiSettings = await this.dbRepo.getAll();
 
-    const res: UiSettingDT[] =
-      uiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
-
-    return res;
+    return uiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
   }
 
   async getById(id: number): Promise<UiSettingDT> {
     const uiSetting = await this.dbRepo.getById(id);
 
-    const res: UiSettingDT = UiSettingMapper.domainToDT(uiSetting);
-
-    return res;
+    return UiSettingMapper.domainToDT(uiSetting);
   }
 
   async getByScope(scope: string = 'defaultScope'): Promise<UiSettingDT[]> {
     const uiSettings = await this.dbRepo.getByScope(scope);
 
-    const res: UiSettingDT[] = uiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
-
-    return res;
+    return uiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
   }
 
   async create(uiSettingDTN: UiSettingDTN): Promise<UiSettingDT> {
@@ -72,20 +65,16 @@ export class UiSettingService implements IUiSettingService {
     const savedUiSetting = await this.dbRepo.create(uiSettingDTN);
 
     await this.storeToInmem([savedUiSetting]);
-
-    const res: UiSettingDT = UiSettingMapper.domainToDT(savedUiSetting);
     
-    return res;
+    return UiSettingMapper.domainToDT(savedUiSetting);
   }
 
   async update(uiSettingDT: UiSettingDT): Promise<UiSettingDT> {
     const updatedUiSetting = await this.dbRepo.update(UiSettingMapper.dtToDomain(uiSettingDT));
 
     await this.storeToInmem([updatedUiSetting]);
-
-    const res: UiSettingDT = UiSettingMapper.domainToDT(updatedUiSetting);
     
-    return res;
+    return UiSettingMapper.domainToDT(updatedUiSetting);
   }
 
   async updateMany(uiSettingsDT: UiSettingDT[]): Promise<UiSettingDT[]> {
@@ -94,9 +83,7 @@ export class UiSettingService implements IUiSettingService {
 
     await this.storeToInmem(updatedUiSettings);
 
-    const res: UiSettingDT[] = updatedUiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
-
-    return res;
+    return updatedUiSettings.map(uiSetting => UiSettingMapper.domainToDT(uiSetting));
   }
 
   async remove(id: number): Promise<void> {

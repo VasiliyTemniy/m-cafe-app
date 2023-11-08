@@ -41,35 +41,25 @@ export class UserService implements IUserService {
   async getAll(): Promise<UserDT[]> {
     const users = await this.repo.getAll();
 
-    const res: UserDT[] =
-      users.map(user => UserMapper.domainToDT(user));
-
-    return res;
+    return users.map(user => UserMapper.domainToDT(user));
   }
 
   async getSome(limit: number, offset: number): Promise<UserDT[]> {
     const users = await this.repo.getSome(limit, offset);
 
-    const res: UserDT[] =
-      users.map(user => UserMapper.domainToDT(user));
-
-    return res;
+    return users.map(user => UserMapper.domainToDT(user));
   }
 
   async getById(id: number): Promise<UserDT> {
     const user = await this.repo.getById(id);
 
-    const res: UserDT = UserMapper.domainToDT(user);
-
-    return res;
+    return UserMapper.domainToDT(user);
   }
 
   async getByScope(scope: string = 'defaultScope'): Promise<UserDT[]> {
     const users = await this.repo.getByScope(scope);
 
-    const res: UserDT[] = users.map(user => UserMapper.domainToDT(user));
-
-    return res;
+    return users.map(user => UserMapper.domainToDT(user));
   }
 
   async create(userDTN: UserDTN, userAgent: string): Promise<{ user: UserDT, auth: AuthResponse}> {
@@ -89,13 +79,11 @@ export class UserService implements IUserService {
       throw new ApplicationError('Failed to create user');
 
     await this.sessionService.create(authorizedUser.id, userAuth.token, userAgent, authorizedUser.rights);
-
-    const res: { user: UserDT, auth: AuthResponse } = {
+    
+    return {
       user: UserMapper.domainToDT(authorizedUser),
       auth: userAuth
     };
-    
-    return res;
   }
 
   async update(userDTU: UserDTU, userAgent: string): Promise<{ user: UserDT, auth: AuthResponse}> {
@@ -142,13 +130,11 @@ export class UserService implements IUserService {
     });
 
     await this.sessionService.update(updatedUser.id, userAuth.token, userAgent, updatedUser.rights);
-
-    const res: { user: UserDT, auth: AuthResponse } = {
+    
+    return {
       user: UserMapper.domainToDT(updatedUser),
       auth: userAuth
     };
-    
-    return res;
   }
 
   async authenticate(
@@ -192,12 +178,10 @@ export class UserService implements IUserService {
 
     await this.sessionService.update(user.id, auth.token, userAgent, user.rights);
 
-    const res: { user: UserDT; auth: AuthResponse; } = {
+    return {
       user: UserMapper.domainToDT(user),
       auth
     };
-
-    return res;
   }
 
   async logout(id: number, userAgent: string): Promise<void> {
@@ -237,9 +221,7 @@ export class UserService implements IUserService {
       }
     }
 
-    const res: UserDT = UserMapper.domainToDT(userSubject);
-
-    return res;
+    return UserMapper.domainToDT(userSubject);
   }
 
   /**
@@ -255,17 +237,11 @@ export class UserService implements IUserService {
 
     await this.authController.remove({ lookupHash: deletedUser.lookupHash });
 
-    const res: UserDT = UserMapper.domainToDT(deletedUser);
-
-    return res;
+    return UserMapper.domainToDT(deletedUser);
   }
 
   private async restore(id: number): Promise<User> {
-    const user = await this.repo.restore(id);
-
-    const res: User = user;
-
-    return res;
+    return await this.repo.restore(id);
   }
 
   /**
@@ -405,8 +381,6 @@ export class UserService implements IUserService {
   async getWithAddress(id: number): Promise<UserDT> {
     const user = await this.repo.getById(id);
 
-    const res: UserDT = UserMapper.domainToDT(user);
-
-    return res;
+    return UserMapper.domainToDT(user);
   }
 }
