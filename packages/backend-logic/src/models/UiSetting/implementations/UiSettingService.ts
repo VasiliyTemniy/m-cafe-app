@@ -1,5 +1,6 @@
 import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingDTS } from '@m-cafe-app/models';
 import type { IUiSettingService, IUiSettingRepo, IUiSettingSRepo } from '../interfaces';
+import type { ITransactionHandler } from '../../../utils';
 import { ApplicationError } from '@m-cafe-app/utils';
 import { UiSettingMapper } from '../infrastructure';
 import {
@@ -21,6 +22,7 @@ import { logger } from '@m-cafe-app/utils';
 export class UiSettingService implements IUiSettingService {
   constructor(
     readonly dbRepo: IUiSettingRepo,
+    readonly transactionHandler: ITransactionHandler,
     readonly inmemRepo: IUiSettingSRepo
   ) {}
 
@@ -44,33 +46,55 @@ export class UiSettingService implements IUiSettingService {
 
   async create(uiSettingDTN: UiSettingDTN): Promise<UiSettingDT> {
 
-    // CHECK if ui setting name, group and theme are allowed
-    if (!isUiSettingType(uiSettingDTN.name) &&
-        !isAllowedClassNameUiSetting(uiSettingDTN.name) &&
-        !isCSSPropertyKey(uiSettingDTN.name)
-    ) {
-      throw new ApplicationError(`Ui setting name ${uiSettingDTN.name} is not allowed`);
+    let createdUiSetting: UiSetting;
+    const transaction = await this.transactionHandler.start();
+
+    try {
+     
+      // CHECK if ui setting name, group and theme are allowed
+      if (!isUiSettingType(uiSettingDTN.name) &&
+          !isAllowedClassNameUiSetting(uiSettingDTN.name) &&
+          !isCSSPropertyKey(uiSettingDTN.name)
+      ) {
+        throw new ApplicationError(`Ui setting name ${uiSettingDTN.name} is not allowed`);
+      }
+
+      if (!isAllowedTheme(uiSettingDTN.theme)) {
+        throw new ApplicationError(`Ui setting theme ${uiSettingDTN.theme} is not allowed`);
+      }
+
+      if (!isComponentType(uiSettingDTN.group) &&
+          !isLayoutComponentName(uiSettingDTN.group)
+      ) {
+        throw new ApplicationError(`Ui setting group ${uiSettingDTN.group} is not allowed`);
+      }
+
+      createdUiSetting = await this.dbRepo.create(uiSettingDTN, transaction);
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
     }
 
-    if (!isAllowedTheme(uiSettingDTN.theme)) {
-      throw new ApplicationError(`Ui setting theme ${uiSettingDTN.theme} is not allowed`);
-    }
-
-    if (!isComponentType(uiSettingDTN.group) &&
-        !isLayoutComponentName(uiSettingDTN.group)
-    ) {
-      throw new ApplicationError(`Ui setting group ${uiSettingDTN.group} is not allowed`);
-    }
-
-    const savedUiSetting = await this.dbRepo.create(uiSettingDTN);
-
-    await this.storeToInmem([savedUiSetting]);
+    await this.storeToInmem([createdUiSetting]);
     
-    return UiSettingMapper.domainToDT(savedUiSetting);
+    return UiSettingMapper.domainToDT(createdUiSetting);
   }
 
   async update(uiSettingDT: UiSettingDT): Promise<UiSettingDT> {
-    const updatedUiSetting = await this.dbRepo.update(UiSettingMapper.dtToDomain(uiSettingDT));
+
+    let updatedUiSetting: UiSetting;
+    const transaction = await this.transactionHandler.start();
+
+    try {
+      updatedUiSetting = await this.dbRepo.update(UiSettingMapper.dtToDomain(uiSettingDT), transaction);
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
 
     await this.storeToInmem([updatedUiSetting]);
     
@@ -78,8 +102,22 @@ export class UiSettingService implements IUiSettingService {
   }
 
   async updateMany(uiSettingsDT: UiSettingDT[]): Promise<UiSettingDT[]> {
-    if (!this.dbRepo.updateMany) throw new ApplicationError(`Update many method not implemented for repository ${this.dbRepo.constructor.name}`);
-    const updatedUiSettings = await this.dbRepo.updateMany(uiSettingsDT);
+
+    let updatedUiSettings: UiSetting[];
+    const transaction = await this.transactionHandler.start();
+
+    try {
+      if (!this.dbRepo.updateMany) throw new ApplicationError(`Update many method not implemented for repository ${this.dbRepo.constructor.name}`);
+      updatedUiSettings = await this.dbRepo.updateMany(
+        uiSettingsDT.map(uiSetting => UiSettingMapper.dtToDomain(uiSetting)),
+        transaction
+      );
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
 
     await this.storeToInmem(updatedUiSettings);
 
@@ -116,20 +154,20 @@ export class UiSettingService implements IUiSettingService {
           switch (uiSettingType) {
             case 'classNames':
               for (const className of allowedClassNamesUiSettingsReadonly) {
-                await this.dbRepo.create({ name: className, value: 'false', group: componentGroup, theme });
+                await this.createIfNotExists({ name: className, value: 'false', group: componentGroup, theme });
               }
               break;
             case 'specific':
               break;
             case 'baseVariant':
-              await this.dbRepo.create({ name: 'baseVariant', value: 'alpha', group: componentGroup, theme });
+              await this.createIfNotExists({ name: 'baseVariant', value: 'alpha', group: componentGroup, theme });
               break;
             case 'baseColorVariant':
-              await this.dbRepo.create({ name: 'baseColorVariant', value: 'alpha-color', group: componentGroup, theme });
+              await this.createIfNotExists({ name: 'baseColorVariant', value: 'alpha-color', group: componentGroup, theme });
               break;
             case 'inlineCSS':
               for (const inlineCSSKey of allowedCSSPropertiesKeys) {
-                await this.dbRepo.create({ name: inlineCSSKey, value: 'false', group: componentGroup, theme });
+                await this.createIfNotExists({ name: inlineCSSKey, value: 'false', group: componentGroup, theme });
               }
               break;
             default:
@@ -144,7 +182,7 @@ export class UiSettingService implements IUiSettingService {
           const specificUiSetting = specificUiSettingsReadonly[componentGroup as keyof typeof specificUiSettingsReadonly];
           for (const specificUiSettingKey in specificUiSetting) {
             const value = specificUiSetting[specificUiSettingKey as keyof typeof specificUiSetting];
-            await this.dbRepo.create({ name: specificUiSettingKey, value, group: componentGroup, theme });
+            await this.createIfNotExists({ name: specificUiSettingKey, value, group: componentGroup, theme });
           }
         }
       } catch (error) {
@@ -154,6 +192,33 @@ export class UiSettingService implements IUiSettingService {
 
     await this.storeToInmem(await this.getAll());
     logger.info('UI settings initialized');
+  }
+
+  /**
+   * Creates a new `UiSetting` object in the database if it does not already exist.\
+   * sequelize findOrCreate wont help because of unique constraints:\
+   * Name + Group + Theme must be unique, while value could be changed.\
+   * So, create ui setting only if it was not found by unique properties.
+   */
+  private async createIfNotExists(uiSetting: UiSettingDTN): Promise<void> {
+    const foundUiSetting = await this.dbRepo.getByUniqueProperties({
+      name: uiSetting.name,
+      group: uiSetting.group,
+      theme: uiSetting.theme
+    });
+
+    if (!foundUiSetting) {
+      const transaction = await this.transactionHandler.start();
+
+      try {
+        await this.dbRepo.create(uiSetting, transaction);
+
+        await transaction.commit();
+      } catch (err) {
+        await transaction.rollback();
+        throw err;
+      }
+    }
   }
 
   async reset(): Promise<UiSettingDT[]> {
