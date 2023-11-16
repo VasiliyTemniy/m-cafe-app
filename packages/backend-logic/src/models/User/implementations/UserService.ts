@@ -12,6 +12,7 @@ import type { IUserService, IUserRepo } from '../interfaces';
 import type { ISessionService } from '../../Session';
 import type { IAuthController } from '../../Auth';
 import type { IAddressRepo } from '../../Address';
+import type { ITransactionHandler } from '../../../utils';
 import { AddressMapper } from '../../Address';
 import { User } from '@m-cafe-app/models';
 import {
@@ -23,17 +24,18 @@ import {
   PasswordLengthError,
   ProhibitedError,
   UnknownError,
+  logger
 } from '@m-cafe-app/utils';
 import { UserMapper } from '../infrastructure';
 import { maxPasswordLen, minPasswordLen, possibleUserRights } from '@m-cafe-app/shared-constants';
 import config from '../../../config.js';
-import { logger } from '@m-cafe-app/utils';
 
 
 export class UserService implements IUserService {
   constructor(
     readonly userRepo: IUserRepo,
     readonly addressRepo: IAddressRepo,
+    readonly transactionHandler: ITransactionHandler,
     readonly sessionService: ISessionService,
     readonly authController: IAuthController
   ) {}
@@ -388,7 +390,18 @@ export class UserService implements IUserService {
    * Intended to be used from other services
    */
   async changeRightsBulk(ids: number[], rights: string): Promise<UserDT[]> {
-    const users = await this.userRepo.changeRightsBulk(ids, rights);
+
+    let users: User[];
+    const transaction = await this.transactionHandler.start();
+
+    try {
+      users = await this.userRepo.changeRightsBulk(ids, rights, transaction);
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
 
     return users.map(user => UserMapper.domainToDT(user));
   }
