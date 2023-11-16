@@ -32,32 +32,32 @@ import { logger } from '@m-cafe-app/utils';
 
 export class UserService implements IUserService {
   constructor(
-    readonly repo: IUserRepo,
+    readonly userRepo: IUserRepo,
     readonly addressRepo: IAddressRepo,
     readonly sessionService: ISessionService,
     readonly authController: IAuthController
   ) {}
 
   async getAll(): Promise<UserDT[]> {
-    const users = await this.repo.getAll();
+    const users = await this.userRepo.getAll();
 
     return users.map(user => UserMapper.domainToDT(user));
   }
 
   async getSome(limit: number, offset: number): Promise<UserDT[]> {
-    const users = await this.repo.getSome(limit, offset);
+    const users = await this.userRepo.getSome(limit, offset);
 
     return users.map(user => UserMapper.domainToDT(user));
   }
 
   async getById(id: number): Promise<UserDT> {
-    const user = await this.repo.getById(id);
+    const user = await this.userRepo.getById(id);
 
     return UserMapper.domainToDT(user);
   }
 
   async getByScope(scope: string = 'defaultScope'): Promise<UserDT[]> {
-    const users = await this.repo.getByScope(scope);
+    const users = await this.userRepo.getByScope(scope);
 
     return users.map(user => UserMapper.domainToDT(user));
   }
@@ -70,7 +70,7 @@ export class UserService implements IUserService {
     )
       throw new PasswordLengthError(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
 
-    const savedUser = await this.repo.create(userDTN);
+    const savedUser = await this.userRepo.create(userDTN);
 
     const { user: authorizedUser, auth: userAuth }
       = await this.resolveAuthLookupHashConflict(savedUser, userDTN.password);
@@ -88,7 +88,7 @@ export class UserService implements IUserService {
 
   async update(userDTU: UserDTU, userAgent: string): Promise<{ user: UserDT, auth: AuthResponse}> {
 
-    const foundUser = await this.repo.getById(userDTU.id);
+    const foundUser = await this.userRepo.getById(userDTU.id);
 
     if (foundUser.phonenumber === config.SUPERADMIN_PHONENUMBER)
       throw new ProhibitedError('Attempt to alter superadmin');
@@ -114,7 +114,7 @@ export class UserService implements IUserService {
       if (!(minPasswordLen < userDTU.newPassword.length && userDTU.newPassword.length < maxPasswordLen))
         throw new PasswordLengthError(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
 
-    const updatedUser = await this.repo.update(UserMapper.dtToDomain(userDTU));
+    const updatedUser = await this.userRepo.update(UserMapper.dtToDomain(userDTU));
 
     if (!updatedUser.lookupHash || !updatedUser.rights)
       throw new ApplicationError('User data corrupt: lookupHash or rights are missing');
@@ -150,7 +150,7 @@ export class UserService implements IUserService {
     if (credential.phonenumber) whereClause.phonenumber = credential.phonenumber;
     if (credential.email) whereClause.email = credential.email;
 
-    const user = await this.repo.getByUniqueProperties(whereClause);
+    const user = await this.userRepo.getByUniqueProperties(whereClause);
 
     if (!user.lookupHash)
       throw new ApplicationError('User data corrupt: lookupHash is missing. Please, contact the admins to resolve this problem');
@@ -190,7 +190,7 @@ export class UserService implements IUserService {
 
   async administrate(id: number, body: AdministrateUserBody): Promise<UserDT> {
 
-    let userSubject = await this.repo.getById(id);
+    let userSubject = await this.userRepo.getById(id);
 
     if (userSubject.phonenumber === config.SUPERADMIN_PHONENUMBER)
       throw new ProhibitedError('Attempt to alter superadmin');
@@ -211,7 +211,7 @@ export class UserService implements IUserService {
           body.rights
         );
 
-        userSubject = await this.repo.update(updUserRights);
+        userSubject = await this.userRepo.update(updUserRights);
 
         await this.sessionService.updateAllByUserId(id, body.rights);
       }
@@ -230,7 +230,7 @@ export class UserService implements IUserService {
   async remove(id: number): Promise<UserDT> {
     await this.sessionService.remove({ where: { userId: id } });
 
-    const deletedUser = await this.repo.remove(id);
+    const deletedUser = await this.userRepo.remove(id);
 
     if (!deletedUser.lookupHash)
       throw new ApplicationError('User data corrupt: lookupHash is missing');
@@ -241,31 +241,31 @@ export class UserService implements IUserService {
   }
 
   private async restore(id: number): Promise<User> {
-    return await this.repo.restore(id);
+    return await this.userRepo.restore(id);
   }
 
   /**
    * Remove a user entry from the database entirely.
    */
   async delete(id: number): Promise<void> {
-    const user = await this.repo.getById(id);
+    const user = await this.userRepo.getById(id);
     if (!user.lookupHash)
       throw new ApplicationError('User data corrupt: lookupHash is missing');
 
     await this.authController.remove({ lookupHash: user.lookupHash });
-    await this.repo.delete(id);
+    await this.userRepo.delete(id);
   }
 
   async removeAll(): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
-    await this.repo.removeAll();
+    await this.userRepo.removeAll();
   }
 
   async initSuperAdmin(): Promise<void> {
 
     // Check for existing superadmin
     try {
-      const existingUser = await this.repo.getByUniqueProperties({
+      const existingUser = await this.userRepo.getByUniqueProperties({
         phonenumber: config.SUPERADMIN_PHONENUMBER
       });
       if (existingUser) {
@@ -276,8 +276,8 @@ export class UserService implements IUserService {
           ||
           existingUser.phonenumber !== config.SUPERADMIN_PHONENUMBER
         ) {
-          await this.repo.remove(existingUser.id);
-          await this.repo.delete(existingUser.id);
+          await this.userRepo.remove(existingUser.id);
+          await this.userRepo.delete(existingUser.id);
           await this.initSuperAdmin();
         }
         return;
@@ -305,7 +305,7 @@ export class UserService implements IUserService {
       rights: 'admin'
     };
   
-    const savedSuperAdmin = await this.repo.create(user, true, 'admin');
+    const savedSuperAdmin = await this.userRepo.create(user, true, 'admin');
 
     if (!savedSuperAdmin.lookupHash || !savedSuperAdmin.rights)
       throw new ApplicationError('Failed to create superadmin');
@@ -344,7 +344,7 @@ export class UserService implements IUserService {
     if (!auth.token || auth.error || auth.id !== user.id) {
       logger.shout('Failed to create auth token', auth);  // ACHTUNG! REMOVE THIS WHEN ACTUAL ERROR TEXT IS KNOWN
       if (auth.error === 'User already exists') {
-        const userWithNewLookupHash = await this.repo.updateLookupHash(user, user.lookupNoise);
+        const userWithNewLookupHash = await this.userRepo.updateLookupHash(user, user.lookupNoise);
         return this.resolveAuthLookupHashConflict(userWithNewLookupHash, password);
       } else {
         throw new UnknownError(auth.error);
@@ -379,8 +379,17 @@ export class UserService implements IUserService {
   }
 
   async getWithAddress(id: number): Promise<UserDT> {
-    const user = await this.repo.getById(id);
+    const user = await this.userRepo.getById(id);
 
     return UserMapper.domainToDT(user);
+  }
+
+  /**
+   * Intended to be used from other services
+   */
+  async changeRightsBulk(ids: number[], rights: string): Promise<UserDT[]> {
+    const users = await this.userRepo.changeRightsBulk(ids, rights);
+
+    return users.map(user => UserMapper.domainToDT(user));
   }
 }
