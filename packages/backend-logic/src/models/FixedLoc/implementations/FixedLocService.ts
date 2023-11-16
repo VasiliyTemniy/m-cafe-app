@@ -1,10 +1,15 @@
-import { isLocStringDTN, type FixedLoc, type FixedLocDT, type FixedLocDTN, type FixedLocDTS, type LocStringDTN } from '@m-cafe-app/models';
+import type { FixedLocDT, FixedLocDTS, LocStringDTN } from '@m-cafe-app/models';
 import type { IFixedLocService, IFixedLocRepo, IFixedLocSRepo } from '../interfaces';
+import type { FixedLocsScope } from '@m-cafe-app/shared-constants';
+import type { ILocStringRepo } from '../../LocString';
+import type { ITransactionHandler } from '../../../utils';
+import { LocStringMapper } from '../../LocString';
+import { FixedLoc } from '@m-cafe-app/models';
+import { isLocStringDTN } from '@m-cafe-app/models';
 import { ApplicationError, isString } from '@m-cafe-app/utils';
 import { FixedLocMapper } from '../infrastructure';
 import { logger } from '@m-cafe-app/utils';
 import { getFileReadPromises } from '../../../utils';
-import type { FixedLocsScope } from '@m-cafe-app/shared-constants';
 
 export class FixedLocService implements IFixedLocService {
 
@@ -13,51 +18,95 @@ export class FixedLocService implements IFixedLocService {
   private initialFixedLocsExt: 'json' | 'jsonc' = 'jsonc';
 
   constructor(
-    readonly dbRepo: IFixedLocRepo,
+    readonly fixedLocRepo: IFixedLocRepo,
+    readonly locStringRepo: ILocStringRepo,
+    readonly transactionHandler: ITransactionHandler,
     readonly inmemRepo: IFixedLocSRepo
   ) {}
 
   async getAll(): Promise<FixedLocDT[]> {
-    const fixedLocs = await this.dbRepo.getAll();
+    const fixedLocs = await this.fixedLocRepo.getAll();
 
     return fixedLocs.map(fixedLoc => FixedLocMapper.domainToDT(fixedLoc));
   }
 
   async getById(id: number): Promise<FixedLocDT> {
-    const fixedLoc = await this.dbRepo.getById(id);
+    const fixedLoc = await this.fixedLocRepo.getById(id);
 
     return FixedLocMapper.domainToDT(fixedLoc);
   }
 
   async getByScope(scope: string = 'defaultScope'): Promise<FixedLocDT[]> {
-    const fixedLocs = await this.dbRepo.getByScope(scope);
+    const fixedLocs = await this.fixedLocRepo.getByScope(scope);
 
     return fixedLocs.map(fixedLoc => FixedLocMapper.domainToDT(fixedLoc));
   }
 
-  async create(fixedLocDTN: FixedLocDTN): Promise<FixedLocDT> {
-
-    // CHECK if this is needed at all
-
-    const savedFixedLoc = await this.dbRepo.create(fixedLocDTN);
-
-    await this.storeToInmem([savedFixedLoc]);
-    
-    return FixedLocMapper.domainToDT(savedFixedLoc);
-  }
-
   async update(fixedLocDT: FixedLocDT): Promise<FixedLocDT> {
-    const updatedFixedLoc = await this.dbRepo.update(FixedLocMapper.dtToDomain(fixedLocDT));
+
+    let updatedFixedLoc: FixedLoc;
+    const transaction = await this.transactionHandler.start();
+
+    try {
+
+      const fixedLoc = await this.fixedLocRepo.getById(fixedLocDT.id);
+
+      const updatedLocString = await this.locStringRepo.update(
+        LocStringMapper.dtToDomain(fixedLocDT.locString),
+        transaction
+      );
+
+      updatedFixedLoc = new FixedLoc (
+        fixedLoc.id,
+        fixedLoc.name,
+        fixedLoc.namespace,
+        fixedLoc.scope,
+        updatedLocString
+      );
+    
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
 
     await this.storeToInmem([updatedFixedLoc]);
-    
+
     return FixedLocMapper.domainToDT(updatedFixedLoc);
   }
 
   async updateMany(fixedLocsDT: FixedLocDT[]): Promise<FixedLocDT[]> {
-    if (!this.dbRepo.updateMany) throw new ApplicationError(`Update many method not implemented for repository ${this.dbRepo.constructor.name}`);
-    const domainFixedLocs = fixedLocsDT.map(fixedLocDT => FixedLocMapper.dtToDomain(fixedLocDT));
-    const updatedFixedLocs = await this.dbRepo.updateMany(domainFixedLocs);
+
+    const updatedFixedLocs: FixedLoc[] = [];
+    const transaction = await this.transactionHandler.start();
+
+    try {
+
+      for (const fixedLocDT of fixedLocsDT) {
+
+        const fixedLoc = await this.fixedLocRepo.getById(fixedLocDT.id);
+
+        const updatedLocString = await this.locStringRepo.update(
+          LocStringMapper.dtToDomain(fixedLocDT.locString),
+          transaction
+        );
+
+        updatedFixedLocs.push(
+          new FixedLoc (
+            fixedLoc.id,
+            fixedLoc.name,
+            fixedLoc.namespace,
+            fixedLoc.scope,
+            updatedLocString
+          )
+        );
+      }
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
 
     await this.storeToInmem(updatedFixedLocs);
 
@@ -66,14 +115,14 @@ export class FixedLocService implements IFixedLocService {
 
   async remove(id: number): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
-    const removed = await this.dbRepo.remove(id);
+    const removed = await this.fixedLocRepo.remove(id);
     if (removed && removed.name)
       await this.inmemRepo.remove(removed.name);
   }
 
   async removeAll(): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
-    await this.dbRepo.removeAll();
+    await this.fixedLocRepo.removeAll();
     await this.inmemRepo.removeAll();
   }
 
@@ -107,7 +156,7 @@ export class FixedLocService implements IFixedLocService {
       logger.error(error);
     }
 
-    await this.storeToInmem(await this.dbRepo.getAll());
+    await this.storeToInmem(await this.fixedLocRepo.getAll());
     logger.info('Fixed locs initialized');
   }
 
@@ -159,21 +208,40 @@ export class FixedLocService implements IFixedLocService {
     }
   }
 
-  private async createIfNotExists(tNodePath: string, locString: LocStringDTN, namespace: string, scope: FixedLocsScope) {
-    const foundFixedLoc = await this.dbRepo.getByUniqueProperties({ name: tNodePath, namespace, scope });
+  /**
+   * Create FixedLoc if not exists:\
+   * sequelize findOrCreate wont help because of unique constraints + loc string could be changed
+   * So, we create new LocString and FixedLoc only if Fixed Loc was not found
+   */
+  private async createIfNotExists(
+    tNodePath: string,
+    locString: LocStringDTN,
+    namespace: string,
+    scope: FixedLocsScope
+  ): Promise<void> {
+    const foundFixedLoc = await this.fixedLocRepo.getByUniqueProperties({ name: tNodePath, namespace, scope });
     
     if (!foundFixedLoc) {
-      await this.dbRepo.create({
-        name: tNodePath,
-        namespace,
-        scope,
-        locString
-      });
+      const transaction = await this.transactionHandler.start();
+      try {
+        const savedLocString = await this.locStringRepo.create(locString);
+
+        await this.fixedLocRepo.create({
+          name: tNodePath,
+          namespace,
+          scope
+        }, savedLocString, transaction);
+
+        await transaction.commit();
+      } catch (err) {
+        await transaction.rollback();
+        throw err;
+      }
     }
   }
 
   async reset(): Promise<FixedLocDT[]> {
-    await this.dbRepo.removeAll();
+    await this.fixedLocRepo.removeAll();
     await this.initFixedLocs(this.initialFixedLocsPath, this.initialFixedLocsExt);
     return await this.getAll();
   }
