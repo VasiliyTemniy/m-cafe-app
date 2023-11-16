@@ -1,5 +1,6 @@
 import type { User, UserDTN, UserUniqueProperties } from '@m-cafe-app/models';
 import type { IUserRepo } from '../interfaces';
+import type { Transaction } from 'sequelize';
 import { ApplicationError, DatabaseError, ProhibitedError, toOptionalDate } from '@m-cafe-app/utils';
 import { UserMapper } from '../infrastructure';
 import { User as UserPG } from '@m-cafe-app/db';
@@ -160,5 +161,20 @@ export class UserRepoSequelizePG implements IUserRepo {
     if (!dbUser) throw new DatabaseError(`No user entry with this id ${id}`);
 
     return UserMapper.dbToDomain(dbUser);
+  }
+
+  async changeRightsBulk(ids: number[], rights: string, transaction: Transaction): Promise<User[]> {
+
+    const [ count, updated ] = await UserPG.scope('all').update({
+      rights
+    }, {
+      where: ids.map(id => ({ id })),
+      transaction,
+      returning: true
+    });
+
+    if (count !== ids.length) throw new DatabaseError('Not all users could be changed');
+
+    return updated.map(user => UserMapper.dbToDomain(user));
   }
 }
