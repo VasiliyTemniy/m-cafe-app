@@ -2,7 +2,7 @@ import type { IFixedLocControllerHttp, IFixedLocService } from '../interfaces';
 import type { Request, Response } from 'express';
 import type { RequestWithUserRights } from '../../../utils';
 import type { FixedLocDT, FixedLocDTS } from '@m-cafe-app/models';
-import { isFixedLocDT, isFixedLocDTMany, isFixedLocDTN } from '@m-cafe-app/models';
+import { isFixedLocDT, isFixedLocDTMany } from '@m-cafe-app/models';
 import { ApplicationError, RequestBodyError, isString } from '@m-cafe-app/utils';
 
 
@@ -38,25 +38,6 @@ export class FixedLocControllerExpressHttp implements IFixedLocControllerHttp {
       const fixedLocs: FixedLocDTS[] = await this.service.getFromInmem(scopes);
       res.status(200).json(fixedLocs);
     }
-  }
-
-  /**
-   * Should not be used, left here for consistency
-   */
-  async create(req: Request, res: Response): Promise<void> {
-    if (!isFixedLocDTN(req.body))
-      throw new RequestBodyError('Invalid new fixed loc request body');
-
-    const { name, namespace, scope, locString } = req.body;
-
-    const savedFixedLoc: FixedLocDT = await this.service.create({
-      name,
-      namespace,
-      scope,
-      locString
-    });
-    
-    res.status(201).json(savedFixedLoc);
   }
 
   async update(req: Request, res: Response): Promise<void> {
