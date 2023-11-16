@@ -6,3 +6,5 @@ export * from './JWTPayloadCustom.js';
 export * from './RedisRepoBase.js';
 export * from './IHasInmemRepoService.js';
 export * from './getFileReadPromises.js';
+export * from './ITransactionHandler.js';
+export * from './TransactionHandlerSequelizePG.js';
