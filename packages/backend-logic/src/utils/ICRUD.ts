@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Request, Response } from 'express';
+import type { GenericTransaction } from './ITransactionHandler.js';
 
 export interface ICRUDRepo<T, DTN> {
   getAll(): Promise<T[]>;
   getById(id: number): Promise<T>;
-  create(dtn: DTN, ...args: any): Promise<T>;
-  update(d: T, ...args: any): Promise<T>;
-  remove(id: number): Promise<void> | Promise<T>;
-  removeAll(): Promise<void>;
-  createMany?(dtns: DTN[]): Promise<T[]>;
-  updateMany?(ds: T[]): Promise<T[]>;
-  removeMany?(ids: number[]): Promise<void>;
+  create(dtn: DTN, transaction?: GenericTransaction, ...args: any): Promise<T>;
+  update(d: T, transaction?: GenericTransaction, ...args: any): Promise<T>;
+  remove(id: number, transaction?: GenericTransaction): Promise<void> | Promise<T>;
+  removeAll(transaction?: GenericTransaction): Promise<void>;
+  createMany?(dtns: DTN[], transaction?: GenericTransaction, ...args: any): Promise<T[]>;
+  updateMany?(ds: T[], transaction?: GenericTransaction, ...args: any): Promise<T[]>;
+  removeMany?(ids: number[], transaction?: GenericTransaction, ...args: any): Promise<void>;
 }
 
 export interface ICRUDService<DT, DTN> {
