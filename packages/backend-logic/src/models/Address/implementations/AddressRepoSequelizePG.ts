@@ -20,16 +20,7 @@ export class AddressRepoSequelizePG implements IAddressRepo {
 
   async getByUserId(userId: number): Promise<Address[]> {
 
-    const userWithAddresses = await UserPG.scope('all').findByPk(userId, {
-      include: {
-        model: AddressPG,
-        as: 'addresses',
-        required: false,
-        through: {
-          attributes: []
-        }
-      }
-    });
+    const userWithAddresses = await UserPG.scope('allWithAddresses').findByPk(userId);
     if (!userWithAddresses) throw new DatabaseError(`No user entry with this id ${userId}`);
 
     const res: Address[] = userWithAddresses.addresses
@@ -39,7 +30,7 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     return res;
   }
 
-  async create(addressDTN: AddressDTN, t?: Transaction): Promise<{ address: Address, created: boolean }> {
+  async findOrCreate(addressDTN: AddressDTN, transaction?: Transaction): Promise<{ address: Address, created: boolean }> {
     // If I do just const address = req.body, some other malformed keys can happen to go through
     const { city, cityDistrict, street, region, regionDistrict, house, entrance, floor, flat, entranceKey } = addressDTN;
     // If I do const address = { city, strees, region, distric, house, entrance, floor, flat, entranceKey }
@@ -61,18 +52,15 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     // If I make all fields not nullable and put some defaultValue like '' , validations fail for each and every of these empty strings
     // So, I decided to make this 'unique' check by hand, because I do not want to make user fill every fricking detail
     // and will leave most fields of address as nullables
-    const [savedAddress, created] = t ?
-      await AddressPG.findOrCreate({
-        where: newAddress,
-        transaction: t
-      }) :
-      await AddressPG.findOrCreate({
-        where: newAddress
-      });
+    const [savedAddress, created] = await AddressPG.findOrCreate({
+      where: newAddress,
+      transaction
+    });
+    
     return { address: AddressMapper.dbToDomain(savedAddress), created };
   }
 
-  async update(addressToUpdate: Address, t?: Transaction): Promise<{ address: Address; updated: boolean; }> {
+  async update(addressToUpdate: Address, transaction?: Transaction): Promise<{ address: Address; updated: boolean; }> {
     // check this.createAddress above for explanation of this bulk
     const {
       id: oldAddressId,
@@ -103,21 +91,17 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     if (!oldAddress) throw new DatabaseError(`No address entry with this id ${oldAddressId}`);
     
     // Check for this address, must be unique
-    const [savedAddress, created] = t ?
-      await AddressPG.findOrCreate({
-        where: updAddress,
-        transaction: t
-      }) :
-      await AddressPG.findOrCreate({
-        where: updAddress
-      });
+    const [savedAddress, created] = await AddressPG.findOrCreate({
+      where: updAddress,
+      transaction
+    });
 
     await this.removeIfUnused(oldAddressId);
 
     return { address: AddressMapper.dbToDomain(savedAddress), updated: created };
   }
 
-  async removeIfUnused(addressId: number): Promise<void> {
+  async removeIfUnused(addressId: number, transaction?: Transaction): Promise<void> {
     // Check if anything still uses old address
     // One of any is enough for check, findAll is not needed
     const addressUser = await UserAddressPG.findOne({
@@ -132,22 +116,32 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     });
     
     // If nothing and nobody uses old address, delete it
-    if (!addressUser && !addressFacility) await AddressPG.destroy({ where: { id: addressId } });
+    if (!addressUser && !addressFacility) await AddressPG.destroy({ where: { id: addressId }, transaction });
   }
 
-  async createUserAddress(userId: number, addressId: number): Promise<{ created: boolean }> {
+  async createUserAddress(
+    userId: number,
+    addressId: number,
+    transaction?: Transaction
+  ): Promise<{ created: boolean }> {
     // Check if user already has this address
     const [_savedUserAddress, createdUserAddress] = await UserAddressPG.findOrCreate({
       where: {
         addressId,
         userId
-      }
+      },
+      transaction
     });
 
     return { created: createdUserAddress };
   }
 
-  async updateUserAddress(userId: number, addressId: number, oldAddressId: number): Promise<{ updated: boolean }> {
+  async updateUserAddress(
+    userId: number,
+    addressId: number,
+    oldAddressId: number,
+    transaction?: Transaction
+  ): Promise<{ updated: boolean }> {
     // Check if user already has this new, "updated / edited" address
     const existingUserAddress = await UserAddressPG.findOne({
       where: {
@@ -157,8 +151,8 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     });
 
     if (!existingUserAddress) {
-      await UserAddressPG.create({ userId, addressId });
-      await UserAddressPG.destroy({ where: { userId, addressId: oldAddressId } });
+      await UserAddressPG.create({ userId, addressId }, { transaction });
+      await UserAddressPG.destroy({ where: { userId, addressId: oldAddressId }, transaction });
     }
 
     return { updated: !existingUserAddress };
@@ -170,13 +164,17 @@ export class AddressRepoSequelizePG implements IAddressRepo {
    * If not, deletes it and through-table record.\
    * If yes, deletes only through-table record
    */
-  async removeUserAddress(userId: number, addressId: number): Promise<void> {
+  async removeUserAddress(
+    userId: number,
+    addressId: number,
+    transaction?: Transaction
+  ): Promise<void> {
     const address = await AddressPG.findByPk(addressId);
     if (!address) throw new DatabaseError(`No address entry with this id ${addressId}`);
 
-    await UserAddressPG.destroy({ where: { userId, addressId } });
+    await UserAddressPG.destroy({ where: { userId, addressId }, transaction });
 
-    await this.removeIfUnused(addressId);
+    await this.removeIfUnused(addressId, transaction);
   }
 
   async removeAll(): Promise<void> {
