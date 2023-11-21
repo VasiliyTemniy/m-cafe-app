@@ -4,7 +4,7 @@ import type { Facility, FacilityS } from '../domain';
 import type { UserDT } from './UserDT.js';
 import type { StockDTS } from './StockDT.js';
 import type { AddressDT, AddressDTN } from './AddressDT.js';
-import { isEntity } from '@m-cafe-app/utils';
+import { isEntity, isNumber, isUnknownObject } from '@m-cafe-app/utils';
 import { isAddressDT } from './AddressDT.js';
 import { isStockDTS } from './StockDT.js';
 import { isUserDT } from './UserDT.js';
@@ -67,3 +67,19 @@ export type FacilityDTS = Omit<MapToDT<FacilityS>, 'nameLoc' | 'descriptionLoc'>
 
 export const isFacilityDTS = (obj: unknown): obj is FacilityDTS =>
   isEntity(obj, [ idRequired, nameLocProperty, descriptionLocProperty ]);
+
+
+export type ManageManagersBody = {
+  managerIds: number[],
+  facilityId: number
+};
+
+export const isManageManagersBody = (obj: unknown): obj is ManageManagersBody => {
+  if (!isUnknownObject(obj)) return false;
+
+  if (!(Array.isArray(obj.managerIds) && obj.managerIds.every(isNumber))) return false;
+
+  if (!isNumber(obj.facilityId)) return false;
+
+  return true;
+};
