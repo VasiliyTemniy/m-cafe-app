@@ -16,3 +16,9 @@ export class UiSettingS {
     readonly theme: string
   ) {}
 }
+
+export type UiSettingUniqiePropertiesGroup = {
+  name: string,
+  group: string,
+  theme: string
+};
