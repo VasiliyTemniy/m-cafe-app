@@ -1,32 +1,16 @@
 import type { IFacilityRepo } from '../interfaces';
-import type { FacilityDTN } from '@m-cafe-app/models';
-import type { IDatabaseConnectionHandler } from '@m-cafe-app/db';
-import type { Sequelize } from 'sequelize';
-import type { ILocStringRepo } from '../../LocString';
-import type { IAddressRepo } from '../../Address';
+import type { FacilityDTN, LocString, Address } from '@m-cafe-app/models';
+import type { Transaction } from 'sequelize';
 import { Facility } from '@m-cafe-app/models';
-import { Facility as FacilityPG } from '@m-cafe-app/db';
+import { Facility as FacilityPG, FacilityManager as FacilityManagerPG } from '@m-cafe-app/db';
 import { FacilityMapper } from '../infrastructure';
 import { DatabaseError } from '@m-cafe-app/utils';
 
 export class FacilityRepoSequelizePG implements IFacilityRepo {
 
-  private dbInstance: Sequelize;
-
-  constructor(
-    readonly dbHandler: IDatabaseConnectionHandler,
-    readonly locStringRepo: ILocStringRepo,
-    readonly addressRepo: IAddressRepo
-  ) {
-    if (!dbHandler.dbInstance) {
-      throw new DatabaseError('No database connection');
-    }
-    this.dbInstance = dbHandler.dbInstance;
-  }
-
   async getAll(): Promise<Facility[]> {
-    const dbFacilitys = await FacilityPG.scope('all').findAll();
-    return dbFacilitys.map(facility => FacilityMapper.dbToDomain(facility));
+    const dbFacilities = await FacilityPG.scope('all').findAll();
+    return dbFacilities.map(facility => FacilityMapper.dbToDomain(facility));
   }
 
   async getById(id: number): Promise<Facility> {
@@ -35,81 +19,120 @@ export class FacilityRepoSequelizePG implements IFacilityRepo {
     return FacilityMapper.dbToDomain(dbFacility);
   }
 
-  async create(facilityDTN: FacilityDTN): Promise<Facility> {
-    const createdFacility = await this.dbInstance.transaction(async (t) => {
-      try {
-        const nameLoc = await this.locStringRepo.create(facilityDTN.nameLoc, t);
-        const descriptionLoc = await this.locStringRepo.create(facilityDTN.descriptionLoc, t);
+  async create(
+    facilityDTN: FacilityDTN,
+    nameLoc: LocString,
+    descriptionLoc: LocString,
+    address: Address,
+    transaction?: Transaction
+  ): Promise<Facility> {
 
-        const { address } = await this.addressRepo.create(facilityDTN.address, t);
-
-        const dbFacility = await FacilityPG.create({
-          nameLocId: nameLoc.id,
-          descriptionLocId: descriptionLoc.id,
-          addressId: address.id
-        });
-
-        // Not using mapper here because of inability to include returning locs
-        // Only other way is to use afterCreate hook for Sequelize
-        return new Facility(
-          dbFacility.id,
-          nameLoc,
-          descriptionLoc,
-          address
-        );
-      } catch (err) {
-        await t.rollback();
-        throw err;
-      }
+    const dbFacility = await FacilityPG.create({
+      nameLocId: nameLoc.id,
+      descriptionLocId: descriptionLoc.id,
+      addressId: address.id
+    }, {
+      transaction
     });
 
-    return createdFacility;
+    return new Facility(
+      dbFacility.id,
+      nameLoc,
+      descriptionLoc,
+      address
+    );
   }
 
-  async update(updFacility: Facility): Promise<Facility> {
-    const updatedFacility = await this.dbInstance.transaction(async (t) => {
+  async update(updFacility: Facility, updAddressId: number, transaction?: Transaction): Promise<Facility> {
 
-      const dbFacility = await FacilityPG.scope('raw').findByPk(updFacility.id);
-      if (!dbFacility) {
-        await t.rollback();
-        throw new DatabaseError(`No facility entry with this id ${updFacility.id}`);
-      }
-  
-      try {
-        const updatedNameLoc = await this.locStringRepo.update(updFacility.nameLoc, t);
-        const updatedDescriptionLoc = await this.locStringRepo.update(updFacility.descriptionLoc, t);
-
-        const { address: updatedAddress } = await this.addressRepo.update(updFacility.address, t);
-  
-        return new Facility(
-          updFacility.id,
-          updatedNameLoc,
-          updatedDescriptionLoc,
-          updatedAddress
-        );
-      } catch (err) {
-        await t.rollback();
-        throw err;
-      }
+    const [ count, updated ] = await FacilityPG.update({
+      addressId: updAddressId,
+    }, {
+      where: { id: updFacility.id },
+      transaction,
+      returning: true
     });
 
-    return updatedFacility;
+    if (count === 0) {
+      throw new DatabaseError(`No facility entry with this id ${updFacility.id}`);
+    }
+  
+    // Loc strings are already updated here
+    return FacilityMapper.dbToDomain(updated[0]);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, transaction?: Transaction): Promise<void> {
     const dbFacility = await FacilityPG.scope('raw').findByPk(id);
     if (!dbFacility) throw new DatabaseError(`No facility entry with this id ${id}`);
 
     // Remove loc strings. If needed, add logging of deleted count
-    await this.locStringRepo.removeWithCount(dbFacility.nameLocId);
-    await this.locStringRepo.removeWithCount(dbFacility.descriptionLocId);
+    // await this.locStringRepo.removeWithCount([dbFacility.nameLocId]);
+    // await this.locStringRepo.removeWithCount([dbFacility.descriptionLocId]);
 
-    await this.addressRepo.removeIfUnused(dbFacility.addressId);
+    // await this.addressRepo.removeIfUnused(dbFacility.addressId);
 
-    await dbFacility.destroy();
+    await dbFacility.destroy({ transaction });
   }
 
   async removeAll(): Promise<void> {
     await FacilityPG.scope('all').destroy({ force: true, where: {} });
+  }
+
+  async getAllWithFullData(): Promise<Facility[]> {
+    const dbFacilities = await FacilityPG.scope('allWithFullData').findAll();
+    return dbFacilities.map(facility => FacilityMapper.dbToDomain(facility));
+  }
+
+  async getByIdWithFullData(id: number): Promise<Facility> {
+    const dbFacility = await FacilityPG.scope('allWithFullData').findByPk(id);
+    if (!dbFacility) throw new DatabaseError(`No facility entry with this id ${id}`);
+    return FacilityMapper.dbToDomain(dbFacility);
+  }
+
+  async getAllWithStocks(): Promise<Facility[]> {
+    const dbFacilities = await FacilityPG.scope('allWithStocks').findAll();
+    return dbFacilities.map(facility => FacilityMapper.dbToDomain(facility));
+  }
+
+  async getByIdWithStocks(id: number): Promise<Facility> {
+    const dbFacility = await FacilityPG.scope('allWithStocks').findByPk(id);
+    if (!dbFacility) throw new DatabaseError(`No facility entry with this id ${id}`);
+    return FacilityMapper.dbToDomain(dbFacility);
+  }
+
+  async getAllWithManagers(): Promise<Facility[]> {
+    const dbFacilities = await FacilityPG.scope('allWithManagers').findAll();
+    return dbFacilities.map(facility => FacilityMapper.dbToDomain(facility));
+  }
+
+  async getByIdWithManagers(id: number): Promise<Facility> {
+    const dbFacility = await FacilityPG.scope('allWithManagers').findByPk(id);
+    if (!dbFacility) throw new DatabaseError(`No facility entry with this id ${id}`);
+    return FacilityMapper.dbToDomain(dbFacility);
+  }
+
+  async addManagers(
+    addManagersData: Array<{ facilityId: number, userId: number }>,
+    transaction?: Transaction
+  ): Promise<number> {
+    const dbManagers = await FacilityManagerPG.bulkCreate(addManagersData, {
+      transaction
+    });
+
+    if (dbManagers.length !== addManagersData.length) {
+      throw new DatabaseError(`Failed to add ${addManagersData.length - dbManagers.length} managers`);
+    }
+
+    return dbManagers.length;
+  }
+
+  async removeManagers(
+    removeManagersData: Array<{ facilityId: number, userId: number }>,
+    transaction?: Transaction
+  ): Promise<number> {
+    return await FacilityManagerPG.destroy({
+      where: removeManagersData,
+      transaction
+    });
   }
 }
