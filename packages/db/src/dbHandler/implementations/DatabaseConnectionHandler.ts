@@ -24,7 +24,10 @@ import {
   initUiSettingModel,
   initFixedLocModel,
   initModelAssociations,
-  initModelHooks
+  initModelHooks,
+  initUserScopes,
+  initFacilityScopes,
+  initFoodScopes
 } from '../../models';
 
 
@@ -185,5 +188,9 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await initModelAssociations();
     await initModelHooks();
 
+    // Init models scopes that are dependant on models initialized after them
+    await initUserScopes();
+    await initFacilityScopes();
+    await initFoodScopes();
   }
 }
