@@ -103,6 +103,11 @@ export const initIngredientModel = async (dbInstance: Sequelize) => {
             },
             include: includeLocStrings
           },
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
           allWithTimestamps: {}
         }
       });

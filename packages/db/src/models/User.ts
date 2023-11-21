@@ -54,18 +54,6 @@ export type UserData = Omit<InferAttributes<User>, PropertiesCreationOptional | 
 
 export const initUserModel = async (dbInstance: Sequelize) => {
   return new Promise<void>((resolve, reject) => {
-
-    const includeAddresses = {
-      model: Address,
-      as: 'addresses',
-      through: {
-        attributes: []
-      },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    };
-
     try {
       User.init({
         id: {
@@ -161,82 +149,11 @@ export const initUserModel = async (dbInstance: Sequelize) => {
             exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
           }
         },
+        // See initUserScopes.ts for more
         scopes: {
-          customer: {
-            where: {
-              rights: {
-                [Op.eq]: 'customer'
-              }
-            },
+          raw: {
             attributes: {
-              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-            }
-          },
-          admin: {
-            where: {
-              rights: {
-                [Op.eq]: 'admin'
-              }
-            },
-            attributes: {
-              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-            }
-          },
-          manager: {
-            where: {
-              rights: {
-                [Op.eq]: 'manager'
-              }
-            },
-            attributes: {
-              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-            }
-          },
-          disabled: {
-            where: {
-              rights: {
-                [Op.eq]: 'disabled'
-              }
-            },
-            attributes: {
-              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-            }
-          },
-          deleted: {
-            where: {
-              deletedAt: {
-                [Op.not]: {
-                  [Op.is]: undefined
-                }
-              }
-            },
-            attributes: {
-              exclude: ['passwordHash']
-            },
-            paranoid: false
-          },
-          all: {
-            attributes: {
-              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-            },
-            paranoid: false
-          },
-          allWithAddresses: {
-            include: [includeAddresses],
-            attributes: {
-              exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
-            },
-            paranoid: false
-          },
-          allWithTimestamps: {
-            attributes: {
-              exclude: ['passwordHash']
-            },
-            paranoid: false
-          },
-          passwordHashRights: {
-            attributes: {
-              exclude: ['name', 'username', 'phonenumber', 'email', 'birthdate', 'createdAt', 'updatedAt', 'deletedAt']
+              exclude: ['createdAt', 'updatedAt', 'deletedAt']
             },
             paranoid: false
           }

@@ -99,7 +99,8 @@ export const initUiSettingModel = async (dbInstance: Sequelize) => {
               }
             }
           },
-          all: {}
+          all: {},
+          raw: {}
         }
       });
 

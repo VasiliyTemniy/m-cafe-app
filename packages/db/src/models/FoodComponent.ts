@@ -4,7 +4,7 @@ import type { Sequelize } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import { Food } from './Food.js';
 import { Ingredient } from './Ingredient.js';
-import { LocString } from './LocString.js';
+import { includeFoodComponentData } from './commonIncludes.js';
 
 
 export class FoodComponent extends Model<InferAttributes<FoodComponent>, InferCreationAttributes<FoodComponent>> {
@@ -26,56 +26,6 @@ export type FoodComponentData = Omit<InferAttributes<FoodComponent>, PropertiesC
 
 
 export const initFoodComponentModel = async (dbInstance: Sequelize) => {
-
-  const includeFoodComponentData = [
-    {
-      model: Food,
-      as: 'food',
-      attributes: {
-        exclude: ['nameLocId', 'descriptionLocId', 'foodTypeId', 'price', 'createdAt', 'updatedAt']
-      },
-      include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt']
-          }
-        },
-        {
-          model: LocString,
-          as: 'descriptionLoc',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt']
-          }
-        }
-      ]
-    },
-    {
-      model: Ingredient,
-      as: 'ingredient',
-      attributes: {
-        exclude: ['nameLocId', 'stockMeasureLocId', 'createdAt', 'updatedAt']
-      },
-      include: [
-        {
-          model: LocString,
-          as: 'nameLoc',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt']
-          }
-        },
-        {
-          model: LocString,
-          as: 'stockMeasureLoc',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt']
-          }
-        }
-      ]
-    }
-  ];
-
   return new Promise<void>((resolve, reject) => {
     try {
       FoodComponent.init({
@@ -145,6 +95,11 @@ export const initFoodComponentModel = async (dbInstance: Sequelize) => {
               exclude: ['createdAt', 'updatedAt']
             },
             include: includeFoodComponentData
+          },
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
           },
           allWithTimestamps: {}
         }

@@ -104,6 +104,11 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
               exclude: ['createdAt', 'updatedAt']
             }
           },
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
           allWithTimestamps: {}
         }
       });

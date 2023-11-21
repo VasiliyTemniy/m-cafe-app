@@ -63,6 +63,11 @@ export const initPictureModel = (dbInstance: Sequelize) => {
               exclude: ['createdAt', 'updatedAt']
             }
           },
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
           allWithTimestamps: {}
         }
       });

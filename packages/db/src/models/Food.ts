@@ -6,6 +6,7 @@ import { FoodComponent } from './FoodComponent.js';
 import { FoodPicture } from './FoodPicture.js';
 import { FoodType } from './FoodType.js';
 import { LocString } from './LocString.js';
+import { includeDescriptionLoc, includeNameLoc } from './commonIncludes.js';
 
 
 export class Food extends Model<InferAttributes<Food>, InferCreationAttributes<Food>> {
@@ -29,24 +30,6 @@ export type FoodData = Omit<InferAttributes<Food>, PropertiesCreationOptional>
 
 
 export const initFoodModel = async (dbInstance: Sequelize) => {
-
-  const includeLocStrings = [
-    {
-      model: LocString,
-      as: 'nameLoc',
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    },
-    {
-      model: LocString,
-      as: 'descriptionLoc',
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    }
-  ];
-
   return new Promise<void>((resolve, reject) => {
     try {
       Food.init({
@@ -91,16 +74,15 @@ export const initFoodModel = async (dbInstance: Sequelize) => {
           attributes: {
             exclude: ['createdAt', 'updatedAt']
           },
-          include: includeLocStrings
+          include: [ includeNameLoc, includeDescriptionLoc ]
         },
+        // See initFoodScopes.ts for more
         scopes: {
-          all: {
+          raw: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
-            },
-            include: includeLocStrings
-          },
-          allWithTimestamps: {}
+            }
+          }
         }
       });
       

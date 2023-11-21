@@ -6,6 +6,7 @@ import { Address } from './Address.js';
 import { LocString } from './LocString.js';
 import { Stock } from './Stock.js';
 import { User } from './User.js';
+import { includeAddress, includeNameLoc, includeDescriptionLoc } from './commonIncludes.js';
 
 
 export class Facility extends Model<InferAttributes<Facility>, InferCreationAttributes<Facility>> {
@@ -65,17 +66,22 @@ export const initFacilityModel = async (dbInstance: Sequelize) => {
         timestamps: true,
         modelName: 'facility',
         defaultScope: {
+          include: [
+            includeAddress,
+            includeNameLoc,
+            includeDescriptionLoc
+          ],
           attributes: {
             exclude: ['createdAt', 'updatedAt']
           }
         },
+        // See initFacilityScopes.ts for more
         scopes: {
-          all: {
+          raw: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
             }
-          },
-          allWithTimestamps: {}
+          }
         }
       });
 

@@ -113,6 +113,11 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
               exclude: ['createdAt', 'updatedAt']
             }
           },
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
           allWithTimestamps: {}
         }
       });

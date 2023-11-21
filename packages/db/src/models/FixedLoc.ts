@@ -33,7 +33,7 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
             [Op.ne]: fixedLocFilter
           }
         }
-      };      
+      };
 
       FixedLoc.init({
         id: {
