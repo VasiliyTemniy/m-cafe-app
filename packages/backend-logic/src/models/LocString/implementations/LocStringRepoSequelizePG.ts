@@ -51,13 +51,13 @@ export class LocStringRepoSequelizePG implements ILocStringRepo {
     return LocStringMapper.dbToDomain(updated[0]);
   }
 
-  async remove(id: number): Promise<void> {
-    const deletedCount = await LocStringPG.destroy({ where: { id } });
+  async remove(id: number, transaction?: Transaction): Promise<void> {
+    const deletedCount = await LocStringPG.destroy({ where: { id }, transaction });
     if (deletedCount === 0) throw new DatabaseError(`No loc string entry with this id ${id}`);
   }
 
-  async removeWithCount(ids: number[]): Promise<number> {
-    return await LocStringPG.destroy({ where: { id: ids } });
+  async removeWithCount(ids: number[], transaction?: Transaction): Promise<number> {
+    return await LocStringPG.destroy({ where: { id: ids }, transaction });
   }
 
   async removeAll(): Promise<void> {
