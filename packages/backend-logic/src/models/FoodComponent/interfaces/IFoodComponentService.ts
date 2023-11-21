@@ -6,4 +6,5 @@ export interface IFoodComponentService extends Omit<ICRUDService<FoodComponentDT
   update(foodComponentDT: FoodComponentDT, foodId: number): Promise<FoodComponentDT>;
   createMany(foodComponentDTNs: FoodComponentDTN[]): Promise<FoodComponentDT[]>;
   rewriteAllForOneFood(updFoodComponents: FoodComponentDTN[], foodId: number): Promise<FoodComponentDT[]>;
+  removeMany(ids: number[]): Promise<void>;
 }
