@@ -64,10 +64,10 @@ export class UiSettingRepoSequelizePG implements IUiSettingRepo {
     return await Promise.all(uiSettings.map(uiSetting => this.update(uiSetting, transaction)));
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, transaction?: Transaction): Promise<void> {
     const dbUiSetting = await UiSettingPG.scope('all').findByPk(id);
     if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${id}`);
-    await dbUiSetting.destroy();
+    await dbUiSetting.destroy({ transaction });
   }
 
   async removeAll(): Promise<void> {
