@@ -2,7 +2,6 @@ import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
 import type { UiSetting, UiSettingS } from '../domain';
 import {
   isEntity,
-  isManyEntity,
   isString
 } from '@m-cafe-app/utils';
 import { idRequired } from './validationHelpers.js';
@@ -21,7 +20,7 @@ export const isUiSettingDT = (obj: unknown): obj is UiSettingDT =>
 
 
 export const isUiSettingDTMany = (obj: unknown): obj is UiSettingDT[] =>
-  isManyEntity(obj, isUiSettingDT);
+  Array.isArray(obj) && obj.every(isUiSettingDT);
 
 
 
@@ -31,7 +30,7 @@ export const isUiSettingDTS = (obj: unknown): obj is UiSettingDTS =>
   isEntity(obj, [uiSettingDTPropertiesGroup]);
 
 export const isUiSettingDTSMany = (obj: unknown): obj is UiSettingDTS[] =>
-  isManyEntity(obj, isUiSettingDTS);
+  Array.isArray(obj) && obj.every(isUiSettingDTS);
 
 
 

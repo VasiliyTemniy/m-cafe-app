@@ -4,7 +4,7 @@ import type { FoodDTS } from './FoodDT.js';
 import type { IngredientDTS } from './IngredientDT.js';
 import { isFoodDT } from './FoodDT.js';
 import { isIngredientDTS } from './IngredientDT.js';
-import { isUnknownObject, isNumber, isBoolean, isManyEntity } from '@m-cafe-app/utils';
+import { isUnknownObject, isNumber, isBoolean } from '@m-cafe-app/utils';
 
 
 export type FoodComponentDT = Omit<MapToDT<FoodComponent>, 'component'> & {
@@ -47,7 +47,7 @@ export const isFoodComponentDTN = (obj: unknown): obj is FoodComponentDTN => {
 
 
 export const isFoodComponentDTNMany = (obj: unknown): obj is FoodComponentDTN[] =>
-  isManyEntity(obj, isFoodComponentDTN);
+  Array.isArray(obj) && obj.every(isFoodComponentDTN);
 
 
 export const isRewriteAllForOneFoodBody = (obj: unknown): obj is { foodId: number, components: FoodComponentDTN[] } => {
