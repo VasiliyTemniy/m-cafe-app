@@ -1,10 +1,19 @@
-import type { FoodComponent, FoodComponentDTN } from '@m-cafe-app/models';
-import type { ICRUDRepo } from '../../../utils';
+import type { FoodComponent, FoodComponentDTN, FoodS, IngredientS } from '@m-cafe-app/models';
+import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 
 export interface IFoodComponentRepo extends Omit<ICRUDRepo<FoodComponent, FoodComponentDTN>, 'createMany' | 'update'> {
-  createMany(foodComponentDTNs: FoodComponentDTN[]): Promise<FoodComponent[]>
-  update(updFoodComponent: FoodComponent, foodId: number): Promise<FoodComponent>
-  rewriteAllForOneFood(updFoodComponents: FoodComponentDTN[], foodId: number): Promise<FoodComponent[]>
-  removeWithCount(ids: number[]): Promise<number>
+  create(
+    foodComponentDTN: FoodComponentDTN,
+    usedComponentSimple: FoodS | IngredientS,
+    transaction?: GenericTransaction
+  ): Promise<FoodComponent>
+  createMany(foodComponentDTNs: FoodComponentDTN[], transaction: GenericTransaction): Promise<FoodComponent[]>
+  update(updFoodComponent: FoodComponent, foodId: number, transaction?: GenericTransaction): Promise<FoodComponent>
+  rewriteAllForOneFood(
+    updFoodComponents: FoodComponentDTN[],
+    foodId: number,
+    transaction: GenericTransaction
+  ): Promise<FoodComponent[]>
+  removeWithCount(ids: number[], transaction?: GenericTransaction): Promise<number>
 }
