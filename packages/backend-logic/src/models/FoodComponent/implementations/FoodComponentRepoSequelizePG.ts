@@ -1,27 +1,13 @@
 import type { IFoodComponentRepo } from '../interfaces';
-import type { FoodComponentDTN } from '@m-cafe-app/models';
-import type { IDatabaseConnectionHandler } from '@m-cafe-app/db';
-import type { Sequelize, Transaction } from 'sequelize';
+import type { FoodComponentDTN, FoodS, IngredientS } from '@m-cafe-app/models';
+import type { Transaction } from 'sequelize';
 import { FoodComponent } from '@m-cafe-app/models';
-import { FoodComponent as FoodComponentPG, Food as FoodPG, Ingredient as IngredientPG } from '@m-cafe-app/db';
+import { FoodComponent as FoodComponentPG } from '@m-cafe-app/db';
 import { FoodComponentMapper } from '../infrastructure';
 import { DatabaseError } from '@m-cafe-app/utils';
-import { FoodMapper } from '../../Food/infrastructure';
-import { IngredientMapper } from '../../Ingredient';
 
 
 export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {
-
-  private dbInstance: Sequelize;
-
-  constructor(
-    readonly dbHandler: IDatabaseConnectionHandler,
-  ) {
-    if (!dbHandler.dbInstance) {
-      throw new DatabaseError('No database connection');
-    }
-    this.dbInstance = dbHandler.dbInstance;
-  }
 
   async getAll(): Promise<FoodComponent[]> {
     const dbFoodComponents = await FoodComponentPG.scope('all').findAll();
@@ -34,140 +20,95 @@ export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {
     return FoodComponentMapper.dbToDomain(dbFoodComponent);
   }
 
-  async create(foodComponentDTN: FoodComponentDTN): Promise<FoodComponent> {
-    const createdFoodComponent = await this.dbInstance.transaction(async (t) => {
-      try {
-        const dbFoodComponent = await FoodComponentPG.create({
-          foodId: foodComponentDTN.foodId,
-          componentId: foodComponentDTN.componentId,
-          amount: foodComponentDTN.amount,
-          compositeFood: foodComponentDTN.compositeFood,
-        }, {
-          transaction: t
-        });
-      
-        const dbUsedComponent = dbFoodComponent.compositeFood
-          ? await FoodPG.scope('all').findByPk(dbFoodComponent.componentId)
-          : await IngredientPG.scope('all').findByPk(dbFoodComponent.componentId);
-        if (!dbUsedComponent) throw new DatabaseError(`No component entry with this id ${dbFoodComponent.componentId}`);
-      
-        const usedComponent = dbFoodComponent.compositeFood
-          ? FoodMapper.dbToDomain(dbUsedComponent as FoodPG)
-          : IngredientMapper.dbToDomain(dbUsedComponent as IngredientPG);
+  async create(
+    foodComponentDTN: FoodComponentDTN,
+    usedComponentSimple: FoodS | IngredientS,
+    transaction?: Transaction
+  ): Promise<FoodComponent> {
 
-        // Not using mapper here because of inability to include returning component
-        // Only other way is to use afterCreate hook for Sequelize
-        return new FoodComponent(
-          dbFoodComponent.id,
-          usedComponent,
-          dbFoodComponent.amount,
-          dbFoodComponent.compositeFood,
-        );
-
-      } catch (err) {
-        await t.rollback();
-        throw err;
-      }
+    const dbFoodComponent = await FoodComponentPG.create({
+      foodId: foodComponentDTN.foodId,
+      componentId: foodComponentDTN.componentId,
+      amount: foodComponentDTN.amount,
+      compositeFood: foodComponentDTN.compositeFood,
+    }, {
+      transaction
     });
 
-    return createdFoodComponent;
+    return new FoodComponent(
+      dbFoodComponent.id,
+      usedComponentSimple,
+      dbFoodComponent.amount,
+      dbFoodComponent.compositeFood,
+    );
   }
 
-  async createMany(foodComponentDTNs: FoodComponentDTN[]): Promise<FoodComponent[]> {
-    const createdFoodComponents = await this.dbInstance.transaction(async (t) => {
-      try {
-        return this.createManyInternal(foodComponentDTNs, t);
-      } catch (err) {
-        await t.rollback();
-        throw err;
-      }
-    });
-
-    return createdFoodComponents;
+  async createMany(foodComponentDTNs: FoodComponentDTN[], transaction: Transaction): Promise<FoodComponent[]> {
+    return this.createManyInternal(foodComponentDTNs, transaction);
   }
 
-  private async createManyInternal(foodComponentDTNs: FoodComponentDTN[], t: Transaction): Promise<FoodComponent[]> {
+  private async createManyInternal(foodComponentDTNs: FoodComponentDTN[], transaction: Transaction): Promise<FoodComponent[]> {
     const createdFoodComponents = await FoodComponentPG.bulkCreate(foodComponentDTNs, {
-      transaction: t
+      transaction
     });
 
     if (createdFoodComponents.length !== foodComponentDTNs.length) {
-      await t.rollback();
       throw new DatabaseError(`Not all foodComponents were created. Check database logs.`);
     }
 
     return createdFoodComponents.map(foodComponent => FoodComponentMapper.dbToDomain(foodComponent));
   }
 
-  async update(updFoodComponent: FoodComponent, foodId: number): Promise<FoodComponent> {
-    const updatedFoodComponent = await this.dbInstance.transaction(async (t) => {
+  async update(updFoodComponent: FoodComponent, foodId: number, transaction?: Transaction): Promise<FoodComponent> {
 
-      const [ count, updated ] = await FoodComponentPG.update({
-        foodId,
-        componentId: updFoodComponent.component.id,
-        amount: updFoodComponent.amount,
-        compositeFood: updFoodComponent.compositeFood,
-      }, {
-        where: { id: updFoodComponent.id },
-        transaction: t,
-        returning: true
-      });
-
-      if (count === 0) {
-        await t.rollback();
-        throw new DatabaseError(`No foodComponent entry with this id ${updFoodComponent.id}`);
-      }
-
-      return FoodComponentMapper.dbToDomain(updated[0]);
+    const [ count, updated ] = await FoodComponentPG.update({
+      foodId,
+      componentId: updFoodComponent.component.id,
+      amount: updFoodComponent.amount,
+      compositeFood: updFoodComponent.compositeFood,
+    }, {
+      where: { id: updFoodComponent.id },
+      transaction,
+      returning: true
     });
 
-    return updatedFoodComponent;
+    if (count === 0) {
+      throw new DatabaseError(`No foodComponent entry with this id ${updFoodComponent.id}`);
+    }
+
+    return FoodComponentMapper.dbToDomain(updated[0]);
+
   }
 
-  async rewriteAllForOneFood(updFoodComponents: FoodComponentDTN[], foodId: number): Promise<FoodComponent[]> {
-    const rewrittenFoodComponents = await this.dbInstance.transaction(async (t) => {
-      
-      try {
-        const deletedCount = await FoodComponentPG.destroy({
-          where: { foodId },
-          transaction: t,
-        });
+  async rewriteAllForOneFood(
+    updFoodComponents: FoodComponentDTN[],
+    foodId: number,
+    transaction: Transaction
+  ): Promise<FoodComponent[]> {
 
-        const createdFoodComponents = await this.createManyInternal(updFoodComponents, t);
-
-        if (deletedCount !== createdFoodComponents.length) {
-          await t.rollback();
-          throw new DatabaseError(`Not all foodComponents were created. Check database logs.`);
-        }
-
-        return createdFoodComponents;
-        
-      } catch (err) {
-        await t.rollback();
-        throw err;
-      }
-
+    const deletedCount = await FoodComponentPG.destroy({
+      where: { foodId },
+      transaction,
     });
+
+    const rewrittenFoodComponents = await this.createManyInternal(updFoodComponents, transaction);
+
+    if (deletedCount !== rewrittenFoodComponents.length) {
+      throw new DatabaseError(`Not all foodComponents were created. Check database logs.`);
+    }
 
     return rewrittenFoodComponents;
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, transaction?: Transaction): Promise<void> {
     const dbFoodComponent = await FoodComponentPG.scope('raw').findByPk(id);
     if (!dbFoodComponent) throw new DatabaseError(`No foodComponent entry with this id ${id}`);
 
-    await dbFoodComponent.destroy();
+    await dbFoodComponent.destroy({ transaction });
   }
 
-  async removeWithCount(ids: number[]): Promise<number> {
-
-    let deletedCount = 0;
-    for (const id of ids) {
-      const deleted = await FoodComponentPG.scope('raw').destroy({ where: { id } });
-      deletedCount += deleted;
-    }
-    
-    return deletedCount;
+  async removeWithCount(ids: number[], transaction?: Transaction): Promise<number> {
+    return await FoodComponentPG.scope('raw').destroy({ where: { id: ids }, transaction });
   }
 
   async removeAll(): Promise<void> {
