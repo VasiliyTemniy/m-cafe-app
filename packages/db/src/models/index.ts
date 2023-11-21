@@ -18,3 +18,6 @@ export * from './FoodPicture.js';
 export * from './FacilityManager.js';
 export * from './initModelAssociations.js';
 export * from './initModelHooks.js';
+export * from './initFacilityScopes.js';
+export * from './initUserScopes.js';
+export * from './initFoodScopes.js';
