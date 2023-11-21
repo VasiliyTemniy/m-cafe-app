@@ -361,19 +361,35 @@ export class UserService implements IUserService {
   }
 
   async createAddress(userId: number, address: AddressDTN): Promise<{ address: AddressDT, created: boolean }> {
-    const { address: savedAddress } = await this.addressRepo.create(address);
+    const transaction = await this.transactionHandler.start();
 
-    const { created } = await this.addressRepo.createUserAddress(userId, savedAddress.id);
+    try {
+      const { address: savedAddress } = await this.addressRepo.findOrCreate(address, transaction);
 
-    return { address: AddressMapper.domainToDT(savedAddress), created };
+      const { created } = await this.addressRepo.createUserAddress(userId, savedAddress.id, transaction);
+  
+      await transaction.commit();
+      return { address: AddressMapper.domainToDT(savedAddress), created };
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
   async updateAddress(userId: number, address: AddressDT): Promise<{ address: AddressDT, updated: boolean }> {
-    const { address: updatedAddress } = await this.addressRepo.update(AddressMapper.dtToDomain(address));
+    const transaction = await this.transactionHandler.start();
 
-    const { updated } = await this.addressRepo.updateUserAddress(userId, updatedAddress.id, address.id);
+    try {
+      const { address: updatedAddress } = await this.addressRepo.update(AddressMapper.dtToDomain(address), transaction);
 
-    return { address: AddressMapper.domainToDT(updatedAddress), updated };
+      const { updated } = await this.addressRepo.updateUserAddress(userId, updatedAddress.id, address.id, transaction);
+  
+      await transaction.commit();
+      return { address: AddressMapper.domainToDT(updatedAddress), updated }; 
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
   async removeAddress(userId: number, addressId: number): Promise<void> {
@@ -384,25 +400,5 @@ export class UserService implements IUserService {
     const user = await this.userRepo.getById(id);
 
     return UserMapper.domainToDT(user);
-  }
-
-  /**
-   * Intended to be used from other services
-   */
-  async changeRightsBulk(ids: number[], rights: string): Promise<UserDT[]> {
-
-    let users: User[];
-    const transaction = await this.transactionHandler.start();
-
-    try {
-      users = await this.userRepo.changeRightsBulk(ids, rights, transaction);
-
-      await transaction.commit();
-    } catch (err) {
-      await transaction.rollback();
-      throw err;
-    }
-
-    return users.map(user => UserMapper.domainToDT(user));
   }
 }
