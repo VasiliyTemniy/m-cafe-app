@@ -1,26 +1,12 @@
 import type { IFoodTypeRepo } from '../interfaces';
-import type { FoodTypeDTN } from '@m-cafe-app/models';
-import type { IDatabaseConnectionHandler } from '@m-cafe-app/db';
-import type { Sequelize } from 'sequelize';
-import type { ILocStringRepo } from '../../LocString';
+import type { FoodTypeDTN, LocString } from '@m-cafe-app/models';
+import type { Transaction } from 'sequelize';
 import { FoodType } from '@m-cafe-app/models';
 import { FoodType as FoodTypePG } from '@m-cafe-app/db';
 import { FoodTypeMapper } from '../infrastructure';
 import { DatabaseError } from '@m-cafe-app/utils';
 
 export class FoodTypeRepoSequelizePG implements IFoodTypeRepo {
-
-  private dbInstance: Sequelize;
-
-  constructor(
-    readonly dbHandler: IDatabaseConnectionHandler,
-    readonly locStringRepo: ILocStringRepo
-  ) {
-    if (!dbHandler.dbInstance) {
-      throw new DatabaseError('No database connection');
-    }
-    this.dbInstance = dbHandler.dbInstance;
-  }
 
   async getAll(): Promise<FoodType[]> {
     const dbFoodTypes = await FoodTypePG.scope('all').findAll();
@@ -33,73 +19,50 @@ export class FoodTypeRepoSequelizePG implements IFoodTypeRepo {
     return FoodTypeMapper.dbToDomain(dbFoodType);
   }
 
-  async create(foodTypeDTN: FoodTypeDTN): Promise<FoodType> {
-    const createdFoodType = await this.dbInstance.transaction(async (t) => {
-      
-      try {
-        const nameLoc = await this.locStringRepo.create(foodTypeDTN.nameLoc, t);
-        const descriptionLoc = await this.locStringRepo.create(foodTypeDTN.descriptionLoc, t);
+  async create(
+    foodTypeDTN: FoodTypeDTN,
+    nameLoc: LocString,
+    descriptionLoc: LocString,
+    transaction?: Transaction
+  ): Promise<FoodType> {
   
-        const dbFoodType = await FoodTypePG.create({
-          nameLocId: nameLoc.id,
-          descriptionLocId: descriptionLoc.id
-        }, {
-          transaction: t
-        });
-  
-        // Not using mapper here because of inability to include returning locs
-        // Only other way is to use afterCreate hook for Sequelize
-        return new FoodType(
-          dbFoodType.id,
-          nameLoc,
-          descriptionLoc
-        );
-      } catch (err) {
-        await t.rollback();
-        throw err;
-      }
-
+    const dbFoodType = await FoodTypePG.create({
+      nameLocId: nameLoc.id,
+      descriptionLocId: descriptionLoc.id
+    }, {
+      transaction
     });
-
-    return createdFoodType;
+  
+    return new FoodType(
+      dbFoodType.id,
+      nameLoc,
+      descriptionLoc
+    );
   }
 
-  async update(updFoodType: FoodType): Promise<FoodType> {
-    const updatedFoodType = await this.dbInstance.transaction(async (t) => {
+  // async update(updFoodType: FoodType): Promise<FoodType> {
 
-      const dbFoodType = await FoodTypePG.scope('raw').findByPk(updFoodType.id);
-      if (!dbFoodType) {
-        await t.rollback();
-        throw new DatabaseError(`No food type entry with this id ${updFoodType.id}`);
-      }
+  //     const dbFoodType = await FoodTypePG.scope('raw').findByPk(updFoodType.id);
+  //     if (!dbFoodType) {
+  //       await t.rollback();
+  //       throw new DatabaseError(`No food type entry with this id ${updFoodType.id}`);
+  //     }
   
-      try {
-        const updatedNameLoc = await this.locStringRepo.update(updFoodType.nameLoc, t);
-        const updatedDescriptionLoc = await this.locStringRepo.update(updFoodType.descriptionLoc, t);
+  //       const updatedNameLoc = await this.locStringRepo.update(updFoodType.nameLoc, t);
+  //       const updatedDescriptionLoc = await this.locStringRepo.update(updFoodType.descriptionLoc, t);
   
-        return new FoodType(
-          updFoodType.id,
-          updatedNameLoc,
-          updatedDescriptionLoc,
-        );
-      } catch (err) {
-        await t.rollback();
-        throw err;
-      }
-    });
+  //       return new FoodType(
+  //         updFoodType.id,
+  //         updatedNameLoc,
+  //         updatedDescriptionLoc,
+  //       );
 
-    return updatedFoodType;
-  }
+  // }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, transaction?: Transaction): Promise<void> {
     const dbFoodType = await FoodTypePG.scope('raw').findByPk(id);
     if (!dbFoodType) throw new DatabaseError(`No food type entry with this id ${id}`);
-
-    // Remove loc strings. If needed, add logging of deleted count
-    await this.locStringRepo.removeWithCount(dbFoodType.nameLocId);
-    await this.locStringRepo.removeWithCount(dbFoodType.descriptionLocId);
-
-    await dbFoodType.destroy();
+    await dbFoodType.destroy({ transaction });
   }
 
   async removeAll(): Promise<void> {
