@@ -116,8 +116,10 @@ export class FixedLocService implements IFixedLocService {
   async remove(id: number): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
     const removed = await this.fixedLocRepo.remove(id);
-    if (removed && removed.name)
+    if (removed && removed.name) {
+      await this.locStringRepo.remove(removed.locString.id);
       await this.inmemRepo.remove(removed.name);
+    }
   }
 
   async removeAll(): Promise<void> {
