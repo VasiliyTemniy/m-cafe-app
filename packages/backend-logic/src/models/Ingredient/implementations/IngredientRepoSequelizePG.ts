@@ -16,7 +16,7 @@ export class IngredientRepoSequelizePG implements IIngredientRepo {
 
   async getById(id: number): Promise<Ingredient> {
     const dbIngredient = await IngredientPG.scope('allWithTimestamps').findByPk(id);
-    if (!dbIngredient) throw new DatabaseError(`No ingredient type entry with this id ${id}`);
+    if (!dbIngredient) throw new DatabaseError(`No ingredient entry with this id ${id}`);
     return IngredientMapper.dbToDomain(dbIngredient);
   }
 
