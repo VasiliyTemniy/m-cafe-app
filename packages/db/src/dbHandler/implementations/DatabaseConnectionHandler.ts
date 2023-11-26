@@ -27,7 +27,8 @@ import {
   initModelHooks,
   initUserScopes,
   initFacilityScopes,
-  initFoodScopes
+  initFoodScopes,
+  initOrderScopes
 } from '../../models';
 
 
@@ -192,5 +193,6 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await initUserScopes();
     await initFacilityScopes();
     await initFoodScopes();
+    await initOrderScopes();
   }
 }
