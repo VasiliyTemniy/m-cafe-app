@@ -6,6 +6,11 @@ import { User } from './User.js';
 import { Address } from './Address.js';
 import { OrderFood } from './OrderFood.js';
 import { Facility } from './Facility.js';
+import {
+  OrderPaymentMethod,
+  OrderPaymentStatus,
+  OrderStatus
+} from '@m-cafe-app/shared-constants';
 
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
@@ -14,11 +19,15 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
   declare addressId: ForeignKey<Address['id']> | null;
   declare facilityId: ForeignKey<Facility['id']>;
   declare deliverAt: Date;
-  declare status: string;
+  declare status: OrderStatus;
   declare totalCost: number;
   declare archiveAddress: string;
-  declare customerName?: string;
+  declare customerName: string;
   declare customerPhonenumber: string;
+  declare paymentMethod: OrderPaymentMethod;
+  declare paymentStatus: OrderPaymentStatus;
+  declare tablewareQuantity: number;
+  declare comment: string | null;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare user?: NonAttribute<User>;
@@ -71,7 +80,10 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
         },
         status: {
           type: DataTypes.STRING,
-          allowNull: false
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(OrderStatus)]
+          }
         },
         totalCost: {
           type: DataTypes.INTEGER,
@@ -83,11 +95,33 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
         },
         customerName: {
           type: DataTypes.STRING,
-          allowNull: true
+          allowNull: false
         },
         customerPhonenumber: {
           type: DataTypes.STRING,
           allowNull: false
+        },
+        paymentMethod: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(OrderPaymentMethod)]
+          }
+        },
+        paymentStatus: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(OrderPaymentStatus)]
+          }
+        },
+        tablewareQuantity: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        comment: {
+          type: DataTypes.STRING,
+          allowNull: true
         },
         createdAt: {
           type: DataTypes.DATE,
@@ -107,18 +141,13 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
             exclude: ['createdAt', 'updatedAt']
           }
         },
+        // See initOrderScopes.ts for more
         scopes: {
-          all: {
-            attributes: {
-              exclude: ['createdAt', 'updatedAt']
-            }
-          },
           raw: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
             }
-          },
-          allWithTimestamps: {}
+          }
         }
       });
 
