@@ -100,3 +100,20 @@ export const includeFoodComponentData = [
     ]
   }
 ];
+
+export const includeFoodSimple = {
+  model: Food,
+  as: 'food',
+  attributes: {
+    exclude: ['nameLocId', 'descriptionLocId', 'foodTypeId', 'price', 'createdAt', 'updatedAt']
+  },
+  include: [
+    {
+      model: LocString,
+      as: 'nameLoc',
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    }
+  ]
+};
