@@ -1,4 +1,5 @@
-import { isString, isNumber, checkProperties, isEntity, type PropertyGroup, isBoolean, isDate } from '../types/typeValidators';
+import type { PropertyGroup } from '../types/typeValidators';
+import { isString, isNumber, checkProperties, isEntity, isBoolean, isDate, isEnum } from '../types/typeValidators';
 import { expect } from 'chai';
 import 'mocha';
 
@@ -466,4 +467,35 @@ describe('Type validators tests: isEntity', () => {
 
   });
 
+});
+
+describe('Type validators tests: isEnum', () => {
+  it('should return true if value is a valid enum value', () => {
+    enum Colors {
+      Red = 'RED',
+      Blue = 'BLUE',
+      Green = 'GREEN',
+    }
+
+    expect(isEnum(Colors.Red, Colors)).to.equal(true);
+    expect(isEnum(Colors.Blue, Colors)).to.equal(true);
+    expect(isEnum(Colors.Green, Colors)).to.equal(true);
+    expect(isEnum('RED', Colors)).to.equal(true);
+    expect(isEnum('BLUE', Colors)).to.equal(true);
+    expect(isEnum('GREEN', Colors)).to.equal(true);
+  });
+
+  it('should return false if value is not a valid enum value', () => {
+    enum Colors {
+      Red = 'RED',
+      Blue = 'BLUE',
+      Green = 'GREEN',
+    }
+
+    expect(isEnum('YELLOW', Colors)).to.equal(false); // not a valid enum value
+    expect(isEnum(123, Colors)).to.equal(false); // not a valid enum value
+    expect(isEnum(null, Colors)).to.equal(false); // not a valid enum value
+    expect(isEnum(undefined, Colors)).to.equal(false); // not a valid enum value
+    expect(isEnum({}, Colors)).to.equal(false); // not a valid enum value
+  });
 });

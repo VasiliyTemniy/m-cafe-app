@@ -178,3 +178,8 @@ export const isManyEntity = <T>(obj: unknown, validator: (value: unknown) => boo
   }
   return true;
 };
+
+
+export const isEnum = <T extends { [s: string]: unknown }>(value: unknown, enumObj: T): value is T[keyof T] => {
+  return Object.values(enumObj).includes(value as T[keyof T]);
+};
