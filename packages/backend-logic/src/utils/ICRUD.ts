@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Request, Response } from 'express';
 
+/**
+ * Repository generic\
+ * args:\
+ * T - domain model object type\
+ * DTN - data transit new object type
+ */
 export interface ICRUDRepo<T, DTN> {
   getAll(): Promise<T[]>;
   getById(id: number): Promise<T>;
@@ -13,6 +19,12 @@ export interface ICRUDRepo<T, DTN> {
   removeMany?(ids: number[], ...args: any): Promise<void>;
 }
 
+/**
+ * Service generic\
+ * args:\
+ * DT - data transit object type\
+ * DTN - data transit new object type
+ */
 export interface ICRUDService<DT, DTN> {
   getAll(): Promise<DT[]>;
   getById(id: number): Promise<DT>;
@@ -25,6 +37,9 @@ export interface ICRUDService<DT, DTN> {
   removeMany?(ids: number[]): Promise<void>;
 }
 
+/**
+ * Controller generic for just in case at any time i'll stop using http;\
+ */
 export interface ICRUDController {
   getAll(...args: any): Promise<any>;
   getById(...args: any): Promise<any>;
@@ -36,6 +51,9 @@ export interface ICRUDController {
   removeMany?(...args: any): Promise<any>;
 }
 
+/**
+ * Http controller generic
+ */
 export interface ICRUDControllerHttp extends ICRUDController {
   getAll(req: Request, res: Response, ...args: any): Promise<void>;
   getById(req: Request, res: Response, ...args: any): Promise<void>;
