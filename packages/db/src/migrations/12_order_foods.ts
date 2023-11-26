@@ -3,11 +3,6 @@ import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('order_foods', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
     order_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -22,7 +17,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL'
     },
-    amount: {
+    archive_food_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    quantity: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -37,17 +36,18 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
   });
 
   const constraintCheck = await queryInterface.sequelize.query(
-    "SELECT * FROM pg_constraint WHERE conname = 'order_foods_order_id_food_id_key'",
+    "SELECT * FROM pg_constraint WHERE conname = 'order_foods_pkey'",
     { type: QueryTypes.SELECT }
   );
 
+  // Not using food_id for primary key because it can be null if admin decides to delete food; use archive_food_id instead
   if (!constraintCheck[0]) {
     await queryInterface.addConstraint('order_foods', {
       fields: [
-        'order_id', 'food_id'
+        'order_id', 'archive_food_id'
       ],
-      type: 'unique',
-      name: 'order_foods_order_id_food_id_key'
+      type: 'primary key',
+      name: 'order_foods_pkey'
     });
   }
 };
