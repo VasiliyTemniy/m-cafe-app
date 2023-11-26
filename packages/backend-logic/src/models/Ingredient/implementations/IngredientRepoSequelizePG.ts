@@ -80,10 +80,10 @@ export class IngredientRepoSequelizePG implements IIngredientRepo {
     );
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, transaction?: Transaction): Promise<void> {
     const dbIngredient = await IngredientPG.scope('raw').findByPk(id);
     if (!dbIngredient) throw new DatabaseError(`No ingredient type entry with this id ${id}`);
-    await dbIngredient.destroy();
+    await dbIngredient.destroy({ transaction });
   }
 
   async removeAll(): Promise<void> {
