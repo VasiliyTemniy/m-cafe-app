@@ -10,3 +10,4 @@ export * from './fixedLocsScopes.js';
 export * from './specificUiSettings.js';
 export * from './allowedClassNamesUiSettings.js';
 export * from './timestampsKeys.js';
+export * from './orderStatusDetails.js';
