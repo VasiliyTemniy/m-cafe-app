@@ -13,6 +13,7 @@ export interface RequestMiddle extends Request {
 export interface RequestCustom extends Request {
   userId: number;
   token: string;
+  rights: string;
 }
 
 export const isRequestCustom = (req: Request): req is RequestCustom => {
@@ -23,6 +24,10 @@ export const isRequestCustom = (req: Request): req is RequestCustom => {
   if (!checkProperties({ obj: req, properties: [
     'userId'
   ], required: true, validator: isNumber })) return false;
+
+  if (!checkProperties({ obj: req, properties: [
+    'rights'
+  ], required: true, validator: isString })) return false;
 
   return true;
 };
