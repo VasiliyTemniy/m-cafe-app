@@ -1,6 +1,7 @@
+import type { OrderPaymentMethod, OrderPaymentStatus, OrderStatus } from '@m-cafe-app/shared-constants';
 import type { Address } from './Address.js';
 import type { FacilityS } from './Facility.js';
-import type { OrderFoodS } from './OrderFood.js';
+import type { OrderFood } from './OrderFood.js';
 import type { User } from './User.js';
 
 
@@ -17,13 +18,17 @@ export class Order {
   constructor (
     readonly id: number,
     readonly deliverAt: Date,
-    readonly status: string,
-    readonly orderFoods: OrderFoodS[],
+    readonly status: OrderStatus,
+    readonly orderFoods: OrderFood[],
     readonly facility: FacilityS,
     readonly totalCost: number,
     readonly archiveAddress: string,
     readonly customerPhonenumber: string,
-    readonly customerName?: string,
+    readonly customerName: string,
+    readonly paymentMethod: OrderPaymentMethod,
+    readonly paymentStatus: OrderPaymentStatus,
+    readonly tablewareQuantity: number,
+    readonly comment?: string,
     readonly user?: User,
     readonly address?: Address,
     readonly createdAt?: Date,
@@ -38,12 +43,15 @@ export class OrderS {
   constructor (
     readonly id: number,
     readonly deliverAt: Date,
-    readonly status: string,
-    readonly orderFoods: OrderFoodS[],
+    readonly status: OrderStatus,
+    readonly orderFoods: OrderFood[],
     readonly facility: FacilityS,
     readonly totalCost: number,
     readonly archiveAddress: string,
     readonly customerPhonenumber: string,
-    readonly customerName?: string,
+    readonly customerName: string,
+    readonly paymentMethod: OrderPaymentMethod,
+    readonly paymentStatus: OrderPaymentStatus,
+    readonly tablewareQuantity: number,
   ) {}
 }
