@@ -1,5 +1,11 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
+import {
+  OrderPaymentMethod,
+  OrderPaymentStatus,
+  OrderStatus
+} from '@m-cafe-app/shared-constants';
+
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('orders', {
@@ -38,7 +44,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        isIn: [Object.values(OrderStatus)]
+      },
     },
     total_cost: {
       type: DataTypes.INTEGER,
@@ -50,11 +59,33 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     },
     customer_name: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false
     },
     customer_phonenumber: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    payment_method: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: [Object.values(OrderPaymentMethod)]
+      }
+    },
+    payment_status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: [Object.values(OrderPaymentStatus)]
+      }
+    },
+    tableware_quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    comment: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,
