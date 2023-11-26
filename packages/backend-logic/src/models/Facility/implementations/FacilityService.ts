@@ -194,6 +194,10 @@ export class FacilityService implements IFacilityService {
     return FacilityMapper.domainToDT(facility);
   }
 
+  async checkFacilityManager(facilityId: number, userId: number): Promise<boolean> {
+    return await this.facilityRepo.checkFacilityManager(facilityId, userId);
+  }
+
   async addManagers(facilityId: number, managerIds: number[]): Promise<FacilityDT> {
     const managers = managerIds.map(userId => ({
       facilityId,

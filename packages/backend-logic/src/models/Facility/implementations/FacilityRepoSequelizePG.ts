@@ -111,6 +111,14 @@ export class FacilityRepoSequelizePG implements IFacilityRepo {
     return FacilityMapper.dbToDomain(dbFacility);
   }
 
+  async checkFacilityManager(facilityId: number, userId: number): Promise<boolean> {
+    const foundFacilityManager = await FacilityManagerPG.findOne({
+      where: { facilityId, userId }
+    });
+
+    return !!foundFacilityManager;
+  }
+
   async addManagers(
     addManagersData: Array<{ facilityId: number, userId: number }>,
     transaction?: Transaction

@@ -15,6 +15,7 @@ export interface IFacilityService extends ICRUDService<FacilityDT, FacilityDTN> 
   removeAllStocks(): Promise<void>;
   getAllWithManagers(): Promise<FacilityDT[]>;
   getByIdWithManagers(id: number): Promise<FacilityDT>;
+  checkFacilityManager(facilityId: number, userId: number): Promise<boolean>;
   addManagers(facilityId: number, managerIds: number[]): Promise<FacilityDT>;
   removeManagers(facilityId: number, managerIds: number[]): Promise<FacilityDT>;
 }

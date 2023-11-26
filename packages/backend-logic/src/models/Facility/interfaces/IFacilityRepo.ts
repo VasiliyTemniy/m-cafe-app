@@ -21,6 +21,7 @@ export interface IFacilityRepo extends ICRUDRepo<Facility, FacilityDTN> {
   getByIdWithManagers(id: number): Promise<Facility>;
   getByIdWithStocks(id: number): Promise<Facility>;
   getByIdWithFullData(id: number): Promise<Facility>;
+  checkFacilityManager(facilityId: number, userId: number): Promise<boolean>;
   addManagers(
     addManagersData: Array<{ facilityId: number, userId: number }>,
     transaction?: GenericTransaction
