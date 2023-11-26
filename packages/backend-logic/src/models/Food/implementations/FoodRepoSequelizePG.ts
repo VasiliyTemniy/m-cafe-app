@@ -19,6 +19,14 @@ export class FoodRepoSequelizePG implements IFoodRepo {
     return FoodMapper.dbToDomain(dbFood);
   }
 
+  async getManySortedByIds(ids: number[]): Promise<Food[]> {
+    const dbFoods = await FoodPG.scope('allWithTimestamps').findAll({
+      where: { id: ids },
+      order: [['id', 'ASC']]
+    });
+    return dbFoods.map(food => FoodMapper.dbToDomain(food));
+  }
+
   async getByIdWithComponents(id: number): Promise<Food> {
     const dbFood = await FoodPG.scope('allWithComponents').findByPk(id);
     if (!dbFood) throw new DatabaseError(`No food type entry with this id ${id}`);

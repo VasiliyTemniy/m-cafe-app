@@ -3,6 +3,7 @@ import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 
 export interface IFoodRepo extends ICRUDRepo<Food, FoodDTN> {
+  getManySortedByIds(ids: number[]): Promise<Food[]>;
   getByIdWithComponents(id: number): Promise<Food>;
   create(
     foodDTN: FoodDTN,
