@@ -21,7 +21,7 @@ export const isFoodComponentDT = (obj: unknown): obj is FoodComponentDT => {
   if (obj.compositeFood && !isFoodDT(obj.component)) return false;
   if (!obj.compositeFood && !isIngredientDTS(obj.component)) return false;
 
-  if (!isNumber(obj.amount)) return false;
+  if (!isNumber(obj.quantity)) return false;
 
   return true;
 };
@@ -40,7 +40,7 @@ export const isFoodComponentDTN = (obj: unknown): obj is FoodComponentDTN => {
 
   if (!isNumber(obj.componentId)) return false;
   if (!isNumber(obj.foodId)) return false;
-  if (!isNumber(obj.amount)) return false;
+  if (!isNumber(obj.quantity)) return false;
 
   return true;
 };

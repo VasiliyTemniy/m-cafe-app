@@ -29,7 +29,7 @@ export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {
     const dbFoodComponent = await FoodComponentPG.create({
       foodId: foodComponentDTN.foodId,
       componentId: foodComponentDTN.componentId,
-      amount: foodComponentDTN.amount,
+      quantity: foodComponentDTN.quantity,
       compositeFood: foodComponentDTN.compositeFood,
     }, {
       transaction
@@ -38,7 +38,7 @@ export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {
     return new FoodComponent(
       dbFoodComponent.id,
       usedComponentSimple,
-      dbFoodComponent.amount,
+      dbFoodComponent.quantity,
       dbFoodComponent.compositeFood,
     );
   }
@@ -64,7 +64,7 @@ export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {
     const [ count, updated ] = await FoodComponentPG.update({
       foodId,
       componentId: updFoodComponent.component.id,
-      amount: updFoodComponent.amount,
+      quantity: updFoodComponent.quantity,
       compositeFood: updFoodComponent.compositeFood,
     }, {
       where: { id: updFoodComponent.id },

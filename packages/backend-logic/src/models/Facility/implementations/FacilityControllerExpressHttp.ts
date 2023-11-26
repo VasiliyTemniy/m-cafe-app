@@ -104,7 +104,7 @@ export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
     if (!isStockDTN(req.body))
       throw new RequestBodyError('Invalid create new stock request body');
 
-    const { ingredientId, facilityId, amount } = req.body;
+    const { ingredientId, facilityId, quantity } = req.body;
 
     // Do I need to check this?..
     // if (facilityId !== req.params.id)
@@ -113,7 +113,7 @@ export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
     const stock: StockDT = await this.service.createStock({
       ingredientId,
       facilityId,
-      amount
+      quantity
     });
 
     res.status(201).json(stock);
@@ -132,13 +132,13 @@ export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
     if (!isStockDT(req.body))
       throw new RequestBodyError('Invalid edit stock request body');
 
-    const { id, ingredientId, facilityId, amount } = req.body;
+    const { id, ingredientId, facilityId, quantity } = req.body;
 
     const updatedStock: StockDT = await this.service.updateStock({
       id,
       ingredientId,
       facilityId,
-      amount
+      quantity
     });
 
     res.status(200).json(updatedStock);

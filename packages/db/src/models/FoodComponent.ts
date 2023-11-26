@@ -11,7 +11,7 @@ export class FoodComponent extends Model<InferAttributes<FoodComponent>, InferCr
   declare id: CreationOptional<number>;
   declare foodId: ForeignKey<Food['id']>;
   declare componentId: number;
-  declare amount: number;
+  declare quantity: number;
   declare compositeFood: boolean;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -45,7 +45,7 @@ export const initFoodComponentModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           allowNull: false
         },
-        amount: {
+        quantity: {
           type: DataTypes.INTEGER,
           allowNull: false
         },

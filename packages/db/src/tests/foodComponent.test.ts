@@ -82,7 +82,7 @@ describe('Database FoodComponent model tests', () => {
     const foodComponent = await FoodComponent.create({
       foodId: food.id,
       componentId: ingredient.id,
-      amount: 1,
+      quantity: 1,
       compositeFood: false
     });
 
@@ -91,7 +91,7 @@ describe('Database FoodComponent model tests', () => {
     const foodComponentWithFoodAsComponent = await FoodComponent.create({
       foodId: food.id,
       componentId: foodAsFoodComponent.id,
-      amount: 1,
+      quantity: 1,
       compositeFood: true
     });
 
@@ -104,11 +104,11 @@ describe('Database FoodComponent model tests', () => {
     const foodComponent = await FoodComponent.create({
       foodId: food.id,
       componentId: ingredient.id,
-      amount: 1,
+      quantity: 1,
       compositeFood: false
     });
 
-    foodComponent.amount = 2;
+    foodComponent.quantity = 2;
     foodComponent.componentId = foodAsFoodComponent.id;
     foodComponent.compositeFood = true;
 
@@ -116,7 +116,7 @@ describe('Database FoodComponent model tests', () => {
 
     const foodComponentInDB = await FoodComponent.findOne({ where: { id: foodComponent.id } });
 
-    expect(foodComponentInDB?.amount).to.equal(2);
+    expect(foodComponentInDB?.quantity).to.equal(2);
     expect(foodComponentInDB?.compositeFood).to.equal(true);
 
   });
@@ -126,7 +126,7 @@ describe('Database FoodComponent model tests', () => {
     const foodComponent = await FoodComponent.create({
       foodId: food.id,
       componentId: ingredient.id,
-      amount: 1,
+      quantity: 1,
       compositeFood: false
     });
 
@@ -143,7 +143,7 @@ describe('Database FoodComponent model tests', () => {
     const foodComponent = await FoodComponent.create({
       foodId: food.id,
       componentId: ingredient.id,
-      amount: 1,
+      quantity: 1,
       compositeFood: false
     });
 

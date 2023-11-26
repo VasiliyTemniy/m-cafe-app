@@ -5,13 +5,13 @@ import { idRequired } from './validationHelpers.js';
 
 
 const stockPropertiesGroup: PropertyGroup = {
-  properties: ['ingredientId', 'facilityId', 'amount'],
+  properties: ['ingredientId', 'facilityId', 'quantity'],
   validator: isNumber,
 };
 
 
 /**
- * Represents connection between ingredient and its amount in
+ * Represents connection between ingredient and its quantity in
  * particular facility
  */
 export type StockDT = MapToDT<Stock>;
@@ -33,13 +33,13 @@ export const isStockDTNMany = (obj: unknown): obj is StockDTN[] =>
 
 
 const stockSimplePropertiesGroup: PropertyGroup = {
-  properties: ['id', 'ingredientId', 'amount'],
+  properties: ['id', 'ingredientId', 'quantity'],
   validator: isNumber,
 };
 
 
 /**
- * Has info about ingredient and amount, not about facility \
+ * Has info about ingredient and quantity, not about facility \
  * Should be included in facility info
  */
 export type StockDTS = MapToDT<StockS>;

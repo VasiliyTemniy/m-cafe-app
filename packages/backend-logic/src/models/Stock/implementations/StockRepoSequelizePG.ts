@@ -47,7 +47,7 @@ export class StockRepoSequelizePG implements IStockRepo {
 
   async update(updStock: Stock, transaction?: Transaction): Promise<Stock> {
     const [ count, updated ] = await StockPG.update({
-      amount: updStock.amount
+      quantity: updStock.quantity
     }, {
       transaction,
       where: {

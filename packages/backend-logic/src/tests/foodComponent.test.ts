@@ -103,7 +103,7 @@ describe('FoodComponentService implementation tests', () => {
       foodId: newFood.id,
       componentId: newIngredient.id,
       compositeFood: false,
-      amount: 10
+      quantity: 10
     });
 
     expect(validNewFoodComponent).to.exist;
@@ -125,7 +125,7 @@ describe('FoodComponentService implementation tests', () => {
         foodId: newFood.id,
         componentId: unexistingComponentId,
         compositeFood: true,
-        amount: 10
+        quantity: 10
       });
     } catch (err) {
       if (!(err instanceof Error)) {
@@ -147,7 +147,7 @@ describe('FoodComponentService implementation tests', () => {
         foodId: unexistingFoodId,
         componentId: newIngredientForInvalidFoodComponent.id,
         compositeFood: false,
-        amount: 10
+        quantity: 10
       });
     } catch (err) {
       if (!(err instanceof Error)) {

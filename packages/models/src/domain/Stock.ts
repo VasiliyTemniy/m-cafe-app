@@ -1,5 +1,5 @@
 /**
- * Represents connection between ingredient and its amount in
+ * Represents connection between ingredient and its quantity in
  * particular facility
  */
 export class Stock {
@@ -7,7 +7,7 @@ export class Stock {
     readonly id: number,
     readonly ingredientId: number,
     readonly facilityId: number,
-    readonly amount: number,
+    readonly quantity: number,
     readonly createdAt?: Date,
     readonly updatedAt?: Date
   ) {}
@@ -15,13 +15,13 @@ export class Stock {
 
 
 /**
- * Has info about ingredient and amount, not about facility \
+ * Has info about ingredient and quantity, not about facility \
  * Should be included in facility info
  */
 export class StockS {
   constructor (
     readonly id: number,
     readonly ingredientId: number,
-    readonly amount: number
+    readonly quantity: number
   ) {}
 }

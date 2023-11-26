@@ -22,7 +22,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    amount: {
+    quantity: {
       type: DataTypes.INTEGER,
       allowNull: false
     },

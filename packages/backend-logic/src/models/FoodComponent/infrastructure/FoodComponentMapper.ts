@@ -23,7 +23,7 @@ export class FoodComponentMapper implements
     const domainFoodComponent = new FoodComponent(
       dbFoodComponent.id,
       component,
-      dbFoodComponent.amount,
+      dbFoodComponent.quantity,
       dbFoodComponent.compositeFood,
       dbFoodComponent.createdAt,
       dbFoodComponent.updatedAt
@@ -43,7 +43,7 @@ export class FoodComponentMapper implements
     const domainFoodComponent = new FoodComponent(
       foodComponentDT.id,
       component,
-      foodComponentDT.amount,
+      foodComponentDT.quantity,
       foodComponentDT.compositeFood,
       // timestamps are not accepted from the frontend
       // toOptionalDate(foodComponentDT.createdAt),
@@ -64,7 +64,7 @@ export class FoodComponentMapper implements
     const foodComponentDT: FoodComponentDT = {
       id: domainFoodComponent.id,
       component,
-      amount: domainFoodComponent.amount,
+      quantity: domainFoodComponent.quantity,
       compositeFood: domainFoodComponent.compositeFood,
       createdAt: toOptionalISOString(domainFoodComponent.createdAt),
       updatedAt: toOptionalISOString(domainFoodComponent.updatedAt)

@@ -76,7 +76,7 @@ describe('Database Stock model tests', () => {
     const stock = await Stock.create({
       facilityId: facility.id,
       ingredientId: ingredient.id,
-      amount: 1
+      quantity: 1
     });
 
     expect(stock).to.exist;
@@ -88,17 +88,17 @@ describe('Database Stock model tests', () => {
     const stock = await Stock.create({
       facilityId: facility.id,
       ingredientId: ingredient.id,
-      amount: 1
+      quantity: 1
     });
 
-    stock.amount = 2;
+    stock.quantity = 2;
 
     await stock.save();
 
     const stockInDB = await Stock.findByPk(stock.id);
 
     expect(stockInDB).to.exist;
-    expect(stockInDB?.amount).to.equal(2);
+    expect(stockInDB?.quantity).to.equal(2);
 
   });
 
@@ -107,7 +107,7 @@ describe('Database Stock model tests', () => {
     const stock = await Stock.create({
       facilityId: facility.id,
       ingredientId: ingredient.id,
-      amount: 1
+      quantity: 1
     });
 
     await stock.destroy();
@@ -123,7 +123,7 @@ describe('Database Stock model tests', () => {
     const stock = await Stock.create({
       facilityId: facility.id,
       ingredientId: ingredient.id,
-      amount: 1
+      quantity: 1
     });
 
     const stockInDB = await Stock.findOne({ where: { id: stock.id } });

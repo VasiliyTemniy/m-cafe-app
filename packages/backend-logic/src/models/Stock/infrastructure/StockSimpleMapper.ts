@@ -10,7 +10,7 @@ export class StockSimpleMapper implements EntitySimpleMapper<Stock, StockS, Stoc
     const stockS = new StockS (
       domainStock.id,
       domainStock.ingredientId,
-      domainStock.amount
+      domainStock.quantity
     );
     return stockS;
   }
@@ -23,7 +23,7 @@ export class StockSimpleMapper implements EntitySimpleMapper<Stock, StockS, Stoc
     const stockS = new StockS(
       dbStock.id,
       dbStock.ingredientId,
-      dbStock.amount
+      dbStock.quantity
     );
 
     return stockS;
@@ -37,7 +37,7 @@ export class StockSimpleMapper implements EntitySimpleMapper<Stock, StockS, Stoc
     const stockS = new StockS (
       stockDTS.id,
       stockDTS.ingredientId,
-      stockDTS.amount
+      stockDTS.quantity
     );
     return stockS;
   }
@@ -50,7 +50,7 @@ export class StockSimpleMapper implements EntitySimpleMapper<Stock, StockS, Stoc
     const stockDTS: StockDTS = {
       id: stockS.id,
       ingredientId: stockS.ingredientId,
-      amount: stockS.amount
+      quantity: stockS.quantity
     };
     return stockDTS;
   }

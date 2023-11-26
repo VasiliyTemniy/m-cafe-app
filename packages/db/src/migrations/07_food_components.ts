@@ -19,7 +19,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    amount: {
+    quantity: {
       type: DataTypes.INTEGER,
       allowNull: false
     },

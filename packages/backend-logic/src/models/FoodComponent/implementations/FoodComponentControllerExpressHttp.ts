@@ -21,13 +21,13 @@ export class FoodComponentControllerExpressHttp implements IFoodComponentControl
     if (!isFoodComponentDTN(req.body))
       throw new RequestBodyError('Invalid new foodComponent request body');
 
-    const { foodId, componentId, compositeFood, amount } = req.body;
+    const { foodId, componentId, compositeFood, quantity } = req.body;
 
     const foodComponent: FoodComponentDT = await this.service.create({
       foodId,
       componentId,
       compositeFood,
-      amount
+      quantity
     });
 
     res.status(201).json(foodComponent);
@@ -48,13 +48,13 @@ export class FoodComponentControllerExpressHttp implements IFoodComponentControl
     if (!isFoodComponentDT(req.body))
       throw new RequestBodyError('Invalid edit foodComponent request body');
 
-    const { id, component, compositeFood, amount } = req.body;
+    const { id, component, compositeFood, quantity } = req.body;
 
     const updatedFoodComponent: FoodComponentDT = await this.service.update({
       id,
       component,
       compositeFood,
-      amount,
+      quantity,
     }, Number(req.params.id));
 
     res.status(200).json(updatedFoodComponent);

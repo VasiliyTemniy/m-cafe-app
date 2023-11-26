@@ -10,7 +10,7 @@ export class Stock extends Model<InferAttributes<Stock>, InferCreationAttributes
   declare id: CreationOptional<number>;
   declare ingredientId: ForeignKey<Ingredient['id']>;
   declare facilityId: ForeignKey<Facility['id']>;
-  declare amount: number;
+  declare quantity: number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -41,7 +41,7 @@ export const initStockModel = async (dbInstance: Sequelize) => {
           references: { model: 'facilities', key: 'id' },
           unique: 'unique_stock'
         },
-        amount: {
+        quantity: {
           type: DataTypes.INTEGER,
           allowNull: false
         },

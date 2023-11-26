@@ -12,7 +12,7 @@ export class StockMapper implements EntityDBMapper<Stock, StockPG>, EntityDTMapp
       dbStock.id,
       dbStock.ingredientId,
       dbStock.facilityId,
-      dbStock.amount,
+      dbStock.quantity,
       dbStock.createdAt,
       dbStock.updatedAt
     );
@@ -28,7 +28,7 @@ export class StockMapper implements EntityDBMapper<Stock, StockPG>, EntityDTMapp
       stockDT.id,
       stockDT.ingredientId,
       stockDT.facilityId,
-      stockDT.amount,
+      stockDT.quantity,
       // timestamps are not accepted from frontend
       // toOptionalDate(stockDT.createdAt),
       // toOptionalDate(stockDT.updatedAt)
@@ -45,7 +45,7 @@ export class StockMapper implements EntityDBMapper<Stock, StockPG>, EntityDTMapp
       id: domainStock.id,
       ingredientId: domainStock.ingredientId,
       facilityId: domainStock.facilityId,
-      amount: domainStock.amount,
+      quantity: domainStock.quantity,
       createdAt: toOptionalISOString(domainStock.createdAt),
       updatedAt: toOptionalISOString(domainStock.updatedAt)
     };
