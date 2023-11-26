@@ -13,11 +13,11 @@ export class OrderFoodMapper implements EntityDBMapper<OrderFood, OrderFoodPG>, 
       : undefined;
 
     const domainOrderFood = new OrderFood(
-      dbOrderFood.id,
-      dbOrderFood.orderId,
-      dbOrderFood.amount,
+      dbOrderFood.quantity,
       dbOrderFood.archivePrice,
+      dbOrderFood.archiveFoodId,
       dbOrderFood.archiveFoodName,
+      dbOrderFood.orderId,
       food
     );
     return domainOrderFood;
@@ -33,11 +33,11 @@ export class OrderFoodMapper implements EntityDBMapper<OrderFood, OrderFoodPG>, 
       : undefined;
 
     const domainOrderFood = new OrderFood(
-      orderFoodDT.id,
-      orderFoodDT.orderId,
-      orderFoodDT.amount,
+      orderFoodDT.quantity,
       orderFoodDT.archivePrice,
+      orderFoodDT.archiveFoodId,
       orderFoodDT.archiveFoodName,
+      orderFoodDT.orderId,
       food
     );
     return domainOrderFood;
@@ -53,11 +53,11 @@ export class OrderFoodMapper implements EntityDBMapper<OrderFood, OrderFoodPG>, 
       : undefined;
 
     const orderFoodDT: OrderFoodDT = {
-      id: domainOrderFood.id,
-      orderId: domainOrderFood.orderId,
-      amount: domainOrderFood.amount,
+      quantity: domainOrderFood.quantity,
       archivePrice: domainOrderFood.archivePrice,
+      archiveFoodId: domainOrderFood.archiveFoodId,
       archiveFoodName: domainOrderFood.archiveFoodName,
+      orderId: domainOrderFood.orderId,
       food
     };
     return orderFoodDT;
