@@ -3,20 +3,28 @@ import 'mocha';
 import { UiSettingRepoRedis, UiSettingRepoSequelizePG, UiSettingService } from '../models/UiSetting';
 import { dbHandler } from '@m-cafe-app/db';
 import { redisUiSettingsClient } from '../config';
+import { TransactionHandlerSequelizePG } from '../utils';
 
 
 // No mocking, no unit testing for this package. Only integration tests ->
 // If tests fail after dependency injection, change dependencies accordingly
 // in these tests
-const uiSettingService = new UiSettingService(
-  new UiSettingRepoSequelizePG(),
-  new UiSettingRepoRedis(redisUiSettingsClient)
-);
 
 describe('UiSettingService implementation tests', () => {
+
+  let uiSettingService: UiSettingService;
   
   before(async () => {
     await dbHandler.pingDb();
+
+    uiSettingService = new UiSettingService(
+      new UiSettingRepoSequelizePG(),
+      new TransactionHandlerSequelizePG(
+        dbHandler
+      ),
+      new UiSettingRepoRedis(redisUiSettingsClient)
+    );
+
     await uiSettingService.connectInmem();
     await uiSettingService.pingInmem();
   });
