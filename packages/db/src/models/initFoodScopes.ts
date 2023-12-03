@@ -1,20 +1,9 @@
 import { Food } from './Food.js';
-import { FoodComponent } from './FoodComponent.js';
-import { includeDescriptionLoc, includeFoodComponentData, includeNameLoc } from './commonIncludes.js';
+import { includeDescriptionLoc, includeFoodComponents, includeNameLoc } from './commonIncludes.js';
 
 
 
 export const initFoodScopes = async () => {
-
-  const includeComponents = {
-    model: FoodComponent,
-    as: 'components',
-    include: includeFoodComponentData,
-    attributes: {
-      exclude: ['createdAt', 'updatedAt']
-    }
-  };
-
   return new Promise<void>((resolve, reject) => {
     try {
 
@@ -32,7 +21,7 @@ export const initFoodScopes = async () => {
         attributes: {
           exclude: ['createdAt', 'updatedAt']
         },
-        include: includeComponents
+        include: includeFoodComponents
       });
 
       // add scopes for composite / non-composite food?
