@@ -53,10 +53,11 @@ export class FixedLocRepoSequelizePG implements IFixedLocRepo {
    * Should not be used, left here for consistency
    * and unforseen purposes
    */
-  async remove(id: number, transaction?: Transaction): Promise<void> {
+  async remove(id: number, transaction?: Transaction): Promise<FixedLoc> {
     const dbFixedLoc = await FixedLocPG.scope('all').findByPk(id);
     if (!dbFixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${id}`);
     await dbFixedLoc.destroy({ force: true, transaction });
+    return FixedLocMapper.dbToDomain(dbFixedLoc);
   }
 
   async removeAll(): Promise<void> {
