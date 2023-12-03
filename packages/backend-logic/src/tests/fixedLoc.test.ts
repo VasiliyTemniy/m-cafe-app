@@ -4,6 +4,7 @@ import { FixedLocRepoRedis, FixedLocRepoSequelizePG, FixedLocService } from '../
 import { dbHandler } from '@m-cafe-app/db';
 import { redisFixedLocsClient } from '../config';
 import { LocStringRepoSequelizePG } from '../models/LocString';
+import { TransactionHandlerSequelizePG } from '../utils';
 
 
 // No mocking, no unit testing for this package. Only integration tests ->
@@ -17,13 +18,16 @@ describe('FixedLocService implementation tests', () => {
 
   before(async () => {
     await dbHandler.pingDb();
+
     fixedLocService = new FixedLocService(
-      new FixedLocRepoSequelizePG(
-        dbHandler,
-        new LocStringRepoSequelizePG(dbHandler)
+      new FixedLocRepoSequelizePG(),
+      new LocStringRepoSequelizePG(),
+      new TransactionHandlerSequelizePG(
+        dbHandler
       ),
       new FixedLocRepoRedis(redisFixedLocsClient)
     );
+
     await fixedLocService.connectInmem();
     await fixedLocService.pingInmem();
   });
