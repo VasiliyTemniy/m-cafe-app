@@ -12,31 +12,39 @@ import { User as UserPG } from '@m-cafe-app/db';
 import sha1 from 'sha1';
 import { AuthConnectionHandler } from '../models/Auth/infrastructure';
 import config, { redisSessionClient } from '../config';
+import { TransactionHandlerSequelizePG } from '../utils';
 
 
 
 // No mocking, no unit testing for this package. Only integration tests ->
 // If tests fail after dependency injection, change dependencies accordingly
 // in these tests
-const userService = new UserService(
-  new UserRepoSequelizePG(),
-  new AddressRepoSequelizePG(),
-  new SessionService(
-    new SessionRepoRedis(redisSessionClient)
-  ),
-  new AuthController(
-    new AuthConnectionHandler(
-      config.authUrl,
-      config.authGrpcCredentials,
-    ),
-    new AuthServiceInternal()
-  )
-);
 
 describe('UserService implementation tests', () => {
 
+  let userService: UserService;
+
   before(async () => {
     await dbHandler.pingDb();
+
+    userService = new UserService(
+      new UserRepoSequelizePG(),
+      new AddressRepoSequelizePG(),
+      new TransactionHandlerSequelizePG(
+        dbHandler
+      ),
+      new SessionService(
+        new SessionRepoRedis(redisSessionClient)
+      ),
+      new AuthController(
+        new AuthConnectionHandler(
+          config.authUrl,
+          config.authGrpcCredentials,
+        ),
+        new AuthServiceInternal()
+      )
+    );
+
     await userService.sessionService.connect();
     await userService.sessionService.ping();
     await userService.authController.connect();
@@ -124,7 +132,7 @@ describe('UserService implementation tests', () => {
 
     expect(auth.id).to.equal(anotherSomehowSameLookupHashUserInfo.id);
 
-    const foundInDBToCheckLookupHash = await userService.repo.getById(anotherSomehowSameLookupHashUserInfo.id);
+    const foundInDBToCheckLookupHash = await userService.userRepo.getById(anotherSomehowSameLookupHashUserInfo.id);
 
     expect(anotherSomehowSameLookupHashUserInfo.id).to.not.equal(somehowAlreadyCreatedUser.id);
     expect(foundInDBToCheckLookupHash.lookupHash).to.not.equal(somehowAlreadyCreatedUser.lookupHash);
@@ -133,7 +141,7 @@ describe('UserService implementation tests', () => {
     expect(foundInDBToCheckLookupHash.lookupNoise).to.not.equal(0);
 
     // Both users must persist in DB
-    const users = await userService.repo.getAll();
+    const users = await userService.userRepo.getAll();
 
     expect(users.length).to.equal(2);
   });
@@ -241,7 +249,7 @@ describe('UserService implementation tests', () => {
 
   it('should not authenticate or provide access to user update if no lookupHash was found on auth microservice', async () => {
 
-    const user = await userService.repo.create(newUserInfo);
+    const user = await userService.userRepo.create(newUserInfo);
 
     try {
       await userService.authenticate(newUserInfo.password, { phonenumber: newUserInfo.phonenumber, email: newUserInfo.email }, 'test');
@@ -276,7 +284,7 @@ describe('UserService implementation tests', () => {
 After deletion, user's credentials are removed from auth server`, async () => {
 
     const { user } = await userService.create(newUserInfo, 'test');
-    const userInDb = await userService.repo.getById(user.id);
+    const userInDb = await userService.userRepo.getById(user.id);
     if (!userInDb.lookupHash) return expect(true).to.equal(false);
 
     try {
@@ -436,7 +444,7 @@ After deletion, user's credentials are removed from auth server`, async () => {
 
     await userService.initSuperAdmin();
 
-    const foundSuperAdmin = await userService.repo.getByUniqueProperties({ phonenumber: config.SUPERADMIN_PHONENUMBER });
+    const foundSuperAdmin = await userService.userRepo.getByUniqueProperties({ phonenumber: config.SUPERADMIN_PHONENUMBER });
 
     expect(foundSuperAdmin).to.exist;
 
@@ -566,7 +574,7 @@ Upon logout, Sessions get deleted only for specific userAgent`, async () => {
     const { user, auth } = await userService.create(newUserInfo, 'test');
     if (!user.rights) return expect(true).to.equal(false);
 
-    const lookupHash = (await userService.repo.getById(user.id)).lookupHash;
+    const lookupHash = (await userService.userRepo.getById(user.id)).lookupHash;
     if (!lookupHash) return expect(true).to.equal(false);
 
     // Make a request with quickly expired token
