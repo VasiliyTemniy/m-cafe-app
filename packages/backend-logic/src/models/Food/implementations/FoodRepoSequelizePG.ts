@@ -1,8 +1,15 @@
-import type { IFoodRepo } from '../interfaces';
+import type { FoodInclude, IFoodRepo } from '../interfaces';
 import type { FoodDTN, FoodType, LocString } from '@m-cafe-app/models';
-import type { Transaction } from 'sequelize';
+import type { Transaction, Includeable } from 'sequelize';
 import { Food } from '@m-cafe-app/models';
-import { Food as FoodPG } from '@m-cafe-app/db';
+import {
+  Food as FoodPG,
+  includeFoodComponents,
+  includeDescriptionLoc,
+  includeFoodMainPicture,
+  includeFoodGallery,
+  includeNameLoc
+} from '@m-cafe-app/db';
 import { FoodMapper } from '../infrastructure';
 import { DatabaseError } from '@m-cafe-app/utils';
 
@@ -15,7 +22,7 @@ export class FoodRepoSequelizePG implements IFoodRepo {
 
   async getById(id: number): Promise<Food> {
     const dbFood = await FoodPG.scope('allWithTimestamps').findByPk(id);
-    if (!dbFood) throw new DatabaseError(`No food type entry with this id ${id}`);
+    if (!dbFood) throw new DatabaseError(`No food entry with this id ${id}`);
     return FoodMapper.dbToDomain(dbFood);
   }
 
@@ -27,10 +34,62 @@ export class FoodRepoSequelizePG implements IFoodRepo {
     return dbFoods.map(food => FoodMapper.dbToDomain(food));
   }
 
-  async getByIdWithComponents(id: number): Promise<Food> {
-    const dbFood = await FoodPG.scope('allWithComponents').findByPk(id);
-    if (!dbFood) throw new DatabaseError(`No food type entry with this id ${id}`);
+  async getByIdWithAssociations(
+    id: number,
+    include: FoodInclude
+  ): Promise<Food> {
+
+    const includeClause: Includeable[] = [ includeNameLoc, includeDescriptionLoc ];
+
+    if (include.components) {
+      includeClause.push(includeFoodComponents);
+    }
+
+    if (include.mainPicture) {
+      includeClause.push(includeFoodMainPicture);
+    }
+
+    if (include.gallery) {
+      includeClause.push(includeFoodGallery);
+    }
+
+    const dbFood = await FoodPG.scope('all').findByPk(id, {
+      include: includeClause
+    });
+    if (!dbFood) throw new DatabaseError(`No food entry with this id ${id}`);
+
     return FoodMapper.dbToDomain(dbFood);
+  }
+
+  async getSomeWithAssociations(
+    include: FoodInclude,
+    limit?: number,
+    offset?: number,
+    foodTypeId?: number
+  ): Promise<Food[]> {
+
+    const includeClause: Includeable[] = [ includeNameLoc, includeDescriptionLoc ];
+
+    if (include.components) {
+      includeClause.push(includeFoodComponents);
+    }
+
+    if (include.mainPicture) {
+      includeClause.push(includeFoodMainPicture);
+    }
+
+    if (include.gallery) {
+      includeClause.push(includeFoodGallery);
+    }
+
+    const dbFoods = await FoodPG.scope('allWithComponents').findAll({
+      where: foodTypeId ? { foodTypeId } : {},
+      include: includeClause,
+      limit,
+      offset
+    });
+    
+    return dbFoods.map(food => FoodMapper.dbToDomain(food));
   }
 
   async create(
