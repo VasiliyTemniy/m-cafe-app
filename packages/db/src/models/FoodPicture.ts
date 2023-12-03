@@ -40,7 +40,25 @@ export const initFoodPictureModel = async (dbInstance: Sequelize) => {
         sequelize: dbInstance,
         underscored: true,
         timestamps: false,
-        modelName: 'food_picture'
+        modelName: 'food_picture',
+        scopes: {
+          raw: {},
+          withPicture: {
+            include: [{
+              model: Picture,
+              as: 'picture'
+            }]
+          },
+          orderedWithPicture: {
+            include: [{
+              model: Picture,
+              as: 'picture'
+            }],
+            order: [
+              ['order_number', 'ASC']
+            ]
+          }
+        }
       });
 
       resolve();
