@@ -9,13 +9,13 @@ import { Picture } from './Picture.js';
 export class DynamicModule extends Model<InferAttributes<DynamicModule>, InferCreationAttributes<DynamicModule>> {
   declare id: CreationOptional<number>;
   declare moduleType: string;
-  declare locStringId?: ForeignKey<LocString['id']>;
+  declare locStringId?: ForeignKey<LocString['id']> | null;
   declare page: string;
   declare placement: number;
   declare placementType: CreationOptional<string>;
   declare className?: string;
   declare inlineCss?: string;
-  declare pictureId?: ForeignKey<Picture['id']>;
+  declare pictureId?: ForeignKey<Picture['id']> | null;
   declare url?: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
