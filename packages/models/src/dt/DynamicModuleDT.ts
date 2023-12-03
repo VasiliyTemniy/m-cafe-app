@@ -1,10 +1,10 @@
 import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
 import type { DynamicModule } from '../domain';
 import type { LocStringDT, LocStringDTN } from './LocStringDT.js';
-import type { PictureDT, PictureDTN } from './PictureDT.js';
+import type { PictureDT } from './PictureDT.js';
 import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
 import { isPictureDT } from './PictureDT.js';
-import { idRequired, locStringProperty, locStringNewProperty } from './validationHelpers';
+import { idRequired, locStringOptionalProperty, locStringNewOptionalProperty } from './validationHelpers';
 
 
 const dynamicModulePropertiesGroups: PropertyGroup[] = [{
@@ -20,7 +20,7 @@ const dynamicModulePropertiesGroups: PropertyGroup[] = [{
 }];
 
 
-const hasPictureProperty: PropertyGroup = {
+const hasPictureOptionalProperty: PropertyGroup = {
   properties: ['picture'],
   required: false,
   validator: isPictureDT
@@ -33,13 +33,18 @@ export type DynamicModuleDT = Omit<MapToDT<DynamicModule>, 'picture' | 'locStrin
 };
 
 export const isDynamicModuleDT = (obj: unknown): obj is DynamicModuleDT =>
-  isEntity(obj, [ idRequired, locStringProperty, hasPictureProperty, ...dynamicModulePropertiesGroups ]);
+  isEntity(obj, [
+    idRequired,
+    locStringOptionalProperty,
+    hasPictureOptionalProperty,
+    ...dynamicModulePropertiesGroups
+  ]);
 
 
 export type DynamicModuleDTN = Omit<MapToDTN<DynamicModule>, 'picture' | 'locString'> & {
-  picture?: PictureDTN;
+  // picture?: PictureForDynamicModuleDTN; // Add picture after dynamic module creation
   locString?: LocStringDTN;
 };
 
 export const isDynamicModuleDTN = (obj: unknown): obj is DynamicModuleDTN =>
-  isEntity(obj, [ locStringNewProperty, ...dynamicModulePropertiesGroups ]);
+  isEntity(obj, [ locStringNewOptionalProperty, ...dynamicModulePropertiesGroups ]);
