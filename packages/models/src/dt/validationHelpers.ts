@@ -29,8 +29,20 @@ export const locStringProperty: PropertyGroup = {
   validator: isLocStringDT,
 };
 
+export const locStringOptionalProperty: PropertyGroup = {
+  properties: ['locString'],
+  required: false,
+  validator: isLocStringDT,
+};
+
 export const locStringNewProperty: PropertyGroup = {
   properties: ['locString'],
+  validator: isLocStringDTN,
+};
+
+export const locStringNewOptionalProperty: PropertyGroup = {
+  properties: ['locString'],
+  required: false,
   validator: isLocStringDTN,
 };
 
