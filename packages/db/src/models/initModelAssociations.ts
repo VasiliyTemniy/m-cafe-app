@@ -401,6 +401,10 @@ export const initModelAssociations = async () => {
         foreignKey: 'foodId',
         as: 'gallery'
       });
+      Food.hasOne(FoodPicture, {
+        foreignKey: 'foodId',
+        as: 'mainPicture'
+      });
       FoodPicture.belongsTo(Food);
 
       /*****
