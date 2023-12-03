@@ -22,3 +22,4 @@ export * from './initFacilityScopes.js';
 export * from './initUserScopes.js';
 export * from './initFoodScopes.js';
 export * from './initOrderScopes.js';
+export * from './commonIncludes.js';
