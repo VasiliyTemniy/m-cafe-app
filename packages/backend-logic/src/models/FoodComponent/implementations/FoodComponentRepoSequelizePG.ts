@@ -16,7 +16,7 @@ export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {
 
   async getById(id: number): Promise<FoodComponent> {
     const dbFoodComponent = await FoodComponentPG.scope('allWithTimestamps').findByPk(id);
-    if (!dbFoodComponent) throw new DatabaseError(`No foodComponent type entry with this id ${id}`);
+    if (!dbFoodComponent) throw new DatabaseError(`No foodComponent entry with this id ${id}`);
     return FoodComponentMapper.dbToDomain(dbFoodComponent);
   }
 
