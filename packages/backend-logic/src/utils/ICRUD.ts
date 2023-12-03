@@ -12,11 +12,11 @@ export interface ICRUDRepo<T, DTN> {
   getById(id: number): Promise<T>;
   create(dtn: DTN, ...args: any): Promise<T>;
   update(d: T, ...args: any): Promise<T>;
-  remove(id: number, ...args: any): Promise<void> | Promise<T>;
-  removeAll(...args: any): Promise<void>;
+  remove(id: number, ...args: any): Promise<void> | Promise<T> | Promise<number>;
+  removeAll(...args: any): Promise<void> | Promise<number>;
   createMany?(dtns: DTN[], ...args: any): Promise<T[]>;
   updateMany?(ds: T[], ...args: any): Promise<T[]>;
-  removeMany?(ids: number[], ...args: any): Promise<void>;
+  removeMany?(ids: number[], ...args: any): Promise<void> | Promise<number>;
 }
 
 /**
