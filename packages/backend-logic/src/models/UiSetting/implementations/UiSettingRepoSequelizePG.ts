@@ -43,7 +43,7 @@ export class UiSettingRepoSequelizePG implements IUiSettingRepo {
   }
 
   async update(uiSetting: UiSetting, transaction?: Transaction): Promise<UiSetting> {
-    const [ count, updated ] = await UiSettingPG.update({
+    const [ count, updated ] = await UiSettingPG.scope('all').update({
       value: uiSetting.value
     }, {
       where: {
@@ -64,10 +64,11 @@ export class UiSettingRepoSequelizePG implements IUiSettingRepo {
     return await Promise.all(uiSettings.map(uiSetting => this.update(uiSetting, transaction)));
   }
 
-  async remove(id: number, transaction?: Transaction): Promise<void> {
+  async remove(id: number, transaction?: Transaction): Promise<UiSetting> {
     const dbUiSetting = await UiSettingPG.scope('all').findByPk(id);
     if (!dbUiSetting) throw new DatabaseError(`No ui setting entry with this id ${id}`);
     await dbUiSetting.destroy({ transaction });
+    return UiSettingMapper.dbToDomain(dbUiSetting);
   }
 
   async removeAll(): Promise<void> {
