@@ -19,14 +19,17 @@ export const isFoodPictureDT = (obj: unknown): obj is FoodPictureDT =>
   }]);
 
 
-export type FoodPictureDTN = {
+export type FoodPictureDTNU = {
   foodId: number;
   pictureId: number;
   orderNumber: number;
 };
 
-export const isFoodPictureDTN = (obj: unknown): obj is FoodPictureDTN =>
+export const isFoodPictureDTNU = (obj: unknown): obj is FoodPictureDTNU =>
   isEntity(obj, [{
     properties: ['foodId', 'pictureId', 'orderNumber'],
     validator: isNumber
   }]);
+
+export const isFoodPictureDTNUMany = (obj: unknown): obj is FoodPictureDTNU[] =>
+  Array.isArray(obj) && obj.every(isFoodPictureDTNU);
