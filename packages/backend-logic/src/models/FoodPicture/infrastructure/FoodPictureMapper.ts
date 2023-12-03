@@ -35,11 +35,11 @@ export class FoodPictureMapper implements EntityDBMapper<FoodPicture, FoodPictur
   }
 
   public static domainToDT(domainFoodPicture: FoodPicture): FoodPictureDT {
-    const foodFoodPictureDT: FoodPictureDT = {
+    const foodPictureDT: FoodPictureDT = {
       picture: PictureMapper.domainToDT(domainFoodPicture.picture),
       orderNumber: domainFoodPicture.orderNumber
     };
-    return foodFoodPictureDT;
+    return foodPictureDT;
   }
 
   domainToDT(domainFoodPicture: FoodPicture): FoodPictureDT {
