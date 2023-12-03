@@ -90,7 +90,9 @@ export const initFoodTypeModel = (dbInstance: Sequelize) => {
               exclude: ['createdAt', 'updatedAt']
             }
           },
-          allWithTimestamps: {}
+          allWithTimestamps: {
+            include: includeLocStrings
+          }
         }
       });
 

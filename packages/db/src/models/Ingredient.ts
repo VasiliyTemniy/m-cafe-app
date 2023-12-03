@@ -108,7 +108,9 @@ export const initIngredientModel = async (dbInstance: Sequelize) => {
               exclude: ['createdAt', 'updatedAt']
             }
           },
-          allWithTimestamps: {}
+          allWithTimestamps: {
+            include: includeLocStrings
+          }
         }
       });
 
