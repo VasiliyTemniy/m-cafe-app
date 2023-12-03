@@ -7,6 +7,11 @@ import { LocStringRepoSequelizePG } from '../models/LocString';
 import { FoodTypeRepoSequelizePG, FoodTypeService } from '../models/FoodType';
 import { IngredientRepoSequelizePG, IngredientService } from '../models/Ingredient';
 import { logger } from '@m-cafe-app/utils';
+import { TransactionHandlerSequelizePG } from '../utils';
+import { FoodPictureRepoSequelizePG } from '../models/FoodPicture';
+import { PictureRepoSequelizePG, PictureService } from '../models/Picture';
+import multer from 'multer';
+import fs from 'fs';
 
 
 // No mocking, no unit testing for this package. Only integration tests ->
@@ -17,37 +22,72 @@ import { logger } from '@m-cafe-app/utils';
 describe('FoodComponentService implementation tests', () => {
 
   let foodComponentService: FoodComponentService;
+  let pictureService: PictureService;
   let foodService: FoodService;
   let foodTypeService: FoodTypeService;
   let ingredientService: IngredientService;
-  let locStringRepo: LocStringRepoSequelizePG;
 
   before(async () => {
     await dbHandler.pingDb();
-    locStringRepo = new LocStringRepoSequelizePG(
-      dbHandler
-    );
+
     foodComponentService = new FoodComponentService(
-      new FoodComponentRepoSequelizePG(
+      new FoodComponentRepoSequelizePG(),
+      new FoodRepoSequelizePG(),
+      new IngredientRepoSequelizePG(),
+      new TransactionHandlerSequelizePG(
+        dbHandler
+      )
+    );
+
+    const multerStorage = multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, '../../public/multerTemp');
+      },
+      filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + '.png');
+      }
+    });
+
+    pictureService = new PictureService(
+      new PictureRepoSequelizePG(),
+      new LocStringRepoSequelizePG(),
+      new TransactionHandlerSequelizePG(
         dbHandler
       ),
+      './test',
+      './test',
+      './testTemp',
+      multerStorage
+    ),
+    new TransactionHandlerSequelizePG(
+      dbHandler
     );
+
     foodService = new FoodService(
-      new FoodRepoSequelizePG(
-        dbHandler,
-        locStringRepo
+      new FoodRepoSequelizePG(),
+      new FoodTypeRepoSequelizePG(),
+      new LocStringRepoSequelizePG(),
+      new FoodPictureRepoSequelizePG(),
+      pictureService,
+      new TransactionHandlerSequelizePG(
+        dbHandler
       )
     );
+
     foodTypeService = new FoodTypeService(
-      new FoodTypeRepoSequelizePG(
-        dbHandler,
-        locStringRepo
+      new FoodTypeRepoSequelizePG(),
+      new LocStringRepoSequelizePG(),
+      new TransactionHandlerSequelizePG(
+        dbHandler
       )
     );
+
     ingredientService = new IngredientService(
-      new IngredientRepoSequelizePG(
-        dbHandler,
-        locStringRepo
+      new IngredientRepoSequelizePG(),
+      new LocStringRepoSequelizePG(),
+      new TransactionHandlerSequelizePG(
+        dbHandler
       )
     );
   });
@@ -57,6 +97,12 @@ describe('FoodComponentService implementation tests', () => {
     await foodService.removeAll();
     await foodTypeService.removeAll();
     await ingredientService.removeAll();
+  });
+
+  after(() => {
+    // Delete picture service test dirs
+    fs.rmSync('./test', { recursive: true });
+    fs.rmSync('./testTemp', { recursive: true });
   });
 
   it('should add new food component for existing food and return proper errors for missing food', async () => {
@@ -134,7 +180,7 @@ describe('FoodComponentService implementation tests', () => {
       }
       expect(err).to.exist;
       expect(err.name).to.equal('DatabaseError');
-      expect(err.message).to.equal(`No component entry with this id ${unexistingComponentId}`);
+      expect(err.message).to.equal(`No food entry with this id ${unexistingComponentId}`); // food entry because of compositeFood === true
     }
 
     let unexistingFoodId: number = 0;
