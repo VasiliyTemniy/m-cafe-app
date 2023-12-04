@@ -45,8 +45,8 @@ describe('UserService implementation tests', () => {
       )
     );
 
-    await userService.sessionService.connect();
-    await userService.sessionService.ping();
+    await userService.sessionService.connectInmem();
+    await userService.sessionService.pingInmem();
     await userService.authController.connect();
     await userService.authController.ping();
     await userService.authController.getPublicKey();
