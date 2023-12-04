@@ -10,7 +10,7 @@ import { initialUsers, newUserInfo } from './user_helper';
 import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
 import { User as UserPG } from '@m-cafe-app/db';
 import sha1 from 'sha1';
-import { AuthConnectionHandler } from '../models/Auth/infrastructure';
+import { AuthConnectionHandler } from '../models/Auth';
 import config, { redisSessionClient } from '../config';
 import { TransactionHandlerSequelizePG } from '../utils';
 
