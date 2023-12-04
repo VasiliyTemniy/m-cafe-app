@@ -1,22 +1,36 @@
-import config from './utils/config.js';
+import { PORT } from './utils/config.js';
 import app from './app.js';
 import http from 'http';
 import { logger } from '@m-cafe-app/utils';
-import { connectToDatabase } from '@m-cafe-app/db';
-import { connectToRedisSessionDB } from './redis/Session.js';
-import { initFixedLocs } from './utils/initFixedLocs.js';
-import { uiSettingController } from './controllers';
+import { dbHandler } from '@m-cafe-app/db';
+import { fixedLocService, sessionService, uiSettingService } from './controllers';
 import { userController } from './controllers';
 
 const start = async () => {
-  await connectToDatabase();
+  await dbHandler.connect();
+  await dbHandler.pingDb();
+  logger.info('connected to db');
+  await dbHandler.loadMigrations();
+  await dbHandler.runMigrations();
+  logger.info('ran migrations');
   await userController.service.initSuperAdmin();
-  await connectToRedisSessionDB();
-  await uiSettingController.service.initUiSettings();
-  await initFixedLocs();
+  logger.info('initialized super admin');
+  await uiSettingService.connectInmem();
+  await uiSettingService.pingInmem();
+  logger.info('connected to ui settings inmem');
+  await uiSettingService.initUiSettings();
+  logger.info('initialized ui settings');
+  await fixedLocService.connectInmem();
+  await fixedLocService.pingInmem();
+  logger.info('connected to fixed loc inmem');
+  await fixedLocService.initFixedLocs('locales', 'jsonc');
+  logger.info('initialized fixed locs');
+  await sessionService.connectInmem();
+  await sessionService.pingInmem();
+  logger.info('connected to sessions inmem');
   const server = http.createServer(app);
-  server.listen(config.PORT, () => {
-    logger.info(`Server running on port ${config.PORT}`);
+  server.listen(PORT, () => {
+    logger.info(`Server running on port ${PORT}`);
   });
 };
 
