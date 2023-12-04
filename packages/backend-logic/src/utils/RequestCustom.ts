@@ -1,6 +1,6 @@
 import type { Request } from 'express';
 import { checkProperties, hasOwnProperty, isNumber, isString } from '@m-cafe-app/utils';
-import { User } from '@m-cafe-app/db';
+import { User } from '@m-cafe-app/models';
 
 export interface RequestMiddle extends Request {
   userId?: number;
@@ -8,6 +8,7 @@ export interface RequestMiddle extends Request {
   user?: User;
   rights?: string;
   verifyOptional?: boolean;
+  userAgent?: string;
 }
 
 export interface RequestCustom extends Request {
