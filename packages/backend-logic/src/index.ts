@@ -16,3 +16,6 @@ export * from './models/Picture';
 export * from './models/Stock';
 export * from './models/DynamicModule';
 export * from './models/FoodPicture';
+export * from './middleware';
+export * from './config.js';
+export { default } from './config.js';
