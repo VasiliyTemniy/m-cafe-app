@@ -1,197 +1,26 @@
-import type { RequestMiddle } from '../types/RequestCustom.js';
-import type { RequestHandler, Request, Response, NextFunction } from 'express';
-import { logger } from '@m-cafe-app/utils';
-import jwt from 'jsonwebtoken';
-import config from './config.js';
-import { isCustomPayload } from '../types/JWTPayloadCustom.js';
 import {
-  ApplicationError,
-  AuthorizationError,
-  BannedError,
-  DatabaseError,
-  ProhibitedError,
-  RequestQueryError,
-  SessionError
-} from '@m-cafe-app/utils';
-import { User } from '@m-cafe-app/db';
-import { Session } from '../redis/Session.js';
-
-const requestLogger: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-  logger.info('Method:' + req.method);
-  logger.info('Path:  ' + req.path);
-  logger.info('Body:  ' + req.body);
-  logger.info('---');
-  next();
-};
-
-
-const setVerifyOptional: RequestHandler = (req: RequestMiddle, res: Response, next: NextFunction) => {
-  req.verifyOptional = true;
-  next();
-};
-
-
-const verifyToken: RequestHandler = (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  if (!req.cookies.token)
-    if (!req.verifyOptional) return next(new AuthorizationError('Authorization required'));
-    else return next();
-
-  const token = req.cookies.token as string;
-
-  req.token = token;
-
-  const payload = jwt.verify(token, config.SECRET);
-
-  if (typeof payload === 'string' || payload instanceof String || !isCustomPayload(payload))
-    return next(new AuthorizationError('Malformed token'));
-
-  req.userId = Number(payload.id);
-
-  next();
-};
-
-
-const userExtractor = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  const user = await User.scope('allWithTimestamps').findByPk(req.userId, { paranoid: false });
-
-  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
-  if (user.rights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
-  if (user.deletedAt) return next(new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin'));
-
-  req.user = user;
-
-  next();
-
-}) as RequestHandler;
-
-
-const userRightsExtractor = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  if (!req.token) {
-    req.rights = 'customer';
-    return next();
-  } 
-
-  const userRights = await Session.getUserRightsCache(req.token);
-  if (userRights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
-
-  req.rights = userRights
-    ? userRights
-    : 'customer';
-
-  next();
-
-}) as RequestHandler;
-
-
-const userCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  if (!req.token) return next(new ApplicationError('Wrong usage of a userCheck middleware in app code. Please, contact admins'));
-
-  const userRights = await Session.getUserRightsCache(req.token);
-  if (userRights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
-
-  next();
-
-}) as RequestHandler;
-
-
-const managerCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  if (!req.token) return next(new ApplicationError('Wrong usage of a managerCheck middleware in app code. Please, contact admins'));
-
-  const userRights = await Session.getUserRightsCache(req.token);
-  if (!(userRights === 'manager' || userRights === 'admin')) return next(new ProhibitedError('You have no manager permissions'));
-
-  next();
-
-}) as RequestHandler;
-
-
-const adminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  if (!req.token) return next(new ApplicationError('Wrong usage of a adminCheck middleware in app code. Please, contact admins'));
-
-  const userRights = await Session.getUserRightsCache(req.token);
-  if (userRights !== 'admin') return next(new ProhibitedError('You have no admin permissions'));
-
-  next();
-
-}) as RequestHandler;
-
-
-const superAdminCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  if (!req.token) return next(new ApplicationError('Wrong usage of a adminCheck middleware in app code. Please, contact admins'));
-
-  const userRights = await Session.getUserRightsCache(req.token);
-  if (userRights !== 'admin') return next(new ProhibitedError('You have no admin permissions'));
-
-  const user = await User.scope('all').findByPk(req.userId, { paranoid: false });
-  if (!user) return next(new DatabaseError(`No user entry with this id ${req.userId}`));
-
-  if (user.phonenumber !== config.SUPERADMIN_PHONENUMBER) return next(new ProhibitedError(`Please, call superadmin to resolve this problem ${config.SUPERADMIN_PHONENUMBER}`));
-
-  next();
-
-}) as RequestHandler;
-
-
-const sessionCheck = (async (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  if (!req.userId) return next(new ApplicationError('Wrong usage of a sessionCheck middleware in app code. Please, contact admins'));
-
-  const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
-
-  const session = await Session.findOne({
-    where: {
-      userId: req.userId,
-      userAgent
-    }
-  });
-
-  if (!session) return next(new SessionError('Inactive session. Please, login'));
-
-  next();
-
-}) as RequestHandler;
-
-
-const requestParamsCheck = (req: RequestMiddle, res: Response, next: NextFunction) => {
-
-  if (!req.params) return next();
-
-  for (const paramKey in req.params)
-    if (paramKey.toLowerCase().endsWith('id') && isNaN(Number(req.params[paramKey])))
-      return next(new RequestQueryError('Request params malformed'));
-
-  next();
-
-};
-
-
-const unknownEndpoint: RequestHandler = (req: Request, res: Response) => {
-  res.status(404).json({
-    error: {
-      name: 'UnknownEndpoint',
-      message: 'UnknownEndpoint'
-    }
-  });
-};
-
-export default {
-  requestLogger,
-  setVerifyOptional,
-  verifyToken,
-  userExtractor,
-  userRightsExtractor,
-  userCheck,
-  managerCheck,
-  adminCheck,
-  superAdminCheck,
-  sessionCheck,
-  requestParamsCheck,
-  unknownEndpoint
-};
+  AuthConnectionHandler,
+  AuthController,
+  AuthServiceInternal,
+  ControllerExpressHttpMiddleware,
+  SessionRepoRedis,
+  SessionService,
+  UserRepoSequelizePG
+} from '@m-cafe-app/backend-logic';
+import { redisSessionClient } from '@m-cafe-app/backend-logic/build/config';
+import config from '@m-cafe-app/backend-logic';
+
+
+export const middleware = new ControllerExpressHttpMiddleware(
+  new UserRepoSequelizePG(),
+  new SessionService(
+    new SessionRepoRedis(redisSessionClient)
+  ),
+  new AuthController(
+    new AuthConnectionHandler(
+      config.authUrl,
+      config.authGrpcCredentials
+    ),
+    new AuthServiceInternal()
+  )
+);
