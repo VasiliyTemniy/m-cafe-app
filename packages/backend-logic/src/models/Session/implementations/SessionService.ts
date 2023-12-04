@@ -61,16 +61,20 @@ export class SessionService implements ISessionService {
     }
   }
 
-  async connect(): Promise<void> {
+  async connectInmem(): Promise<void> {
     await this.repo.connect();
   }
 
-  async ping(): Promise<void> {
+  async pingInmem(): Promise<void> {
     await this.repo.ping();
   }
 
-  async close(): Promise<void> {
+  async closeInmem(): Promise<void> {
     await this.repo.close();
+  }
+
+  async flushInmem(): Promise<void> {
+    await this.repo.removeAll();
   }
 
   async cleanRepo(tokenValidator: (req: { token: string; }) => AuthResponse): Promise<void> {
