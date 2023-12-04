@@ -8,9 +8,6 @@ import { ApplicationError, AuthorizationError, BannedError, ProhibitedError, Req
 import config from '../../config';
 
 
-// Add list of prerequisites for each method to interface IControllerExpressHttpMiddleware!
-
-
 export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMiddleware {
   constructor (
     readonly userRepo: IUserRepo,
