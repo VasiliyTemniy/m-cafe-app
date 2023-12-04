@@ -1,5 +1,5 @@
 import config, { isDockerized } from './utils/config.js';
-import express from 'express';
+import express, { type ErrorRequestHandler } from 'express';
 import 'express-async-errors';
 const app = express();
 import cors from 'cors';
@@ -16,10 +16,10 @@ import pictureRouter from './routes/picture.js';
 import dynamicModuleRouter from './routes/dynamicModule.js';
 import uiSettingRouter from './routes/uiSetting.js';
 import fixedLocRouter from './routes/fixedLoc.js';
-import middleware from './utils/middleware.js';
+import { middleware } from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
-import { connectToRedisSessionDB } from './redis/Session.js';
+// import { connectToRedisSessionDB } from './redis/Session.js';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
@@ -40,7 +40,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-app.use(middleware.requestLogger);
+app.use(middleware.requestLogger.bind(middleware));
 
 app.use('/session', sessionRouter);
 app.use('/user', userRouter);
@@ -62,14 +62,11 @@ const initTestingHelper = async () => {
     const testingRouter = await import('./routes/testing.js');
     app.use('/testing', testingRouter.default);
   }
-  if (process.env.NODE_ENV === 'test') {
-    await connectToRedisSessionDB();
-  }
 };
 
 await initTestingHelper();
 
-app.use(errorHandler);
-app.use(middleware.unknownEndpoint);
+app.use(errorHandler.handleError.bind(errorHandler) as ErrorRequestHandler);
+app.use(middleware.unknownEndpoint.bind(middleware));
 
 export default app;
