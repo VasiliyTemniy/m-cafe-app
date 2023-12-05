@@ -14,7 +14,7 @@ export class FoodType extends Model<InferAttributes<FoodType>, InferCreationAttr
   declare updatedAt: CreationOptional<Date>;
   declare nameLoc?: NonAttribute<LocString>;
   declare descriptionLoc?: NonAttribute<LocString>;
-  declare foodTypeFoods?: NonAttribute<Food>[];
+  declare foods?: NonAttribute<Food>[];
 }
 
 
@@ -78,20 +78,12 @@ export const initFoodTypeModel = (dbInstance: Sequelize) => {
           },
           include: includeLocStrings
         },
+        // See initFoodTypeScopes.ts for more
         scopes: {
-          all: {
-            attributes: {
-              exclude: ['createdAt', 'updatedAt']
-            },
-            include: includeLocStrings
-          },
           raw: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
             }
-          },
-          allWithTimestamps: {
-            include: includeLocStrings
           }
         }
       });

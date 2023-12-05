@@ -161,7 +161,7 @@ export const initModelAssociations = async () => {
 
       FoodType.hasMany(Food, {
         foreignKey: 'foodTypeId',
-        as: 'foodTypeFoods'
+        as: 'foods'
       });
       Food.belongsTo(FoodType, {
         foreignKey: 'foodTypeId',
