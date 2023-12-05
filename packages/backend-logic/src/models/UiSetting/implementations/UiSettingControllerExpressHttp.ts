@@ -1,9 +1,9 @@
 import type { IUiSettingControllerHttp, IUiSettingService } from '../interfaces';
 import type { Request, Response } from 'express';
-import type { RequestWithUserRights } from '../../../utils';
 import type { UiSettingDT, UiSettingDTS } from '@m-cafe-app/models';
+import { isRequestWithUserRights } from '../../../utils';
 import { isUiSettingDTMany, isUiSettingDTN } from '@m-cafe-app/models';
-import { ApplicationError, RequestBodyError, isString } from '@m-cafe-app/utils';
+import { ApplicationError, RequestBodyError, UnknownError, isString } from '@m-cafe-app/utils';
 
 
 export class UiSettingControllerExpressHttp implements IUiSettingControllerHttp {
@@ -19,7 +19,9 @@ export class UiSettingControllerExpressHttp implements IUiSettingControllerHttp 
     res.status(200).json(uiSetting);
   }
 
-  async getByScope(req: RequestWithUserRights, res: Response): Promise<void> {
+  async getByScope(req: Request, res: Response): Promise<void> {
+    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+
     if (req.rights === 'admin') {
       let scope = 'all';
 
