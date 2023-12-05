@@ -7,11 +7,13 @@ export interface IUserController extends ICRUDController {
   getSome(...args: any): Promise<void>;
   administrate(...args: any): Promise<void>;
   login(...args: any): Promise<void>;
+  refreshToken(...args: any): Promise<void>;
   logout(...args: any): Promise<void>;
   createAddress(...args: any): Promise<void>;
   updateAddress(...args: any): Promise<void>;
   removeAddress(...args: any): Promise<void>;
   getWithAddress(...args: any): Promise<void>;
+  getSelfWithAssociations(...args: any): Promise<void>;
 }
 
 export interface IUserControllerHttp extends ICRUDControllerHttp {
@@ -19,9 +21,11 @@ export interface IUserControllerHttp extends ICRUDControllerHttp {
   getSome(req: Request, res: Response): Promise<void>;
   administrate(req: Request, res: Response): Promise<void>;
   login(req: Request, res: Response): Promise<void>;
+  refreshToken(req: Request, res: Response): Promise<void>;
   logout(req: Request, res: Response): Promise<void>;
   createAddress(req: Request, res: Response): Promise<void>;
   updateAddress(req: Request, res: Response): Promise<void>;
   removeAddress(req: Request, res: Response): Promise<void>;
   getWithAddress(req: Request, res: Response): Promise<void>;
+  getSelfWithAssociations(req: Request, res: Response): Promise<void>;
 } 

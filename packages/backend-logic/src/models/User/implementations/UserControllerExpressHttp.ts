@@ -2,7 +2,7 @@ import type { IUserControllerHttp, IUserService } from '../interfaces';
 import type { Request, Response } from 'express';
 import type { AddressDT, UserDT } from '@m-cafe-app/models';
 import type { RequestWithUserRights } from '../../../utils';
-import { isRequestCustom, isRequestWithUser } from '../../../utils';
+import { isRequestCustom } from '../../../utils';
 import { isAddressDT, isAddressDTN, isAdministrateUserBody, isUserDTN, isUserDTU, isUserLoginDT } from '@m-cafe-app/models';
 import { HackError, RequestBodyError, RequestQueryError, UnknownError, hasOwnProperty, isNumber } from '@m-cafe-app/utils';
 import config from '../../../config';
@@ -79,19 +79,15 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
   }
 
   async update(req: Request, res: Response) {
-    if (!isUserDTU(req.body))
-      throw new RequestBodyError('Invalid edit user request body');
-
-    // CHANGE THIS TO AUTH CHECK AFTER AUTH MODULE IS FINISHED
-    if (!isRequestWithUser(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
-    if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
+    if (!isUserDTU(req.body)) throw new RequestBodyError('Invalid edit user request body');
 
     const { username, name, password, phonenumber, email, birthdate, newPassword } = req.body;
 
     const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
     const { user: updatedUser, auth } = await this.service.update({
-      id: Number(req.params.id),
+      id: req.userId,
       username,
       name,
       phonenumber,
@@ -137,6 +133,21 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
         expires: new Date(Date.now() + config.cookieExpiracyMS)
       })
       .status(200).json(resBody);
+  }
+
+  async refreshToken(req: Request, res: Response): Promise<void> {
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+
+    const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
+
+    const auth = await this.service.refreshToken(req.token, userAgent);
+
+    res
+      .cookie('token', auth.token, {
+        ...config.sessionCookieOptions,
+        expires: new Date(Date.now() + config.cookieExpiracyMS)
+      })
+      .status(200).end();
   }
 
   async logout(req: Request, res: Response): Promise<void> {
@@ -212,6 +223,24 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
     if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
 
     const user: UserDT = await this.service.getWithAddress(Number(req.userId));
+    res.status(200).json(user);
+  }
+
+  async getSelfWithAssociations(req: Request, res: Response): Promise<void> {
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+
+    let withAddresses: boolean = false;
+
+    if (req.query.withAddresses === 'true') {
+      withAddresses = true;
+    }
+
+    if (withAddresses) {
+      const user: UserDT = await this.service.getWithAddress(Number(req.userId));
+      res.status(200).json(user);
+    }
+
+    const user: UserDT = await this.service.getById(Number(req.userId));
     res.status(200).json(user);
   }
 }
