@@ -26,6 +26,17 @@ export class SessionService implements ISessionService {
     return await this.repo.update(new Session(userId, token, userAgentHash, rights));
   }
 
+  async refresh(userId: number, token: string, userAgent: string): Promise<Session> {
+    const userAgentHash = sha1(userAgent);
+
+    const userSession = await this.repo.getOne(userId, userAgentHash);
+    if (!userSession) {
+      throw new ApplicationError('User session not found. Please, login again');
+    }
+
+    return await this.repo.update(new Session(userId, token, userAgentHash, userSession.rights));
+  }
+
   async updateAllByUserId(userId: number, rights: string): Promise<Session[]> {
     const userSessions = await this.getAllByUserId(userId);
     const newSessions: Session[] = [];

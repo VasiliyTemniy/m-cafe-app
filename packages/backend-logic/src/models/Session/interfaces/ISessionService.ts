@@ -16,7 +16,14 @@ export interface ISessionService extends
   getAllByUserId(userId: number): Promise<Session[]>;
   getOne(userId: number, userAgent: string): Promise<Session | undefined>;
   create(userId: number, token: string, userAgent: string, rights: string): Promise<Session>;
+  /**
+   * Used to update user's rights based on session
+   */
   update(userId: number, token: string, userAgent: string, rights: string): Promise<Session>;
+  /**
+   * Used to update token preserving other data
+   */
+  refresh(userId: number, token: string, userAgent: string): Promise<Session>;
   remove(options: DestroySessionWhere): Promise<void>;
   updateAllByUserId(userId: number, rights: string): Promise<Session[]>;
   cleanRepo(tokenValidator: (req: { token: string }) => AuthResponse): Promise<void>;
