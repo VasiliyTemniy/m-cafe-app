@@ -186,6 +186,22 @@ export class UserService implements IUserService {
     };
   }
 
+  async refreshToken(token: string, userAgent: string): Promise<AuthResponse> {
+
+    const auth = await this.authController.refreshToken({
+      token,
+      ttl: config.TOKEN_TTL
+    });
+
+    if (!auth.token || auth.error || !auth.id) {
+      throw new AuthServiceError(auth.error);
+    }
+
+    await this.sessionService.refresh(auth.id, auth.token, userAgent);
+
+    return auth;
+  }
+
   async logout(id: number, userAgent: string): Promise<void> {
     await this.sessionService.remove({ where: { userId: id, userAgent } });
   }

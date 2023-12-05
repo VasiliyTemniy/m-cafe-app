@@ -21,6 +21,7 @@ export interface IUserService extends Omit<ICRUDService<UserDT, UserDTN>, 'creat
     credential: UserUniqueProperties,
     userAgent: string
   ): Promise<{ user: UserDT, auth: AuthResponse }>;
+  refreshToken(token: string, userAgent: string): Promise<AuthResponse>;
   logout(id: number, userAgent: string): Promise<void>;
   administrate(id: number, body: AdministrateUserBody): Promise<UserDT>;
   remove(id: number): Promise<UserDT>;
