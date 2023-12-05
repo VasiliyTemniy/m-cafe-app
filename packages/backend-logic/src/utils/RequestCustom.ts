@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import { checkProperties, hasOwnProperty, isNumber, isString } from '@m-cafe-app/utils';
+import { checkProperties, isNumber, isString } from '@m-cafe-app/utils';
 import { User } from '@m-cafe-app/models';
 
 export interface RequestMiddle extends Request {
@@ -32,21 +32,6 @@ export const isRequestCustom = (req: Request): req is RequestCustom => {
 
   return true;
 };
-
-interface RequestWithUserFields extends RequestCustom {
-  user: unknown;
-}
-
-export interface RequestWithUser extends RequestCustom {
-  user: User;
-}
-
-export const hasRequestWithUserFields = (req: Request): req is RequestWithUserFields =>
-  hasOwnProperty(req, 'userId') && hasOwnProperty(req, 'token') && hasOwnProperty(req, 'user');
-
-export const isRequestWithUser = (req: Request): req is RequestWithUser =>
-  hasRequestWithUserFields(req) && isNumber(req.userId) && isString(req.token) && req.user instanceof User;
-
 
 export interface RequestWithUserRights extends Request {
   rights: string;
