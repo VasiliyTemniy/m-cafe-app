@@ -8,8 +8,13 @@ import { DatabaseError } from '@m-cafe-app/utils';
 
 export class FoodTypeRepoSequelizePG implements IFoodTypeRepo {
 
-  async getAll(): Promise<FoodType[]> {
-    const dbFoodTypes = await FoodTypePG.scope('all').findAll();
+  async getAll(withFoodOnly: boolean): Promise<FoodType[]> {
+
+    const scope = withFoodOnly
+      ? 'allWithFood'
+      : 'all';
+
+    const dbFoodTypes = await FoodTypePG.scope(scope).findAll();
     return dbFoodTypes.map(foodType => FoodTypeMapper.dbToDomain(foodType));
   }
 
@@ -39,25 +44,6 @@ export class FoodTypeRepoSequelizePG implements IFoodTypeRepo {
       descriptionLoc
     );
   }
-
-  // async update(updFoodType: FoodType): Promise<FoodType> {
-
-  //     const dbFoodType = await FoodTypePG.scope('raw').findByPk(updFoodType.id);
-  //     if (!dbFoodType) {
-  //       await t.rollback();
-  //       throw new DatabaseError(`No food type entry with this id ${updFoodType.id}`);
-  //     }
-  
-  //       const updatedNameLoc = await this.locStringRepo.update(updFoodType.nameLoc, t);
-  //       const updatedDescriptionLoc = await this.locStringRepo.update(updFoodType.descriptionLoc, t);
-  
-  //       return new FoodType(
-  //         updFoodType.id,
-  //         updatedNameLoc,
-  //         updatedDescriptionLoc,
-  //       );
-
-  // }
 
   async remove(id: number, transaction?: Transaction): Promise<void> {
     const dbFoodType = await FoodTypePG.scope('raw').findByPk(id);

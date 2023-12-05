@@ -8,7 +8,14 @@ export class FoodTypeControllerExpressHttp implements IFoodTypeControllerHttp {
   constructor( readonly service: IFoodTypeService ) {}
 
   async getAll(req: Request, res: Response): Promise<void> {
-    const foodTypes: FoodTypeDT[] = await this.service.getAll();
+
+    let withFoodOnly = false;
+
+    if (req.query.withfoodonly) {
+      withFoodOnly = req.query.withfoodonly === 'true';
+    }
+
+    const foodTypes: FoodTypeDT[] = await this.service.getAll(withFoodOnly);
     res.status(200).json(foodTypes);
   }
 

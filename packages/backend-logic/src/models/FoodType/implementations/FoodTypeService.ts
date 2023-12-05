@@ -13,8 +13,8 @@ export class FoodTypeService implements IFoodTypeService {
     readonly transactionHandler: ITransactionHandler
   ) {}
 
-  async getAll(): Promise<FoodTypeDT[]> {
-    const foodTypes = await this.foodTypeRepo.getAll();
+  async getAll(withFoodOnly: boolean): Promise<FoodTypeDT[]> {
+    const foodTypes = await this.foodTypeRepo.getAll(withFoodOnly);
 
     return foodTypes.map(foodType => FoodTypeMapper.domainToDT(foodType));
   }
