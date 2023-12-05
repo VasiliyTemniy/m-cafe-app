@@ -1,9 +1,9 @@
 import type { IFixedLocControllerHttp, IFixedLocService } from '../interfaces';
 import type { Request, Response } from 'express';
-import type { RequestWithUserRights } from '../../../utils';
 import type { FixedLocDT, FixedLocDTS } from '@m-cafe-app/models';
+import { isRequestWithUserRights } from '../../../utils';
 import { isFixedLocDT, isFixedLocDTMany } from '@m-cafe-app/models';
-import { ApplicationError, RequestBodyError, isString } from '@m-cafe-app/utils';
+import { ApplicationError, RequestBodyError, UnknownError, isString } from '@m-cafe-app/utils';
 
 
 export class FixedLocControllerExpressHttp implements IFixedLocControllerHttp {
@@ -19,7 +19,9 @@ export class FixedLocControllerExpressHttp implements IFixedLocControllerHttp {
     res.status(200).json(fixedLoc);
   }
 
-  async getByScope(req: RequestWithUserRights, res: Response): Promise<void> {
+  async getByScope(req: Request, res: Response): Promise<void> {
+    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+
     if (req.rights === 'admin') {
       let scope = 'all';
 
