@@ -28,7 +28,8 @@ import {
   initUserScopes,
   initFacilityScopes,
   initFoodScopes,
-  initOrderScopes
+  initOrderScopes,
+  initFoodTypeScopes
 } from '../../models';
 
 
@@ -193,6 +194,7 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await initUserScopes();
     await initFacilityScopes();
     await initFoodScopes();
+    await initFoodTypeScopes();
     await initOrderScopes();
   }
 }
