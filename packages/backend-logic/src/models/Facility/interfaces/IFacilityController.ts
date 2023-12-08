@@ -3,6 +3,8 @@ import type { ICRUDController, ICRUDControllerHttp } from '../../../utils';
 import type { Request, Response } from 'express';
 
 export interface IFacilityController extends ICRUDController {
+  getAllWithAssociations(...args: any): Promise<any>;
+  getByIdWithAssociations(...args: any): Promise<any>;
   createStock(...args: any): Promise<any>;
   createManyStocks(...args: any): Promise<any>;
   updateStock(...args: any): Promise<any>;
@@ -14,6 +16,8 @@ export interface IFacilityController extends ICRUDController {
 }
 
 export interface IFacilityControllerHttp extends ICRUDControllerHttp {
+  getAllWithAssociations(req: Request, res: Response): Promise<void>;
+  getByIdWithAssociations(req: Request, res: Response): Promise<void>;
   createStock(req: Request, res: Response): Promise<void>;
   createManyStocks(req: Request, res: Response): Promise<void>;
   updateStock(req: Request, res: Response): Promise<void>;
