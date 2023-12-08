@@ -11,8 +11,8 @@ export class AddressMapper implements
   public static dbToDomain(dbAddress: AddressPG): Address {
     const domainAddress = new Address(
       dbAddress.id,
-      dbAddress.street,
       dbAddress.city,
+      dbAddress.street,
       dbAddress.house,
       dbAddress.entrance,
       dbAddress.floor,
@@ -34,8 +34,8 @@ export class AddressMapper implements
   public static dtToDomain(addressDT: AddressDT): Address {
     const domainAddress = new Address(
       addressDT.id,
-      addressDT.street,
       addressDT.city,
+      addressDT.street,
       addressDT.house,
       addressDT.entrance,
       addressDT.floor,
@@ -58,8 +58,8 @@ export class AddressMapper implements
   public static domainToDT(domainAddress: Address): AddressDT {
     const addressDT: AddressDT = {
       id: domainAddress.id,
-      street: domainAddress.street,
       city: domainAddress.city,
+      street: domainAddress.street,
       house: domainAddress.house,
       entrance: domainAddress.entrance,
       floor: domainAddress.floor,
