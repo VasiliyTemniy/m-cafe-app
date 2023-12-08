@@ -10,12 +10,18 @@ import {
   isStockDTMany,
   isManageManagersBody
 } from '@m-cafe-app/models';
-import { RequestBodyError, isNumber } from '@m-cafe-app/utils';
+import { ProhibitedError, RequestBodyError, UnknownError, isNumber } from '@m-cafe-app/utils';
+import { isRequestCustom } from '../../../utils';
 
 export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
   constructor( readonly service: IFacilityService ) {}
 
   async getAll(req: Request, res: Response): Promise<void> {
+    const facilities = await this.service.getAll();
+    res.status(200).json(facilities);
+  }
+
+  async getAllWithAssociations(req: Request, res: Response): Promise<void> {
     if (!req.query.include) {
       const facilities = await this.service.getAll();
       res.status(200).json(facilities);
@@ -38,6 +44,11 @@ export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
   }
 
   async getById(req: Request, res: Response): Promise<void> {
+    const facility: FacilityDT = await this.service.getById(Number(req.params.id));
+    res.status(200).json(facility);
+  }
+
+  async getByIdWithAssociations(req: Request, res: Response): Promise<void> {
     if (!req.query.include) {
       const facility: FacilityDT = await this.service.getById(Number(req.params.id));
       res.status(200).json(facility);
@@ -103,12 +114,19 @@ export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
   async createStock(req: Request, res: Response): Promise<void> {
     if (!isStockDTN(req.body))
       throw new RequestBodyError('Invalid create new stock request body');
+    if (!isRequestCustom(req))
+      throw new UnknownError('This code should never be reached - check verifyToken and userRightsExtractor middleware');
 
     const { ingredientId, facilityId, quantity } = req.body;
 
-    // Do I need to check this?..
-    // if (facilityId !== req.params.id)
-    //   throw new RequestBodyError('Invalid facility id in stock request body');
+    // Customers must be already filtered by managerCheck middleware
+    // If stocks are managed by manager, check if user is a manager of the facility he tries to update stocks of
+    if (req.rights === 'manager') {
+      const isFacilityManager = await this.service.checkFacilityManager(req.userId, facilityId);
+      if (!isFacilityManager) {
+        throw new UnknownError('This code should never be reached - check verifyToken and userRightsExtractor middleware');
+      }
+    }
 
     const stock: StockDT = await this.service.createStock({
       ingredientId,
@@ -122,6 +140,26 @@ export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
   async createManyStocks(req: Request, res: Response): Promise<void> {
     if (!isStockDTNMany(req.body))
       throw new RequestBodyError('Invalid create many new stocks request body');
+    if (!isRequestCustom(req))
+      throw new UnknownError('This code should never be reached - check verifyToken and userRightsExtractor middleware');
+
+    // Customers must be already filtered by managerCheck middleware
+    // If stocks are managed by manager, check if user is a manager of the facility he tries to update stocks of
+    if (req.rights === 'manager') {
+      const facilityIds: number[] = [];
+
+      for (const stock of req.body) {
+        if (!facilityIds.includes(stock.facilityId))
+          facilityIds.push(stock.facilityId);
+      }
+
+      for (const facilityId of facilityIds) {
+        const isFacilityManager = await this.service.checkFacilityManager(req.userId, facilityId);
+        if (!isFacilityManager) {
+          throw new ProhibitedError('You are not a manager of this facility');
+        }
+      }
+    }
 
     const stocks: StockDT[] = await this.service.createManyStocks(req.body);
 
@@ -131,8 +169,19 @@ export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
   async updateStock(req: Request, res: Response): Promise<void> {
     if (!isStockDT(req.body))
       throw new RequestBodyError('Invalid edit stock request body');
+    if (!isRequestCustom(req))
+      throw new UnknownError('This code should never be reached - check verifyToken and userRightsExtractor middleware');
 
     const { id, ingredientId, facilityId, quantity } = req.body;
+
+    // Customers must be already filtered by managerCheck middleware
+    // If stocks are managed by manager, check if user is a manager of the facility he tries to update stocks of
+    if (req.rights === 'manager') {
+      const isFacilityManager = await this.service.checkFacilityManager(req.userId, facilityId);
+      if (!isFacilityManager) {
+        throw new UnknownError('This code should never be reached - check verifyToken and userRightsExtractor middleware');
+      }
+    }
 
     const updatedStock: StockDT = await this.service.updateStock({
       id,
@@ -147,6 +196,26 @@ export class FacilityControllerExpressHttp implements IFacilityControllerHttp {
   async updateManyStocks(req: Request, res: Response): Promise<void> {
     if (!isStockDTMany(req.body))
       throw new RequestBodyError('Invalid many edit stock request body');
+    if (!isRequestCustom(req))
+      throw new UnknownError('This code should never be reached - check verifyToken and userRightsExtractor middleware');
+
+    // Customers must be already filtered by managerCheck middleware
+    // If stocks are managed by manager, check if user is a manager of the facility he tries to update stocks of
+    if (req.rights === 'manager') {
+      const facilityIds: number[] = [];
+
+      for (const stock of req.body) {
+        if (!facilityIds.includes(stock.facilityId))
+          facilityIds.push(stock.facilityId);
+      }
+
+      for (const facilityId of facilityIds) {
+        const isFacilityManager = await this.service.checkFacilityManager(req.userId, facilityId);
+        if (!isFacilityManager) {
+          throw new ProhibitedError('You are not a manager of this facility');
+        }
+      }
+    }
 
     const updatedStocks = await this.service.updateManyStocks(req.body);
 
