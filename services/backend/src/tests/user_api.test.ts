@@ -1,10 +1,5 @@
 import type { Response } from 'supertest';
-import type {
-  EditUserBody,
-  NewAddressBody,
-  NewUserBody
-} from '@m-cafe-app/utils';
-import type { AddressData } from '@m-cafe-app/db';
+import type { Address, AddressDTN, UserDT, UserDTN, UserDTU } from '@m-cafe-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -20,16 +15,10 @@ import {
   validUserInDB,
   validNewUser,
   validAddresses,
-  initialUsersPassword
+  createInitialUsers,
+  createUser
 } from './user_api_helper';
-import { User } from '@m-cafe-app/db';
-import { Session } from '../redis/Session';
 import { ValidationError } from 'sequelize';
-import {
-  connectToDatabase,
-  Address,
-  UserAddress
-} from '@m-cafe-app/db';
 import {
   dateRegExp,
   emailRegExp,
@@ -48,22 +37,24 @@ import {
   usernameRegExp
 } from '@m-cafe-app/shared-constants';
 import { initLogin, userAgent } from './sessions_api_helper';
+import { sessionService, userService } from '../controllers';
+import { redisSessionClient } from '@m-cafe-app/backend-logic';
 
 
 
-await connectToDatabase();
 const api = supertest(app);
 
 
 describe('User POST request tests', () => {
 
   beforeEach(async () => {
-    await User.scope('all').destroy({ force: true, where: {} });
-    await User.bulkCreate(initialUsers);
+    await userService.authController.flushExternalDB();
+    await userService.removeAll();
+    await createInitialUsers();
   });
 
   it('A valid user can be added ', async () => {
-    const newUser: NewUserBody = {
+    const newUser: UserDTN = {
       username: 'Ordan',
       name: 'Dmitry Dornichev',
       password: 'iwannabeahero',
@@ -82,10 +73,10 @@ describe('User POST request tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length + 2);
 
-    const userCheck = await User.findOne({ where: { username: validNewUser.username as string } });
+    const userCheck = await userService.userRepo.getByUniqueProperties({ username: validNewUser.username });
     expect(userCheck).to.exist;
     if (!userCheck) return;
 
@@ -114,13 +105,13 @@ describe('User POST request tests', () => {
     expect(response.body.error.name).to.equal('RequestBodyError');
     expect(response.body.error.message).to.equal('Invalid new user request body');
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
 
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length);
   });
 
   it('User with only password and phonenumber is added', async () => {
-    const newUser: NewUserBody = {
+    const newUser: UserDTN = {
       password: 'iwannabeahero',
       phonenumber: '89354652235'
     };
@@ -131,7 +122,7 @@ describe('User POST request tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length + 1);
 
     const phonenumbers = usersAtEnd.map(user => user.phonenumber);
@@ -141,7 +132,7 @@ describe('User POST request tests', () => {
   });
 
   it('Username must be unique, if not - new user is not added', async () => {
-    const newUser: NewUserBody = {
+    const newUser: UserDTN = {
       username: 'StevieDoesntKnow', // already in initialUsers
       name: 'Dmitry Dornichev',
       password: 'iwannabeahero',
@@ -158,13 +149,13 @@ describe('User POST request tests', () => {
 
     expect(response.body.error.originalError).to.exist;
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
 
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length);
   });
 
   it('Phonenumber must be unique, if not - new user is not added', async () => {
-    const newUser: NewUserBody = {
+    const newUser: UserDTN = {
       username: 'Ordan',
       name: 'Dmitry Dornichev',
       password: 'iwannabeahero',
@@ -181,13 +172,13 @@ describe('User POST request tests', () => {
 
     expect(response.body.error.originalError).to.exist;
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
 
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length);
   });
 
   it('Email must be unique, if not - new user is not added', async () => {
-    const newUser: NewUserBody = {
+    const newUser: UserDTN = {
       username: 'Ordan',
       name: 'Dmitry Dornichev',
       password: 'iwannabeahero',
@@ -205,14 +196,14 @@ describe('User POST request tests', () => {
 
     expect(response.body.error.originalError).to.exist;
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
 
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length);
   });
 
   it('DB Validation checks for user work - incorrect user data fails', async () => {
 
-    const newUserFail1: NewUserBody = {
+    const newUserFail1: UserDTN = {
       username: 'Or', // len < 3
       name: 'Dm', // len < 3
       password: 'iwannabeahero',
@@ -244,7 +235,7 @@ describe('User POST request tests', () => {
       'Validation isDate on birthdate failed'
     ]);
 
-    const newUserFail2: NewUserBody = {
+    const newUserFail2: UserDTN = {
       username: 'Василий', // Russian letters in username regex
       name: '_Dmitry', // Starts with _ regex
       password: 'iwannabeahero',
@@ -273,7 +264,7 @@ describe('User POST request tests', () => {
       'Validation isDate on birthdate failed'
     ]);
 
-    const newUserFail3: NewUserBody = {
+    const newUserFail3: UserDTN = {
       username: '_Vasiliy', // Starts with _ regex
       name: 'Василий_', // Ends with _, though russian letters welcome regex
       password: 'iwannabeahero',
@@ -304,14 +295,14 @@ describe('User POST request tests', () => {
       'Validation isDate on birthdate failed'
     ]);
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
 
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length);
 
   });
 
   it('Password length must be in range specified in constants.ts', async () => {
-    const newUser: NewUserBody = {
+    const newUser: UserDTN = {
       username: 'Petro',
       name: 'Vasilenko Pyotr Ivanovich',
       password: 'iwbah',
@@ -328,7 +319,7 @@ describe('User POST request tests', () => {
     expect(response.body.error.name).to.equal('PasswordLengthError');
     expect(response.body.error.message).to.equal(`Password must be longer than ${minPasswordLen} and shorter than ${maxPasswordLen} symbols`);
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
 
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length);
 
@@ -338,14 +329,14 @@ describe('User POST request tests', () => {
 
     let added: number = 0;
 
-    const usersInDb = await User.findAll({});
+    const usersInDb = await userService.getAll();
 
     const usernamesSet = new Set([...usersInDb.map(user => user.username)]);
     const phonenumbersSet = new Set([...usersInDb.map(user => user.phonenumber)]);
     const emailsSet = new Set([...usersInDb.map(user => user.email)]);
 
     for (let i = 0; i < 10; i++) {
-      const newUser: NewUserBody = {
+      const newUser: UserDTN = {
         username: genCorrectUsername(minUsernameLen, maxUsernameLen),
         name: genCorrectName(minNameLen, maxNameLen),
         password: 'iwannabeahero',
@@ -387,7 +378,7 @@ describe('User POST request tests', () => {
       }
     }
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
 
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length + added);
 
@@ -405,7 +396,7 @@ describe('User POST request tests', () => {
         birthdate: genIncorrectString('birthdate', dateRegExp, 1, 52, true),
       };
 
-      const newUserIncorrect: NewUserBody = {
+      const newUserIncorrect: UserDTN = {
         username: newIncorrectGen.username.result,
         name: newIncorrectGen.name.result,
         password: newIncorrectGen.password,
@@ -439,7 +430,7 @@ describe('User POST request tests', () => {
 
     }
 
-    const usersAtEnd = await User.findAll({});
+    const usersAtEnd = await userService.getAll();
 
     expect(usersAtEnd).to.have.lengthOf(initialUsers.length);
 
@@ -450,26 +441,30 @@ describe('User POST request tests', () => {
 
 describe('User PUT request tests', () => {
 
-  let validUserInDBID: number;
+  let validUser: UserDT;
+  let createdUsers: UserDT[];
 
   before(async () => {
-    await User.scope('all').destroy({ force: true, where: {} });
-    await User.bulkCreate(initialUsers);
+    await userService.authController.flushExternalDB();
+    await userService.removeAll();
+    createdUsers = await createInitialUsers();
   });
 
   beforeEach(async () => {
-    await Session.destroy({ where: {} });
-    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
-    const user = await User.create(validUserInDB.dbEntry);
-
-    validUserInDBID = user.id;
+    if (validUser) {
+      await userService.remove(validUser.id);
+      await userService.userRepo.deleteForTest(validUser.id);
+    }
+    await redisSessionClient.flushDb();
+    validUser = await createUser(validUserInDB.dtn);
   });
 
   it('A valid request to change user credentials succeds, needs original password', async () => {
 
-    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
 
-    const updateUserData: EditUserBody = {
+    const updateUserData: UserDTU = {
+      id: validUser.id,
       username: 'Ordan',
       name: 'Dmitry Dornichev',
       password: validUserInDB.password,
@@ -480,14 +475,14 @@ describe('User PUT request tests', () => {
     };
 
     await api
-      .put(`${apiBaseUrl}/user/${validUserInDBID}`)
+      .put(`${apiBaseUrl}/user/${validUser.id}`)
       .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const updatedUserInDB = await User.findOne({ where: { id: validUserInDBID } });
+    const updatedUserInDB = await userService.getById(validUser.id);
 
     if (!updatedUserInDB) return expect(true).to.equal(false);
 
@@ -495,17 +490,18 @@ describe('User PUT request tests', () => {
     expect(updatedUserInDB.name).to.equal(updateUserData.name);
     expect(updatedUserInDB.phonenumber).to.equal(updateUserData.phonenumber);
     expect(updatedUserInDB.email).to.equal(updateUserData.email);
-    expect(updatedUserInDB.birthdate?.toISOString()).to.equal(updateUserData.birthdate);
+    expect(updatedUserInDB.birthdate).to.equal(updateUserData.birthdate);
 
-    expect(updatedUserInDB.passwordHash).not.to.equal(validUserInDB.dbEntry.passwordHash);
-
+    // Check that password was changed
+    await initLogin(updateUserData, updateUserData.newPassword!, api, 201, userAgent) as string;
   });
 
   it('Request to change another user`s data fails', async () => {
 
-    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
 
-    const updateUserData: EditUserBody = {
+    const updateUserData: UserDTU = {
+      id: validUser.id,
       username: 'Ordan',
       name: 'Dmitry Dornichev',
       password: validUserInDB.password,
@@ -527,7 +523,7 @@ describe('User PUT request tests', () => {
     expect(responseNonExisting.body.error.message).to.equal('User attempts to change another users data or invalid user id');
 
     const responseAnotherUser = await api
-      .put(`${apiBaseUrl}/user/1`) // InitialUsers[0] ? should be
+      .put(`${apiBaseUrl}/user/${createdUsers[0].id}`)
       .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
@@ -541,9 +537,10 @@ describe('User PUT request tests', () => {
 
   it('Request without password fails', async () => {
 
-    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
 
     const updateUserData = {
+      id: validUser.id,
       username: 'Ordan',
       name: 'Dmitry Dornichev',
       newPassword: 'iwannabeaREALhero',
@@ -553,7 +550,7 @@ describe('User PUT request tests', () => {
     };
 
     const response = await api
-      .put(`${apiBaseUrl}/user/${validUserInDBID}`)
+      .put(`${apiBaseUrl}/user/${validUser.id}`)
       .set('Cookie', [tokenCookie])
       .set('User-Agent', userAgent)
       .send(updateUserData)
@@ -570,23 +567,22 @@ describe('User PUT request tests', () => {
 
 describe('User GET request tests', () => {
 
-  let validUserInDBID: number;
+  let validUser: UserDT;
 
   before(async () => {
-    await User.scope('all').destroy({ force: true, where: {} });
-    await User.bulkCreate(initialUsers);
-    const user = await User.create(validUserInDB.dbEntry);
-
-    validUserInDBID = user.id;
+    await userService.authController.flushExternalDB();
+    await userService.removeAll();
+    await createInitialUsers();
+    validUser = await createUser(validUserInDB.dtn);
   });
 
   beforeEach(async () => {
-    await Session.destroy({ where: {} });
+    await sessionService.removeAll();
   });
 
   it('A users/me path gives correct user info to frontend', async () => {
 
-    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
 
     const response = await api
       .get(`${apiBaseUrl}/user/me`)
@@ -595,12 +591,12 @@ describe('User GET request tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.id).to.equal(validUserInDBID);
-    expect(response.body.username).to.equal(validUserInDB.dbEntry.username);
-    expect(response.body.name).to.equal(validUserInDB.dbEntry.name);
-    expect(response.body.phonenumber).to.equal(validUserInDB.dbEntry.phonenumber);
-    expect(response.body.email).to.equal(validUserInDB.dbEntry.email);
-    expect(response.body.birthdate).to.equal(validUserInDB.dbEntry.birthdate?.toISOString());
+    expect(response.body.id).to.equal(validUser.id);
+    expect(response.body.username).to.equal(validUser.username);
+    expect(response.body.name).to.equal(validUser.name);
+    expect(response.body.phonenumber).to.equal(validUser.phonenumber);
+    expect(response.body.email).to.equal(validUser.email);
+    expect(response.body.birthdate).to.equal(validUser.birthdate);
 
   });
 
@@ -621,27 +617,29 @@ describe('User GET request tests', () => {
 
 describe('User DELETE request tests', () => {
 
-  let validUserInDBID: number;
+  let validUser: UserDT;
 
   before(async () => {
-    await User.scope('all').destroy({ force: true, where: {} });
-    await User.bulkCreate(initialUsers);
+    await userService.authController.flushExternalDB();
+    await userService.removeAll();
+    await createInitialUsers();
   });
 
   beforeEach(async () => {
-    await Session.destroy({ where: {} });
-    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
-    const user = await User.create(validUserInDB.dbEntry);
-
-    validUserInDBID = user.id;
+    if (validUser) {
+      await userService.remove(validUser.id);
+      await userService.delete(validUser.id);
+    }
+    await sessionService.removeAll();
+    validUser = await createUser(validUserInDB.dtn);
   });
 
   it('User delete route works, marks user as deletedAt, gets response with deletedAt mark. All his sessions get deleted. \
 User marked as deleted gets appropriate message when trying to login', async () => {
 
-    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
 
-    const userBeforeDeletion = await User.findByPk(validUserInDBID);
+    const userBeforeDeletion = await userService.getById(validUser.id);
     if (!userBeforeDeletion) return expect(true).to.equal(false);
 
     expect(!userBeforeDeletion.deletedAt).to.equal(true);
@@ -655,13 +653,11 @@ User marked as deleted gets appropriate message when trying to login', async () 
 
     expect(response1.body.deletedAt).to.exist;
 
-    // const sessions = await Session.findAll({ where: { userId: validUserInDBID } });
+    const sessions = await sessionService.getAllByUserId(validUser.id);
 
-    // UNCOMMENT THESE AFTER AUTH MODULE IS FINISHED
+    expect(sessions).to.be.lengthOf(0);
 
-    // expect(sessions).to.be.lengthOf(0);
-
-    const deletedUser = await User.scope('allWithTimestamps').findByPk(validUserInDBID);
+    const deletedUser = await userService.getById(validUser.id);
     if (!deletedUser) return expect(true).to.equal(false);
 
     expect(!deletedUser.deletedAt).to.equal(false);
@@ -684,27 +680,35 @@ User marked as deleted gets appropriate message when trying to login', async () 
 
 describe('User addresses requests tests', () => {
 
-  let validUserInDBID: number;
+  let validUser: UserDT;
+  let createdUsers: UserDT[];
+  let secondValidUser: UserDT;
+  let secondValidUserPassword: string;
 
   before(async () => {
-    await User.scope('all').destroy({ force: true, where: {} });
-    await User.bulkCreate(initialUsers);
+    await userService.authController.flushExternalDB();
+    await userService.removeAll();
+    createdUsers = await createInitialUsers();
+    const foundSecondUser = initialUsers.find(user => user.phonenumber === createdUsers[0].phonenumber);
+    if (!foundSecondUser) throw Error('User not found; check createInitialUsers()');
+    secondValidUser = createdUsers[0];
+    secondValidUserPassword = foundSecondUser.password;
   });
 
   beforeEach(async () => {
-    await Session.destroy({ where: {} });
-    if (validUserInDBID) await User.scope('all').destroy({ force: true, where: { id: validUserInDBID } });
-    const user = await User.create(validUserInDB.dbEntry);
+    if (validUser) {
+      await userService.remove(validUser.id);
+      await userService.delete(validUser.id);
+    }
+    await sessionService.removeAll();
+    validUser = await createUser(validUserInDB.dtn);
 
-    validUserInDBID = user.id;
-
-    await UserAddress.destroy({ where: {} });
-    await Address.destroy({ where: {} });
+    await userService.addressRepo.removeAll();
   });
 
   it('A valid request to add user address succeeds, user address gets added to junction table', async () => {
 
-    const tokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
 
     const responses: Response[] = [];
 
@@ -719,22 +723,22 @@ describe('User addresses requests tests', () => {
       responses.push(response);
     }
 
-    const addressesInDB = await Address.findAll({});
+    const addressesInDB = await userService.addressRepo.getAll();
 
-    const junctions = await UserAddress.findAll({});
+    const junctions = await userService.addressRepo.getAllUserAddresses();
 
     expect(addressesInDB).to.be.lengthOf(validAddresses.length);
     expect(junctions).to.be.lengthOf(validAddresses.length);
 
     for (const response of responses) {
-      const addressInDB = await Address.findByPk(response.body.id as number);
+      const addressInDB = await userService.addressRepo.getById(response.body.id as number);
       expect(addressInDB).to.exist;
       for (const key in response.body) {
         if ((key !== 'createdAt') && (key !== 'updatedAt'))
-          expect(response.body[key]).to.equal(addressInDB?.dataValues[key as keyof AddressData]);
+          expect(response.body[key]).to.equal(addressInDB[key as keyof Address]);
       }
-      const junction = await UserAddress.findOne({ where: { addressId: addressInDB?.id } });
-      expect(junction?.userId).to.equal(validUserInDBID);
+      const junction = junctions.find(j => j.addressId === addressInDB.id);
+      expect(junction?.userId).to.equal(validUser.id);
     }
 
   });
@@ -742,7 +746,7 @@ describe('User addresses requests tests', () => {
   it('The same address cannot be added twice to the same user. \
 If another user adds the same address, the address does not get created, instead a new association is added', async () => {
 
-    const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie1 = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
 
     await api
       .post(`${apiBaseUrl}/user/address`)
@@ -760,7 +764,9 @@ If another user adds the same address, the address does not get created, instead
       .expect(409)
       .expect('Content-Type', /application\/json/);
 
-    const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
+    const foundUser = initialUsers.find(u => u.phonenumber === createdUsers[0].phonenumber);
+    if (!foundUser) return expect(true).to.equal(false);
+    const tokenCookie2 = await initLogin(createdUsers[0], foundUser.password, api, 201, userAgent) as string;
 
     await api
       .post(`${apiBaseUrl}/user/address`)
@@ -771,9 +777,9 @@ If another user adds the same address, the address does not get created, instead
       .expect('Content-Type', /application\/json/);
 
 
-    const addressesInDB = await Address.findAll({});
+    const addressesInDB = await userService.addressRepo.getAll();
 
-    const junctions = await UserAddress.findAll({});
+    const junctions = await userService.addressRepo.getAllUserAddresses();
 
     expect(addressesInDB).to.be.lengthOf(1);
     expect(junctions).to.be.lengthOf(2);
@@ -784,8 +790,8 @@ If another user adds the same address, the address does not get created, instead
 does not delete address if somebody or a facility uses it, adds a new address if it did not exist, \
 adds only a new junction if it was existing', async () => {
 
-    const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
-    const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
+    const tokenCookie1 = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie2 = await initLogin(secondValidUser, secondValidUserPassword, api, 201, userAgent) as string;
 
     const response1 = await api
       .post(`${apiBaseUrl}/user/address`)
@@ -799,23 +805,26 @@ adds only a new junction if it was existing', async () => {
       .put(`${apiBaseUrl}/user/address/${response1.body.id}`)
       .set('Cookie', [tokenCookie1])
       .set('User-Agent', userAgent)
-      .send(validAddresses[1])
-      .expect(201)
+      .send({
+        id: response1.body.id as number,
+        ...validAddresses[1]
+      })
+      .expect(200)
       .expect('Content-Type', /application\/json/);
 
     // To check that response data is valid and updated
     for (const key in response2.body) {
       if ((key !== 'createdAt') && (key !== 'updatedAt') && (key !== 'id'))
-        expect(response2.body[key]).to.equal(validAddresses[1][key as keyof NewAddressBody]);
+        expect(response2.body[key]).to.equal(validAddresses[1][key as keyof AddressDTN]);
     }
 
     // To make sure old address is deleted if not used by anybody
-    const addressesInDB1 = await Address.findAll({});
+    const addressesInDB1 = await userService.addressRepo.getAll();
     expect(addressesInDB1).to.be.lengthOf(1);
 
     // To make sure that old junction does not exist
-    const junctions1 = await UserAddress.findAll({});
-    expect(junctions1[0].userId).to.equal(validUserInDBID);
+    const junctions1 = await userService.addressRepo.getAllUserAddresses();
+    expect(junctions1[0].userId).to.equal(validUser.id);
     expect(junctions1).to.be.lengthOf(1);
 
     await api
@@ -841,24 +850,27 @@ adds only a new junction if it was existing', async () => {
       .put(`${apiBaseUrl}/user/address/${response4.body.id}`)
       .set('Cookie', [tokenCookie2])
       .set('User-Agent', userAgent)
-      .send(validAddresses[1])
+      .send({
+        id: response4.body.id as number,
+        ...validAddresses[1]
+      })
       .expect(409)
       .expect('Content-Type', /application\/json/);
 
     // To make sure that first address is added back
-    const addressesInDB2 = await Address.findAll({});
+    const addressesInDB2 = await userService.addressRepo.getAll();
     expect(addressesInDB2).to.be.lengthOf(2);
 
     // To make sure that first user has one junction, and second user has two of them
-    const junctions2 = await UserAddress.findAll({});
+    const junctions2 = await userService.addressRepo.getAllUserAddresses();
     expect(junctions2).to.be.lengthOf(3);
 
   });
 
   it('Delete user address route works. If the address is used by anybody else, it does not get deleted', async () => {
 
-    const tokenCookie1 = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
-    const tokenCookie2 = await initLogin(initialUsers[0], initialUsersPassword, api, 201, userAgent) as string;
+    const tokenCookie1 = await initLogin(validUser, validUserInDB.password, api, 201, userAgent) as string;
+    const tokenCookie2 = await initLogin(secondValidUser, secondValidUserPassword, api, 201, userAgent) as string;
 
     const response1 = await api
       .post(`${apiBaseUrl}/user/address`)
@@ -889,8 +901,8 @@ adds only a new junction if it was existing', async () => {
     // Just to make sure that it is the same address, and DB did not create another row
     expect(response1.body.id).to.equal(response2.body.id);
 
-    const userAddresses1 = await UserAddress.findAll({});
-    const addresses1 = await Address.findAll({});
+    const userAddresses1 = await userService.addressRepo.getAllUserAddresses();
+    const addresses1 = await userService.addressRepo.getAll();
 
     // 2 records for addresses, 3 for user's addresses
     expect(userAddresses1).to.be.lengthOf(3);
@@ -910,14 +922,14 @@ adds only a new junction if it was existing', async () => {
       .set('User-Agent', userAgent)
       .expect(204);
 
-    const userAddresses2 = await UserAddress.findAll({});
-    const addresses2 = await Address.findAll({});
+    const userAddresses2 = await userService.addressRepo.getAllUserAddresses();
+    const addresses2 = await userService.addressRepo.getAll();
 
     // Now only the first user has address, and it is validAddresses[0]
     expect(userAddresses2).to.be.lengthOf(1);
     expect(addresses2).to.be.lengthOf(1);
 
-    expect(userAddresses2[0].userId).to.equal(validUserInDBID);
+    expect(userAddresses2[0].userId).to.equal(validUser.id);
 
     expect(addresses2[0].city).to.equal(validAddresses[0].city);
     expect(addresses2[0].street).to.equal(validAddresses[0].street);
