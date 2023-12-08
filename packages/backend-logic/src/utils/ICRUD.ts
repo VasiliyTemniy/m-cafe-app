@@ -8,8 +8,8 @@ import type { Request, Response } from 'express';
  * DTN - data transit new object type
  */
 export interface ICRUDRepo<T, DTN> {
-  getAll(): Promise<T[]>;
-  getById(id: number): Promise<T>;
+  getAll(...args: any): Promise<T[]>;
+  getById(id: number, ...args: any): Promise<T>;
   create(dtn: DTN, ...args: any): Promise<T>;
   update(d: T, ...args: any): Promise<T>;
   remove(id: number, ...args: any): Promise<void> | Promise<T> | Promise<number>;
