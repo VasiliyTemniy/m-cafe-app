@@ -3,7 +3,7 @@ import app from './app.js';
 import http from 'http';
 import { logger } from '@m-cafe-app/utils';
 import { dbHandler } from '@m-cafe-app/db';
-import { fixedLocService, sessionService, uiSettingService } from './controllers';
+import { authController, fixedLocService, sessionService, uiSettingService } from './controllers';
 import { userController } from './controllers';
 
 const start = async () => {
@@ -13,6 +13,11 @@ const start = async () => {
   await dbHandler.loadMigrations();
   await dbHandler.runMigrations();
   logger.info('ran migrations');
+  await authController.connect();
+  await authController.ping();
+  logger.info('connected to auth service');
+  await authController.getPublicKey();
+  logger.info('got auth public key');
   await userController.service.initSuperAdmin();
   logger.info('initialized super admin');
   await uiSettingService.connectInmem();
