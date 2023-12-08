@@ -4,6 +4,7 @@ import type { Request, Response } from 'express';
 import { isFoodComponentDTN, isFoodComponentDT, isFoodComponentDTNMany, isRewriteAllForOneFoodBody } from '@m-cafe-app/models';
 import { RequestBodyError } from '@m-cafe-app/utils';
 
+
 export class FoodComponentControllerExpressHttp implements IFoodComponentControllerHttp {
   constructor( readonly service: IFoodComponentService ) {}
 
@@ -15,6 +16,11 @@ export class FoodComponentControllerExpressHttp implements IFoodComponentControl
   async getById(req: Request, res: Response): Promise<void> {
     const foodComponent: FoodComponentDT = await this.service.getById(Number(req.params.id));
     res.status(200).json(foodComponent);
+  }
+
+  async getByFoodId(req: Request, res: Response): Promise<void> {
+    const foodComponents: FoodComponentDT[] = await this.service.getByFoodId(Number(req.params.id));
+    res.status(200).json(foodComponents);
   }
 
   async create(req: Request, res: Response): Promise<void> {
@@ -78,6 +84,11 @@ export class FoodComponentControllerExpressHttp implements IFoodComponentControl
 
   async removeAll(req: Request, res: Response): Promise<void> {
     await this.service.removeAll();
+    res.status(204).end();
+  }
+
+  async removeAllForOneFood(req: Request, res: Response): Promise<void> {
+    await this.service.removeAllForOneFood(Number(req.params.id));
     res.status(204).end();
   }
 }
