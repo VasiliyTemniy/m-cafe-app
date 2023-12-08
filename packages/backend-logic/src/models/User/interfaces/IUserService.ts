@@ -25,6 +25,7 @@ export interface IUserService extends Omit<ICRUDService<UserDT, UserDTN>, 'creat
   logout(id: number, userAgent: string): Promise<void>;
   administrate(id: number, body: AdministrateUserBody): Promise<UserDT>;
   remove(id: number): Promise<UserDT>;
+  removeAll(keepSuperAdmin?: boolean): Promise<void>;
   delete(id: number): Promise<void>;
   initSuperAdmin(): Promise<void>;
   cleanSessionRepo(): Promise<void>;
