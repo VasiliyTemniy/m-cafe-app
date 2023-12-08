@@ -266,17 +266,28 @@ export class UserService implements IUserService {
    * Remove a user entry from the database entirely.
    */
   async delete(id: number): Promise<void> {
-    const user = await this.userRepo.getById(id);
-    if (!user.lookupHash)
-      throw new ApplicationError('User data corrupt: lookupHash is missing');
+    const transaction = await this.transactionHandler.start();
 
-    await this.authController.remove({ lookupHash: user.lookupHash });
-    await this.userRepo.delete(id);
+    try {
+
+      const user = await this.userRepo.getById(id, transaction);
+      if (!user.lookupHash)
+        throw new ApplicationError('User data corrupt: lookupHash is missing');
+  
+      await this.authController.remove({ lookupHash: user.lookupHash });
+      await this.addressRepo.removeAddressesForOneUser(id, transaction);
+      await this.userRepo.delete(id, transaction);
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
-  async removeAll(): Promise<void> {
+  async removeAll(keepSuperAdmin: boolean = false): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
-    await this.userRepo.removeAll();
+    await this.userRepo.removeAll(keepSuperAdmin);
   }
 
   async initSuperAdmin(): Promise<void> {
@@ -360,10 +371,9 @@ export class UserService implements IUserService {
     });
 
     if (!auth.token || auth.error || auth.id !== user.id) {
-      logger.shout('Failed to create auth token', auth);  // ACHTUNG! REMOVE THIS WHEN ACTUAL ERROR TEXT IS KNOWN
-      if (auth.error === 'User already exists') {
+      if (auth.error === 'error creating credentials in db') {
         const userWithNewLookupHash = await this.userRepo.updateLookupHash(user, user.lookupNoise);
-        return this.resolveAuthLookupHashConflict(userWithNewLookupHash, password);
+        return this.resolveAuthLookupHashConflict(userWithNewLookupHash, password, tries + 1);
       } else {
         throw new UnknownError(auth.error);
       }
@@ -396,10 +406,15 @@ export class UserService implements IUserService {
     const transaction = await this.transactionHandler.start();
 
     try {
-      const { address: updatedAddress } = await this.addressRepo.update(AddressMapper.dtToDomain(address), transaction);
+
+      // Last arg is `removeIfUnused` set to false here because userAddress is still not updated
+      const { address: updatedAddress } = await this.addressRepo.update(AddressMapper.dtToDomain(address), transaction, false);
 
       const { updated } = await this.addressRepo.updateUserAddress(userId, updatedAddress.id, address.id, transaction);
   
+      // Here, removeIfUnused is called only after updating UserAddress record
+      await this.addressRepo.removeIfUnused(address.id, transaction);
+
       await transaction.commit();
       return { address: AddressMapper.domainToDT(updatedAddress), updated }; 
     } catch (err) {
