@@ -21,7 +21,14 @@ export class AuthController implements IAuthController {
   constructor(
     private readonly authConnectionHandler: IAuthConnectionHandler,
     private readonly authServiceInternal: IAuthService
-  ) {}
+  ) {
+    // This helps to resolve problem with supertest wrapping instance of AuthController in express app
+    // Supertest somehow creates another instance of AuthController that I cannot control
+    // In case of dev or prod env, I prefer to manually call getPublicKey() from express app initializer
+    if (process.env.NODE_ENV === 'test' && !this.tokenPublicKeyPem) {
+      void this.getPublicKey();
+    }
+  }
 
   getAll(): Promise<void> {
     throw new ApplicationError('Method not implemented.');
