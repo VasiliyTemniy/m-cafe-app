@@ -1,8 +1,6 @@
 import type { RequestHandler } from 'express';
-import { UnknownError } from '@m-cafe-app/utils';
 import { Router } from 'express';
-import middleware from '../utils/middleware.js';
-import { isRequestWithUserRights } from '../types/RequestCustom.js';
+import { middleware } from '../utils/middleware.js';
 import { uiSettingController } from '../controllers';
 
 
@@ -11,12 +9,10 @@ const uiSettingRouter = Router();
 
 uiSettingRouter.get(
   '/',
-  middleware.setVerifyOptional,
-  middleware.verifyToken,
-  middleware.userRightsExtractor,
+  middleware.setVerifyOptional.bind(middleware),
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
   (async (req, res) => {
-
-    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check userRightsExtractor middleware');
 
     await uiSettingController.getByScope(req, res);
 
@@ -25,9 +21,9 @@ uiSettingRouter.get(
 
 uiSettingRouter.get(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
   (async (req, res) => {
 
     await uiSettingController.getById(req, res);
@@ -37,10 +33,10 @@ uiSettingRouter.get(
 
 uiSettingRouter.put(
   '/all',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
     await uiSettingController.updateMany(req, res);
@@ -50,10 +46,10 @@ uiSettingRouter.put(
 
 uiSettingRouter.put(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
     await uiSettingController.update(req, res);

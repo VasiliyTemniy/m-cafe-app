@@ -1,211 +1,58 @@
-import type { FixedLocDT } from '@m-cafe-app/utils';
 import type { RequestHandler } from 'express';
-import {
-  ApplicationError,
-  DatabaseError,
-  isEditFixedLocBody,
-  isEditManyFixedLocBody,
-  isNewFixedLocBody,
-  mapDataToTransit,
-  RequestBodyError,
-  UnknownError,
-  updateInstance
-} from '@m-cafe-app/utils';
 import { Router } from 'express';
-import { FixedLoc, LocString } from '@m-cafe-app/db';
-import middleware from '../utils/middleware.js';
-import { fixedLocFilter } from '@m-cafe-app/shared-constants';
-import { isRequestWithUserRights } from '../types/RequestCustom.js';
+import { middleware } from '../utils/middleware.js';
+import { fixedLocController } from '../controllers';
 
 
 const fixedLocRouter = Router();
 
 fixedLocRouter.get(
   '/',
-  middleware.setVerifyOptional,
-  middleware.verifyToken,
-  middleware.userRightsExtractor,
+  middleware.setVerifyOptional.bind(middleware),
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
   (async (req, res) => {
 
-    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check userRightsExtractor middleware');
-
-    const fixedLocs = await FixedLoc.scope(req.rights).findAll();
-
-    const resBody: FixedLocDT[] = fixedLocs.map(fixedLoc => {
-      const resFixedLoc: FixedLocDT = {
-        locString: mapDataToTransit(fixedLoc.locString!.dataValues),
-        ...mapDataToTransit(fixedLoc.dataValues)
-      };
-      return resFixedLoc;
-    });
-    
-    res.status(200).json(resBody);
+    await fixedLocController.getByScope(req, res);
 
   }) as RequestHandler
 );
 
 fixedLocRouter.get(
   '/:id',
-  middleware.setVerifyOptional,
-  middleware.verifyToken,
-  middleware.userRightsExtractor,
-  middleware.requestParamsCheck,
+  middleware.setVerifyOptional.bind(middleware),
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isRequestWithUserRights(req)) throw new UnknownError('This code should never be reached - check userRightsExtractor middleware');
-
-    const fixedLoc = await FixedLoc.scope(req.rights).findByPk(req.params.id);
-    if (!fixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
-
-    const resBody: FixedLocDT = {
-      locString: mapDataToTransit(fixedLoc.locString!.dataValues),
-      ...mapDataToTransit(fixedLoc.dataValues)
-    };
-    
-    res.status(200).json(resBody);
-
-  }) as RequestHandler
-);
-
-
-// Should not ever be used. All new localizations must come with dynamicModules, so this here may be deleted
-fixedLocRouter.post(
-  '/',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  (async (req, res) => {
-
-    if (!isNewFixedLocBody(req.body)) throw new RequestBodyError('Invalid new fixed loc request body');
-
-    const { name, namespace, scope, locString } = req.body;
-    
-    const savedLocString = await LocString.create(locString);
-
-    const savedFixedLoc = await FixedLoc.create({
-      name,
-      namespace,
-      scope,
-      locStringId: savedLocString.id
-    });
-
-    const resBody: FixedLocDT = {
-      locString: mapDataToTransit(savedLocString.dataValues),
-      ...mapDataToTransit(savedFixedLoc.dataValues)
-    };
-    
-    res.status(201).json(resBody);
+    await fixedLocController.getById(req, res);
 
   }) as RequestHandler
 );
 
 fixedLocRouter.put(
   '/all',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isEditManyFixedLocBody(req.body)) throw new RequestBodyError('Invalid edit many fixed locs request body');
-
-    const { updLocs } = req.body;
-
-    const updFixedLocs = [] as { fixedLoc: FixedLoc, locString: LocString }[];
-
-    for (const updLoc of updLocs) {
-
-      const updFixedLoc = await FixedLoc.scope('admin').findByPk(updLoc.id);
-      if (!updFixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${updLoc.id}`);
-
-      const updLocString = await LocString.findByPk(updLoc.locString.id);
-      if (!updLocString) throw new DatabaseError(`No localization entry with this id ${updLoc.locString.id}`);
-
-      updateInstance(updLocString, updLoc.locString);
-
-      await updLocString.save();
-
-      updFixedLocs.push({ fixedLoc: updFixedLoc, locString: updLocString });
-
-    }
-
-    const resBody: FixedLocDT[] = updFixedLocs.map(item => {
-      const fixedLoc: FixedLocDT = {
-        locString: mapDataToTransit(item.locString.dataValues),
-        ...mapDataToTransit(item.fixedLoc.dataValues)
-      };
-      return fixedLoc;
-    });
-    
-    res.status(200).json(resBody);
-
-  }) as RequestHandler
-);
-
-fixedLocRouter.put(
-  '/reserve/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
-  (async (req, res) => {
-
-    const fixedLoc = await FixedLoc.scope('admin').findByPk(req.params.id);
-    if (!fixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
-
-    const locString = await LocString.findByPk(fixedLoc.locStringId);
-    if (!locString) throw new ApplicationError(`No loc string entry for existing fixed loc! fixed loc id: ${req.params.id}, loc string id: ${fixedLoc.locStringId}`);
-
-    // Instead of deleting a fixed loc, it is assigned a filter value
-    locString.mainStr = fixedLocFilter;
-    locString.secStr = fixedLocFilter;
-    locString.altStr = fixedLocFilter;
-
-    await locString.save();
-
-    const resBody: FixedLocDT = {
-      locString: mapDataToTransit(locString.dataValues),
-      ...mapDataToTransit(fixedLoc.dataValues)
-    };
-
-    res.status(200).json(resBody);
+    await fixedLocController.updateMany(req, res);
 
   }) as RequestHandler
 );
 
 fixedLocRouter.put(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isEditFixedLocBody(req.body)) throw new RequestBodyError('Invalid edit fixed loc request body');
-
-    const { name, locString } = req.body;
-    const _name = name;
-
-    const updFixedLoc = await FixedLoc.scope('admin').findByPk(req.params.id);
-    if (!updFixedLoc) throw new DatabaseError(`No fixed loc entry with this id ${req.params.id}`);
-
-    const updLocString = await LocString.findByPk(locString.id);
-    if (!updLocString) throw new DatabaseError(`No localization entry with this id ${locString.id}`);
-
-    updateInstance(updLocString, locString);
-
-    await updLocString.save();
-
-    // updFixedLoc.name = name; // Fixed loc must be fixed, thus name must not be mutated!
-
-    // await updFixedLoc.save(); // locString id is immutable + fixedLoc.name is immutable -> no need to save updFixedLoc instance
-
-    const resBody: FixedLocDT = {
-      locString: mapDataToTransit(updLocString.dataValues),
-      ...mapDataToTransit(updFixedLoc.dataValues)
-    };
-    
-    res.status(200).json(resBody);
+    await fixedLocController.update(req, res);
 
   }) as RequestHandler
 );

@@ -1,18 +1,7 @@
-import type { DynamicModuleDT } from '@m-cafe-app/utils';
 import type { RequestHandler } from 'express';
-import {
-  DatabaseError,
-  isEditDynamicModuleBody,
-  isNewDynamicModuleBody,
-  mapDataToTransit,
-  RequestBodyError,
-  updateInstance
-} from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import { Router } from 'express';
-import { DynamicModule, LocString, Picture } from '@m-cafe-app/db';
-import middleware from '../utils/middleware.js';
-import { includeAltTextLocNoTimestamps, includeLocStringNoTimestamps } from '../utils/sequelizeHelpers.js';
+import { middleware } from '../utils/middleware.js';
+import { dynamicModuleController, pictureService } from '../controllers/index.js';
 
 
 const dynamicModuleRouter = Router();
@@ -21,199 +10,108 @@ dynamicModuleRouter.get(
   '/',
   (async (req, res) => {
 
-    const dynamicModules = await DynamicModule.findAll({
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        {
-          model: Picture,
-          as: 'picture',
-          required: false,
-          attributes: {
-            exclude: [...timestampsKeys]
-          },
-          include: [
-            includeAltTextLocNoTimestamps
-          ]
-        },
-        includeLocStringNoTimestamps
-      ]
-    });
-
-    const resBody: DynamicModuleDT[] = dynamicModules.map(dynamicModule => {
-      const resDynamicModule: DynamicModuleDT = {
-        locString: dynamicModule.locString ? mapDataToTransit(dynamicModule.locString.dataValues)
-        : undefined,
-        picture: dynamicModule.picture ? {
-          altTextLoc: mapDataToTransit(dynamicModule.picture.altTextLoc!.dataValues),
-          ...mapDataToTransit(dynamicModule.picture.dataValues)
-        } : undefined,
-        ...mapDataToTransit(dynamicModule.dataValues)
-      };
-      return resDynamicModule;
-    });
-    
-    res.status(200).json(resBody);
+    await dynamicModuleController.getAll(req, res);
 
   }) as RequestHandler
 );
 
 dynamicModuleRouter.get(
   '/:id',
-  middleware.requestParamsCheck,
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    const dynamicModule = await DynamicModule.findByPk(req.params.id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        {
-          model: Picture,
-          as: 'picture',
-          required: false,
-          attributes: {
-            exclude: [...timestampsKeys]
-          },
-          include: [
-            includeAltTextLocNoTimestamps
-          ]
-        },
-        includeLocStringNoTimestamps
-      ]
-    });
-    if (!dynamicModule) throw new DatabaseError(`No dynamic module entry with this id ${req.params.id}`);
-
-    const resBody: DynamicModuleDT = {
-      locString: dynamicModule.locString ? mapDataToTransit(dynamicModule.locString.dataValues)
-      : undefined,
-      picture: dynamicModule.picture ? {
-        altTextLoc: mapDataToTransit(dynamicModule.picture.altTextLoc!.dataValues),
-        ...mapDataToTransit(dynamicModule.picture.dataValues)
-      } : undefined,
-      ...mapDataToTransit(dynamicModule.dataValues)
-    };
-    
-    res.status(200).json(resBody);
+    await dynamicModuleController.getById(req, res);
 
   }) as RequestHandler
 );
 
 dynamicModuleRouter.post(
   '/',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isNewDynamicModuleBody(req.body)) throw new RequestBodyError('Invalid new dynamic module request body');
+    await dynamicModuleController.create(req, res);
 
-    const { moduleType, page, placement, className, inlineCss, url, locString, placementType } = req.body;
-    
-    const savedLocString = await LocString.create(locString);
+  }) as RequestHandler
+);
 
-    const savedDynamicModule = await DynamicModule.create({
-      moduleType,
-      page,
-      placement,
-      className,
-      inlineCss,
-      url,
-      locStringId: savedLocString.id,
-      placementType
-    });
+dynamicModuleRouter.post(
+  '/:id/loc-string',
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
+  (async (req, res) => {
+  
+    await dynamicModuleController.addLocString(req, res);
 
-    const resBody: DynamicModuleDT = {
-      locString: mapDataToTransit(savedLocString.dataValues),
-      ...mapDataToTransit(savedDynamicModule.dataValues)
-    };
-    
-    res.status(201).json(resBody);
+  }) as RequestHandler
+);
+
+dynamicModuleRouter.post(
+  '/:id/picture',
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
+  pictureService.upload.single('picture').bind(pictureService),
+  (async (req, res) => {
+
+    await dynamicModuleController.addPicture(req, res);
 
   }) as RequestHandler
 );
 
 dynamicModuleRouter.put(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isEditDynamicModuleBody(req.body)) throw new RequestBodyError('Invalid edit dynamic module request body');
-
-    const { moduleType, page, placement, className, inlineCss, url, locString, placementType } = req.body;
-
-    const updDynamicModule = await DynamicModule.findByPk(req.params.id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        {
-          model: Picture,
-          as: 'picture',
-          required: false,
-          attributes: {
-            exclude: [...timestampsKeys]
-          },
-          include: [
-            includeAltTextLocNoTimestamps
-          ]
-        }
-      ]
-    });
-    if (!updDynamicModule) throw new DatabaseError(`No dynamic module entry with this id ${req.params.id}`);
-    
-    let updLocString = null as LocString | null;
-
-    if (locString) {
-      updLocString = await LocString.findByPk(locString.id);
-      if (!updLocString) throw new DatabaseError(`No localization entry with this id ${locString.id}`);
-
-      updateInstance(updLocString, locString);
-
-      await updLocString.save();
-    }
-
-    updDynamicModule.moduleType = moduleType;
-    updDynamicModule.page = page;
-    updDynamicModule.placement = placement;
-    updDynamicModule.className = className ? className : updDynamicModule.className;
-    updDynamicModule.inlineCss = inlineCss ? inlineCss : updDynamicModule.inlineCss;
-    updDynamicModule.url = url ? url : updDynamicModule.url;
-    updDynamicModule.placementType = placementType ? placementType : updDynamicModule.placementType;
-
-    await updDynamicModule.save();
-
-    const resBody: DynamicModuleDT = {
-      locString: updLocString
-        ? mapDataToTransit(updLocString.dataValues)
-        : undefined,
-      picture: updDynamicModule.picture ? {
-        altTextLoc: mapDataToTransit(updDynamicModule.picture.altTextLoc!.dataValues),
-        ...mapDataToTransit(updDynamicModule.picture.dataValues)
-      } : undefined,
-      ...mapDataToTransit(updDynamicModule.dataValues)
-    };
-    
-    res.status(200).json(resBody);
+    await dynamicModuleController.update(req, res);
 
   }) as RequestHandler
 );
 
 dynamicModuleRouter.delete(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    await DynamicModule.destroy({ where: { id: req.params.id } });
+    await dynamicModuleController.remove(req, res);
 
-    res.status(204).end();
+  }) as RequestHandler
+);
+
+dynamicModuleRouter.delete(
+  '/:id/loc-string',
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
+  (async (req, res) => {
+  
+    await dynamicModuleController.removeLocString(req, res);
+
+  }) as RequestHandler  
+);
+
+dynamicModuleRouter.delete(
+  '/:id/picture',
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
+  (async (req, res) => {
+  
+    await dynamicModuleController.removePicture(req, res);
 
   }) as RequestHandler
 );

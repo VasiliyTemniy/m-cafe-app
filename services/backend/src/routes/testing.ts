@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import { Router } from 'express';
-import { runMigrations, sequelize } from '@m-cafe-app/db';
+import { dbHandler } from '@m-cafe-app/db';
 
 const testingRouter = Router();
 
@@ -13,8 +13,9 @@ testingRouter.get(
 testingRouter.get(
   '/reset',
   (async (req, res) => {
-    await sequelize.drop({ cascade: true });
-    await runMigrations();
+    await dbHandler.dbInstance?.query('DELETE FROM migrations');
+    await dbHandler.dbInstance?.drop({ cascade: true });
+    await dbHandler.runMigrations();
 
     res.status(204).end();
   }) as RequestHandler
@@ -23,32 +24,12 @@ testingRouter.get(
 testingRouter.get(
   '/sync',
   (async (req, res) => {
-    await sequelize.sync({
+    await dbHandler.dbInstance?.sync({
       force: true
     });
 
     res.status(204).end();
   }) as RequestHandler
 );
-
-// testingRouter.put(
-//   '/admin/:id',
-//   (async (req, res) => {
-
-//     const user = await User.findByPk(req.params.id);
-
-//     if (user) {
-
-//       user.admin = req.body.admin;
-
-//       await user.save();
-
-//       res.json(user);
-//     } else {
-//       throw new Error('No entry');
-//     }
-
-//   }) as RequestHandler
-// );
 
 export default testingRouter;

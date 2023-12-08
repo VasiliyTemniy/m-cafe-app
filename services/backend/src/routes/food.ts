@@ -1,31 +1,7 @@
 import type { RequestHandler } from 'express';
-import type { FoodDT, PictureDT, FoodComponentDT } from '@m-cafe-app/utils';
 import { Router } from 'express';
-import middleware from '../utils/middleware.js';
-import {
-  Food,
-  FoodComponent,
-  FoodPicture,
-  FoodType,
-  LocString,
-  Picture
-} from '@m-cafe-app/db';
-import {
-  isNewFoodBody,
-  mapDataToTransit,
-  RequestBodyError,
-  isEditFoodBody,
-  DatabaseError,
-  updateInstance,
-  RequestQueryError,
-} from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/shared-constants';
-import {
-  includeAltTextLocNoTimestamps,
-  includeFoodComponentData,
-  includeNameDescriptionLocNoTimestamps,
-  includeNameDescriptionLocNoTimestampsSecondLayer,
-} from '../utils/sequelizeHelpers.js';
+import { middleware } from '../utils/middleware.js';
+import { foodController, pictureService } from '../controllers';
 
 
 const foodRouter = Router();
@@ -34,285 +10,107 @@ foodRouter.get(
   '/',
   (async (req, res) => {
 
-    let where = {};
-
-    if (req.query.foodtypeid) {
-      if (isNaN(Number(req.query.foodtypeid))) throw new RequestQueryError('Incorrect query string');
-      where = { foodTypeId: Number(req.query.foodtypeid) };
-    }
-
-    const foods = await Food.findAll({
-      where,
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        {
-          model: FoodType,
-          as: 'foodType',
-          attributes: {
-            exclude: [...timestampsKeys]
-          },
-          include: [
-            ...includeNameDescriptionLocNoTimestampsSecondLayer
-          ]
-        },
-        {
-          model: FoodPicture,
-          as: 'gallery',
-          required: false,
-          include: [
-            {
-              model: Picture,
-              as: 'picture',
-              attributes: {
-                exclude: [...timestampsKeys]
-              },
-              include: [
-                includeAltTextLocNoTimestamps
-              ]
-            }
-          ],
-          order: [
-            ['orderNumber', 'ASC']
-          ]
-        },
-        ...includeNameDescriptionLocNoTimestamps,
-      ]
-    });
-
-    const resBody: FoodDT[] = foods.map(food => {
-      return {
-        nameLoc: mapDataToTransit(food.nameLoc!.dataValues),
-        descriptionLoc: mapDataToTransit(food.descriptionLoc!.dataValues),
-        foodType: {
-          nameLoc: mapDataToTransit(food.foodType!.nameLoc!.dataValues),
-          descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
-          ...mapDataToTransit(food.foodType!.dataValues)
-        },
-        mainPicture: food.gallery && food.gallery.length > 0 ? {
-          altTextLoc: mapDataToTransit(food.gallery[0].picture!.altTextLoc!.dataValues),
-          ...mapDataToTransit(food.gallery[0].picture!.dataValues)
-        } : undefined,
-        ...mapDataToTransit(food.dataValues)
-      };
-    });
-
-    res.status(200).json(resBody);
+    await foodController.getSomeWithAssociations(req, res);
 
   }) as RequestHandler
 );
 
 foodRouter.get(
   '/:id',
-  middleware.requestParamsCheck,
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    const food = await Food.findByPk(req.params.id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        {
-          model: FoodType,
-          as: 'foodType',
-          attributes: {
-            exclude: [...timestampsKeys]
-          },
-          include: [
-            ...includeNameDescriptionLocNoTimestampsSecondLayer
-          ]
-        },
-        {
-          model: FoodPicture,
-          as: 'gallery',
-          required: false,
-          include: [
-            {
-              model: Picture,
-              as: 'picture',
-              attributes: {
-                exclude: [...timestampsKeys]
-              },
-              include: [
-                includeAltTextLocNoTimestamps
-              ]
-            }
-          ],
-          order: [
-            ['orderNumber', 'ASC']
-          ]
-        },
-        {
-          model: FoodComponent,
-          as: 'foodComponents',
-          required: false,
-          attributes: {
-            exclude: [...timestampsKeys]
-          },
-          include: [
-            ...includeFoodComponentData
-          ]
-        },
-        ...includeNameDescriptionLocNoTimestamps,
-      ]
-    });
-
-    if (!food) throw new DatabaseError(`No food type entry with this id ${req.params.id}`);
-
-    const resBody: FoodDT = {
-      nameLoc: mapDataToTransit(food.nameLoc!.dataValues),
-      descriptionLoc: mapDataToTransit(food.descriptionLoc!.dataValues),
-      foodType: {
-        nameLoc: mapDataToTransit(food.foodType!.nameLoc!.dataValues),
-        descriptionLoc: mapDataToTransit(food.foodType!.descriptionLoc!.dataValues),
-        ...mapDataToTransit(food.foodType!.dataValues)
-      },
-      foodComponents: food.foodComponents && food.foodComponents.length > 0 ? [
-        ...food.foodComponents.map(foodComponent => {
-          const foodComponentRes: FoodComponentDT = {
-            component: {
-              nameLoc: mapDataToTransit(foodComponent.component!.nameLoc!.dataValues),
-              ...mapDataToTransit(foodComponent.component!.dataValues)
-            },
-            ...mapDataToTransit(foodComponent.dataValues)
-          };
-          return foodComponentRes;
-        })
-      ] : undefined,
-      gallery: food.gallery && food.gallery.length > 0 ? [
-        ...food.gallery.map(foodPicture => {
-          const picture: PictureDT = {
-            altTextLoc: mapDataToTransit(foodPicture.picture!.altTextLoc!.dataValues),
-            ...mapDataToTransit(foodPicture.picture!.dataValues)
-          };
-          return picture;
-        })
-      ] : undefined,
-      ...mapDataToTransit(food.dataValues)
-    };
-
-    res.status(200).json(resBody);
+    await foodController.getByIdWithAssociations(req, res);
 
   }) as RequestHandler
 );
 
 foodRouter.post(
   '/',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isNewFoodBody(req.body)) throw new RequestBodyError('Invalid add food request body');
+    await foodController.create(req, res);
 
-    const { nameLoc, descriptionLoc, price, foodTypeId } = req.body;
+  }) as RequestHandler
+);
 
-    const existingFoodType = await FoodType.findByPk(foodTypeId, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        ...includeNameDescriptionLocNoTimestamps
-      ]
-    });
-
-    if (!existingFoodType) throw new DatabaseError(`No food type entry with this id ${foodTypeId}`); 
-
-    const savedNameLoc = await LocString.create(nameLoc);
-    const savedDescriptionLoc = await LocString.create(descriptionLoc);
-
-    const savedFood = await Food.create({
-      nameLocId: savedNameLoc.id,
-      descriptionLocId: savedDescriptionLoc.id,
-      price,
-      foodTypeId
-    });
-
-    const resBody: FoodDT = {
-      id: savedFood.id,
-      nameLoc: mapDataToTransit(savedNameLoc.dataValues),
-      descriptionLoc: mapDataToTransit(savedDescriptionLoc.dataValues),
-      price: savedFood.price,
-      foodType: {
-        id: foodTypeId,
-        nameLoc: mapDataToTransit(existingFoodType.nameLoc!.dataValues),
-        descriptionLoc: mapDataToTransit(existingFoodType.descriptionLoc!.dataValues)
-      }
-    };
-
-    res.status(201).json(resBody);
+foodRouter.post(
+  '/:id/pictures',
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
+  pictureService.upload.single('picture').bind(pictureService),
+  (async (req, res) => {
+  
+    await foodController.addPicture(req, res);
 
   }) as RequestHandler
 );
 
 foodRouter.put(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isEditFoodBody(req.body)) throw new RequestBodyError('Invalid add food request body');
+    await foodController.update(req, res);
 
-    const { nameLoc, descriptionLoc, price, foodTypeId } = req.body;
+  }) as RequestHandler
+);
 
-    const updFood = await Food.findByPk(req.params.id);
-    if (!updFood) throw new DatabaseError(`No food type entry with this id ${req.params.id}`);
-
-    const updFoodType = await FoodType.findByPk(foodTypeId, {
-      include: [
-        ...includeNameDescriptionLocNoTimestamps
-      ]
-    });
-    if (!updFoodType) throw new DatabaseError(`No food type entry with this id ${foodTypeId}`);
-
-    const updNameLoc = await LocString.findOne({ where: { id: nameLoc.id } });
-    if (!updNameLoc) throw new DatabaseError(`No localization entry with this id ${nameLoc.id}`);
-
-    const updDescriptionLoc = await LocString.findOne({ where: { id: descriptionLoc.id } });
-    if (!updDescriptionLoc) throw new DatabaseError(`No localization entry with this id ${descriptionLoc.id}`);
-
-    updateInstance(updNameLoc, nameLoc);
-    updateInstance(updDescriptionLoc, descriptionLoc);
-
-    await updNameLoc.save();
-    await updDescriptionLoc.save();
-
-    updFood.price = price;
-    updFood.foodTypeId = foodTypeId;
-
-    await updFood.save();
-
-    const resBody: FoodDT = {
-      id: updFood.id,
-      nameLoc: mapDataToTransit(updNameLoc.dataValues),
-      descriptionLoc: mapDataToTransit(updDescriptionLoc.dataValues),
-      price: updFood.price,
-      foodType: {
-        id: foodTypeId,
-        nameLoc: mapDataToTransit(updFoodType.nameLoc!.dataValues),
-        descriptionLoc: mapDataToTransit(updFoodType.descriptionLoc!.dataValues)
-      }
-    };
-
-    res.status(200).json(resBody);
+foodRouter.put(
+  '/:id/pictures',
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
+  (async (req, res) => {
+    
+    await foodController.updatePicturesOrder(req, res);
 
   }) as RequestHandler
 );
 
 foodRouter.delete(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    await Food.destroy({ where: { id: req.params.id } });
+    await foodController.remove(req, res);
 
-    res.status(204).end();
+  }) as RequestHandler
+);
+
+foodRouter.delete(
+  '/:id/pictures',
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  (async (req, res) => {
+    
+    await foodController.removePicturesByFoodId(req, res);
+
+  }) as RequestHandler
+);
+
+foodRouter.delete(
+  '/:id/pictures/:pictureId',
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
+  (async (req, res) => {
+    
+    await foodController.removePicture(req, res);
 
   }) as RequestHandler
 );

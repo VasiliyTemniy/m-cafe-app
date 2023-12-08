@@ -1,173 +1,70 @@
-import type { IngredientDT } from '@m-cafe-app/utils';
 import type { RequestHandler } from 'express';
 import { Router } from 'express';
-import middleware from '../utils/middleware.js';
-import { Ingredient, LocString } from '@m-cafe-app/db';
-import {
-  DatabaseError,
-  mapDataToTransit,
-  isNewIngredientBody,
-  RequestBodyError,
-  isEditIngredientBody,
-  updateInstance
-} from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/shared-constants';
-import { includeNameLocNoTimestamps, includeStockMeasureLocNoTimestamps } from '../utils/sequelizeHelpers.js';
+import { middleware } from '../utils/middleware.js';
+import { ingredientController } from '../controllers/index.js';
 
 
 const ingredientRouter = Router();
 
 ingredientRouter.get(
   '/',
-  middleware.verifyToken,
-  middleware.managerCheck,
-  middleware.sessionCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.managerCheck.bind(middleware),
   (async (req, res) => {
 
-    const ingredients = await Ingredient.findAll({
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        includeNameLocNoTimestamps,
-        includeStockMeasureLocNoTimestamps
-      ]
-    });
-
-    const resBody: IngredientDT[] = ingredients.map(ingredient => {
-      return {
-        nameLoc: mapDataToTransit(ingredient.nameLoc!.dataValues),
-        stockMeasureLoc: mapDataToTransit(ingredient.stockMeasureLoc!.dataValues),
-        ...mapDataToTransit(ingredient.dataValues)
-      };
-    });
-
-    res.status(200).json(resBody);
+    await ingredientController.getAll(req, res);
 
   }) as RequestHandler
 );
 
 ingredientRouter.get(
   '/:id',
-  middleware.verifyToken,
-  middleware.managerCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.managerCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    const ingredient = await Ingredient.findByPk(req.params.id, {
-      attributes: {
-        exclude: [...timestampsKeys]
-      },
-      include: [
-        includeNameLocNoTimestamps,
-        includeStockMeasureLocNoTimestamps
-      ]
-    });
-
-    if (!ingredient) throw new DatabaseError(`No ingredient entry with this id ${req.params.id}`);
-
-    const resBody: IngredientDT = {
-      nameLoc: mapDataToTransit(ingredient.nameLoc!.dataValues),
-      stockMeasureLoc: mapDataToTransit(ingredient.stockMeasureLoc!.dataValues),
-      ...mapDataToTransit(ingredient.dataValues)
-    };
-
-    res.status(200).json(resBody);
+    await ingredientController.getById(req, res);
 
   }) as RequestHandler
 );
 
 ingredientRouter.post(
   '/',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isNewIngredientBody(req.body)) throw new RequestBodyError('Invalid add ingredient request body');
-
-    const { nameLoc, stockMeasureLoc, proteins, fats, carbohydrates, calories } = req.body;
-
-    const savedNameLoc = await LocString.create(nameLoc);
-    const savedStockMeasureLoc = await LocString.create(stockMeasureLoc);
-
-    const savedIngredient = await Ingredient.create({
-      nameLocId: savedNameLoc.id,
-      stockMeasureLocId: savedStockMeasureLoc.id,
-      proteins,
-      fats,
-      carbohydrates,
-      calories
-    });
-
-    const resBody: IngredientDT = {
-      nameLoc: mapDataToTransit(savedNameLoc.dataValues),
-      stockMeasureLoc: mapDataToTransit(savedStockMeasureLoc.dataValues),
-      ...mapDataToTransit(savedIngredient.dataValues)
-    };
-
-    res.status(201).json(resBody);
+    await ingredientController.create(req, res);
 
   }) as RequestHandler
 );
 
 ingredientRouter.put(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    if (!isEditIngredientBody(req.body)) throw new RequestBodyError('Invalid edit ingredient request body');
-
-    const { nameLoc, stockMeasureLoc, proteins, fats, carbohydrates, calories } = req.body;
-
-    const updIngredient = await Ingredient.findByPk(req.params.id);
-    if (!updIngredient) throw new DatabaseError(`No ingredient entry with this id ${req.params.id}`);
-
-    const updNameLoc = await LocString.findOne({ where: { id: nameLoc.id } });
-    if (!updNameLoc) throw new DatabaseError(`No localization entry with this id ${nameLoc.id}`);
-
-    const updStockMeasureLoc = await LocString.findOne({ where: { id: stockMeasureLoc.id } });
-    if (!updStockMeasureLoc) throw new DatabaseError(`No localization entry with this id ${stockMeasureLoc.id}`);
-
-    updateInstance(updNameLoc, nameLoc);
-    updateInstance(updStockMeasureLoc, stockMeasureLoc);
-
-    await updNameLoc.save();
-    await updStockMeasureLoc.save();
-
-    if (proteins) updIngredient.proteins = proteins;
-    if (fats) updIngredient.fats = fats;
-    if (carbohydrates) updIngredient.carbohydrates = carbohydrates;
-    if (calories) updIngredient.calories = calories;
-
-    await updIngredient.save();
-
-    const resBody: IngredientDT = {
-      nameLoc: mapDataToTransit(updNameLoc.dataValues),
-      stockMeasureLoc: mapDataToTransit(updStockMeasureLoc.dataValues),
-      ...mapDataToTransit(updIngredient.dataValues)
-    };
-
-    res.status(200).json(resBody);
+    await ingredientController.update(req, res);
 
   }) as RequestHandler
 );
 
 ingredientRouter.delete(
   '/:id',
-  middleware.verifyToken,
-  middleware.adminCheck,
-  middleware.sessionCheck,
-  middleware.requestParamsCheck,
+  middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
+  middleware.adminCheck.bind(middleware),
+  middleware.requestParamsCheck.bind(middleware),
   (async (req, res) => {
 
-    await Ingredient.destroy({ where: { id: req.params.id } });
-
-    res.status(204).end();
+    await ingredientController.remove(req, res);
 
   }) as RequestHandler
 );
