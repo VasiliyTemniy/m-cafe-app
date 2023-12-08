@@ -1,41 +1,45 @@
 import type { User, UserDTN, UserUniqueProperties } from '@m-cafe-app/models';
 import type { IUserRepo } from '../interfaces';
 import type { Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 import { ApplicationError, DatabaseError, ProhibitedError, toOptionalDate } from '@m-cafe-app/utils';
 import { UserMapper } from '../infrastructure';
 import { User as UserPG } from '@m-cafe-app/db';
 import sha1 from 'sha1';
+import config from '../../../config';
 
 export class UserRepoSequelizePG implements IUserRepo {
 
-  async getAll(): Promise<User[]> {
-    const dbUsers = await UserPG.scope('all').findAll();
+  async getAll(transaction?: Transaction): Promise<User[]> {
+    const dbUsers = await UserPG.scope('all').findAll({ transaction });
     return dbUsers.map(user => UserMapper.dbToDomain(user));
   }
 
-  async getSome(limit: number, offset: number): Promise<User[]> {
-    const dbUsers = await UserPG.scope('all').findAll({
+  async getSome(limit: number, offset: number, scope: string = 'all', transaction?: Transaction): Promise<User[]> {
+    const dbUsers = await UserPG.scope(scope).findAll({
       limit,
-      offset
+      offset,
+      transaction
     });
     return dbUsers.map(user => UserMapper.dbToDomain(user));
   }
 
-  async getByScope(scope: string = 'defaultScope'): Promise<User[]> {
-    const dbUsers = await UserPG.scope(scope).findAll();
+  async getByScope(scope: string = 'defaultScope', transaction?: Transaction): Promise<User[]> {
+    const dbUsers = await UserPG.scope(scope).findAll({ transaction });
     return dbUsers.map(user => UserMapper.dbToDomain(user));
   }
 
-  async getById(id: number): Promise<User> {
-    const dbUser = await UserPG.scope('allWithTimestamps').findByPk(id);
+  async getById(id: number, transaction?: Transaction): Promise<User> {
+    const dbUser = await UserPG.scope('allWithTimestamps').findByPk(id, { transaction });
     if (!dbUser) throw new DatabaseError(`No user entry with this id ${id}`);
     return UserMapper.dbToDomain(dbUser);
   }
 
-  async getByUniqueProperties(properties: UserUniqueProperties): Promise<User> {
+  async getByUniqueProperties(properties: UserUniqueProperties, transaction?: Transaction): Promise<User> {
     const dbUser = await UserPG.scope('allWithTimestamps').findOne({
       where: properties,
-      logging: false
+      logging: false,
+      transaction
     });
     if (!dbUser) throw new DatabaseError(`No user entry with these properties ${properties}`);
     return UserMapper.dbToDomain(dbUser);
@@ -46,7 +50,8 @@ export class UserRepoSequelizePG implements IUserRepo {
     silent: boolean = true,
     overrideRights: string = 'customer',
     lookupNoise: number = 0,
-    tries: number = 0):
+    tries: number = 0,
+    transaction?: Transaction):
   Promise<User> {
 
     if (tries > 5) throw new ApplicationError('Too many tries. This can happen once in an enormous amount of times. Interrupted to avoid data loss. Please, try again manually.');
@@ -58,10 +63,17 @@ export class UserRepoSequelizePG implements IUserRepo {
       lookupNoise
     );
 
-    const foundDbUser = await UserPG.scope('all').findOne({ where: { lookupHash } });
+    const foundDbUser = await UserPG.scope('all').findOne({ where: { lookupHash }, transaction });
 
     if (foundDbUser) {
-      return this.create(userDTN, silent, overrideRights, lookupNoise + Math.round(Math.random() * 100), tries + 1);
+      return this.create(
+        userDTN,
+        silent,
+        overrideRights,
+        lookupNoise + Math.round(Math.random() * 100),
+        tries + 1,
+        transaction
+      );
     }
 
     const dbUser = await UserPG.create({ 
@@ -74,27 +86,41 @@ export class UserRepoSequelizePG implements IUserRepo {
       lookupHash,
       lookupNoise
     }, {
-      logging: !silent
+      logging: !silent,
+      transaction
     });
     return UserMapper.dbToDomain(dbUser);
   }
 
-  async update(user: User): Promise<User> {
-    const dbUser = await UserPG.scope('all').findByPk(user.id);
-    if (!dbUser) throw new DatabaseError(`No user entry with this id ${user.id}`);
-    
-    if (user.phonenumber) dbUser.phonenumber = user.phonenumber;
-    if (user.username) dbUser.username = user.username;
-    if (user.name) dbUser.name = user.name;
-    if (user.email) dbUser.email = user.email;
-    if (user.rights) dbUser.rights = user.rights;
-    if (user.birthdate) dbUser.birthdate = user.birthdate;
+  async update(user: User, transaction?: Transaction): Promise<User> {
+    const dataToUpdate: {
+      phonenumber?: string;
+      username?: string;
+      name?: string;
+      email?: string;
+      rights?: string;
+      birthdate?: Date;
+    } = {};
 
-    await dbUser.save();
-    return UserMapper.dbToDomain(dbUser);
+    if (user.phonenumber) dataToUpdate.phonenumber = user.phonenumber;
+    if (user.username) dataToUpdate.username = user.username;
+    if (user.name) dataToUpdate.name = user.name;
+    if (user.email) dataToUpdate.email = user.email;
+    if (user.rights) dataToUpdate.rights = user.rights;
+    if (user.birthdate) dataToUpdate.birthdate = user.birthdate;
+
+    const [ count, updated ] = await UserPG.scope('all').update(dataToUpdate, {
+      where: { id: user.id },
+      returning: true,
+      transaction
+    });
+
+    if (count === 0) throw new DatabaseError(`No user entry with this id ${user.id}`);
+
+    return UserMapper.dbToDomain(updated[0]);
   }
 
-  async updateLookupHash(user: User, lookupNoise: number, tries: number = 0): Promise<User> {
+  async updateLookupHash(user: User, lookupNoise: number, tries: number = 0, transaction?: Transaction): Promise<User> {
     
     if (tries > 5) throw new ProhibitedError('Too many tries. This can happen once in an enormous amount of times. Interrupted to avoid data loss. Please, try again manually.');
 
@@ -105,13 +131,18 @@ export class UserRepoSequelizePG implements IUserRepo {
       lookupNoise
     );
 
-    const foundDbUser = await UserPG.scope('all').findOne({ where: { lookupHash } });
+    const foundDbUser = await UserPG.scope('all').findOne({ where: { lookupHash }, transaction });
 
     if (foundDbUser) {
-      return this.updateLookupHash(user, lookupNoise + Math.round(Math.random() * 100), tries + 1);
+      return this.updateLookupHash(
+        user,
+        lookupNoise + Math.round(Math.random() * 100),
+        tries + 1,
+        transaction
+      );
     }
 
-    const userToUpdate = await UserPG.scope('all').findByPk(user.id);
+    const userToUpdate = await UserPG.scope('all').findByPk(user.id, { transaction });
     if (!userToUpdate) throw new DatabaseError(`No user entry with this id ${user.id}`);
 
     userToUpdate.lookupHash = lookupHash;
@@ -123,17 +154,20 @@ export class UserRepoSequelizePG implements IUserRepo {
   }
 
   /**
-   * Mark user as deleted, add deletedAd timestamp.
+   * Mark user as deleted, add deletedAt timestamp.
    */
-  async remove(id: number): Promise<User> {
-    const dbUser = await UserPG.scope('all').findByPk(id);
-    if (!dbUser) throw new DatabaseError(`No user entry with this id ${id}`);
-    const deletedUser = await dbUser.destroy() as unknown as UserPG; // Correct because of paranoid
+  async remove(id: number, transaction?: Transaction): Promise<User> {
+    const count = await UserPG.scope('all').destroy({
+      where: { id },
+      transaction
+    });
+    const deletedUser = await UserPG.scope('deleted').findByPk(id, { transaction });
+    if (count === 0 || !deletedUser) throw new DatabaseError(`No user entry with this id ${id}`);
     return UserMapper.dbToDomain(deletedUser);
   }
 
-  async restore(id: number): Promise<User> {
-    const dbUser = await UserPG.scope('deleted').findByPk(id);
+  async restore(id: number, transaction?: Transaction): Promise<User> {
+    const dbUser = await UserPG.scope('deleted').findByPk(id, { transaction });
     if (!dbUser) throw new DatabaseError(`No user entry with this id ${id}`);
     await dbUser.restore();
     return UserMapper.dbToDomain(dbUser);
@@ -142,22 +176,30 @@ export class UserRepoSequelizePG implements IUserRepo {
   /**
    * Remove a user entry from the database entirely.
    */
-  async delete(id: number): Promise<void> {
-    const dbUser = await UserPG.scope('allWithTimestamps').findByPk(id);
+  async delete(id: number, transaction?: Transaction): Promise<void> {
+    const dbUser = await UserPG.scope('allWithTimestamps').findByPk(id, { transaction });
 
     if (!dbUser) throw new DatabaseError(`No user entry with this id ${id}`);
     if (!dbUser.deletedAt) throw new ProhibitedError('Only voluntarily deleted users can be fully removed by admins');
 
-    await dbUser.destroy({ force: true });
+    await dbUser.destroy({ force: true, transaction });
   }
 
-  async removeAll(): Promise<void> {
-    if (process.env.NODE_ENV !== 'test') return;
-    await UserPG.scope('all').destroy({ force: true, where: {} });
+  async removeAll(keepSuperAdmin: boolean = false): Promise<void> {
+    if (keepSuperAdmin) {
+      await UserPG.scope('all').destroy({ force: true, where: {
+        phonenumber: {
+          [Op.not]: config.SUPERADMIN_PHONENUMBER
+        }
+      } });
+    }
+    else {
+      await UserPG.scope('all').destroy({ force: true, where: {} });
+    }
   }
 
-  async getWithAddresses(id: number): Promise<User> {
-    const dbUser = await UserPG.scope('allWithAddresses').findByPk(id);
+  async getWithAddresses(id: number, transaction?: Transaction): Promise<User> {
+    const dbUser = await UserPG.scope('allWithAddresses').findByPk(id, { transaction });
     if (!dbUser) throw new DatabaseError(`No user entry with this id ${id}`);
 
     return UserMapper.dbToDomain(dbUser);
