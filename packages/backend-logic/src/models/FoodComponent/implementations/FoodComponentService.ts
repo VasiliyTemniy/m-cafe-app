@@ -29,6 +29,12 @@ export class FoodComponentService implements IFoodComponentService {
     return FoodComponentMapper.domainToDT(foodComponent);
   }
 
+  async getByFoodId(foodId: number): Promise<FoodComponentDT[]> {
+    const foodComponents = await this.foodComponentRepo.getByFoodId(foodId);
+
+    return foodComponents.map(foodComponent => FoodComponentMapper.domainToDT(foodComponent));
+  }
+
   async create(foodComponentDTN: FoodComponentDTN): Promise<FoodComponentDT> {
     const transaction = await this.transactionHandler.start();
 
@@ -128,5 +134,16 @@ export class FoodComponentService implements IFoodComponentService {
   async removeAll(): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
     await this.foodComponentRepo.removeAll();
+  }
+
+  async removeAllForOneFood(foodId: number): Promise<void> {
+    const transaction = await this.transactionHandler.start();
+
+    try {
+      await this.foodComponentRepo.removeAllForOneFood(foodId);
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 }
