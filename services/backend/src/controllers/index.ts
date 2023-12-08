@@ -58,6 +58,11 @@ import multer from 'multer';
 
 // Init services
 
+
+// This is necessary to create TransactionHandlers
+await dbHandler.connect();
+
+
 export const uiSettingService = new UiSettingService(
   new UiSettingRepoSequelizePG(),
   new TransactionHandlerSequelizePG(
