@@ -451,10 +451,7 @@ describe('User PUT request tests', () => {
   });
 
   beforeEach(async () => {
-    if (validUser) {
-      await userService.remove(validUser.id);
-      await userService.userRepo.deleteForTest(validUser.id);
-    }
+    if (validUser) await userService.userRepo.deleteForTest(validUser.id);
     await redisSessionClient.flushDb();
     validUser = await createUser(validUserInDB.dtn);
   });
@@ -626,10 +623,7 @@ describe('User DELETE request tests', () => {
   });
 
   beforeEach(async () => {
-    if (validUser) {
-      await userService.remove(validUser.id);
-      await userService.delete(validUser.id);
-    }
+    if (validUser) await userService.userRepo.deleteForTest(validUser.id);
     await sessionService.removeAll();
     validUser = await createUser(validUserInDB.dtn);
   });
@@ -696,10 +690,7 @@ describe('User addresses requests tests', () => {
   });
 
   beforeEach(async () => {
-    if (validUser) {
-      await userService.remove(validUser.id);
-      await userService.delete(validUser.id);
-    }
+    if (validUser) await userService.userRepo.deleteForTest(validUser.id);
     await sessionService.removeAll();
     validUser = await createUser(validUserInDB.dtn);
 
