@@ -58,9 +58,13 @@ export type MyRedisClientType = typeof redisSessionClient;
 
 const __dirname = process.cwd();
 
+const pathAdjustment = process.env.TEST_MODE === 'self' || process.env.WORK_MODE === 'self'
+  ? ''
+  : '../../../packages/backend-logic';
+
 const authProtoPath = process.platform === 'win32'
-  ? __dirname + '\\src\\protos\\auth.proto'
-  : __dirname + '/src/protos/auth.proto';
+  ? __dirname + pathAdjustment + '\\src\\protos\\auth.proto'
+  : __dirname + pathAdjustment + '/src/protos/auth.proto';
 
 const packageDefinitionAuth = loadSync(
   authProtoPath,
