@@ -81,6 +81,7 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
   async update(req: Request, res: Response) {
     if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check userExtractor middleware');
     if (!isUserDTU(req.body)) throw new RequestBodyError('Invalid edit user request body');
+    if (req.userId !== Number(req.params.id)) throw new HackError('User attempts to change another users data or invalid user id');
 
     const { username, name, password, phonenumber, email, birthdate, newPassword } = req.body;
 
@@ -132,7 +133,7 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
         ...config.sessionCookieOptions,
         expires: new Date(Date.now() + config.cookieExpiracyMS)
       })
-      .status(200).json(resBody);
+      .status(201).json(resBody);
   }
 
   async refreshToken(req: Request, res: Response): Promise<void> {
