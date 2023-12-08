@@ -185,6 +185,15 @@ export class UserRepoSequelizePG implements IUserRepo {
     await dbUser.destroy({ force: true, transaction });
   }
 
+  /**
+   * Method works only for node_env===test
+   * Difference - check for voluntary deletion is omitted
+   */
+  async deleteForTest(id: number, transaction?: Transaction): Promise<void> {
+    if (process.env.NODE_ENV !== 'test') throw new ApplicationError('Method works only for test');
+    await UserPG.scope('all').destroy({ force: true, where: { id }, transaction });
+  }
+
   async removeAll(keepSuperAdmin: boolean = false): Promise<void> {
     if (keepSuperAdmin) {
       await UserPG.scope('all').destroy({ force: true, where: {
