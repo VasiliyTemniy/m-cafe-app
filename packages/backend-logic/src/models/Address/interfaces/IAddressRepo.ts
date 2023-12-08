@@ -41,4 +41,12 @@ export interface IAddressRepo extends Omit<ICRUDRepo<Address, AddressDTN>, 'crea
     addressId: number,
     transaction?: GenericTransaction
   ): Promise<void>;
+  /**
+   * Remove all addresses for one user
+   * Use for total user data deletion in user service
+   */
+  removeAddressesForOneUser(
+    userId: number,
+    transaction?: GenericTransaction
+  ): Promise<void>;
 }

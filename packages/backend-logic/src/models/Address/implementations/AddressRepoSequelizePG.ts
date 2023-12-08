@@ -204,6 +204,20 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     await this.removeIfUnused(addressId, transaction);
   }
 
+  async removeAddressesForOneUser(userId: number, transaction?: Transaction): Promise<void> {
+    // Find all user addresses instead of direct deletion
+    // Thus, only unused addresses will be deleted
+    const userAddresses = await UserAddressPG.findAll({
+      where: { userId },
+      transaction
+    });
+    
+    for (const userAddress of userAddresses) {
+      await this.removeUserAddress(userId, userAddress.addressId, transaction);
+      await this.removeIfUnused(userAddress.addressId, transaction);
+    }
+  }
+
   async removeAll(): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
     await AddressPG.scope('all').destroy({ force: true, where: {} });
