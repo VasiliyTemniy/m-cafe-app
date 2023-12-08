@@ -61,27 +61,11 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
   }
 
   /**
-   * Adds user model instance to request\
-   * Middleware prerequisites: verifyToken
-   */
-  async userExtractor(req: RequestMiddle, res: Response, next: NextFunction): Promise<void> {
-    if (!req.userId) return next(new ApplicationError('Wrong middleware usage - userExtractor: userId undefined; use verifyToken before userExtractor. Please, contact admins'));
-
-    const user = await this.userRepo.getById(req.userId);
-
-    if (user.rights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
-    if (user.deletedAt) return next(new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin'));
-  
-    req.user = user;
-  
-    next();
-  }
-
-  /**
    * Adds user rights to request\
-   * If no userId in request - sets rights to 'customer'\
+   * If no userId in request - sets rights to 'customer' assuming usage of setVerifyOptional\
+   * If userId is extracted - checks userSession validity\
    * Raises an error if user is banned\
-   * Middleware prerequisites: verifyToken, setVerifyOptional
+   * Middleware prerequisites: verifyToken, setVerifyOptional(optional)
    */
   async userRightsExtractor(req: RequestMiddle, res: Response, next: NextFunction): Promise<void> {
 
@@ -95,9 +79,18 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
     if (!userSession) {
       // Possibly some kind of internal redis\inmem error
       logger.error(`Session not found: ${req.userId}, ${req.userAgent}`);
+
+      // If user is not found in db, an error will be raised by userRepo.getById, leading to 404 from expressErrorHandler
+      const foundUser = await this.userRepo.getById(req.userId);
+      if (foundUser.deletedAt) return next(new ProhibitedError('You have deleted your own account. To delete it permanently or restore it, contact admin'));
+      if (foundUser.rights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
+
+      // If user us not banned - then something is wrong
       return next(new AuthorizationError('Wrong token - userAgent pair. Are you trying to hack me?'));
     }
 
+    // The session must already be deleted here after changing user rights to 'disabled' in userService.
+    // However, I'll leave this check here, just in case 
     if (userSession.rights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
   
     req.rights = userSession.rights;
@@ -108,7 +101,8 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
   /**
    * Checks user rights in request\
    * Makes sure that request contains user rights\
-   * Middleware prerequisites: verifyToken, setVerifyOptional, userRightsExtractor
+   * Useless after middleware rework?? - delete?\
+   * Middleware prerequisites: verifyToken, userRightsExtractor
    */
   userCheck(req: RequestMiddle, res: Response, next: NextFunction): void {
 
@@ -120,7 +114,7 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
   /**
    * Checks user rights in request\
    * Makes sure that user has manager rights\
-   * Middleware prerequisites: verifyToken, setVerifyOptional, userRightsExtractor
+   * Middleware prerequisites: verifyToken, userRightsExtractor
    */
   managerCheck(req: RequestMiddle, res: Response, next: NextFunction): void {
 
@@ -134,7 +128,7 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
   /**
    * Checks user rights in request\
    * Makes sure that user has admin rights\
-   * Middleware prerequisites: verifyToken, setVerifyOptional, userRightsExtractor
+   * Middleware prerequisites: verifyToken, userRightsExtractor
    */
   adminCheck(req: RequestMiddle, res: Response, next: NextFunction): void {
 
@@ -148,7 +142,7 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
   /**
    * Checks user rights in request\
    * Makes sure that user is superadmin\
-   * Middleware prerequisites: verifyToken, setVerifyOptional, userRightsExtractor
+   * Middleware prerequisites: verifyToken, userRightsExtractor
    */
   async superAdminCheck(req: RequestMiddle, res: Response, next: NextFunction): Promise<void> {
 
@@ -162,8 +156,6 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
 
     next();
   }
-
-  // sessionCheck(req: RequestMiddle, res: Response, next: NextFunction): void, // NOT NEEDED anymore: use userRightsExtractor instead
 
   /**
    * Checks request params\
