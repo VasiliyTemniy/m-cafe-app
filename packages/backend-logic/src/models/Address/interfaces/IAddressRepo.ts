@@ -1,11 +1,23 @@
 import type { Address, AddressDTN } from '@m-cafe-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
-export interface IAddressRepo extends Omit<ICRUDRepo<Address, AddressDTN>, 'create' | 'update' | 'getAll' | 'remove'> {
-  getById(id: number): Promise<Address>;
-  getByUserId(userId: number): Promise<Address[]>;
+export interface IAddressRepo extends Omit<ICRUDRepo<Address, AddressDTN>, 'create' | 'update' | 'remove'> {
+  /**
+   * Use this method only for testing
+   */
+  getAll(transaction?: GenericTransaction): Promise<Address[]>;
+  /**
+   * Use this method only for testing
+   */
+  getAllUserAddresses(transaction?: GenericTransaction): Promise<{ userId: number, addressId: number }[]>;
+  getById(id: number, transaction?: GenericTransaction): Promise<Address>;
+  getByUserId(userId: number, transaction?: GenericTransaction): Promise<Address[]>;
   findOrCreate(addressDTN: AddressDTN, transaction?: GenericTransaction): Promise<{ address: Address, created: boolean }>;
-  update(addressToUpdate: Address, transaction?: GenericTransaction): Promise<{ address: Address, updated: boolean }>;
+  update(
+    addressToUpdate: Address,
+    transaction?: GenericTransaction,
+    removeIfUnused?: boolean
+  ): Promise<{ address: Address, updated: boolean }>;
   removeIfUnused(addressId: number, transaction?: GenericTransaction): Promise<void>;
   createUserAddress(
     userId: number,

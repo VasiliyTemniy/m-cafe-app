@@ -1,5 +1,5 @@
 import type { IAddressRepo } from '../interfaces';
-import type { AddressDT, AddressDTN } from '@m-cafe-app/models';
+import type { AddressDTN } from '@m-cafe-app/models';
 import type { Transaction } from 'sequelize';
 import {
   Address as AddressPG,
@@ -11,16 +11,34 @@ import { AddressMapper } from '../infrastructure';
 import { DatabaseError } from '@m-cafe-app/utils';
 
 export class AddressRepoSequelizePG implements IAddressRepo {
+
+  /**
+   * Use this method only for testing
+   */
+  async getAll(transaction?: Transaction): Promise<Address[]> {
+    if (process.env.NODE_ENV !== 'test') return [];
+    const dbAddresses = await AddressPG.scope('all').findAll({ transaction });
+    return dbAddresses.map(dbAddress => AddressMapper.dbToDomain(dbAddress));
+  }
+
+  /**
+   * Use this method only for testing
+   */
+  async getAllUserAddresses(transaction?: Transaction): Promise<{ userId: number; addressId: number; }[]> {
+    if (process.env.NODE_ENV !== 'test') return [];
+    const dbUserAddresses = await UserAddressPG.findAll({ transaction });
+    return dbUserAddresses.map(({ userId, addressId }) => ({ userId, addressId }));
+  }
   
-  async getById(id: number): Promise<Address> {
-    const dbAddress = await AddressPG.findByPk(id);
+  async getById(id: number, transaction?: Transaction): Promise<Address> {
+    const dbAddress = await AddressPG.findByPk(id, { transaction });
     if (!dbAddress) throw new DatabaseError(`No address entry with this id ${id}`);
     return AddressMapper.dbToDomain(dbAddress);
   }
 
-  async getByUserId(userId: number): Promise<Address[]> {
+  async getByUserId(userId: number, transaction?: Transaction): Promise<Address[]> {
 
-    const userWithAddresses = await UserPG.scope('allWithAddresses').findByPk(userId);
+    const userWithAddresses = await UserPG.scope('allWithAddresses').findByPk(userId, { transaction });
     if (!userWithAddresses) throw new DatabaseError(`No user entry with this id ${userId}`);
 
     const res: Address[] = userWithAddresses.addresses
@@ -60,7 +78,11 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     return { address: AddressMapper.dbToDomain(savedAddress), created };
   }
 
-  async update(addressToUpdate: Address, transaction?: Transaction): Promise<{ address: Address; updated: boolean; }> {
+  async update(
+    addressToUpdate: Address,
+    transaction?: Transaction,
+    removeIfUnused: boolean = true
+  ): Promise<{ address: Address; updated: boolean; }> {
     // check this.createAddress above for explanation of this bulk
     const {
       id: oldAddressId,
@@ -76,7 +98,7 @@ export class AddressRepoSequelizePG implements IAddressRepo {
       entranceKey
     } = addressToUpdate;
     
-    const updAddress: AddressDT = { id: oldAddressId, city, street };
+    const updAddress: AddressDTN = { city, street };
         
     if (cityDistrict) updAddress.cityDistrict = cityDistrict;
     if (region) updAddress.region = region;
@@ -87,7 +109,7 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     if (flat) updAddress.flat = flat;
     if (entranceKey) updAddress.entranceKey = entranceKey;
         
-    const oldAddress = await AddressPG.findByPk(oldAddressId);
+    const oldAddress = await AddressPG.findByPk(oldAddressId, { transaction });
     if (!oldAddress) throw new DatabaseError(`No address entry with this id ${oldAddressId}`);
     
     // Check for this address, must be unique
@@ -96,7 +118,9 @@ export class AddressRepoSequelizePG implements IAddressRepo {
       transaction
     });
 
-    await this.removeIfUnused(oldAddressId);
+    if (removeIfUnused) {
+      await this.removeIfUnused(oldAddressId, transaction);
+    }
 
     return { address: AddressMapper.dbToDomain(savedAddress), updated: created };
   }
@@ -107,12 +131,14 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     const addressUser = await UserAddressPG.findOne({
       where: {
         addressId
-      }
+      },
+      transaction
     });
     const addressFacility = await FacilityPG.findOne({
       where: {
         addressId
-      }
+      },
+      transaction
     });
     
     // If nothing and nobody uses old address, delete it
@@ -147,7 +173,8 @@ export class AddressRepoSequelizePG implements IAddressRepo {
       where: {
         addressId,
         userId
-      }
+      },
+      transaction
     });
 
     if (!existingUserAddress) {
@@ -169,7 +196,7 @@ export class AddressRepoSequelizePG implements IAddressRepo {
     addressId: number,
     transaction?: Transaction
   ): Promise<void> {
-    const address = await AddressPG.findByPk(addressId);
+    const address = await AddressPG.findByPk(addressId, { transaction });
     if (!address) throw new DatabaseError(`No address entry with this id ${addressId}`);
 
     await UserAddressPG.destroy({ where: { userId, addressId }, transaction });
@@ -180,5 +207,6 @@ export class AddressRepoSequelizePG implements IAddressRepo {
   async removeAll(): Promise<void> {
     if (process.env.NODE_ENV !== 'test') return;
     await AddressPG.scope('all').destroy({ force: true, where: {} });
+    await UserAddressPG.destroy({ force: true, where: {} });
   }
 }
