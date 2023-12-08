@@ -20,6 +20,11 @@ export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {
     return FoodComponentMapper.dbToDomain(dbFoodComponent);
   }
 
+  async getByFoodId(foodId: number): Promise<FoodComponent[]> {
+    const dbFoodComponents = await FoodComponentPG.scope('all').findAll({ where: { foodId } });
+    return dbFoodComponents.map(foodComponent => FoodComponentMapper.dbToDomain(foodComponent));
+  }
+
   async create(
     foodComponentDTN: FoodComponentDTN,
     usedComponentSimple: FoodS | IngredientS,
@@ -113,5 +118,9 @@ export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {
 
   async removeAll(): Promise<void> {
     await FoodComponentPG.scope('all').destroy({ force: true, where: {} });
+  }
+
+  async removeAllForOneFood(foodId: number): Promise<void> {
+    await FoodComponentPG.scope('all').destroy({ force: true, where: { foodId } });
   }
 }
