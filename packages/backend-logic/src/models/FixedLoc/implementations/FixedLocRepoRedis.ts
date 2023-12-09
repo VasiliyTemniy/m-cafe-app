@@ -17,7 +17,7 @@ export class FixedLocRepoRedis extends RedisRepoBase implements IFixedLocSRepo  
         continue;
 
       fixedLocsInmem.push({
-        name: key,
+        name: response.name,
         namespace: response.namespace,
         scope: response.scope,
         locString: {
@@ -35,7 +35,8 @@ export class FixedLocRepoRedis extends RedisRepoBase implements IFixedLocSRepo  
     const multi = this.redisClient.multi();
 
     for (const fixedLoc of fixedLocs) {
-      multi.hSet(`${fixedLoc.name}`, {
+      multi.hSet(`${String(fixedLoc.id)}`, {
+        name: fixedLoc.name,
         namespace: fixedLoc.namespace,
         scope: fixedLoc.scope,
         mainStr: fixedLoc.locString.mainStr,

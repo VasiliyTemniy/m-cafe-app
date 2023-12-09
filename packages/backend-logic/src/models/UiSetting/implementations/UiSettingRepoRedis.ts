@@ -14,7 +14,7 @@ export class UiSettingRepoRedis extends RedisRepoBase implements IUiSettingSRepo
         continue;
 
       uiSettingsInmem.push({
-        name: key,
+        name: response.name,
         value: response.value,
         group: response.group,
         theme: response.theme
@@ -28,7 +28,7 @@ export class UiSettingRepoRedis extends RedisRepoBase implements IUiSettingSRepo
     const multi = this.redisClient.multi();
 
     for (const uiSetting of uiSettings) {
-      multi.hSet(`${uiSetting.name}`, { value: uiSetting.value, group: uiSetting.group, theme: uiSetting.theme });
+      multi.hSet(`${String(uiSetting.id)}`, { name: uiSetting.name, value: uiSetting.value, group: uiSetting.group, theme: uiSetting.theme });
     }
 
     await multi.exec();
