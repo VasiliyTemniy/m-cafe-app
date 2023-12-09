@@ -11,6 +11,13 @@ import { TransactionHandlerSequelizePG } from '../utils';
 // If tests fail after dependency injection, change dependencies accordingly
 // in these tests
 
+const fixedLocsPath = '../../services/backend/' + process.env.FIXED_LOCS_PATH || '../../services/backend/locales';
+const envFixedLocsExt = process.env.FIXED_LOCS_EXT;
+const fixedLocsExt =
+  envFixedLocsExt === 'json' ? 'json' :
+  envFixedLocsExt === 'jsonc' ? 'jsonc' :
+  'jsonc';
+
 
 describe('FixedLocService implementation tests', () => {
 
@@ -39,7 +46,7 @@ describe('FixedLocService implementation tests', () => {
   it('should initialize fixed locs properly, store them in db and redis', async () => {
 
     // Path relative from backend-logic root
-    await fixedLocService.initFixedLocs('../../services/backend/locales', 'jsonc');
+    await fixedLocService.initFixedLocs(fixedLocsPath, fixedLocsExt);
 
     const fixedLocs = await fixedLocService.getAll();
 
@@ -55,7 +62,7 @@ describe('FixedLocService implementation tests', () => {
 
   it('should update fixed locs in both redis and db', async () => {
 
-    await fixedLocService.initFixedLocs('../../services/backend/locales', 'jsonc');
+    await fixedLocService.initFixedLocs(fixedLocsPath, fixedLocsExt);
 
     const fixedLocs = await fixedLocService.getAll();
 
@@ -106,7 +113,7 @@ describe('FixedLocService implementation tests', () => {
 
   it('should update only loc strings of fixed locs, never other properties', async () => {
 
-    await fixedLocService.initFixedLocs('../../services/backend/locales', 'jsonc');
+    await fixedLocService.initFixedLocs(fixedLocsPath, fixedLocsExt);
 
     const fixedLocs = await fixedLocService.getAll();
 
