@@ -3,19 +3,13 @@ import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../app';
-import { connectToDatabase, User } from '@m-cafe-app/db';
-import config from '../utils/config';
-import { validAdminInDB } from './admin_api_helper';
-import { Op } from 'sequelize';
-import { Session } from '../redis/Session';
+import { createAdmin, validAdminInDB } from './admin_api_helper';
 import { initLogin, userAgent } from './sessions_api_helper';
 import { apiBaseUrl } from './test_helper';
-import { validUserInDB } from './user_api_helper';
-import { uiSettingController } from '../controllers';
+import { createUser, validUserInDB } from './user_api_helper';
+import { authController, sessionService, uiSettingService, userService } from '../controllers';
 
 
-
-await connectToDatabase();
 const api = supertest(app);
 
 
@@ -25,25 +19,19 @@ describe('UiSetting requests tests', () => {
   let uiSettings: UiSettingDT[];
 
   before(async () => {
-    await User.scope('all').destroy({
-      force: true,
-      where: {
-        phonenumber: {
-          [Op.not]: config.SUPERADMIN_PHONENUMBER
-        }
-      }
-    });
+    const keepSuperAdmin = true;
+    await userService.removeAll(keepSuperAdmin);
 
-    await User.create(validAdminInDB.dbEntry);
-    await Session.destroy({ where: {} });
-    tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
+    await authController.flushExternalDB();
+    const admin = await createAdmin(validAdminInDB.dtn);
+    await sessionService.removeAll();
+    tokenCookie = await initLogin(admin, validAdminInDB.password, api, 201, userAgent) as string;
 
-    await uiSettingController.service.reset();
-    uiSettings = await uiSettingController.service.getAll();
+    uiSettings = await uiSettingService.reset();
   });
 
   after(async () => {
-    await uiSettingController.service.removeAll();
+    await uiSettingService.removeAll();
   });
 
   it('UiSetting GET / route work without authorization and give only non-falsy uiSettings', async () => {
@@ -70,7 +58,7 @@ describe('UiSetting requests tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const uiSettingInDB = await uiSettingController.service.getById(uiSettings[0].id);
+    const uiSettingInDB = await uiSettingService.getById(uiSettings[0].id);
 
     expect(response1.body.name).to.equal(uiSettingInDB?.name);
     expect(response1.body.value).to.equal(uiSettingInDB?.value);
@@ -97,9 +85,9 @@ describe('UiSetting requests tests', () => {
 
     expect(response1.body.error.name).to.equal('AuthorizationError');
 
-    await User.create(validUserInDB.dbEntry);
+    const customer = await createUser(validUserInDB.dtn);
 
-    const commonUserTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string; 
+    const commonUserTokenCookie = await initLogin(customer, validUserInDB.password, api, 201, userAgent) as string; 
 
     const response2 = await api
       .put(`${apiBaseUrl}/ui-setting/${uiSettings[0].id}`)
@@ -130,7 +118,7 @@ describe('UiSetting requests tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    const updUiSettingInDB = await uiSettingController.service.getById(uiSettings[0].id);
+    const updUiSettingInDB = await uiSettingService.getById(uiSettings[0].id);
 
     expect(response.body.name).to.not.equal(updUiSetting.name);
     expect(response.body.name).to.equal(uiSettings[0].name);
