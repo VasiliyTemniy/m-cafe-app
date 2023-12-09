@@ -1,29 +1,46 @@
 import type { FixedLoc, FixedLocS } from '@m-cafe-app/models';
 import type { IFixedLocSRepo } from '../interfaces';
 import { RedisRepoBase } from '../../../utils';
-import { fixedLocFilter } from '@m-cafe-app/shared-constants';
+import { fixedLocFilter, fixedLocsScopesReadonly } from '@m-cafe-app/shared-constants';
 
 export class FixedLocRepoRedis extends RedisRepoBase implements IFixedLocSRepo  {
 
   private inmemFilter: string = fixedLocFilter;
 
   async getMany(scopes?: string[]): Promise<FixedLocS[]> {
+    let fixedLocsInmem: FixedLocS[] = [];
+
+    if (scopes && scopes.length > 0) {
+      for (const scope of scopes) {
+        const scopedFixedLocs = await this.getByScope(scope);
+        fixedLocsInmem = fixedLocsInmem.concat(scopedFixedLocs);
+      }
+    } else {
+      for (const scope of fixedLocsScopesReadonly) {
+        const scopedFixedLocs = await this.getByScope(scope);
+        fixedLocsInmem = fixedLocsInmem.concat(scopedFixedLocs);
+      }
+    }
+
+    return fixedLocsInmem;
+  }
+
+  private async getByScope(scope: string): Promise<FixedLocS[]> {
     const fixedLocsInmem: FixedLocS[] = [];
 
-    for await (const key of this.redisClient.scanIterator()) {
-      const response = await this.redisClient.hGetAll(key);
+    const keys = await this.redisClient.keys(`${scope}:*`);
 
-      if (scopes && scopes.length > 0 && !scopes.includes(response.scope))
-        continue;
-
+    for (const key of keys) {
+      const result = await this.redisClient.hGetAll(key);
+      
       fixedLocsInmem.push({
-        name: response.name,
-        namespace: response.namespace,
-        scope: response.scope,
+        name: result.name,
+        namespace: result.namespace,
+        scope,
         locString: {
-          mainStr: response.mainStr,
-          secStr: response.secStr === this.inmemFilter ? undefined : response.secStr,
-          altStr: response.altStr === this.inmemFilter ? undefined : response.altStr
+          mainStr: result.mainStr,
+          secStr: result.secStr === this.inmemFilter ? undefined : result.secStr,
+          altStr: result.altStr === this.inmemFilter ? undefined : result.altStr
         }
       });
     }
@@ -35,10 +52,10 @@ export class FixedLocRepoRedis extends RedisRepoBase implements IFixedLocSRepo  
     const multi = this.redisClient.multi();
 
     for (const fixedLoc of fixedLocs) {
-      multi.hSet(`${String(fixedLoc.id)}`, {
+      multi.hSet(`${fixedLoc.scope}:${fixedLoc.namespace}:${fixedLoc.name}`, {
         name: fixedLoc.name,
         namespace: fixedLoc.namespace,
-        scope: fixedLoc.scope,
+        // scope: fixedLoc.scope, // Scope is easily inferred from the key
         mainStr: fixedLoc.locString.mainStr,
         secStr: fixedLoc.locString.secStr ? fixedLoc.locString.secStr : this.inmemFilter,
         altStr: fixedLoc.locString.altStr ? fixedLoc.locString.altStr : this.inmemFilter
