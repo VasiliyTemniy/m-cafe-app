@@ -6,7 +6,7 @@ import app from '../app';
 import { apiBaseUrl } from './test_helper';
 import { initLogin, userAgent } from './sessions_api_helper';
 import { createUser, validNewUser, validUserInDB } from './user_api_helper';
-import config from '@m-cafe-app/backend-logic';
+import backendLogicConfig from '@m-cafe-app/backend-logic';
 import { createAdmin, validAdminInDB } from './admin_api_helper';
 import { authController, fixedLocService, sessionService, uiSettingService, userService } from '../controllers';
 import { User as UserPG } from '@m-cafe-app/db';
@@ -35,14 +35,14 @@ password, username get zeroified, phonenumber left for distinguishing reasons', 
     expect(process.env.SUPERADMIN_USERNAME).to.equal('');
     expect(process.env.SUPERADMIN_PASSWORD).to.equal('');
 
-    expect(process.env.SUPERADMIN_PHONENUMBER).to.equal(config.SUPERADMIN_PHONENUMBER);
+    expect(process.env.SUPERADMIN_PHONENUMBER).to.equal(backendLogicConfig.SUPERADMIN_PHONENUMBER);
 
   });
 
   it('Superadmin cannot login with phonenumber and password. Password is not even checked after phonenumber detection', async () => {
 
     const superadmin = await userService.userRepo.getByUniqueProperties({
-      phonenumber: config.SUPERADMIN_PHONENUMBER
+      phonenumber: backendLogicConfig.SUPERADMIN_PHONENUMBER
     });
 
     if (!superadmin) expect(true).to.equal(false);
@@ -136,7 +136,7 @@ describe('Admin router basics', () => {
   it('Nobody can change superadmin data or delete it, even other admins', async () => {
 
     const superadmin = await userService.userRepo.getByUniqueProperties({
-      phonenumber: config.SUPERADMIN_PHONENUMBER
+      phonenumber: backendLogicConfig.SUPERADMIN_PHONENUMBER
     });
 
     if (!superadmin) expect(true).to.equal(false);
@@ -371,7 +371,7 @@ describe('Superadmin routes tests', () => {
 
     realSuperadmin = await UserPG.findOne({
       where: {
-        phonenumber: config.SUPERADMIN_PHONENUMBER
+        phonenumber: backendLogicConfig.SUPERADMIN_PHONENUMBER
       }
     }) as UserPG;
 
@@ -383,7 +383,7 @@ describe('Superadmin routes tests', () => {
       ...validUserInDB.dtn,
       birthdate: new Date('2000-01-01'),
       rights: 'admin',
-      phonenumber: config.SUPERADMIN_PHONENUMBER,
+      phonenumber: backendLogicConfig.SUPERADMIN_PHONENUMBER,
       lookupHash: '123456789TEST'
     });
 
@@ -391,7 +391,7 @@ describe('Superadmin routes tests', () => {
     await authController.create({
       id: mockSuperadmin.id,
       lookupHash: mockSuperadmin.lookupHash,
-      ttl: config.TOKEN_TTL,
+      ttl: backendLogicConfig.TOKEN_TTL,
       password: validUserInDB.password
     });
 
@@ -417,7 +417,7 @@ describe('Superadmin routes tests', () => {
     mockSuperadmin.phonenumber = '1234567891';
     await mockSuperadmin.save();
 
-    realSuperadmin.phonenumber = config.SUPERADMIN_PHONENUMBER;
+    realSuperadmin.phonenumber = backendLogicConfig.SUPERADMIN_PHONENUMBER;
     await realSuperadmin.save();
 
     const keepSuperAdmin = true;
@@ -435,7 +435,7 @@ describe('Superadmin routes tests', () => {
       .expect(403);
 
     expect(response1.body.error.name).to.equal('ProhibitedError');
-    expect(response1.body.error.message).to.equal(`Please, call superadmin to resolve this problem ${config.SUPERADMIN_PHONENUMBER}`);
+    expect(response1.body.error.message).to.equal(`Please, call superadmin to resolve this problem ${backendLogicConfig.SUPERADMIN_PHONENUMBER}`);
 
     await fixedLocService.initFixedLocs('locales', 'jsonc');
 
@@ -474,7 +474,7 @@ describe('Superadmin routes tests', () => {
       .expect(403);
 
     expect(response1.body.error.name).to.equal('ProhibitedError');
-    expect(response1.body.error.message).to.equal(`Please, call superadmin to resolve this problem ${config.SUPERADMIN_PHONENUMBER}`);
+    expect(response1.body.error.message).to.equal(`Please, call superadmin to resolve this problem ${backendLogicConfig.SUPERADMIN_PHONENUMBER}`);
 
     await uiSettingService.initUiSettings();
 
