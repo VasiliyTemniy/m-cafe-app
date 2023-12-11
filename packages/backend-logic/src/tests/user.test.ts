@@ -568,7 +568,7 @@ Upon logout, Sessions get deleted only for specific userAgent`, async () => {
     expect(allUserSessionsAfterRemoval.length).to.equal(0);
   });
 
-  it('should clean up expired and malformed Sessions. Test awaits 1 second to expire tokens', async () => {
+  it('should clean up expired and malformed Sessions', async () => {
 
     // Create user, auth and Session with recieved token under the hood. Token TTL is taken from config here
     const { user, auth } = await userService.create(newUserInfo, 'test');
@@ -582,7 +582,7 @@ Upon logout, Sessions get deleted only for specific userAgent`, async () => {
       id: user.id,
       lookupHash,
       password: newUserInfo.password,
-      ttl: '1s'
+      ttl: '10ms'
     };
 
     const auth2 = await userService.authController.grant(authRequest2);
@@ -594,7 +594,7 @@ Upon logout, Sessions get deleted only for specific userAgent`, async () => {
       id: user.id,
       lookupHash,
       password: newUserInfo.password,
-      ttl: '1s'
+      ttl: '10ms'
     };
 
     const auth3 = await userService.authController.grant(authRequest3);
@@ -604,8 +604,8 @@ Upon logout, Sessions get deleted only for specific userAgent`, async () => {
     // Create malformed Session
     await userService.sessionService.create(user.id, 'malformed', 'test4', user.rights);
 
-    // Await 1 second for tokens to expire
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Await 20 milliseconds for tokens to expire
+    await new Promise(resolve => setTimeout(resolve, 20));
 
     const userSessionsBeforeCleanup = await userService.sessionService.getAllByUserId(user.id);
 
