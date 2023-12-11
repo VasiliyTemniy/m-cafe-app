@@ -137,7 +137,7 @@ export class UserControllerExpressHttp implements IUserControllerHttp {
   }
 
   async refreshToken(req: Request, res: Response): Promise<void> {
-    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken middleware');
+    if (!isRequestCustom(req)) throw new UnknownError('This code should never be reached - check verifyToken and userRightsExtractor middleware');
 
     const userAgent = req.headers['user-agent'] ? req.headers['user-agent'] : 'unknown';
 
