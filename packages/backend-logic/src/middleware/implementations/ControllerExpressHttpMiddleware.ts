@@ -4,7 +4,7 @@ import type { RequestMiddle } from '../../utils';
 import type { IAuthController } from '../../models/Auth';
 import type { IUserRepo } from '../../models/User';
 import type { ISessionService } from '../../models/Session';
-import { ApplicationError, AuthorizationError, BannedError, ProhibitedError, RequestQueryError, logger } from '@m-cafe-app/utils';
+import { ApplicationError, AuthorizationError, BannedError, ProhibitedError, RequestQueryError, SessionError, logger } from '@m-cafe-app/utils';
 import config from '../../config';
 
 
@@ -36,6 +36,7 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
    * Verifies token in cookies\
    * Adds token, userAgent, userId to request properties\
    * Middleware prerequisites: no
+   * Middleware postrequisites: userRightsExtractor (most of time)
    */
   verifyToken(req: RequestMiddle, res: Response, next: NextFunction): void {
 
@@ -86,7 +87,7 @@ export class ControllerExpressHttpMiddleware implements IControllerExpressHttpMi
       if (foundUser.rights === 'disabled') return next(new BannedError('Your account have been banned. Contact admin to unblock account'));
 
       // If user us not banned - then something is wrong
-      return next(new AuthorizationError('Wrong token - userAgent pair. Are you trying to hack me?'));
+      return next(new SessionError('Inactive session. Please, login'));
     }
 
     // The session must already be deleted here after changing user rights to 'disabled' in userService.
