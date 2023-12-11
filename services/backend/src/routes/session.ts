@@ -17,6 +17,7 @@ sessionRouter.post(
 sessionRouter.get(
   '/refresh',
   middleware.verifyToken.bind(middleware),
+  middleware.userRightsExtractor.bind(middleware) as RequestHandler,
   (async (req, res) => {
 
     await userController.refreshToken(req, res);
@@ -27,6 +28,7 @@ sessionRouter.get(
 sessionRouter.delete(
   '/',
   middleware.verifyToken.bind(middleware),
+  // middleware.userRightsExtractor.bind(middleware) as RequestHandler, // - not needed here to delete session
   (async (req, res) => {
 
     await userController.logout(req, res);
