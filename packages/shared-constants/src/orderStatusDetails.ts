@@ -3,10 +3,14 @@ export enum OrderStatus {
   Cooking = 'cooking',
   Pending = 'pending',
   Preparing = 'preparing',
+  Sorting = 'sorting',
   Delivering = 'delivering',
   Delivered = 'delivered',
   Cancelled = 'cancelled',
   Rejected = 'rejected',
+  Transit = 'transit',
+  Lost = 'lost',
+  Ready = 'ready', // for a pickup
 }
 
 export const OrderStatusToNumericMapping = {
@@ -14,10 +18,14 @@ export const OrderStatusToNumericMapping = {
   [OrderStatus.Cooking]: 1,
   [OrderStatus.Pending]: 2,
   [OrderStatus.Preparing]: 3,
-  [OrderStatus.Delivering]: 4,
-  [OrderStatus.Delivered]: 5,
-  [OrderStatus.Cancelled]: 6,
-  [OrderStatus.Rejected]: 7,
+  [OrderStatus.Sorting]: 4,
+  [OrderStatus.Delivering]: 5,
+  [OrderStatus.Delivered]: 6,
+  [OrderStatus.Cancelled]: 7,
+  [OrderStatus.Rejected]: 8,
+  [OrderStatus.Transit]: 9,
+  [OrderStatus.Lost]: 10,
+  [OrderStatus.Ready]: 11,
 };
 
 export const NumericToOrderStatusMapping: { [key: string]: OrderStatus } = {};
