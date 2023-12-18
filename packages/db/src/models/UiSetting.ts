@@ -1,8 +1,10 @@
-import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
-import type { Sequelize } from 'sequelize';
-import { Model, DataTypes } from 'sequelize';
-import { Op } from 'sequelize';
+import type {
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional
+} from 'sequelize';
+import { Model, DataTypes, Op } from 'sequelize';
 import { allowedThemes, componentGroups } from '@m-cafe-app/shared-constants';
 
 
@@ -13,10 +15,6 @@ export class UiSetting extends Model<InferAttributes<UiSetting>, InferCreationAt
   declare theme: string;
   declare value: string;
 }
-
-
-export type UiSettingData = Omit<InferAttributes<UiSetting>, PropertiesCreationOptional>
-  & { id: number; };
 
 
 export const initUiSettingModel = async (dbInstance: Sequelize) => {

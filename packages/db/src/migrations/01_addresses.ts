@@ -126,6 +126,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       },
       unique: 'unique_address'
     },
+    postal_code: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: 'unique_address'
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false
@@ -138,7 +143,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     uniqueKeys: {
       unique_address: {
         customIndex: true,
-        fields: ['region', 'region_district', 'city', 'city_district', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
+        fields: ['region', 'region_district', 'city', 'city_district', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key', 'postal_code']
       }
     }
   });

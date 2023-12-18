@@ -1,23 +1,33 @@
-import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
-import type { Sequelize } from 'sequelize';
+import type {
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  ForeignKey,
+  NonAttribute
+} from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { Facility } from './Facility.js';
+import { StockStatus, StockEntityType } from '@m-cafe-app/shared-constants';
+import { DatabaseError } from '@m-cafe-app/utils';
 import { Ingredient } from './Ingredient.js';
+import { Product } from './Product.js';
+import { Facility } from './Facility.js';
 
 
 export class Stock extends Model<InferAttributes<Stock>, InferCreationAttributes<Stock>> {
   declare id: CreationOptional<number>;
-  declare ingredientId: ForeignKey<Ingredient['id']>;
+  declare entityId: number;
+  declare entityType: StockEntityType;
   declare facilityId: ForeignKey<Facility['id']>;
   declare quantity: number;
+  declare status: StockStatus;
+  declare facility?: NonAttribute<Facility>;
+  declare entity?: NonAttribute<Ingredient | Product>;
+  declare ingredient?: NonAttribute<Ingredient>; // mapped to entity in hooks
+  declare product?: NonAttribute<Product>; // mapped to entity in hooks
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
-
-
-export type StockData = Omit<InferAttributes<Stock>, PropertiesCreationOptional>
-& { id: number; };
 
 
 export const initStockModel = async (dbInstance: Sequelize) => {
@@ -29,21 +39,38 @@ export const initStockModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
-        ingredientId: {
+        entityId: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          references: { model: 'ingredients', key: 'id' },
+          unique: 'unique_stock'
+        },
+        entityType: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(StockEntityType)]
+          },
           unique: 'unique_stock'
         },
         facilityId: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: { model: 'facilities', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
           unique: 'unique_stock'
         },
         quantity: {
           type: DataTypes.INTEGER,
           allowNull: false
+        },
+        status: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(StockStatus)]
+          },
+          unique: 'unique_stock'
         },
         createdAt: {
           type: DataTypes.DATE,
@@ -61,7 +88,7 @@ export const initStockModel = async (dbInstance: Sequelize) => {
         indexes: [
           {
             unique: true,
-            fields: ['ingredient_id', 'facility_id']
+            fields: ['entity_id', 'entity_type', 'facility_id', 'status']
           }
         ],
         defaultScope: {
@@ -81,6 +108,90 @@ export const initStockModel = async (dbInstance: Sequelize) => {
             }
           },
           allWithTimestamps: {}
+        }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initStockAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      Stock.belongsTo(Facility, {
+        targetKey: 'id',
+        foreignKey: 'facilityId',
+        as: 'facility',
+      });
+
+      // Foreign key applied to Stock; Stock entityId refers to Ingredient; Scope applied to Stock
+      Stock.belongsTo(Ingredient, {
+        foreignKey: 'entityId',
+        as: 'ingredient',
+        scope: {
+          entityType: StockEntityType.Ingredient
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      // Foreign key applied to Stock; Stock entityId refers to Product; Scope applied to Stock
+      Stock.belongsTo(Product, {
+        foreignKey: 'entityId',
+        as: 'product',
+        scope: {
+          entityType: StockEntityType.Product
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+      
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initStockHooks = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      const mapStockEntityKey = (instance: Stock) => {
+        switch (instance.entityType) {
+          case StockEntityType.Ingredient:
+            if (instance.ingredient) {
+              instance.entity = instance.ingredient;
+            }
+            break;
+          case StockEntityType.Product:
+            if (instance.product) {
+              instance.entity = instance.product;
+            }
+            break;
+          default:
+            throw new DatabaseError(`Stock data corrupt: unknown entityType : ${instance.entityType}; instance: ${instance}`);
+        }
+        delete instance.product;
+        delete instance.ingredient;
+      };
+
+      Stock.addHook('afterFind', findResult => {
+        if (!findResult) return;
+      
+        if (!Array.isArray(findResult)) {
+          mapStockEntityKey(findResult as Stock);
+          return;
+        }
+      
+        for (const instance of findResult as Stock[]) {
+          mapStockEntityKey(instance);
         }
       });
 

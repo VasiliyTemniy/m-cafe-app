@@ -17,6 +17,7 @@ describe('Database migrations code is synchronized with models code', () => {
 
     if (process.env.RUN_COMPARISON_TEST === 'false') return;
 
+    await dbHandler.dbInstance?.query('DROP TABLE IF EXISTS migrations');
     await dbHandler.dbInstance?.drop({ cascade: true });
     await dbHandler.loadMigrations();
     await dbHandler.runMigrations();

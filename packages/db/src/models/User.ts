@@ -1,16 +1,16 @@
 import type {
+  Sequelize,
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  HasManyGetAssociationsMixin,
+  NonAttribute,
   HasManyAddAssociationMixin,
+  HasManyGetAssociationsMixin,
   HasManyRemoveAssociationMixin
 } from 'sequelize';
-import type { Sequelize, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
-import { Model, DataTypes } from 'sequelize';
-import { Address } from './Address.js';
+import { Model, DataTypes, Op } from 'sequelize';
 import {
+  PictureParentType,
   emailRegExp,
   maxEmailLen,
   maxNameLen,
@@ -25,31 +25,36 @@ import {
   possibleUserRights,
   usernameRegExp
 } from '@m-cafe-app/shared-constants';
-import { Op } from 'sequelize';
+import { UserAddress } from './UserAddress.js';
+import { Address } from './Address.js';
+import { FacilityManager } from './FacilityManager.js';
+import { Facility } from './Facility.js';
+import { Order } from './Order.js';
+import { Review } from './Review.js';
+import { Picture } from './Picture.js';
 
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
-  declare username?: string;
-  declare name?: string;
   declare phonenumber: string;
-  declare email?: string;
-  declare birthdate?: Date;
   declare rights: CreationOptional<string>;
   declare lookupHash: string;
-  declare lookupNoise?: number;
+  declare username: string | null;
+  declare name: string | null;
+  declare email: string | null;
+  declare birthdate: Date | null;
+  declare lookupNoise: number | null;
+  declare addresses?: NonAttribute<Address[]>;
+  declare orders?: NonAttribute<Order[]>;
+  declare reviews?: NonAttribute<Review[]>;
+  declare pictures?: NonAttribute<Picture[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
-  declare addresses?: NonAttribute<Address>[];
   declare addAddress: HasManyAddAssociationMixin<Address, number>;
   declare getAddresses: HasManyGetAssociationsMixin<Address>;
   declare removeAddress: HasManyRemoveAssociationMixin<Address, number>;
 }
-
-
-export type UserData = Omit<InferAttributes<User>, PropertiesCreationOptional | 'rights'>
-  & { id: number; rights: string; };
 
 
 export const initUserModel = async (dbInstance: Sequelize) => {
@@ -149,7 +154,6 @@ export const initUserModel = async (dbInstance: Sequelize) => {
             exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
           }
         },
-        // See initUserScopes.ts for more
         scopes: {
           raw: {
             attributes: {
@@ -159,6 +163,183 @@ export const initUserModel = async (dbInstance: Sequelize) => {
           }
         }
       });    
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initUserAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      User.belongsToMany(Address, {
+        through: UserAddress,
+        foreignKey: 'userId',
+        otherKey: 'addressId',
+        as: 'addresses'
+      });
+
+      // Through table associations: uncomment if needed
+      // User.hasMany(UserAddress, {
+      //   foreignKey: 'userId',
+      //   as: 'userAddresses'
+      // });
+      // UserAddress.belongsTo(User, {
+      //   targetKey: 'id',
+      //   foreignKey: 'userId'
+      // });
+
+      User.belongsToMany(Facility, {
+        through: FacilityManager,
+        foreignKey: 'userId',
+        otherKey: 'facilityId',
+        as: 'manager',
+      });
+
+      // Through table associations: uncomment if needed
+      // User.hasMany(FacilityManager, {
+      //   foreignKey: 'userId',
+      //   as: 'managerOfAFacility',
+      // });
+      // FacilityManager.belongsTo(User, {
+      //   targetKey: 'id',
+      //   foreignKey: 'userId'
+      // });
+
+      User.hasMany(Order, {
+        foreignKey: 'userId',
+        as: 'orders'
+      });
+
+      User.hasMany(Review, {
+        foreignKey: 'userId',
+        as: 'reviews'
+      });
+
+      User.hasMany(Picture, {
+        foreignKey: 'parentId',
+        as: 'pictures',
+        scope: {
+          parentType: PictureParentType.User
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initUserScopes = async () => {
+
+  const includeAddresses = {
+    model: Address,
+    as: 'addresses',
+    through: {
+      attributes: []
+    },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt']
+    }
+  };
+
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      User.addScope('customer', {
+        where: {
+          rights: {
+            [Op.eq]: 'customer'
+          }
+        },
+        attributes: {
+          exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+        }
+      });
+
+      User.addScope('admin', {
+        where: {
+          rights: {
+            [Op.eq]: 'admin'
+          }
+        },
+        attributes: {
+          exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+        }
+      });
+
+      User.addScope('manager', {
+        where: {
+          rights: {
+            [Op.eq]: 'manager'
+          }
+        },
+        attributes: {
+          exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+        }
+      });
+
+      User.addScope('disabled', {
+        where: {
+          rights: {
+            [Op.eq]: 'disabled'
+          }
+        },
+        attributes: {
+          exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+        }
+      });
+
+      User.addScope('deleted', {
+        where: {
+          deletedAt: {
+            [Op.not]: {
+              [Op.is]: undefined
+            }
+          }
+        },
+        attributes: {
+          exclude: ['passwordHash']
+        },
+        paranoid: false
+      });
+
+      User.addScope('all', {
+        attributes: {
+          exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+        },
+        paranoid: false
+      });
+
+      User.addScope('allWithAddresses', {
+        include: [includeAddresses],
+        attributes: {
+          exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+        },
+        paranoid: false
+      });
+
+      User.addScope('allWithTimestamps', {
+        attributes: {
+          exclude: ['passwordHash']
+        },
+        paranoid: false
+      });
+
+      User.addScope('passwordHashRights', {
+        attributes: {
+          exclude: ['name', 'username', 'phonenumber', 'email', 'birthdate', 'createdAt', 'updatedAt', 'deletedAt']
+        },
+        paranoid: false
+      });
 
       resolve();
     } catch (err) {

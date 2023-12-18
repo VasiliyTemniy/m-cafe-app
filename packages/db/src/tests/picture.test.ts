@@ -1,22 +1,15 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Picture, LocString } from '../models';
+import { Picture } from '../models';
 import { dbHandler } from '../db';
+import { NumericToPictureParentTypeMapping } from '@m-cafe-app/shared-constants';
 
 
 
 describe('Database Picture model tests', () => {
 
-  let pictureAltTextLoc: LocString;
-
   before(async () => {
     await dbHandler.pingDb();
-
-    pictureAltTextLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
   });
 
   beforeEach(async () => {
@@ -25,14 +18,18 @@ describe('Database Picture model tests', () => {
 
   after(async () => {
     await Picture.destroy({ force: true, where: {} });
-    await LocString.destroy({ force: true, where: {} });
   });
 
   it('Picture creation test', async () => {
 
+    const randomPictureParentType = 
+      NumericToPictureParentTypeMapping[Math.floor(Math.random() * Object.keys(NumericToPictureParentTypeMapping).length)];
+
     const picture = await Picture.create({
-      altTextLocId: pictureAltTextLoc.id,
-      src: 'тест'
+      src: 'тест',
+      parentId: 0, // not exists
+      parentType: randomPictureParentType,
+      orderNumber: 1
     });
 
     expect(picture).to.exist;
@@ -40,10 +37,15 @@ describe('Database Picture model tests', () => {
   });
 
   it('Picture update test', async () => {
+
+    const randomPictureParentType = 
+      NumericToPictureParentTypeMapping[Math.floor(Math.random() * Object.keys(NumericToPictureParentTypeMapping).length)];
     
     const picture = await Picture.create({
-      altTextLocId: pictureAltTextLoc.id,
-      src: 'тест'
+      src: 'тест',
+      parentId: 0, // not exists
+      parentType: randomPictureParentType,
+      orderNumber: 1
     });
 
     picture.src = 'тест2';
@@ -58,9 +60,14 @@ describe('Database Picture model tests', () => {
 
   it('Picture delete test', async () => {
 
+    const randomPictureParentType = 
+      NumericToPictureParentTypeMapping[Math.floor(Math.random() * Object.keys(NumericToPictureParentTypeMapping).length)];
+
     const picture = await Picture.create({
-      altTextLocId: pictureAltTextLoc.id,
-      src: 'тест'
+      src: 'тест',
+      parentId: 0, // not exists
+      parentType: randomPictureParentType,
+      orderNumber: 1
     });
 
     await picture.destroy();
@@ -72,10 +79,15 @@ describe('Database Picture model tests', () => {
   });
 
   it('Picture default scope test: does not include timestamps', async () => {
+
+    const randomPictureParentType = 
+      NumericToPictureParentTypeMapping[Math.floor(Math.random() * Object.keys(NumericToPictureParentTypeMapping).length)];
     
     const picture = await Picture.create({
-      altTextLocId: pictureAltTextLoc.id,
-      src: 'тест'
+      src: 'тест',
+      parentId: 0, // not exists
+      parentType: randomPictureParentType,
+      orderNumber: 1
     });
 
     const pictureInDB = await Picture.findOne({ where: { id: picture.id } });

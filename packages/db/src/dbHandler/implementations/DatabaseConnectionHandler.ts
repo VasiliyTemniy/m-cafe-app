@@ -8,28 +8,52 @@ import {
   initUserModel,
   initAddressModel,
   initUserAddressModel,
-  initLocStringModel,
-  initFoodTypeModel,
-  initFoodModel,
+  initLocModel,
   initIngredientModel,
-  initFoodComponentModel,
   initFacilityModel,
   initFacilityManagerModel,
   initStockModel,
   initOrderModel,
-  initOrderFoodModel,
   initPictureModel,
   initDynamicModuleModel,
-  initFoodPictureModel,
   initUiSettingModel,
   initFixedLocModel,
-  initModelAssociations,
-  initModelHooks,
   initUserScopes,
-  initFacilityScopes,
-  initFoodScopes,
-  initOrderScopes,
-  initFoodTypeScopes
+  initLanguageModel,
+  initProductTypeModel,
+  initProductCategoryModel,
+  initProductModel,
+  initProductCategoryReferenceModel,
+  initProductComponentModel,
+  initCommentModel,
+  initOrderProductModel,
+  initOrderTrackingModel,
+  initReviewModel,
+  initUserAssociations,
+  initAddressAssociations,
+  initLanguageAssociations,
+  initLocAssociations,
+  initFixedLocAssociations,
+  initPictureAssocitations,
+  initProductTypeAssociations,
+  initProductCategoryAssociations,
+  initProductAssociations,
+  initProductComponentAssociations,
+  initIngredientAssociations,
+  initFacilityAssociations,
+  initStockAssociations,
+  initCommentAssociations,
+  initOrderAssociations,
+  initDynamicModuleAssociations,
+  initReviewAssociations,
+  initPictureHooks,
+  initCommentHooks,
+  initProductHooks,
+  initProductComponentHooks,
+  initReviewHooks,
+  initStockHooks,
+  initCarrierModel,
+  initCarrierAssociations
 } from '../../models';
 
 
@@ -171,30 +195,54 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await initUserModel(this.dbInstance);
     await initAddressModel(this.dbInstance);
     await initUserAddressModel(this.dbInstance);
-    await initLocStringModel(this.dbInstance);
-    await initFoodTypeModel(this.dbInstance);
-    await initFoodModel(this.dbInstance);
+    await initLanguageModel(this.dbInstance);
+    await initLocModel(this.dbInstance);
+    await initFixedLocModel(this.dbInstance);
+    await initPictureModel(this.dbInstance);
+    await initProductTypeModel(this.dbInstance);
+    await initProductCategoryModel(this.dbInstance);
+    await initProductModel(this.dbInstance);
+    await initProductCategoryReferenceModel(this.dbInstance);
+    await initProductComponentModel(this.dbInstance);
     await initIngredientModel(this.dbInstance);
-    await initFoodComponentModel(this.dbInstance);
     await initFacilityModel(this.dbInstance);
     await initFacilityManagerModel(this.dbInstance);
     await initStockModel(this.dbInstance);
+    await initCommentModel(this.dbInstance);
     await initOrderModel(this.dbInstance);
-    await initOrderFoodModel(this.dbInstance);
-    await initPictureModel(this.dbInstance);
+    await initOrderProductModel(this.dbInstance);
+    await initOrderTrackingModel(this.dbInstance);
     await initDynamicModuleModel(this.dbInstance);
-    await initFoodPictureModel(this.dbInstance);
     await initUiSettingModel(this.dbInstance);
-    await initFixedLocModel(this.dbInstance);
+    await initReviewModel(this.dbInstance);
+    await initCarrierModel(this.dbInstance);
 
-    await initModelAssociations();
-    await initModelHooks();
+    await initUserAssociations();
+    await initAddressAssociations();
+    await initLanguageAssociations();
+    await initLocAssociations();
+    await initFixedLocAssociations();
+    await initPictureAssocitations();
+    await initProductTypeAssociations();
+    await initProductCategoryAssociations();
+    await initProductAssociations();
+    await initProductComponentAssociations();
+    await initIngredientAssociations();
+    await initFacilityAssociations();
+    await initStockAssociations();
+    await initCommentAssociations();
+    await initOrderAssociations();
+    await initDynamicModuleAssociations();
+    await initReviewAssociations();
+    await initCarrierAssociations();
 
-    // Init models scopes that are dependant on models initialized after them
+    await initPictureHooks();
+    await initCommentHooks();
+    await initProductHooks();
+    await initProductComponentHooks();
+    await initReviewHooks();
+    await initStockHooks();
+
     await initUserScopes();
-    await initFacilityScopes();
-    await initFoodScopes();
-    await initFoodTypeScopes();
-    await initOrderScopes();
   }
 }

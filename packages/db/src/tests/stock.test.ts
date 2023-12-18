@@ -1,34 +1,20 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Address, Facility, LocString, Stock, Ingredient } from '../models';
+import { Address, Facility, Stock, Ingredient, Product, ProductType } from '../models';
 import { dbHandler } from '../db';
+import { FacilityType, StockEntityType, StockStatus } from '@m-cafe-app/shared-constants';
 
 
 
 describe('Database Stock model tests', () => {
 
-  let facilityNameLoc: LocString;
-  let facilityDescriptionLoc: LocString;
   let facilityAddress: Address;
   let facility: Facility;
-  let ingredientNameLoc: LocString;
-  let ingredientStockMeasureLoc: LocString;
   let ingredient: Ingredient;
+  let product: Product;
 
   before(async () => {
     await dbHandler.pingDb();
-
-    facilityNameLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
-
-    facilityDescriptionLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
 
     facilityAddress = await Address.create({
       city: 'тест',
@@ -36,27 +22,23 @@ describe('Database Stock model tests', () => {
     });
 
     facility = await Facility.create({
-      nameLocId: facilityNameLoc.id,
-      descriptionLocId: facilityDescriptionLoc.id,
-      addressId: facilityAddress.id
-    });
-
-    ingredientNameLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
-
-    ingredientStockMeasureLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
+      addressId: facilityAddress.id,
+      facilityType: FacilityType.Catering
     });
 
     ingredient = await Ingredient.create({
-      nameLocId: ingredientNameLoc.id,
-      stockMeasureLocId: ingredientStockMeasureLoc.id
+      unitMass: 1,
+      unitVolume: 1,
     });
+
+    const productType = await ProductType.create({
+    });
+
+    product = await Product.create({
+      price: 1,
+      productTypeId: productType.id
+    });
+
   });
 
   beforeEach(async () => {
@@ -65,7 +47,7 @@ describe('Database Stock model tests', () => {
 
   after(async () => {
     await Facility.destroy({ force: true, where: {} });
-    await LocString.destroy({ force: true, where: {} });
+    await Product.destroy({ force: true, where: {} });
     await Address.destroy({ force: true, where: {} });
     await Stock.destroy({ force: true, where: {} });
     await Ingredient.destroy({ force: true, where: {} });
@@ -75,11 +57,23 @@ describe('Database Stock model tests', () => {
 
     const stock = await Stock.create({
       facilityId: facility.id,
-      ingredientId: ingredient.id,
-      quantity: 1
+      entityId: ingredient.id,
+      entityType: StockEntityType.Ingredient,
+      quantity: 1,
+      status: StockStatus.InStock
     });
 
     expect(stock).to.exist;
+
+    const productStock = await Stock.create({
+      facilityId: facility.id,
+      entityId: product.id,
+      entityType: StockEntityType.Product,
+      quantity: 1,
+      status: StockStatus.InStock
+    });
+
+    expect(productStock).to.exist;
 
   });
 
@@ -87,8 +81,10 @@ describe('Database Stock model tests', () => {
     
     const stock = await Stock.create({
       facilityId: facility.id,
-      ingredientId: ingredient.id,
-      quantity: 1
+      entityId: ingredient.id,
+      entityType: StockEntityType.Ingredient,
+      quantity: 1,
+      status: StockStatus.InStock
     });
 
     stock.quantity = 2;
@@ -106,8 +102,10 @@ describe('Database Stock model tests', () => {
 
     const stock = await Stock.create({
       facilityId: facility.id,
-      ingredientId: ingredient.id,
-      quantity: 1
+      entityId: ingredient.id,
+      entityType: StockEntityType.Ingredient,
+      quantity: 1,
+      status: StockStatus.InStock
     });
 
     await stock.destroy();
@@ -122,8 +120,10 @@ describe('Database Stock model tests', () => {
     
     const stock = await Stock.create({
       facilityId: facility.id,
-      ingredientId: ingredient.id,
-      quantity: 1
+      entityId: ingredient.id,
+      entityType: StockEntityType.Ingredient,
+      quantity: 1,
+      status: StockStatus.InStock
     });
 
     const stockInDB = await Stock.findOne({ where: { id: stock.id } });

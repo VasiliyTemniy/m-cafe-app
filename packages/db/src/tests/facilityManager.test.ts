@@ -1,14 +1,13 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Address, Facility, LocString, FacilityManager, User } from '../models';
+import { Address, Facility, FacilityManager, User } from '../models';
 import { dbHandler } from '../db';
+import { NumericToFacilityTypeMapping } from '@m-cafe-app/shared-constants';
 
 
 
 describe('Database FacilityManager model tests', () => {
 
-  let facilityNameLoc: LocString;
-  let facilityDescriptionLoc: LocString;
   let facilityAddress: Address;
   let facility: Facility;
   let user: User;
@@ -16,27 +15,17 @@ describe('Database FacilityManager model tests', () => {
   before(async () => {
     await dbHandler.pingDb();
 
-    facilityNameLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
-
-    facilityDescriptionLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
-
     facilityAddress = await Address.create({
       city: 'тест',
       street: 'тест'
     });
 
+    const randomFacilityType =
+      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
+
     facility = await Facility.create({
-      nameLocId: facilityNameLoc.id,
-      descriptionLocId: facilityDescriptionLoc.id,
-      addressId: facilityAddress.id
+      addressId: facilityAddress.id,
+      facilityType: randomFacilityType
     });
 
     user = await User.create({
@@ -54,7 +43,6 @@ describe('Database FacilityManager model tests', () => {
     await FacilityManager.destroy({ force: true, where: {} });
     await Address.destroy({ force: true, where: {} });
     await User.scope('all').destroy({ force: true, where: {} });
-    await LocString.destroy({ force: true, where: {} });
   });
 
   it('FacilityManager creation test', async () => {

@@ -1,30 +1,17 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Address, Facility, LocString } from '../models';
+import { Address, Facility } from '../models';
 import { dbHandler } from '../db';
+import { NumericToFacilityTypeMapping } from '@m-cafe-app/shared-constants';
 
 
 
 describe('Database Facility model tests', () => {
 
-  let facilityNameLoc: LocString;
-  let facilityDescriptionLoc: LocString;
   let facilityAddress: Address;
 
   before(async () => {
     await dbHandler.pingDb();
-
-    facilityNameLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
-
-    facilityDescriptionLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
 
     facilityAddress = await Address.create({
       city: 'тест',
@@ -38,16 +25,17 @@ describe('Database Facility model tests', () => {
 
   after(async () => {
     await Facility.destroy({ force: true, where: {} });
-    await LocString.destroy({ force: true, where: {} });
     await Address.destroy({ force: true, where: {} });
   });
 
   it('Facility creation test', async () => {
 
+    const randomFacilityType =
+      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
+
     const facility = await Facility.create({
-      nameLocId: facilityNameLoc.id,
-      descriptionLocId: facilityDescriptionLoc.id,
-      addressId: facilityAddress.id
+      addressId: facilityAddress.id,
+      facilityType: randomFacilityType
     });
 
     expect(facility).to.exist;
@@ -55,11 +43,13 @@ describe('Database Facility model tests', () => {
   });
 
   it('Facility update test', async () => {
+
+    const randomFacilityType =
+      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
     
     const facility = await Facility.create({
-      nameLocId: facilityNameLoc.id,
-      descriptionLocId: facilityDescriptionLoc.id,
-      addressId: facilityAddress.id
+      addressId: facilityAddress.id,
+      facilityType: randomFacilityType
     });
 
     const newFacilityAddress = await Address.create({
@@ -79,10 +69,12 @@ describe('Database Facility model tests', () => {
 
   it('Facility delete test', async () => {
 
+    const randomFacilityType =
+      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
+
     const facility = await Facility.create({
-      nameLocId: facilityNameLoc.id,
-      descriptionLocId: facilityDescriptionLoc.id,
-      addressId: facilityAddress.id
+      addressId: facilityAddress.id,
+      facilityType: randomFacilityType
     });
 
     await facility.destroy();
@@ -95,10 +87,12 @@ describe('Database Facility model tests', () => {
 
   it('Facility default scope test: does not include timestamps', async () => {
     
+    const randomFacilityType =
+      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
+
     const facility = await Facility.create({
-      nameLocId: facilityNameLoc.id,
-      descriptionLocId: facilityDescriptionLoc.id,
-      addressId: facilityAddress.id
+      addressId: facilityAddress.id,
+      facilityType: randomFacilityType
     });
 
     const facilityInDB = await Facility.findOne({ where: { id: facility.id } });

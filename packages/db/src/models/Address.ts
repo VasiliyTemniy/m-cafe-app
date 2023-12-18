@@ -1,6 +1,10 @@
-import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
-import type { Sequelize } from 'sequelize';
+import type {
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  NonAttribute
+} from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import {
   cityRegExp,
@@ -30,6 +34,10 @@ import {
   regionRegExp,
   streetRegExp
 } from '@m-cafe-app/shared-constants';
+import { User } from './User.js';
+import { UserAddress } from './UserAddress.js';
+import { Facility } from './Facility.js';
+import { Order } from './Order.js';
 
 
 export class Address extends Model<InferAttributes<Address>, InferCreationAttributes<Address>> {
@@ -44,13 +52,13 @@ export class Address extends Model<InferAttributes<Address>, InferCreationAttrib
   declare floor?: number;
   declare flat?: string;
   declare entranceKey?: string;
+  declare postalCode?: string;
+  declare users?: NonAttribute<User[]>;
+  declare facilities?: NonAttribute<Facility[]>;
+  declare orders?: NonAttribute<Order[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
-
-
-export type AddressData = Omit<InferAttributes<Address>, PropertiesCreationOptional>
-  & { id: number; };
 
 
 export const initAddressModel = async (dbInstance: Sequelize) => {
@@ -152,6 +160,11 @@ export const initAddressModel = async (dbInstance: Sequelize) => {
           },
           unique: 'unique_address'
         },
+        postalCode: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: 'unique_address'
+        },
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false
@@ -168,7 +181,7 @@ export const initAddressModel = async (dbInstance: Sequelize) => {
         indexes: [
           {
             unique: true,
-            fields: ['region', 'region_district', 'city', 'city_district', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key']
+            fields: ['region', 'region_district', 'city', 'city_district', 'street', 'house', 'entrance', 'floor', 'flat', 'entrance_key', 'postal_code']
           }
         ],
         defaultScope: {
@@ -189,6 +202,45 @@ export const initAddressModel = async (dbInstance: Sequelize) => {
           },
           allWithTimestamps: {}
         }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initAddressAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      Address.belongsToMany(User, {
+        through: UserAddress,
+        foreignKey: 'addressId',
+        otherKey: 'userId',
+        as: 'users'
+      });
+
+      // Through table associations: uncomment if needed
+      // Address.hasMany(UserAddress, {
+      //   foreignKey: 'addressId',
+      //   as: 'addressUser'
+      // });
+      // UserAddress.belongsTo(Address, {
+      //   foreignKey: 'addressId',
+      //   targetKey: 'id'
+      // });
+
+      Address.hasMany(Facility, {
+        foreignKey: 'addressId',
+        as: 'facilities'
+      });
+
+      Address.hasMany(Order, {
+        foreignKey: 'addressId',
+        as: 'orders'
       });
 
       resolve();

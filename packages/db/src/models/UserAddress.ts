@@ -1,8 +1,8 @@
 import type { InferAttributes, InferCreationAttributes, ForeignKey } from 'sequelize';
 import type { Sequelize } from 'sequelize';
+import type { User } from './User.js';
+import type { Address } from './Address.js';
 import { Model, DataTypes } from 'sequelize';
-import { User } from './User.js';
-import { Address } from './Address.js';
 
 
 export class UserAddress extends Model<InferAttributes<UserAddress>, InferCreationAttributes<UserAddress>> {

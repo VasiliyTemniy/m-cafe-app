@@ -1,31 +1,30 @@
-import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
-import type { Sequelize } from 'sequelize';
+import type {
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  NonAttribute
+} from 'sequelize';
+import { DynamicModulePlacementType, DynamicModuleType, LocParentType, LocType, PictureParentType } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
-import { LocString } from './LocString.js';
+import { Loc } from './Loc.js';
 import { Picture } from './Picture.js';
 
 
 export class DynamicModule extends Model<InferAttributes<DynamicModule>, InferCreationAttributes<DynamicModule>> {
   declare id: CreationOptional<number>;
-  declare moduleType: string;
-  declare locStringId?: ForeignKey<LocString['id']> | null;
+  declare moduleType: DynamicModuleType;
   declare page: string;
   declare placement: number;
-  declare placementType: CreationOptional<string>;
-  declare className?: string;
-  declare inlineCss?: string;
-  declare pictureId?: ForeignKey<Picture['id']> | null;
-  declare url?: string;
+  declare placementType: DynamicModulePlacementType;
+  declare className: string | null;
+  declare inlineCss: string | null;
+  declare url: string | null;
+  declare locs?: NonAttribute<Loc[]>;
+  declare pictures?: NonAttribute<Picture[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-  declare locString?: NonAttribute<LocString>;
-  declare picture?: NonAttribute<Picture>;
 }
-
-
-export type DynamicModuleData = Omit<InferAttributes<DynamicModule>, PropertiesCreationOptional>
-  & { id: number; };
 
 
 export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
@@ -39,14 +38,10 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
         },
         moduleType: {
           type: DataTypes.STRING,
-          allowNull: false
-        },
-        locStringId: {
-          type: DataTypes.INTEGER,
-          allowNull: true,
-          references: { model: 'loc_strings', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'SET NULL'
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(DynamicModuleType)]
+          }
         },
         page: {
           type: DataTypes.STRING,
@@ -59,7 +54,10 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
         placementType: {
           type: DataTypes.STRING,
           allowNull: false,
-          defaultValue: 'afterMenuPicFirst'
+          validate: {
+            isIn: [Object.values(DynamicModulePlacementType)]
+          },
+          defaultValue: DynamicModulePlacementType.BeforeMenu,
         }, 
         className: {
           type: DataTypes.STRING,
@@ -68,13 +66,6 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
         inlineCss: {
           type: DataTypes.STRING,
           allowNull: true
-        },
-        pictureId: {
-          type: DataTypes.INTEGER,
-          allowNull: true,
-          references: { model: 'pictures', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'SET NULL'
         },
         url: {
           type: DataTypes.STRING,
@@ -111,6 +102,39 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
           },
           allWithTimestamps: {}
         }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initDynamicModuleAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      DynamicModule.hasMany(Loc, {
+        foreignKey: 'parentId',
+        as: 'loc',
+        scope: {
+          parentType: LocParentType.DynamicModule,
+          locType: LocType.Text
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      DynamicModule.hasMany(Picture, {
+        foreignKey: 'parentId',
+        as: 'pictures',
+        scope: {
+          parentType: PictureParentType.DynamicModule
+        },
+        constraints: false,
+        foreignKeyConstraint: false
       });
 
       resolve();

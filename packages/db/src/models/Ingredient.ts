@@ -1,48 +1,35 @@
-import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
-import type { Sequelize } from 'sequelize';
+import type {
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  NonAttribute
+} from 'sequelize';
+import { LocParentType, LocType, PictureParentType, StockEntityType } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
-import { LocString } from './LocString.js';
+import { Loc } from './Loc.js';
+import { Stock } from './Stock.js';
+import { Picture } from './Picture.js';
 
 
 export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
   declare id: CreationOptional<number>;
-  declare nameLocId: ForeignKey<LocString['id']>;
-  declare stockMeasureLocId: ForeignKey<LocString['id']>;
-  declare proteins?: number;
-  declare fats?: number;
-  declare carbohydrates?: number;
-  declare calories?: number;
+  declare unitMass: number | null;
+  declare unitVolume: number | null;
+  declare proteins: number | null;
+  declare fats: number | null;
+  declare carbohydrates: number | null;
+  declare calories: number | null;
+  declare nameLocs?: NonAttribute<Loc[]>;
+  declare descriptionLocs?: NonAttribute<Loc[]>;
+  declare stockMeasureLocs?: NonAttribute<Loc[]>;
+  declare pictures?: NonAttribute<Picture[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-  declare nameLoc?: NonAttribute<LocString>;
-  declare stockMeasureLoc?: NonAttribute<LocString>;
 }
 
 
-export type IngredientData = Omit<InferAttributes<Ingredient>, PropertiesCreationOptional>
-  & { id: number; };
-
-
 export const initIngredientModel = async (dbInstance: Sequelize) => {
-
-  const includeLocStrings = [
-    {
-      model: LocString,
-      as: 'nameLoc',
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    },
-    {
-      model: LocString,
-      as: 'stockMeasureLoc',
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    }
-  ];
-
   return new Promise<void>((resolve, reject) => {
     try {
       Ingredient.init({
@@ -51,15 +38,14 @@ export const initIngredientModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
-        nameLocId: {
+        // name, description and stock measure locs are referenced from locs table
+        unitMass: {
           type: DataTypes.INTEGER,
-          allowNull: false,
-          references: { model: 'loc_strings', key: 'id' }
+          allowNull: true
         },
-        stockMeasureLocId: {
+        unitVolume: {
           type: DataTypes.INTEGER,
-          allowNull: false,
-          references: { model: 'loc_strings', key: 'id' }
+          allowNull: true
         },
         proteins: {
           type: DataTypes.INTEGER,
@@ -94,24 +80,85 @@ export const initIngredientModel = async (dbInstance: Sequelize) => {
           attributes: {
             exclude: ['createdAt', 'updatedAt']
           },
-          include: includeLocStrings
         },
         scopes: {
           all: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
             },
-            include: includeLocStrings
           },
           raw: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
             }
           },
-          allWithTimestamps: {
-            include: includeLocStrings
-          }
+          allWithTimestamps: {}
         }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initIngredientAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      Ingredient.hasMany(Loc, {
+        foreignKey: 'parentId',
+        as: 'nameLocs',
+        scope: {
+          parentType: LocParentType.Ingredient,
+          locType: LocType.Name
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Ingredient.hasMany(Loc, {
+        foreignKey: 'parentId',
+        as: 'descriptionLocs',
+        scope: {
+          parentType: LocParentType.Ingredient,
+          locType: LocType.Description
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Ingredient.hasMany(Loc, {
+        foreignKey: 'parentId',
+        as: 'stockMeasureLocs',
+        scope: {
+          parentType: LocParentType.Ingredient,
+          locType: LocType.StockMeasure
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Ingredient.hasMany(Stock, {
+        foreignKey: 'entityId',
+        as: 'stocks',
+        scope: {
+          entityType: StockEntityType.Ingredient
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Ingredient.hasMany(Picture, {
+        foreignKey: 'parentId',
+        as: 'pictures',
+        scope: {
+          parentType: PictureParentType.Ingredient
+        },
+        constraints: false,
+        foreignKeyConstraint: false
       });
 
       resolve();

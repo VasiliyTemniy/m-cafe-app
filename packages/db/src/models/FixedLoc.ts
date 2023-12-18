@@ -1,10 +1,13 @@
-import type { InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey, NonAttribute } from 'sequelize';
-import type { PropertiesCreationOptional } from '@m-cafe-app/shared-constants';
-import type { Sequelize } from 'sequelize';
-import { Model, DataTypes } from 'sequelize';
-import { LocString } from './LocString.js';
-import { Op } from 'sequelize';
-import { fixedLocFilter, fixedLocsScopes } from '@m-cafe-app/shared-constants';
+import type {
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  NonAttribute,
+  Sequelize
+} from 'sequelize';
+import { Model, DataTypes, Op } from 'sequelize';
+import { FixedLocScope, LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { Loc } from './Loc.js';
 
 
 export class FixedLoc extends Model<InferAttributes<FixedLoc>, InferCreationAttributes<FixedLoc>> {
@@ -12,29 +15,13 @@ export class FixedLoc extends Model<InferAttributes<FixedLoc>, InferCreationAttr
   declare name: string;
   declare namespace: string;
   declare scope: string;
-  declare locStringId: ForeignKey<LocString['id']>;
-  declare locString?: NonAttribute<LocString>;
+  declare locs?: NonAttribute<Loc>[];
 }
-
-
-export type FixedLocData = Omit<InferAttributes<FixedLoc>, PropertiesCreationOptional>
-  & { id: number; };
 
 
 export const initFixedLocModel = async (dbInstance: Sequelize) => {
   return new Promise<void>((resolve, reject) => {
     try {
-
-      const includeLocString = {
-        model: LocString,
-        as: 'locString',
-        where: {
-          mainStr: {
-            [Op.ne]: fixedLocFilter
-          }
-        }
-      };
-
       FixedLoc.init({
         id: {
           type: DataTypes.INTEGER,
@@ -55,17 +42,11 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
           type: DataTypes.STRING,
           allowNull: false,
           validate: {
-            isIn: [fixedLocsScopes]
+            isIn: [Object.values(FixedLocScope)]
           },
           unique: 'unique_fixed_loc'
-        },
-        locStringId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          references: { model: 'loc_strings', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
         }
+        // actual locs are referenced from locs table
       }, {
         sequelize: dbInstance,
         underscored: true,
@@ -86,9 +67,8 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
               ]
             }
           },
-          include: includeLocString,
           attributes: {
-            exclude: ['scope', 'locStringId']
+            exclude: ['scope']
           }
         },
         scopes: {
@@ -101,18 +81,12 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
                 ]
               }
             },
-            include: includeLocString,
             attributes: {
-              exclude: ['scope', 'locStringId']
+              exclude: ['scope']
             }
           },
           admin: {
             where: {},
-            include: {
-              ...includeLocString,
-              // do not exclude filtered fixed locs for admin:
-              where: {}
-            }
           },
           manager: {
             where: {
@@ -120,9 +94,8 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
                 [Op.ne]: 'admin'
               }
             },
-            include: includeLocString,
             attributes: {
-              exclude: ['scope', 'locStringId']
+              exclude: ['scope']
             }
           },
           raw: {
@@ -130,11 +103,33 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
           },
           all: {
             where: {},
-            include: includeLocString
           }
         }
       });
       
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initFixedLocAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      FixedLoc.hasMany(Loc, {
+        foreignKey: 'parentId',
+        as: 'locs',
+        scope: {
+          parentType: LocParentType.FixedLoc,
+          locType: LocType.Text
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
       resolve();
     } catch (err) {
       reject(err);

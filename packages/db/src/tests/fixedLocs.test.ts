@@ -1,23 +1,15 @@
 import { expect } from 'chai';
 import 'mocha';
-import { FixedLoc, LocString } from '../models';
-import { fixedLocFilter, fixedLocsScopes } from '@m-cafe-app/shared-constants';
+import { FixedLoc, Language, Loc } from '../models';
+import { LocParentType, LocType, NumericToFixedLocScopeMapping } from '@m-cafe-app/shared-constants';
 import { dbHandler } from '../db';
 
 
 
 describe('Database FixedLoc model tests', () => {
 
-  let locString: LocString;
-
   before(async () => {
     await dbHandler.pingDb();
-
-    locString = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
   });
 
   beforeEach(async () => {
@@ -26,18 +18,18 @@ describe('Database FixedLoc model tests', () => {
 
   after(async () => {
     await FixedLoc.scope('admin').destroy({ force: true, where: {} });
-    await LocString.destroy({ force: true, where: {} });
+    await Loc.destroy({ force: true, where: {} });
   });
 
   it('FixedLoc creation test', async () => {
 
-    const randomFixedLocScope = fixedLocsScopes[Math.floor(Math.random() * fixedLocsScopes.length)];
+    const randomFixedLocScope =
+      NumericToFixedLocScopeMapping[Math.floor(Math.random() * Object.keys(NumericToFixedLocScopeMapping).length)];
 
     const fixedLoc = await FixedLoc.create({
       name: 'test',
       namespace: 'test',
-      scope: randomFixedLocScope,
-      locStringId: locString.id
+      scope: randomFixedLocScope
     });
 
     expect(fixedLoc).to.exist;
@@ -46,13 +38,13 @@ describe('Database FixedLoc model tests', () => {
 
   it('FixedLoc update test', async () => {
 
-    const randomFixedLocScope = fixedLocsScopes[Math.floor(Math.random() * fixedLocsScopes.length)];
+    const randomFixedLocScope =
+      NumericToFixedLocScopeMapping[Math.floor(Math.random() * Object.keys(NumericToFixedLocScopeMapping).length)];
 
     const fixedLoc = await FixedLoc.create({
       name: 'test',
       namespace: 'test',
-      scope: randomFixedLocScope,
-      locStringId: locString.id
+      scope: randomFixedLocScope
     });
 
     fixedLoc.namespace = 'test2';
@@ -67,13 +59,13 @@ describe('Database FixedLoc model tests', () => {
 
   it('FixedLoc delete test', async () => {
 
-    const randomFixedLocScope = fixedLocsScopes[Math.floor(Math.random() * fixedLocsScopes.length)];
+    const randomFixedLocScope =
+      NumericToFixedLocScopeMapping[Math.floor(Math.random() * Object.keys(NumericToFixedLocScopeMapping).length)];
 
     const fixedLoc = await FixedLoc.create({
       name: 'test',
       namespace: 'test',
-      scope: randomFixedLocScope,
-      locStringId: locString.id
+      scope: randomFixedLocScope
     });
 
     await fixedLoc.destroy();
@@ -84,55 +76,48 @@ describe('Database FixedLoc model tests', () => {
 
   });
 
-  it('FixedLoc default scope test: does not include filtered values', async () => {
+  it('FixedLoc retrieve with associated Loc test', async () => {
 
-    await FixedLoc.create({
+    const randomFixedLocScope =
+      NumericToFixedLocScopeMapping[Math.floor(Math.random() * Object.keys(NumericToFixedLocScopeMapping).length)];
+
+    const fixedLoc = await FixedLoc.create({
       name: 'test',
       namespace: 'test',
-      scope: 'shared',
-      locStringId: locString.id
+      scope: randomFixedLocScope
     });
 
-    const filteredLocString = await LocString.create({
-      mainStr: fixedLocFilter
-    });
-
-    await FixedLoc.create({
-      name: 'test2',
-      namespace: 'test',
-      scope: 'shared',
-      locStringId: filteredLocString.id
-    });
-
-    const fixedLocsInDB = await FixedLoc.findAll({});
-
-    expect(fixedLocsInDB).to.have.lengthOf(1);
-
-    const allFixedLocsInDB = await FixedLoc.scope('all').findAll({});
-
-    expect(allFixedLocsInDB).to.have.lengthOf(1);
-
-    const adminFixedLocsInDB = await FixedLoc.scope('admin').findAll({});
-
-    expect(adminFixedLocsInDB).to.have.lengthOf(2);
-
-  });
-
-  it('FixedLoc default scope test: includes locString', async () => {
-
-    await FixedLoc.create({
+    const language = await Language.create({
       name: 'test',
-      namespace: 'test',
-      scope: 'shared',
-      locStringId: locString.id
+      code: 'test'
     });
 
-    const fixedLocInDB = await FixedLoc.scope('all').findOne({ where: { name: 'test' } });
+    const loc = await Loc.create({
+      languageId: language.id,
+      locType: LocType.Text,
+      parentType: LocParentType.FixedLoc,
+      parentId: fixedLoc.id,
+      text: 'test'
+    });
 
-    expect(fixedLocInDB?.locString).to.exist;
-    expect(fixedLocInDB?.locString?.id).to.equal(locString.id);
-    expect(fixedLocInDB?.locString?.mainStr).to.equal(locString.mainStr);
+    const fixedLocInDB = await FixedLoc.scope('all').findByPk(fixedLoc.id, {
+      include: [
+        {
+          model: Loc,
+          as: 'locs'
+        }
+      ]
+    });
 
+    if (!fixedLocInDB || !fixedLocInDB?.locs) {
+      return expect(fixedLocInDB).to.exist;
+    }
+
+    expect(fixedLocInDB.name).to.equal(fixedLoc.name);
+    expect(fixedLocInDB.locs.length).to.equal(1);
+    expect(fixedLocInDB.locs[0].text).to.equal(loc.text);
+    expect(fixedLocInDB.locs[0].languageId).to.equal(language.id);
+    
   });
 
 });

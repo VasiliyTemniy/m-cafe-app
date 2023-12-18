@@ -1,15 +1,13 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Address, Facility, LocString, Order, User } from '../models';
+import { Address, Facility, Order, User } from '../models';
 import { dbHandler } from '../db';
-import { NumericToOrderPaymentMethodMapping, NumericToOrderPaymentStatusMapping, NumericToOrderStatusMapping } from '@m-cafe-app/shared-constants';
+import { FacilityType, NumericToOrderDeliveryTypeMapping, NumericToOrderPaymentMethodMapping, NumericToOrderPaymentStatusMapping, NumericToOrderStatusMapping } from '@m-cafe-app/shared-constants';
 
 
 
 describe('Database Order model tests', () => {
 
-  let facilityNameLoc: LocString;
-  let facilityDescriptionLoc: LocString;
   let facilityAddress: Address;
   let facility: Facility;
   let user: User;
@@ -18,27 +16,14 @@ describe('Database Order model tests', () => {
   before(async () => {
     await dbHandler.pingDb();
 
-    facilityNameLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
-
-    facilityDescriptionLoc = await LocString.create({
-      mainStr: 'тест',
-      secStr: 'тест',
-      altStr: 'тест'
-    });
-
     facilityAddress = await Address.create({
       city: 'тест',
       street: 'тест'
     });
 
     facility = await Facility.create({
-      nameLocId: facilityNameLoc.id,
-      descriptionLocId: facilityDescriptionLoc.id,
-      addressId: facilityAddress.id
+      addressId: facilityAddress.id,
+      facilityType: FacilityType.Catering
     });
 
     user = await User.create({
@@ -59,47 +44,73 @@ describe('Database Order model tests', () => {
   after(async () => {
     await Order.destroy({ force: true, where: {} });
     await User.scope('all').destroy({ force: true, where: {} });
-    await LocString.destroy({ force: true, where: {} });
     await Address.destroy({ force: true, where: {} });
     await Facility.destroy({ force: true, where: {} });
   });
 
   it('Order creation test', async () => {
     
+    // Minimum data
     const order = await Order.create({
-      userId: user.id,
-      addressId: userAddress.id,
       facilityId: facility.id,
-      deliverAt: new Date(),
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
       status: NumericToOrderStatusMapping['0'],
       totalCost: 100,
       archiveAddress: 'тест',
       customerName: 'тест',
       customerPhonenumber: 'тест',
-      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
       paymentMethod: NumericToOrderPaymentMethodMapping['0'],
-      tablewareQuantity: 1
+      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
     });
 
     expect(order).to.exist;
+
+    // Full data
+    const order2 = await Order.create({
+      facilityId: facility.id,
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
+      status: NumericToOrderStatusMapping['0'],
+      totalCost: 100,
+      archiveAddress: 'тест',
+      customerName: 'тест',
+      customerPhonenumber: 'тест',
+      paymentMethod: NumericToOrderPaymentMethodMapping['0'],
+      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
+      boxSizingX: 1,
+      boxSizingY: 1,
+      boxSizingZ: 1,
+      userId: user.id,
+      addressId: userAddress.id,
+      deliverAt: new Date(),
+      comment: 'test',
+      trackingCode: 'test',
+    });
+
+    expect(order2).to.exist;
 
   });
 
   it('Order update test', async () => {
     
     const order = await Order.create({
-      userId: user.id,
-      addressId: userAddress.id,
       facilityId: facility.id,
-      deliverAt: new Date(),
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
       status: NumericToOrderStatusMapping['0'],
       totalCost: 100,
       archiveAddress: 'тест',
       customerName: 'тест',
       customerPhonenumber: 'тест',
-      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
       paymentMethod: NumericToOrderPaymentMethodMapping['0'],
-      tablewareQuantity: 1
+      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
+      boxSizingX: 1,
+      boxSizingY: 1,
+      boxSizingZ: 1,
+      userId: user.id,
+      addressId: userAddress.id,
+      deliverAt: new Date(),
     });
 
     order.status = NumericToOrderStatusMapping['3'];
@@ -115,18 +126,22 @@ describe('Database Order model tests', () => {
   it('Order delete test', async () => {
     
     const order = await Order.create({
-      userId: user.id,
-      addressId: userAddress.id,
       facilityId: facility.id,
-      deliverAt: new Date(),
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
       status: NumericToOrderStatusMapping['0'],
       totalCost: 100,
       archiveAddress: 'тест',
       customerName: 'тест',
       customerPhonenumber: 'тест',
-      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
       paymentMethod: NumericToOrderPaymentMethodMapping['0'],
-      tablewareQuantity: 1
+      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
+      boxSizingX: 1,
+      boxSizingY: 1,
+      boxSizingZ: 1,
+      userId: user.id,
+      addressId: userAddress.id,
+      deliverAt: new Date(),
     });
 
     await order.destroy();
@@ -140,18 +155,22 @@ describe('Database Order model tests', () => {
   it('Order default scope test: does not include timestamps', async () => {
     
     const order = await Order.create({
-      userId: user.id,
-      addressId: userAddress.id,
       facilityId: facility.id,
-      deliverAt: new Date(),
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
       status: NumericToOrderStatusMapping['0'],
       totalCost: 100,
       archiveAddress: 'тест',
       customerName: 'тест',
       customerPhonenumber: 'тест',
-      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
       paymentMethod: NumericToOrderPaymentMethodMapping['0'],
-      tablewareQuantity: 1
+      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
+      boxSizingX: 1,
+      boxSizingY: 1,
+      boxSizingZ: 1,
+      userId: user.id,
+      addressId: userAddress.id,
+      deliverAt: new Date(),
     });
 
     const orderInDB = await Order.findOne({ where: { id: order.id } });
@@ -164,63 +183,79 @@ describe('Database Order model tests', () => {
   it('Order does not get created or updated if status/paymentStatus/paymentMethod are not allowed', async () => {
 
     const validOrder = await Order.create({
-      userId: user.id,
-      addressId: userAddress.id,
       facilityId: facility.id,
-      deliverAt: new Date(),
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
       status: NumericToOrderStatusMapping['0'],
       totalCost: 100,
       archiveAddress: 'тест',
       customerName: 'тест',
       customerPhonenumber: 'тест',
-      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
       paymentMethod: NumericToOrderPaymentMethodMapping['0'],
-      tablewareQuantity: 1
+      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
+      boxSizingX: 1,
+      boxSizingY: 1,
+      boxSizingZ: 1,
+      userId: user.id,
+      addressId: userAddress.id,
+      deliverAt: new Date(),
     });
 
     const invalidOrderUpdateStatusData = {
-      userId: user.id,
-      addressId: userAddress.id,
       facilityId: facility.id,
-      deliverAt: new Date(),
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
       status: 'some_random_status',
       totalCost: 100,
       archiveAddress: 'тест',
       customerName: 'тест',
       customerPhonenumber: 'тест',
-      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
       paymentMethod: NumericToOrderPaymentMethodMapping['0'],
-      tablewareQuantity: 1
+      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
+      boxSizingX: 1,
+      boxSizingY: 1,
+      boxSizingZ: 1,
+      userId: user.id,
+      addressId: userAddress.id,
+      deliverAt: new Date(),
     };
 
     const invalidOrderUpdatePaymentStatusData = {
-      userId: user.id,
-      addressId: userAddress.id,
       facilityId: facility.id,
-      deliverAt: new Date(),
-      status: NumericToOrderStatusMapping['0'],
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
+      status: 'some_random_status',
       totalCost: 100,
       archiveAddress: 'тест',
       customerName: 'тест',
       customerPhonenumber: 'тест',
-      paymentStatus: 'some_random_payment_status',
       paymentMethod: NumericToOrderPaymentMethodMapping['0'],
-      tablewareQuantity: 1
+      paymentStatus: 'some_random_payment_status',
+      boxSizingX: 1,
+      boxSizingY: 1,
+      boxSizingZ: 1,
+      userId: user.id,
+      addressId: userAddress.id,
+      deliverAt: new Date(),
     };
     
     const invalidOrderUpdatePaymentMethodData = {
-      userId: user.id,
-      addressId: userAddress.id,
       facilityId: facility.id,
-      deliverAt: new Date(),
-      status: NumericToOrderStatusMapping['0'],
+      estimatedDeliveryAt: new Date(),
+      deliveryType: NumericToOrderDeliveryTypeMapping['0'],
+      status: 'some_random_status',
       totalCost: 100,
       archiveAddress: 'тест',
       customerName: 'тест',
       customerPhonenumber: 'тест',
-      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
       paymentMethod: 'some_random_payment_method',
-      tablewareQuantity: 1
+      paymentStatus: NumericToOrderPaymentStatusMapping['0'],
+      boxSizingX: 1,
+      boxSizingY: 1,
+      boxSizingZ: 1,
+      userId: user.id,
+      addressId: userAddress.id,
+      deliverAt: new Date(),
     };
 
     try {

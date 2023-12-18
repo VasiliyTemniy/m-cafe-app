@@ -1,8 +1,7 @@
-import type { InferAttributes, InferCreationAttributes, ForeignKey } from 'sequelize';
-import type { Sequelize } from 'sequelize';
+import type { InferAttributes, InferCreationAttributes, ForeignKey, Sequelize } from 'sequelize';
+import type { User } from './User.js';
+import type { Facility } from './Facility.js';
 import { Model, DataTypes } from 'sequelize';
-import { User } from './User.js';
-import { Facility } from './Facility.js';
 
 
 export class FacilityManager extends Model<InferAttributes<FacilityManager>, InferCreationAttributes<FacilityManager>> {
