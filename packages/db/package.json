@@ -1,8 +1,8 @@
 {
   "name": "@m-cafe-app/db",
   "productName": "Modular cafe app",
-  "version": "1.0.0",
-  "description": "This package contains db model definitions",
+  "version": "2.0.0",
+  "description": "This package contains db model definitions. Suitable for a marketplace app, food service app as a subtype of a marketplace app",
   "main": "build/index.js",
   "type": "module",
   "private": true,
