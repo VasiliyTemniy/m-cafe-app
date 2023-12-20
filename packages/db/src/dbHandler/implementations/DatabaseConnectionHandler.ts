@@ -53,7 +53,9 @@ import {
   initReviewHooks,
   initStockHooks,
   initCarrierModel,
-  initCarrierAssociations
+  initCarrierAssociations,
+  initDynamicModulePageModel,
+  initDynamicModulePageAssociations
 } from '../../models';
 
 
@@ -213,6 +215,7 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await initOrderProductModel(this.dbInstance);
     await initOrderTrackingModel(this.dbInstance);
     await initDynamicModuleModel(this.dbInstance);
+    await initDynamicModulePageModel(this.dbInstance);
     await initUiSettingModel(this.dbInstance);
     await initReviewModel(this.dbInstance);
     await initCarrierModel(this.dbInstance);
@@ -233,6 +236,7 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await initCommentAssociations();
     await initOrderAssociations();
     await initDynamicModuleAssociations();
+    await initDynamicModulePageAssociations();
     await initReviewAssociations();
     await initCarrierAssociations();
 
