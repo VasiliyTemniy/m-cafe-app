@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import { DynamicModuleType, DynamicModulePlacementType } from '@m-cafe-app/shared-constants';
+import { DynamicModuleType, DynamicModulePlacementType, DynamicModulePreset } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('dynamic_modules', {
@@ -16,11 +16,6 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
         isIn: [Object.values(DynamicModuleType)]
       }
     },
-    // locs are referenced from locs table
-    page: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     placement: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -32,7 +27,19 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
         isIn: [Object.values(DynamicModulePlacementType)]
       },
       defaultValue: DynamicModulePlacementType.BeforeMenu
-    },    
+    },
+    nest_level: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    preset: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isIn: [Object.values(DynamicModulePreset)]
+      }
+    },
     class_name: {
       type: DataTypes.STRING,
       allowNull: true
@@ -44,6 +51,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     url: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    parent_dynamic_module_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'dynamic_modules', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
     },
     created_at: {
       type: DataTypes.DATE,

@@ -31,7 +31,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     },
     parent_comment_id: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      references: { model: 'comments', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
     },
     user_id: {
       type: DataTypes.INTEGER,
