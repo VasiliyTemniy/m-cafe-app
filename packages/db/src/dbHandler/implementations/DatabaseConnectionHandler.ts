@@ -55,7 +55,9 @@ import {
   initCarrierModel,
   initCarrierAssociations,
   initDynamicModulePageModel,
-  initDynamicModulePageAssociations
+  initDynamicModulePageAssociations,
+  initProductDetailModel,
+  initProductDetailAssociations
 } from '../../models';
 
 
@@ -206,6 +208,7 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await initProductModel(this.dbInstance);
     await initProductCategoryReferenceModel(this.dbInstance);
     await initProductComponentModel(this.dbInstance);
+    await initProductDetailModel(this.dbInstance);
     await initIngredientModel(this.dbInstance);
     await initFacilityModel(this.dbInstance);
     await initFacilityManagerModel(this.dbInstance);
@@ -230,6 +233,7 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await initProductCategoryAssociations();
     await initProductAssociations();
     await initProductComponentAssociations();
+    await initProductDetailAssociations();
     await initIngredientAssociations();
     await initFacilityAssociations();
     await initStockAssociations();
