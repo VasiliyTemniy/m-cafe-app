@@ -3,25 +3,47 @@ import type {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  NonAttribute
+  NonAttribute,
+  ForeignKey
 } from 'sequelize';
-import { DynamicModulePlacementType, DynamicModuleType, LocParentType, LocType, PictureParentType } from '@m-cafe-app/shared-constants';
+import {
+  DynamicModulePlacementType,
+  DynamicModulePreset,
+  DynamicModuleType,
+  LocParentType,
+  LocType,
+  PictureParentType
+} from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Loc } from './Loc.js';
 import { Picture } from './Picture.js';
+import { DynamicModulePage } from './DynamicModulePage.js';
+import { Organization } from './Organization.js';
+import { User } from './User.js';
 
 
 export class DynamicModule extends Model<InferAttributes<DynamicModule>, InferCreationAttributes<DynamicModule>> {
   declare id: CreationOptional<number>;
+  declare organizationId: ForeignKey<Organization['id']> | null; // if null, it means it is a global module
+  declare createdBy: ForeignKey<User['id']>;
+  declare updatedBy: ForeignKey<User['id']>;
   declare moduleType: DynamicModuleType;
-  declare page: string;
   declare placement: number;
   declare placementType: DynamicModulePlacementType;
+  declare nestLevel: number;
+  declare preset: DynamicModulePreset | null;
   declare className: string | null;
   declare inlineCss: string | null;
   declare url: string | null;
+  declare parentDynamicModuleId: ForeignKey<DynamicModule['id']> | null;
   declare locs?: NonAttribute<Loc[]>;
   declare pictures?: NonAttribute<Picture[]>;
+  declare parentDynamicModule?: NonAttribute<DynamicModule>;
+  declare childDynamicModules?: NonAttribute<DynamicModule[]>;
+  declare pages?: NonAttribute<DynamicModulePage[]>;
+  declare organization?: NonAttribute<Organization>;
+  declare createdByAuthor?: NonAttribute<User>;
+  declare updatedByAuthor?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -36,16 +58,33 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
+        organizationId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'organizations', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
+        createdBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
         moduleType: {
           type: DataTypes.STRING,
           allowNull: false,
           validate: {
             isIn: [Object.values(DynamicModuleType)]
           }
-        },
-        page: {
-          type: DataTypes.STRING,
-          allowNull: false
         },
         placement: {
           type: DataTypes.INTEGER,
@@ -58,7 +97,19 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
             isIn: [Object.values(DynamicModulePlacementType)]
           },
           defaultValue: DynamicModulePlacementType.BeforeMenu,
-        }, 
+        },
+        nestLevel: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        preset: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            isIn: [Object.values(DynamicModulePreset)]
+          }
+        },
         className: {
           type: DataTypes.STRING,
           allowNull: true
@@ -70,6 +121,13 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
         url: {
           type: DataTypes.STRING,
           allowNull: true
+        },
+        parentDynamicModuleId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'dynamic_modules', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL',
         },
         createdAt: {
           type: DataTypes.DATE,
@@ -135,6 +193,44 @@ export const initDynamicModuleAssociations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      DynamicModule.hasMany(DynamicModulePage, {
+        foreignKey: 'dynamicModuleId',
+        as: 'dynamicModulePages',
+      });
+
+      // target on the right side; target === parent;
+      // 'parentDynamicModuleId' is taken from the target on the right
+      DynamicModule.belongsTo(DynamicModule, {
+        targetKey: 'id',
+        foreignKey: 'parentDynamicModuleId',
+        as: 'parentDynamicModule'
+      });
+
+      // target on the right side; target === children;
+      // 'parentDynamicModuleId' is taken from the source on the left
+      DynamicModule.hasMany(DynamicModule, {
+        foreignKey: 'parentDynamicModuleId',
+        as: 'childDynamicModules'
+      });
+
+      DynamicModule.belongsTo(Organization, {
+        targetKey: 'id',
+        foreignKey: 'organizationId',
+        as: 'organization',
+      });
+
+      DynamicModule.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'createdBy',
+        as: 'createdByAuthor',
+      });
+
+      DynamicModule.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor',
       });
 
       resolve();
