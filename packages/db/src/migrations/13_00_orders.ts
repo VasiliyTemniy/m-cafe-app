@@ -1,6 +1,7 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
 import {
+  MassEnum,
   OrderDeliveryType,
   OrderPaymentMethod,
   OrderPaymentStatus,
@@ -149,6 +150,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     mass_control_value: {
       type: DataTypes.INTEGER,
       allowNull: true,
+    },
+    mass_measure: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isIn: [Object.values(MassEnum)]
+      }
     },
     comment: {
       type: DataTypes.STRING,

@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-import { OrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { MassEnum, OrderTrackingStatus } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('order_trackings', {
@@ -41,6 +41,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     mass_control_value: {
       type: DataTypes.INTEGER,
       allowNull: true,
+    },
+    mass_measure: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isIn: [Object.values(MassEnum)]
+      }
     },
     delivered_at: {
       type: DataTypes.DATE,
