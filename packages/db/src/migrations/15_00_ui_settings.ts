@@ -14,7 +14,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true, // if null, it means it is a global ui setting
       references: { model: 'organizations', key: 'id' },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      onDelete: 'CASCADE',
+      unique: 'unique_ui_setting'
     },
     updated_by: {
       type: DataTypes.INTEGER,
