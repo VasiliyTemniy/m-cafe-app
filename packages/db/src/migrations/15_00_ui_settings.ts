@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { allowedThemes, componentGroups } from '@m-cafe-app/shared-constants';
+import { UiSettingTheme, componentGroups } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -41,7 +41,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isIn: [allowedThemes]
+        isIn: [Object.values(UiSettingTheme)]
       },
       unique: 'unique_ui_setting'
     },
