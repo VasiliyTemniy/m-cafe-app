@@ -3,17 +3,26 @@ import type {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  NonAttribute
+  NonAttribute,
+  ForeignKey,
 } from 'sequelize';
 import { LocParentType, LocType, PictureParentType, StockEntityType } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Loc } from './Loc.js';
 import { Stock } from './Stock.js';
 import { Picture } from './Picture.js';
+import { Organization } from './Organization.js';
+import { User } from './User.js';
+import { Currency } from './Currency.js';
 
 
 export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
   declare id: CreationOptional<number>;
+  declare organizationId: ForeignKey<Organization['id']>;
+  declare createdBy: ForeignKey<User['id']>;
+  declare updatedBy: ForeignKey<User['id']>;
+  declare price: number | null;
+  declare currencyId: ForeignKey<Currency['id']> | null;
   declare unitMass: number | null;
   declare unitVolume: number | null;
   declare proteins: number | null;
@@ -38,7 +47,39 @@ export const initIngredientModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
+        organizationId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'organizations', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
+        createdBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
         // name, description and stock measure locs are referenced from locs table
+        price: {
+          type: DataTypes.INTEGER,
+          allowNull: true
+        },
+        currencyId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'currencies', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL'
+        },
         unitMass: {
           type: DataTypes.INTEGER,
           allowNull: true
@@ -159,6 +200,24 @@ export const initIngredientAssociations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      Ingredient.belongsTo(Organization, {
+        targetKey: 'id',
+        foreignKey: 'organizationId',
+        as: 'organization',
+      });
+
+      Ingredient.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'createdBy',
+        as: 'createdByAuthor',
+      });
+
+      Ingredient.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor',
       });
 
       resolve();
