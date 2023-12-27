@@ -4,61 +4,7 @@ import { Sequelize } from 'sequelize';
 import { Umzug, SequelizeStorage } from 'umzug';
 import { logger } from '@m-cafe-app/utils';
 import { DATABASE_URL } from '../../config';
-import {
-  initUserModel,
-  initAddressModel,
-  initUserAddressModel,
-  initLocModel,
-  initIngredientModel,
-  initFacilityModel,
-  initFacilityManagerModel,
-  initStockModel,
-  initOrderModel,
-  initPictureModel,
-  initDynamicModuleModel,
-  initUiSettingModel,
-  initFixedLocModel,
-  initUserScopes,
-  initLanguageModel,
-  initProductTypeModel,
-  initProductCategoryModel,
-  initProductModel,
-  initProductCategoryReferenceModel,
-  initProductComponentModel,
-  initCommentModel,
-  initOrderProductModel,
-  initOrderTrackingModel,
-  initReviewModel,
-  initUserAssociations,
-  initAddressAssociations,
-  initLanguageAssociations,
-  initLocAssociations,
-  initFixedLocAssociations,
-  initPictureAssocitations,
-  initProductTypeAssociations,
-  initProductCategoryAssociations,
-  initProductAssociations,
-  initProductComponentAssociations,
-  initIngredientAssociations,
-  initFacilityAssociations,
-  initStockAssociations,
-  initCommentAssociations,
-  initOrderAssociations,
-  initDynamicModuleAssociations,
-  initReviewAssociations,
-  initPictureHooks,
-  initCommentHooks,
-  initProductHooks,
-  initProductComponentHooks,
-  initReviewHooks,
-  initStockHooks,
-  initCarrierModel,
-  initCarrierAssociations,
-  initDynamicModulePageModel,
-  initDynamicModulePageAssociations,
-  initProductDetailModel,
-  initProductDetailAssociations
-} from '../../models';
+import * as models from '../../models';
 
 
 export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
@@ -196,61 +142,116 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
       return Promise.resolve(); // Init models is called in connect
     }
 
-    await initUserModel(this.dbInstance);
-    await initAddressModel(this.dbInstance);
-    await initUserAddressModel(this.dbInstance);
-    await initLanguageModel(this.dbInstance);
-    await initLocModel(this.dbInstance);
-    await initFixedLocModel(this.dbInstance);
-    await initPictureModel(this.dbInstance);
-    await initProductTypeModel(this.dbInstance);
-    await initProductCategoryModel(this.dbInstance);
-    await initProductModel(this.dbInstance);
-    await initProductCategoryReferenceModel(this.dbInstance);
-    await initProductComponentModel(this.dbInstance);
-    await initProductDetailModel(this.dbInstance);
-    await initIngredientModel(this.dbInstance);
-    await initFacilityModel(this.dbInstance);
-    await initFacilityManagerModel(this.dbInstance);
-    await initStockModel(this.dbInstance);
-    await initCommentModel(this.dbInstance);
-    await initOrderModel(this.dbInstance);
-    await initOrderProductModel(this.dbInstance);
-    await initOrderTrackingModel(this.dbInstance);
-    await initDynamicModuleModel(this.dbInstance);
-    await initDynamicModulePageModel(this.dbInstance);
-    await initUiSettingModel(this.dbInstance);
-    await initReviewModel(this.dbInstance);
-    await initCarrierModel(this.dbInstance);
+    await models.initAddressModel(this.dbInstance);
+    await models.initLanguageModel(this.dbInstance);
+    await models.initLocModel(this.dbInstance);
+    await models.initFixedLocModel(this.dbInstance);
+    await models.initCurrencyModel(this.dbInstance);
+    await models.initCurrencyConversionModel(this.dbInstance);
+    await models.initPictureModel(this.dbInstance);
+    await models.initPictureViewModel(this.dbInstance);
+    await models.initUserModel(this.dbInstance);
+    await models.initUserAddressModel(this.dbInstance);
+    await models.initCoverageModel(this.dbInstance);
+    await models.initOrganizationModel(this.dbInstance);
+    await models.initOrganizationDetailModel(this.dbInstance);
+    await models.initOfferPolicyModel(this.dbInstance);
+    await models.initOrderPolicyModel(this.dbInstance);
+    await models.initDeliveryPolicyModel(this.dbInstance);
+    await models.initOrganizationManagerModel(this.dbInstance);
+    await models.initRoleModel(this.dbInstance);
+    await models.initUserRoleModel(this.dbInstance);
+    await models.initPermissionModel(this.dbInstance);
+    await models.initRolePermissionModel(this.dbInstance);
+    await models.initProductTypeModel(this.dbInstance);
+    await models.initProductCategoryModel(this.dbInstance);
+    await models.initProductModel(this.dbInstance);
+    await models.initProductCategoryReferenceModel(this.dbInstance);
+    await models.initProductComponentModel(this.dbInstance);
+    await models.initProductDetailModel(this.dbInstance);
+    await models.initProductViewModel(this.dbInstance);
+    await models.initIngredientModel(this.dbInstance);
+    await models.initFacilityModel(this.dbInstance);
+    await models.initFacilityDetailModel(this.dbInstance);
+    await models.initStockModel(this.dbInstance);
+    await models.initCommentModel(this.dbInstance);
+    await models.initOrderModel(this.dbInstance);
+    await models.initOrderProductModel(this.dbInstance);
+    await models.initOrderTrackingModel(this.dbInstance);
+    await models.initDynamicModuleModel(this.dbInstance);
+    await models.initDynamicModulePageModel(this.dbInstance);
+    await models.initUiSettingModel(this.dbInstance);
+    await models.initReviewModel(this.dbInstance);
+    await models.initCarrierModel(this.dbInstance);
+    await models.initOfferModel(this.dbInstance);
+    await models.initOfferBonusModel(this.dbInstance);
+    await models.initSaleEventModel(this.dbInstance);
+    await models.initPromoEventModel(this.dbInstance);
+    await models.initPromoEventCodeModel(this.dbInstance);
+    await models.initApiRequestModel(this.dbInstance);
+    await models.initApiRequestHeaderModel(this.dbInstance);
+    await models.initApiRequestParamModel(this.dbInstance);
+    await models.initApiRequestQueryStringPartModel(this.dbInstance);
+    await models.initApiRequestBodyPartModel(this.dbInstance);
+    await models.initApiRequestTokenModel(this.dbInstance);
+    await models.initApiResponseExpectationModel(this.dbInstance);
+    await models.initContactModel(this.dbInstance);
 
-    await initUserAssociations();
-    await initAddressAssociations();
-    await initLanguageAssociations();
-    await initLocAssociations();
-    await initFixedLocAssociations();
-    await initPictureAssocitations();
-    await initProductTypeAssociations();
-    await initProductCategoryAssociations();
-    await initProductAssociations();
-    await initProductComponentAssociations();
-    await initProductDetailAssociations();
-    await initIngredientAssociations();
-    await initFacilityAssociations();
-    await initStockAssociations();
-    await initCommentAssociations();
-    await initOrderAssociations();
-    await initDynamicModuleAssociations();
-    await initDynamicModulePageAssociations();
-    await initReviewAssociations();
-    await initCarrierAssociations();
+    await models.initAddressAssociations();
+    await models.initLanguageAssociations();
+    await models.initLocAssociations();
+    await models.initFixedLocAssociations();
+    await models.initCurrencyAssociations();
+    await models.initCurrencyConversionAssociations();
+    await models.initPictureAssociations();
+    await models.initPictureViewAssociations();
+    await models.initUserAssociations();
+    await models.initOrganizationAssociations();
+    await models.initOrganizationDetailAssociations();
+    await models.initOfferPolicyAssociations();
+    await models.initOrderPolicyAssociations();
+    await models.initDeliveryPolicyAssociations();
+    await models.initRoleAssociations();
+    await models.initPermissionAssociations();
+    await models.initProductTypeAssociations();
+    await models.initProductCategoryAssociations();
+    await models.initProductAssociations();
+    await models.initProductComponentAssociations();
+    await models.initProductDetailAssociations();
+    await models.initProductViewAssociations();
+    await models.initIngredientAssociations();
+    await models.initFacilityAssociations();
+    await models.initFacilityDetailAssociations();
+    await models.initStockAssociations();
+    await models.initCommentAssociations();
+    await models.initOrderAssociations();
+    await models.initOrderTrackingAssociations();
+    await models.initDynamicModuleAssociations();
+    await models.initDynamicModulePageAssociations();
+    await models.initUiSettingAssociations();
+    await models.initReviewAssociations();
+    await models.initCarrierAssociations();
+    await models.initOfferAssociations();
+    await models.initOfferBonusAssociations();
+    await models.initSaleEventAssociations();
+    await models.initPromoEventAssociations();
+    await models.initPromoEventCodeAssociations();
+    await models.initApiRequestAssociations();
+    await models.initApiRequestHeaderAssociations();
+    await models.initApiRequestParamAssociations();
+    await models.initApiRequestQueryStringPartAssociations();
+    await models.initApiRequestBodyPartAssociations();
+    await models.initApiRequestTokenAssociations();
+    await models.initApiResponseExpectationAssociations();
+    await models.initContactAssociations();
 
-    await initPictureHooks();
-    await initCommentHooks();
-    await initProductHooks();
-    await initProductComponentHooks();
-    await initReviewHooks();
-    await initStockHooks();
+    await models.initPictureHooks();
+    await models.initCommentHooks();
+    await models.initProductHooks();
+    await models.initProductComponentHooks();
+    await models.initReviewHooks();
+    await models.initStockHooks();
 
-    await initUserScopes();
+    await models.initUserScopes();
   }
 }
