@@ -10,13 +10,19 @@ import { Model, DataTypes } from 'sequelize';
 import { Loc } from './Loc.js';
 import { Product } from './Product.js';
 import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { User } from './User.js';
 
 
 export class ProductDetail extends Model<InferAttributes<ProductDetail>, InferCreationAttributes<ProductDetail>> {
+  declare id: CreationOptional<number>;
   declare productId: ForeignKey<Product['id']>;
+  declare createdBy: ForeignKey<User['id']>;
+  declare updatedBy: ForeignKey<User['id']>;
   declare nameLocs?: NonAttribute<Loc[]>;
   declare descriptionLocs?: NonAttribute<Loc[]>;
   declare product?: NonAttribute<Product>;
+  declare createdByAuthor?: NonAttribute<User>;
+  declare updatedByAuthor?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -26,12 +32,31 @@ export const initProductDetailModel = (dbInstance: Sequelize) => {
   return new Promise<void>((resolve, reject) => {
     try {
       ProductDetail.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
         productId: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: { model: 'products', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
+        },
+        createdBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         },
         // name and description locs are referenced from locs table
         createdAt: {
@@ -105,6 +130,18 @@ export const initProductDetailAssociations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      ProductDetail.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'createdBy',
+        as: 'createdByAuthor'
+      });
+      
+      ProductDetail.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor'
       });
 
       resolve();
