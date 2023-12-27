@@ -7,7 +7,17 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType, PictureParentType, ReviewParentType, StockEntityType } from '@m-cafe-app/shared-constants';
+import {
+  LocParentType,
+  LocType,
+  MassEnum,
+  PictureParentType,
+  PriceCutPermission,
+  ReviewParentType,
+  SizingEnum,
+  StockEntityType,
+  VolumeEnum
+} from '@m-cafe-app/shared-constants';
 import { ProductType } from './ProductType.js';
 import { Loc } from './Loc.js';
 import { ProductComponent } from './ProductComponent.js';
@@ -16,17 +26,47 @@ import { ProductCategoryReference } from './ProductCategoryReference.js';
 import { Review } from './Review.js';
 import { Picture } from './Picture.js';
 import { Stock } from './Stock.js';
+import { ProductDetail } from './ProductDetail.js';
+import { User } from './User.js';
+import { Organization } from './Organization.js';
+import { Currency } from './Currency.js';
+import { ProductView } from './ProductView.js';
 
 
 export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
   declare id: CreationOptional<number>;
+  declare organizationId: ForeignKey<Organization['id']>;
+  declare createdBy: ForeignKey<User['id']>;
+  declare updatedBy: ForeignKey<User['id']>;
   declare productTypeId: ForeignKey<ProductType['id']>;
   declare price: number;
-  declare totalMass?: number;
-  declare totalVolume?: number;
-  declare boxSizingX?: number;
-  declare boxSizingY?: number;
-  declare boxSizingZ?: number;
+  declare currencyId: ForeignKey<Currency['id']>;
+  declare priceCutPermissions: PriceCutPermission;
+  declare displayPriority: number;
+  declare isFeatured: boolean;
+  declare isAvailable: boolean;
+  declare isActive: boolean;
+  declare showComponents: boolean;
+  declare totalDownloads: number;
+  declare pricePrefix: string | null;
+  declare pricePostfix: string | null;
+  declare bonusGainRate: number | null;
+  declare maxDiscountCutAbsolute: number | null;
+  declare maxDiscountCutRelative: number | null;
+  declare maxBonusCutAbsolute: number | null;
+  declare maxBonusCutRelative: number | null;
+  declare maxEventCutAbsolute: number | null;
+  declare maxEventCutRelative: number | null;
+  declare maxTotalCutAbsolute: number | null;
+  declare maxTotalCutRelative: number | null;
+  declare totalMass: number | null;
+  declare massMeasure: MassEnum | null;
+  declare totalVolume: number | null;
+  declare volumeMeasure: VolumeEnum | null;
+  declare boxSizingX: number | null;
+  declare boxSizingY: number | null;
+  declare boxSizingZ: number | null;
+  declare sizingMeasure: SizingEnum | null;
   declare nameLocs?: NonAttribute<Loc[]>;
   declare descriptionLocs?: NonAttribute<Loc[]>;
   declare productType?: NonAttribute<ProductType>;
@@ -34,6 +74,12 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   declare pictures?: NonAttribute<Picture[]>;
   declare reviews?: NonAttribute<Review[]>;
   declare categories?: NonAttribute<ProductCategory[]>;
+  declare currency?: NonAttribute<Currency>;
+  declare details?: NonAttribute<ProductDetail[]>;
+  declare organization?: NonAttribute<Organization>;
+  declare createdByAuthor?: NonAttribute<User>;
+  declare updatedByAuthor?: NonAttribute<User>;
+  declare views?: NonAttribute<ProductView[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -48,37 +94,168 @@ export const initProductModel = (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
+        organizationId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'organizations', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
+        createdBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
         // name and description locs are referenced from locs table
         productTypeId: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: { model: 'product_types', key: 'id' },
           onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+          onDelete: 'RESTRICT'
         },
         price: {
           type: DataTypes.INTEGER,
           allowNull: false
         },
-        totalMass: {
+        currencyId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'currencies', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        priceCutPermissions: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(PriceCutPermission)]
+          },
+          defaultValue: PriceCutPermission.None
+        },
+        displayPriority: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        isFeatured: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false
+        },
+        isAvailable: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: true
+        },
+        isActive: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: true
+        },
+        showComponents: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: true
+        },
+        totalDownloads: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        pricePrefix: {
+          type: DataTypes.STRING,
+          allowNull: true
+        },
+        pricePostfix: {
+          type: DataTypes.STRING,
+          allowNull: true
+        },
+        bonusGainRate: {
+          type: DataTypes.FLOAT,
+          allowNull: true
+        },
+        maxDiscountCutAbsolute: {
           type: DataTypes.INTEGER,
           allowNull: true
+        },
+        maxDiscountCutRelative: {
+          type: DataTypes.FLOAT,
+          allowNull: true
+        },
+        maxBonusCutAbsolute: {
+          type: DataTypes.INTEGER,
+          allowNull: true
+        },
+        maxBonusCutRelative: {
+          type: DataTypes.FLOAT,
+          allowNull: true
+        },
+        maxEventCutAbsolute: {
+          type: DataTypes.INTEGER,
+          allowNull: true
+        },
+        maxEventCutRelative: {
+          type: DataTypes.FLOAT,
+          allowNull: true
+        },
+        maxTotalCutAbsolute: {
+          type: DataTypes.INTEGER,
+          allowNull: true
+        },
+        maxTotalCutRelative: {
+          type: DataTypes.FLOAT,
+          allowNull: true
+        },
+        totalMass: {
+          type: DataTypes.FLOAT,
+          allowNull: true
+        },
+        massMeasure: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            isIn: [Object.values(MassEnum)]
+          }
         },
         totalVolume: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.FLOAT,
           allowNull: true
         },
+        volumeMeasure: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            isIn: [Object.values(VolumeEnum)]
+          }
+        },
         boxSizingX: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.FLOAT,
           allowNull: true
         },
         boxSizingY: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.FLOAT,
           allowNull: true
         },
         boxSizingZ: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.FLOAT,
           allowNull: true
+        },
+        sizingMeasure: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            isIn: [Object.values(SizingEnum)]
+          }
         },
         // product categories are handled in many-many junction table
         createdAt: {
@@ -197,6 +374,40 @@ export const initProductAssociations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      Product.hasMany(ProductDetail, {
+        foreignKey: 'productId',
+        as: 'details'
+      });
+
+      Product.belongsTo(Organization, {
+        targetKey: 'id',
+        foreignKey: 'organizationId',
+        as: 'organization',
+      });
+
+      Product.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'createdBy',
+        as: 'createdByAuthor',
+      });
+
+      Product.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor',
+      });
+
+      Product.belongsTo(Currency, {
+        targetKey: 'id',
+        foreignKey: 'currencyId',
+        as: 'currency',
+      });
+
+      Product.hasMany(ProductView, {
+        foreignKey: 'productId',
+        as: 'views'
       });
       
       resolve();
