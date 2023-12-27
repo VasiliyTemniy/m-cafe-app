@@ -9,11 +9,13 @@ import type {
 import { Model, DataTypes } from 'sequelize';
 import {
   CommentParentType,
+  MassEnum,
   OrderDeliveryType,
   OrderPaymentMethod,
   OrderPaymentStatus,
   OrderStatus,
-  ReviewParentType
+  ReviewParentType,
+  SizingEnum
 } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Address } from './Address.js';
@@ -22,6 +24,7 @@ import { OrderProduct } from './OrderProduct.js';
 import { OrderTracking } from './OrderTracking.js';
 import { Comment } from './Comment.js';
 import { Review } from './Review.js';
+import { Currency } from './Currency.js';
 
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
@@ -31,6 +34,11 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
   declare deliveryType: OrderDeliveryType;
   declare status: OrderStatus;
   declare totalCost: number;
+  declare totalCuts: number;
+  declare totalBonusCuts: number;
+  declare totalBonusGains: number;
+  declare deliveryCost: number;
+  declare currencyId: ForeignKey<Currency['id']>;
   declare archiveAddress: string;
   declare customerName: string;
   declare customerPhonenumber: string;
@@ -39,15 +47,18 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
   declare boxSizingX: number | null;
   declare boxSizingY: number | null;
   declare boxSizingZ: number | null;
+  declare sizingMeasure: SizingEnum | null;
   declare userId: ForeignKey<User['id']> | null;
   declare addressId: ForeignKey<Address['id']> | null;
   declare deliverAt: Date | null;
   declare recievedAt: Date | null;
   declare massControlValue: number | null;
+  declare massMeasure: MassEnum | null;
   declare comment: string | null;
   declare trackingCode: string | null;
   declare user?: NonAttribute<User>;
   declare address?: NonAttribute<Address>;
+  declare currency?: NonAttribute<Currency>;
   declare orderProducts?: NonAttribute<OrderProduct[]>;
   declare facility?: NonAttribute<Facility>;
   declare tracking?: NonAttribute<OrderTracking[]>;
@@ -99,6 +110,29 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        totalCuts: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        totalBonusCuts: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        totalBonusGains: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        deliveryCost: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        currencyId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'currencies', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
         archiveAddress: {
           type: DataTypes.STRING,
           allowNull: false
@@ -137,6 +171,13 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           allowNull: true
         },
+        sizingMeasure: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            isIn: [Object.values(SizingEnum)]
+          }
+        },
         userId: {
           type: DataTypes.INTEGER,
           allowNull: true,
@@ -169,6 +210,13 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
         massControlValue: {
           type: DataTypes.INTEGER,
           allowNull: true,
+        },
+        massMeasure: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            isIn: [Object.values(MassEnum)]
+          }
         },
         comment: {
           type: DataTypes.STRING,
@@ -256,6 +304,16 @@ export const initOrderAssociations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      Order.belongsTo(Address, {
+        foreignKey: 'addressId',
+        as: 'address'
+      });
+
+      Order.belongsTo(Currency, {
+        foreignKey: 'currencyId',
+        as: 'currency'
       });
 
       resolve();
