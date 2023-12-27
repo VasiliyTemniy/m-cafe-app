@@ -10,7 +10,9 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes, Op } from 'sequelize';
 import {
+  ContactParentType,
   PictureParentType,
+  UserRights,
   emailRegExp,
   maxEmailLen,
   maxNameLen,
@@ -22,32 +24,39 @@ import {
   minUsernameLen,
   nameRegExp,
   phonenumberRegExp,
-  possibleUserRights,
   usernameRegExp
 } from '@m-cafe-app/shared-constants';
 import { UserAddress } from './UserAddress.js';
 import { Address } from './Address.js';
-import { FacilityManager } from './FacilityManager.js';
-import { Facility } from './Facility.js';
 import { Order } from './Order.js';
 import { Review } from './Review.js';
 import { Picture } from './Picture.js';
+import { Role } from './Role.js';
+import { UserRole } from './UserRole.js';
+import { OrganizationManager } from './OrganizationManager.js';
+import { Organization } from './Organization.js';
+import { Contact } from './Contact.js';
 
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
   declare phonenumber: string;
-  declare rights: CreationOptional<string>;
+  declare rights: CreationOptional<UserRights>;
   declare lookupHash: string;
+  declare lookupNoise: number;
   declare username: string | null;
-  declare name: string | null;
+  declare firstName: string | null;
+  declare secondName: string | null;
+  declare thirdName: string | null;
   declare email: string | null;
   declare birthdate: Date | null;
-  declare lookupNoise: number | null;
+  declare bannedReason: string | null;
   declare addresses?: NonAttribute<Address[]>;
   declare orders?: NonAttribute<Order[]>;
   declare reviews?: NonAttribute<Review[]>;
   declare pictures?: NonAttribute<Picture[]>;
+  declare roles?: NonAttribute<Role[]>;
+  declare contacts?: NonAttribute<Contact[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: CreationOptional<Date>;
@@ -66,6 +75,33 @@ export const initUserModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
+        phonenumber: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: false,
+          validate: {
+            is: [phonenumberRegExp, 'i'],
+            len: [minPhonenumberLen, maxPhonenumberLen]
+          }
+        },
+        rights: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          defaultValue: 'customer',
+          validate: {
+            isIn: [Object.values(UserRights)]
+          }
+        },
+        lookupHash: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: false
+        },
+        lookupNoise: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
         username: {
           type: DataTypes.STRING,
           unique: true,
@@ -75,7 +111,7 @@ export const initUserModel = async (dbInstance: Sequelize) => {
             len: [minUsernameLen, maxUsernameLen]
           }
         },
-        name: {
+        firstName: {
           type: DataTypes.STRING,
           allowNull: true,
           validate: {
@@ -83,13 +119,20 @@ export const initUserModel = async (dbInstance: Sequelize) => {
             len: [minNameLen, maxNameLen]
           }
         },
-        phonenumber: {
+        secondName: {
           type: DataTypes.STRING,
-          unique: true,
-          allowNull: false,
+          allowNull: true,
           validate: {
-            is: [phonenumberRegExp, 'i'],
-            len: [minPhonenumberLen, maxPhonenumberLen]
+            is: [nameRegExp, 'i'],
+            len: [minNameLen, maxNameLen]
+          }
+        },
+        thirdName: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            is: [nameRegExp, 'i'],
+            len: [minNameLen, maxNameLen]
           }
         },
         email: {
@@ -108,23 +151,9 @@ export const initUserModel = async (dbInstance: Sequelize) => {
             isDate: true
           }
         },
-        rights: {
+        bannedReason: {
           type: DataTypes.STRING,
-          allowNull: false,
-          defaultValue: 'customer',
-          validate: {
-            isIn: [[...possibleUserRights]]
-          }
-        },
-        lookupHash: {
-          type: DataTypes.STRING,
-          unique: true,
-          allowNull: false
-        },
-        lookupNoise: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          defaultValue: 0
+          allowNull: true
         },
         createdAt: {
           type: DataTypes.DATE,
@@ -183,32 +212,12 @@ export const initUserAssociations = async () => {
         as: 'addresses'
       });
 
-      // Through table associations: uncomment if needed
-      // User.hasMany(UserAddress, {
-      //   foreignKey: 'userId',
-      //   as: 'userAddresses'
-      // });
-      // UserAddress.belongsTo(User, {
-      //   targetKey: 'id',
-      //   foreignKey: 'userId'
-      // });
-
-      User.belongsToMany(Facility, {
-        through: FacilityManager,
+      User.belongsToMany(Organization, {
+        through: OrganizationManager,
         foreignKey: 'userId',
-        otherKey: 'facilityId',
+        otherKey: 'organizationId',
         as: 'manager',
       });
-
-      // Through table associations: uncomment if needed
-      // User.hasMany(FacilityManager, {
-      //   foreignKey: 'userId',
-      //   as: 'managerOfAFacility',
-      // });
-      // FacilityManager.belongsTo(User, {
-      //   targetKey: 'id',
-      //   foreignKey: 'userId'
-      // });
 
       User.hasMany(Order, {
         foreignKey: 'userId',
@@ -225,6 +234,23 @@ export const initUserAssociations = async () => {
         as: 'pictures',
         scope: {
           parentType: PictureParentType.User
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      User.belongsToMany(Role, {
+        through: UserRole,
+        foreignKey: 'userId',
+        otherKey: 'roleId',
+        as: 'roles'
+      });
+
+      User.hasMany(Contact, {
+        foreignKey: 'parentId',
+        as: 'contacts',
+        scope: {
+          parentType: ContactParentType.User
         },
         constraints: false,
         foreignKeyConstraint: false
