@@ -1,38 +1,35 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import { PictureParentType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('pictures', {
+  await queryInterface.createTable('product_details', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    src: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    // alt text loc is referenced from locs table
-    parent_id: {
+    product_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: 'picture_unique'
+      references: { model: 'products', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
-    parent_type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        isIn: [Object.values(PictureParentType)]
-      },
-      unique: 'picture_unique'
-    },
-    order_number: {
+    created_by: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0,
-      unique: 'picture_unique'
+      references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT'
     },
+    updated_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT'
+    },
+    // name and description locs are referenced from locs table
     created_at: {
       type: DataTypes.DATE,
       allowNull: false
@@ -41,15 +38,9 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.DATE,
       allowNull: false
     }
-  }, {
-    uniqueKeys: {
-      picture_unique: {
-        fields: ['parent_id', 'parent_type']
-      }
-    }
   });
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('pictures');
+  await queryInterface.dropTable('product_details');
 };

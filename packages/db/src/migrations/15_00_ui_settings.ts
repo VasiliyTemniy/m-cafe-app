@@ -9,6 +9,20 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       primaryKey: true,
       autoIncrement: true
     },
+    organization_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true, // if null, it means it is a global ui setting
+      references: { model: 'organizations', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    updated_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT'
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -38,7 +52,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     uniqueKeys: {
       unique_ui_setting: {
         customIndex: true,
-        fields: ['name', 'group', 'theme']
+        fields: ['name', 'group', 'theme', 'organization_id']
       }
     }
   });

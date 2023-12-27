@@ -4,7 +4,8 @@ import {
   OrderDeliveryType,
   OrderPaymentMethod,
   OrderPaymentStatus,
-  OrderStatus
+  OrderStatus,
+  SizingEnum
 } from '@m-cafe-app/shared-constants';
 
 
@@ -48,6 +49,29 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    total_cuts: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    total_bonus_cuts: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    total_bonus_gains: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    delivery_cost: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    currency_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'currencies', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
+    },
     archive_address: {
       type: DataTypes.STRING,
       allowNull: false
@@ -85,6 +109,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     box_sizing_z: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    sizing_measure: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isIn: [Object.values(SizingEnum)]
+      }
     },
     user_id: {
       type: DataTypes.INTEGER,

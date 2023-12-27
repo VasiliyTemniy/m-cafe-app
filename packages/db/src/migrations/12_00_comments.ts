@@ -1,50 +1,55 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import {
-  productRatingLowest,
-  productRatingHighest,
-  ReviewParentType
-} from '@m-cafe-app/shared-constants';
+import { CommentParentType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('reviews', {
+  await queryInterface.createTable('comments', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
+    text: {
+      type: DataTypes.STRING(5000),
+      allowNull: false
+    },
+    parent_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     parent_type: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isIn: [Object.values(ReviewParentType)]
-      },
-      unique: 'review_unique'
+        isIn: [Object.values(CommentParentType)]
+      }
     },
-    parent_id: {
+    order_number: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: 'review_unique'
+      defaultValue: 0
+    },
+    parent_comment_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'comments', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: { model: 'users', key: 'id' },
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      unique: 'review_unique'
+      onDelete: 'SET NULL'
     },
-    text: {
-      type: DataTypes.STRING(5000),
+    archive_user_name: {
+      type: DataTypes.STRING,
       allowNull: true
     },
-    rating: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      validate: {
-        min: productRatingLowest,
-        max: productRatingHighest
-      }
+    blocked_reason: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,
@@ -54,15 +59,9 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.DATE,
       allowNull: false
     }
-  }, {
-    uniqueKeys: {
-      review_unique: {
-        fields: ['parent_type', 'parent_id', 'user_id']
-      }
-    }
   });
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('reviews');
+  await queryInterface.dropTable('comments');
 };

@@ -25,14 +25,34 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    archive_product_price: {
+    archive_price: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    archive_product_name: {
+    archive_name: {
       type: DataTypes.STRING,
       allowNull: false
-    }
+    },
+    archive_total_cuts: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    archive_discount_cuts: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    archive_event_cuts: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    archive_bonus_cuts: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    archive_bonus_gains: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
   });
 
   const constraintCheck = await queryInterface.sequelize.query(

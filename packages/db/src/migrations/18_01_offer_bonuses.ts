@@ -2,45 +2,36 @@ import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('products', {
+  await queryInterface.createTable('offer_bonuses', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    // name and description locs are referenced from locs table
-    product_type_id: {
+    offer_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'product_types', key: 'id' },
+      references: { model: 'offers', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    price: {
+    quantity: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    total_mass: {
+    used_quantity: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    available_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    expires_at: {
+      type: DataTypes.DATE,
       allowNull: true
     },
-    total_volume: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    box_sizing_x: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    box_sizing_y: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    box_sizing_z: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    // product categories are handled in many-many junction table
     created_at: {
       type: DataTypes.DATE,
       allowNull: false
@@ -53,5 +44,5 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('products');
+  await queryInterface.dropTable('offer_bonuses');
 };

@@ -1,6 +1,7 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
 import {
+  UserRights,
   emailRegExp,
   maxEmailLen,
   maxNameLen,
@@ -12,7 +13,6 @@ import {
   minUsernameLen,
   nameRegExp,
   phonenumberRegExp,
-  possibleUserRights,
   usernameRegExp
 } from '@m-cafe-app/shared-constants';
 
@@ -23,6 +23,33 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       primaryKey: true,
       autoIncrement: true
     },
+    phonenumber: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+      validate: {
+        is: [phonenumberRegExp, 'i'],
+        len: [minPhonenumberLen, maxPhonenumberLen]
+      }
+    },
+    rights: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'customer',
+      validate: {
+        isIn: [Object.values(UserRights)]
+      }
+    },
+    lookup_hash: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false
+    },
+    lookup_noise: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     username: {
       type: DataTypes.STRING,
       unique: true,
@@ -32,7 +59,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
         len: [minUsernameLen, maxUsernameLen]
       }
     },
-    name: {
+    first_name: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
@@ -40,13 +67,20 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
         len: [minNameLen, maxNameLen]
       }
     },
-    phonenumber: {
+    second_name: {
       type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
+      allowNull: true,
       validate: {
-        is: [phonenumberRegExp, 'i'],
-        len: [minPhonenumberLen, maxPhonenumberLen]
+        is: [nameRegExp, 'i'],
+        len: [minNameLen, maxNameLen]
+      }
+    },
+    third_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        is: [nameRegExp, 'i'],
+        len: [minNameLen, maxNameLen]
       }
     },
     email: {
@@ -65,23 +99,9 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
         isDate: true
       }
     },
-    rights: {
+    banned_reason: {
       type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 'customer',
-      validate: {
-        isIn: [[...possibleUserRights]]
-      }
-    },
-    lookup_hash: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false
-    },
-    lookup_noise: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
+      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,

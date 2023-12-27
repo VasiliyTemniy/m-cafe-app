@@ -1,46 +1,46 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import { StockEntityType, StockStatus } from '@m-cafe-app/shared-constants';
+import { PictureParentType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('stocks', {
+  await queryInterface.createTable('pictures', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    entity_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      unique: 'unique_stock'
-    },
-    entity_type: {
+    src: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        isIn: [Object.values(StockEntityType)]
-      },
-      unique: 'unique_stock'
-    },
-    facility_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'facilities', key: 'id' },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      unique: 'unique_stock'
-    },
-    quantity: {
-      type: DataTypes.INTEGER,
       allowNull: false
     },
-    status: {
+    // alt text loc is referenced from locs table
+    parent_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: 'picture_unique'
+    },
+    parent_type: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isIn: [Object.values(StockStatus)]
+        isIn: [Object.values(PictureParentType)]
       },
-      unique: 'unique_stock'
+      unique: 'picture_unique'
+    },
+    order_number: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      unique: 'picture_unique'
+    },
+    total_downloads: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,
@@ -52,14 +52,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     }
   }, {
     uniqueKeys: {
-      unique_stock: {
-        customIndex: true,
-        fields: ['entity_id', 'entity_type', 'facility_id', 'status']
+      picture_unique: {
+        fields: ['parent_id', 'parent_type']
       }
     }
   });
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('stocks');
+  await queryInterface.dropTable('pictures');
 };
