@@ -30,6 +30,7 @@ export class Review extends Model<InferAttributes<Review>, InferCreationAttribut
   declare userId: ForeignKey<User['id']>;
   declare text: string;
   declare rating: number;
+  declare blockedReason: string | null;
   declare author?: NonAttribute<User>;
   declare comments?: NonAttribute<Comment[]>;
   declare pictures?: NonAttribute<Picture[]>;
@@ -83,6 +84,10 @@ export const initReviewModel = async (dbInstance: Sequelize) => {
             min: productRatingLowest,
             max: productRatingHighest
           }
+        },
+        blockedReason: {
+          type: DataTypes.STRING,
+          allowNull: true
         },
         createdAt: {
           type: DataTypes.DATE,
