@@ -9,10 +9,13 @@ import type {
 import { Model, DataTypes } from 'sequelize';
 import { Product } from './Product.js';
 import { Ingredient } from './Ingredient.js';
+import { User } from './User.js';
 
 
 export class ProductComponent extends Model<InferAttributes<ProductComponent>, InferCreationAttributes<ProductComponent>> {
   declare id: CreationOptional<number>;
+  declare createdBy: ForeignKey<User['id']>;
+  declare updatedBy: ForeignKey<User['id']>;
   declare targetProductId: ForeignKey<Product['id']>;
   declare componentId: number;
   declare quantity: number;
@@ -21,6 +24,8 @@ export class ProductComponent extends Model<InferAttributes<ProductComponent>, I
   declare targetProduct?: NonAttribute<Product>;
   declare product?: NonAttribute<Product>; // Deleted in hooks; mapped to 'component'
   declare ingredient?: NonAttribute<Ingredient>; // Deleted in hooks; mapped to 'component'
+  declare createdByAuthor?: NonAttribute<User>;
+  declare updatedByAuthor?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -34,6 +39,20 @@ export const initProductComponentModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
+        },
+        createdBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         },
         targetProductId: {
           type: DataTypes.INTEGER,
@@ -145,6 +164,18 @@ export const initProductComponentAssociations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      ProductComponent.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'createdBy',
+        as: 'createdByAuthor',
+      });
+      
+      ProductComponent.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor',
       });
 
       resolve();
