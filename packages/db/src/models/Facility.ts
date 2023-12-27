@@ -7,20 +7,24 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { FacilityType, LocParentType, LocType, PictureParentType, ReviewParentType } from '@m-cafe-app/shared-constants';
+import { ContactParentType, FacilityType, LocParentType, LocType, PictureParentType, ReviewParentType } from '@m-cafe-app/shared-constants';
 import { Order } from './Order.js';
 import { Address } from './Address.js';
 import { Loc } from './Loc.js';
 import { Stock } from './Stock.js';
 import { User } from './User.js';
-import { FacilityManager } from './FacilityManager.js';
 import { OrderTracking } from './OrderTracking.js';
 import { Picture } from './Picture.js';
 import { Review } from './Review.js';
+import { Organization } from './Organization.js';
+import { Contact } from './Contact.js';
 
 
 export class Facility extends Model<InferAttributes<Facility>, InferCreationAttributes<Facility>> {
   declare id: CreationOptional<number>;
+  declare organizationId: ForeignKey<Organization['id']>;
+  declare createdBy: ForeignKey<User['id']>;
+  declare updatedBy: ForeignKey<User['id']>;
   declare addressId: ForeignKey<Address['id']>;
   declare facilityType: string;
   declare address?: NonAttribute<Address>;  
@@ -32,6 +36,7 @@ export class Facility extends Model<InferAttributes<Facility>, InferCreationAttr
   declare transitOrders?: NonAttribute<OrderTracking[]>;
   declare reviews?: NonAttribute<Review[]>;
   declare pictures?: NonAttribute<Picture[]>;
+  declare contacts?: NonAttribute<Contact[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -46,12 +51,34 @@ export const initFacilityModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
+        organizationId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'organizations', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
+        createdBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
         addressId: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: { model: 'addresses', key: 'id' },
         },
         // name and description locs are referenced from locs table
+        // contacts are referenced from contacts table
         facilityType: {
           type: DataTypes.STRING,
           allowNull: false,
@@ -127,12 +154,6 @@ export const initFacilityAssociations = async () => {
         foreignKeyConstraint: false
       });
 
-      Facility.belongsToMany(User, {
-        through: FacilityManager,
-        foreignKey: 'facilityId',
-        as: 'managers'
-      });
-
       Facility.hasMany(Stock, {
         foreignKey: 'facilityId',
         as: 'stocks'
@@ -163,6 +184,34 @@ export const initFacilityAssociations = async () => {
         as: 'reviews',
         scope: {
           parentType: ReviewParentType.Facility
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Facility.belongsTo(Organization, {
+        targetKey: 'id',
+        foreignKey: 'organizationId',
+        as: 'organization',
+      });
+
+      Facility.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'createdBy',
+        as: 'createdByAuthor',
+      });
+
+      Facility.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor',
+      });
+
+      Facility.hasMany(Contact, {
+        foreignKey: 'parentId',
+        as: 'contacts',
+        scope: {
+          parentType: ContactParentType.Facility
         },
         constraints: false,
         foreignKeyConstraint: false
