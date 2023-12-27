@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { OrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { MassEnum, OrderTrackingStatus } from '@m-cafe-app/shared-constants';
 import { Carrier } from './Carrier.js';
 import { Order } from './Order.js';
 import { Facility } from './Facility.js';
@@ -20,6 +20,7 @@ export class OrderTracking extends Model<InferAttributes<OrderTracking>, InferCr
   declare pointNumber: number;
   declare estimatedDeliveryAt: Date;
   declare massControlValue: number | null;
+  declare massMeasure: MassEnum | null;
   declare deliveredAt: Date | null;
   declare carrierId: ForeignKey<Carrier['id']> | null;
   declare order?: NonAttribute<Order>;
@@ -74,6 +75,13 @@ export const initOrderTrackingModel = async (dbInstance: Sequelize) => {
         massControlValue: {
           type: DataTypes.INTEGER,
           allowNull: true,
+        },
+        massMeasure: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          validate: {
+            isIn: [Object.values(MassEnum)]
+          }
         },
         deliveredAt: {
           type: DataTypes.DATE,
