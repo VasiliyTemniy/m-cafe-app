@@ -12,19 +12,24 @@ import { DatabaseError } from '@m-cafe-app/utils';
 import { Ingredient } from './Ingredient.js';
 import { Product } from './Product.js';
 import { Facility } from './Facility.js';
+import { User } from './User.js';
 
 
 export class Stock extends Model<InferAttributes<Stock>, InferCreationAttributes<Stock>> {
   declare id: CreationOptional<number>;
+  declare facilityId: ForeignKey<Facility['id']>;
+  declare createdBy: ForeignKey<User['id']>;
+  declare updatedBy: ForeignKey<User['id']>;
   declare entityId: number;
   declare entityType: StockEntityType;
-  declare facilityId: ForeignKey<Facility['id']>;
   declare quantity: number;
   declare status: StockStatus;
   declare facility?: NonAttribute<Facility>;
   declare entity?: NonAttribute<Ingredient | Product>;
   declare ingredient?: NonAttribute<Ingredient>; // mapped to entity in hooks
   declare product?: NonAttribute<Product>; // mapped to entity in hooks
+  declare createdByAuthor?: NonAttribute<User>;
+  declare updatedByAuthor?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -39,6 +44,28 @@ export const initStockModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
+        facilityId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'facilities', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          unique: 'unique_stock'
+        },
+        createdBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
         entityId: {
           type: DataTypes.INTEGER,
           allowNull: false,
@@ -50,14 +77,6 @@ export const initStockModel = async (dbInstance: Sequelize) => {
           validate: {
             isIn: [Object.values(StockEntityType)]
           },
-          unique: 'unique_stock'
-        },
-        facilityId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          references: { model: 'facilities', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
           unique: 'unique_stock'
         },
         quantity: {
@@ -149,6 +168,18 @@ export const initStockAssociations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      Stock.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'createdBy',
+        as: 'createdByAuthor'
+      });
+      
+      Stock.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor'
       });
       
       resolve();
