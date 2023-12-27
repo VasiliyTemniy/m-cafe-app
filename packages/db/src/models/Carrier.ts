@@ -8,13 +8,16 @@ import type {
 import { Model, DataTypes } from 'sequelize';
 import { Order } from './Order.js';
 import { OrderTracking } from './OrderTracking.js';
+import { ContactParentType } from '@m-cafe-app/shared-constants';
+import { Contact } from './Contact.js';
 
 
 export class Carrier extends Model<InferAttributes<Carrier>, InferCreationAttributes<Carrier>> {
   declare id: CreationOptional<number>;
   declare name: string;
-  declare contactNumbers: string;
+  declare description: string;
   declare orders?: NonAttribute<Order[]>;
+  declare contacts?: NonAttribute<Contact[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -33,10 +36,11 @@ export const initCarrierModel = async (dbInstance: Sequelize) => {
           type: DataTypes.STRING,
           allowNull: false
         },
-        contactNumbers: {
+        description: {
           type: DataTypes.STRING,
           allowNull: false
         },
+        // contacts are referenced from contacts table
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false
@@ -81,6 +85,16 @@ export const initCarrierAssociations = async () => {
         sourceKey: 'id',
         foreignKey: 'carrierId',
         as: 'orders'
+      });
+
+      Carrier.hasMany(Contact, {
+        foreignKey: 'parentId',
+        as: 'contacts',
+        scope: {
+          parentType: ContactParentType.Carrier
+        },
+        constraints: false,
+        foreignKeyConstraint: false
       });
       
       resolve();
