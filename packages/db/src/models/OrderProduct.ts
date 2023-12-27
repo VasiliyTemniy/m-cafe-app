@@ -15,8 +15,13 @@ export class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCrea
   declare productId: ForeignKey<Product['id']> | null;
   declare archiveProductId: number;
   declare quantity: number;
-  declare archiveProductPrice: number;
-  declare archiveProductName: string;
+  declare archivePrice: number;
+  declare archiveName: string;
+  declare archiveTotalCuts: number;
+  declare archiveDiscountCuts: number;
+  declare archiveEventCuts: number;
+  declare archiveBonusCuts: number;
+  declare archiveBonusGains: number;
   declare product?: NonAttribute<Product>;
 }
 
@@ -47,12 +52,32 @@ export const initOrderProductModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           allowNull: false
         },
-        archiveProductPrice: {
+        archivePrice: {
           type: DataTypes.INTEGER,
           allowNull: false
         },
-        archiveProductName: {
+        archiveName: {
           type: DataTypes.STRING,
+          allowNull: false
+        },
+        archiveTotalCuts: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        archiveDiscountCuts: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        archiveEventCuts: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        archiveBonusCuts: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        archiveBonusGains: {
+          type: DataTypes.INTEGER,
           allowNull: false
         }
       }, {
