@@ -15,6 +15,7 @@ import { Product } from './Product.js';
 import { Review } from './Review.js';
 import { User } from './User.js';
 import { DynamicModule } from './DynamicModule.js';
+import { PictureView } from './PictureView.js';
 
 
 export class Picture extends Model<InferAttributes<Picture>, InferCreationAttributes<Picture>> {
@@ -23,6 +24,8 @@ export class Picture extends Model<InferAttributes<Picture>, InferCreationAttrib
   declare parentId: number;
   declare parentType: PictureParentType;
   declare orderNumber: number;
+  declare totalDownloads: number;
+  declare url: string | null;
   declare altTextLocs?: NonAttribute<Loc[]>;
   declare parent?: NonAttribute<Review | Product | Facility | Ingredient | User | DynamicModule>;
   declare review?: NonAttribute<Review>;
@@ -31,6 +34,7 @@ export class Picture extends Model<InferAttributes<Picture>, InferCreationAttrib
   declare ingredient?: NonAttribute<Ingredient>;
   declare user?: NonAttribute<User>;
   declare dynamicModule?: NonAttribute<DynamicModule>;
+  declare views?: NonAttribute<PictureView[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -68,6 +72,15 @@ export const initPictureModel = (dbInstance: Sequelize) => {
           allowNull: false,
           defaultValue: 0,
           unique: 'picture_unique'
+        },
+        totalDownloads: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        url: {
+          type: DataTypes.STRING,
+          allowNull: true
         },
         createdAt: {
           type: DataTypes.DATE,
@@ -110,7 +123,7 @@ export const initPictureModel = (dbInstance: Sequelize) => {
 };
 
 
-export const initPictureAssocitations = async () => {
+export const initPictureAssociations = async () => {
   return new Promise<void>((resolve, reject) => {
     try {
 
@@ -195,6 +208,11 @@ export const initPictureAssocitations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      Picture.hasMany(PictureView, {
+        foreignKey: 'pictureId',
+        as: 'views'
       });
 
       resolve();
