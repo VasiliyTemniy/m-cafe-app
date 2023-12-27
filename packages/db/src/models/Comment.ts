@@ -23,7 +23,8 @@ export class Comment extends Model<InferAttributes<Comment>, InferCreationAttrib
   declare parentCommentId: ForeignKey<Comment['id']> | null;
   declare userId: ForeignKey<User['id']> | null;
   declare archiveUserName: string | null;
-  declare user?: NonAttribute<User>;
+  declare blockedReason: string | null;
+  declare author?: NonAttribute<User>;
   declare parentComment?: NonAttribute<Comment>;
   declare childComments?: NonAttribute<Comment[]>;
   declare parent?: NonAttribute<Review | Order>;
@@ -65,16 +66,23 @@ export const initCommentModel = async (dbInstance: Sequelize) => {
         },
         parentCommentId: {
           type: DataTypes.INTEGER,
-          allowNull: true
+          allowNull: true,
+          references: { model: 'comments', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL',
         },
         userId: {
           type: DataTypes.INTEGER,
           allowNull: true,
           references: { model: 'users', key: 'id' },
           onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
+          onDelete: 'SET NULL',
         },
         archiveUserName: {
+          type: DataTypes.STRING,
+          allowNull: true
+        },
+        blockedReason: {
           type: DataTypes.STRING,
           allowNull: true
         },
@@ -119,7 +127,7 @@ export const initCommentAssociations = async () => {
 
       Comment.belongsTo(User, {
         foreignKey: 'userId',
-        as: 'user'
+        as: 'author'
       });
 
       // target on the right side; target === parent;
