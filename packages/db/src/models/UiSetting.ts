@@ -2,18 +2,26 @@ import type {
   Sequelize,
   InferAttributes,
   InferCreationAttributes,
-  CreationOptional
+  CreationOptional,
+  ForeignKey,
+  NonAttribute
 } from 'sequelize';
 import { Model, DataTypes, Op } from 'sequelize';
 import { allowedThemes, componentGroups } from '@m-cafe-app/shared-constants';
+import { Organization } from './Organization.js';
+import { User } from './User.js';
 
 
 export class UiSetting extends Model<InferAttributes<UiSetting>, InferCreationAttributes<UiSetting>> {
   declare id: CreationOptional<number>;
+  declare organizationId: ForeignKey<Organization['id']> | null;
+  declare updatedBy: ForeignKey<User['id']>;
   declare name: string;
   declare group: string;
   declare theme: string;
   declare value: string;
+  declare organization?: NonAttribute<Organization>;
+  declare updatedByAuthor?: NonAttribute<User>;
 }
 
 
@@ -25,6 +33,21 @@ export const initUiSettingModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
+        },
+        organizationId: {
+          type: DataTypes.INTEGER,
+          allowNull: true, // if null, it means it is a global ui setting
+          references: { model: 'organizations', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          unique: 'unique_ui_setting'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         },
         name: {
           type: DataTypes.STRING,
@@ -59,7 +82,7 @@ export const initUiSettingModel = async (dbInstance: Sequelize) => {
         indexes: [
           {
             unique: true,
-            fields: ['name', 'group', 'theme']
+            fields: ['name', 'group', 'theme', 'organization_id']
           }
         ],
         defaultScope: {
@@ -100,6 +123,30 @@ export const initUiSettingModel = async (dbInstance: Sequelize) => {
           all: {},
           raw: {}
         }
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initUiSettingAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      UiSetting.belongsTo(Organization, {
+        targetKey: 'id',
+        foreignKey: 'organizationId',
+        as: 'organization',
+      });
+
+      UiSetting.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor',
       });
 
       resolve();
