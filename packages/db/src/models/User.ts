@@ -283,7 +283,7 @@ export const initUserScopes = async () => {
       User.addScope('customer', {
         where: {
           rights: {
-            [Op.eq]: 'customer'
+            [Op.eq]: UserRights.Customer
           }
         },
         attributes: {
@@ -291,10 +291,21 @@ export const initUserScopes = async () => {
         }
       });
 
-      User.addScope('admin', {
+      User.addScope('appAdmin', {
         where: {
           rights: {
-            [Op.eq]: 'admin'
+            [Op.eq]: UserRights.AppAdmin
+          }
+        },
+        attributes: {
+          exclude: ['passwordHash', 'createdAt', 'updatedAt', 'deletedAt']
+        }
+      });
+
+      User.addScope('orgAdmin', {
+        where: {
+          rights: {
+            [Op.eq]: UserRights.OrgAdmin
           }
         },
         attributes: {
@@ -305,7 +316,7 @@ export const initUserScopes = async () => {
       User.addScope('manager', {
         where: {
           rights: {
-            [Op.eq]: 'manager'
+            [Op.eq]: UserRights.Manager
           }
         },
         attributes: {
@@ -316,7 +327,7 @@ export const initUserScopes = async () => {
       User.addScope('disabled', {
         where: {
           rights: {
-            [Op.eq]: 'disabled'
+            [Op.eq]: UserRights.Disabled
           }
         },
         attributes: {
@@ -360,9 +371,9 @@ export const initUserScopes = async () => {
         paranoid: false
       });
 
-      User.addScope('passwordHashRights', {
+      User.addScope('lookupHashRights', {
         attributes: {
-          exclude: ['name', 'username', 'phonenumber', 'email', 'birthdate', 'createdAt', 'updatedAt', 'deletedAt']
+          exclude: ['firstName', 'secondName', 'thirdName', 'username', 'phonenumber', 'email', 'birthdate', 'bannedReason', 'createdAt', 'updatedAt', 'deletedAt']
         },
         paranoid: false
       });
