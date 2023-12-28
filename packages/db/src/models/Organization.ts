@@ -7,7 +7,21 @@ import type {
   Sequelize
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { ContactParentType, DetailGroupParentType, LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import {
+  ContactParentType,
+  DetailGroupParentType,
+  LocParentType,
+  LocType,
+  orgDefaultMaxDetails,
+  orgDefaultMaxDynamicModules,
+  orgDefaultMaxEvents,
+  orgDefaultMaxManagers,
+  orgDefaultMaxPermissions,
+  orgDefaultMaxPictures,
+  orgDefaultMaxPolicies,
+  orgDefaultMaxProducts,
+  orgDefaultMaxRoles
+} from '@m-cafe-app/shared-constants';
 import { Loc } from './Loc.js';
 import { User } from './User.js';
 import { Contact } from './Contact.js';
@@ -18,6 +32,24 @@ export class Organization extends Model<InferAttributes<Organization>, InferCrea
   declare id: CreationOptional<number>;
   declare name: string;
   declare orgAdminId: ForeignKey<User['id']>;
+  declare maxPolicies: CreationOptional<number>;
+  declare maxManagers: CreationOptional<number>;
+  declare maxProducts: CreationOptional<number>;
+  declare maxPictures: CreationOptional<number>;
+  declare maxDetails: CreationOptional<number>;
+  declare maxDynamicModules: CreationOptional<number>;
+  declare maxEvents: CreationOptional<number>;
+  declare maxRoles: CreationOptional<number>;
+  declare maxPermissions: CreationOptional<number>;
+  declare usedPolicies: CreationOptional<number>;
+  declare usedManagers: CreationOptional<number>;
+  declare usedProducts: CreationOptional<number>;
+  declare usedPictures: CreationOptional<number>;
+  declare usedDetails: CreationOptional<number>;
+  declare usedDynamicModules: CreationOptional<number>;
+  declare usedEvents: CreationOptional<number>;
+  declare usedRoles: CreationOptional<number>;
+  declare usedPermissions: CreationOptional<number>;
   declare descriptionLocs?: NonAttribute<Loc>[];
   declare orgAdmin?: NonAttribute<User>;
   declare contacts?: NonAttribute<Contact[]>;
@@ -49,6 +81,96 @@ export const initOrganizationModel = async (dbInstance: Sequelize) => {
           references: { model: 'users', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'RESTRICT'
+        },
+        maxPolicies: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxPolicies
+        },
+        maxManagers: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxManagers
+        },
+        maxProducts: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxProducts
+        },
+        maxPictures: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxPictures
+        },
+        maxDetails: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxDetails
+        },
+        maxDynamicModules: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxDynamicModules
+        },
+        maxEvents: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxEvents
+        },
+        maxRoles: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxRoles
+        },
+        maxPermissions: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxPermissions
+        },
+        usedPolicies: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedManagers: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedProducts: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedPictures: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedDetails: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedDynamicModules: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedEvents: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedRoles: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedPermissions: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
         },
         createdAt: {
           type: DataTypes.DATE,
