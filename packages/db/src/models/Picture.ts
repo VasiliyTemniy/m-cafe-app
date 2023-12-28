@@ -6,7 +6,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType, PictureParentType } from '@m-cafe-app/shared-constants';
+import { LocParentType, LocType, PictureParentType, ViewEntityType } from '@m-cafe-app/shared-constants';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { Loc } from './Loc.js';
 import { Ingredient } from './Ingredient.js';
@@ -15,7 +15,7 @@ import { Product } from './Product.js';
 import { Review } from './Review.js';
 import { User } from './User.js';
 import { DynamicModule } from './DynamicModule.js';
-import { PictureView } from './PictureView.js';
+import { View } from './View.js';
 
 
 export class Picture extends Model<InferAttributes<Picture>, InferCreationAttributes<Picture>> {
@@ -34,7 +34,7 @@ export class Picture extends Model<InferAttributes<Picture>, InferCreationAttrib
   declare ingredient?: NonAttribute<Ingredient>;
   declare user?: NonAttribute<User>;
   declare dynamicModule?: NonAttribute<DynamicModule>;
-  declare views?: NonAttribute<PictureView[]>;
+  declare views?: NonAttribute<View[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -216,9 +216,14 @@ export const initPictureAssociations = async () => {
         foreignKeyConstraint: false
       });
 
-      Picture.hasMany(PictureView, {
-        foreignKey: 'pictureId',
-        as: 'views'
+      Picture.hasMany(View, {
+        foreignKey: 'entityId',
+        as: 'views',
+        scope: {
+          entityType: ViewEntityType.Picture
+        },
+        constraints: false,
+        foreignKeyConstraint: false
       });
 
       resolve();

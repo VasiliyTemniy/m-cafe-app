@@ -17,6 +17,7 @@ import {
   ReviewParentType,
   SizingEnum,
   StockEntityType,
+  ViewEntityType,
   VolumeEnum
 } from '@m-cafe-app/shared-constants';
 import { ProductType } from './ProductType.js';
@@ -31,7 +32,7 @@ import { DetailGroup } from './DetailGroup.js';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
 import { Currency } from './Currency.js';
-import { ProductView } from './ProductView.js';
+import { View } from './View.js';
 
 
 export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
@@ -80,7 +81,7 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   declare organization?: NonAttribute<Organization>;
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;
-  declare views?: NonAttribute<ProductView[]>;
+  declare views?: NonAttribute<View[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -411,9 +412,14 @@ export const initProductAssociations = async () => {
         as: 'currency',
       });
 
-      Product.hasMany(ProductView, {
-        foreignKey: 'productId',
-        as: 'views'
+      Product.hasMany(View, {
+        foreignKey: 'entityId',
+        as: 'views',
+        scope: {
+          entityType: ViewEntityType.Product
+        },
+        constraints: false,
+        foreignKeyConstraint: false
       });
       
       resolve();
