@@ -8,6 +8,7 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import {
+  DetailGroupParentType,
   LocParentType,
   LocType,
   MassEnum,
@@ -26,7 +27,7 @@ import { ProductCategoryReference } from './ProductCategoryReference.js';
 import { Review } from './Review.js';
 import { Picture } from './Picture.js';
 import { Stock } from './Stock.js';
-import { ProductDetail } from './ProductDetail.js';
+import { DetailGroup } from './DetailGroup.js';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
 import { Currency } from './Currency.js';
@@ -75,7 +76,7 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   declare reviews?: NonAttribute<Review[]>;
   declare categories?: NonAttribute<ProductCategory[]>;
   declare currency?: NonAttribute<Currency>;
-  declare details?: NonAttribute<ProductDetail[]>;
+  declare detailGroups?: NonAttribute<DetailGroup[]>;
   declare organization?: NonAttribute<Organization>;
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;
@@ -376,9 +377,14 @@ export const initProductAssociations = async () => {
         foreignKeyConstraint: false
       });
 
-      Product.hasMany(ProductDetail, {
-        foreignKey: 'productId',
-        as: 'details'
+      Product.hasMany(DetailGroup, {
+        foreignKey: 'parentId',
+        as: 'detailGroups',
+        scope: {
+          parentType: DetailGroupParentType.Product
+        },
+        constraints: false,
+        foreignKeyConstraint: false
       });
 
       Product.belongsTo(Organization, {
