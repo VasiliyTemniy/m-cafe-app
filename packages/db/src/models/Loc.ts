@@ -3,7 +3,8 @@ import type {
   InferAttributes,
   InferCreationAttributes,
   NonAttribute,
-  ForeignKey
+  ForeignKey,
+  CreationOptional
 } from 'sequelize';
 import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
@@ -19,6 +20,8 @@ export class Loc extends Model<InferAttributes<Loc>, InferCreationAttributes<Loc
   declare parentType: LocParentType;
   declare locString?: NonAttribute<LocString>;
   declare language?: NonAttribute<Language>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 
@@ -63,11 +66,32 @@ export const initLocModel = async (dbInstance: Sequelize) => {
             isIn: [Object.values(LocParentType)]
           }
         },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: DataTypes.DATE,
+          allowNull: false
+        }
       }, {
         sequelize: dbInstance,
         underscored: true,
-        timestamps: false,
+        timestamps: true,
         modelName: 'loc',
+        defaultScope: {
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        },
+        scopes: {
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
+          allWithTimestamps: {}
+        }
       });
 
       resolve();
