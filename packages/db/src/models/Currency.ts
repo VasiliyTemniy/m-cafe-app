@@ -51,6 +51,19 @@ export const initCurrencyModel = async (dbInstance: Sequelize) => {
         underscored: true,
         timestamps: true,
         modelName: 'currency',
+        defaultScope: {
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        },
+        scopes: {
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
+          allWithTimestamps: {}
+        }
       });
       
       resolve();
