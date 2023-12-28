@@ -36,6 +36,14 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       validate: {
         isIn: [Object.values(LocParentType)]
       }
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   });
 
