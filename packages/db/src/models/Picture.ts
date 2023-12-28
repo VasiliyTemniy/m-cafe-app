@@ -95,6 +95,12 @@ export const initPictureModel = (dbInstance: Sequelize) => {
         underscored: true,
         timestamps: true,
         modelName: 'picture',
+        indexes: [
+          {
+            unique: true,
+            fields: ['parent_id', 'parent_type', 'order_number']
+          }
+        ],
         defaultScope: {
           attributes: {
             exclude: ['createdAt', 'updatedAt']
