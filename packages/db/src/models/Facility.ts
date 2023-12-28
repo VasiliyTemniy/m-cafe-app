@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { ContactParentType, FacilityType, LocParentType, LocType, PictureParentType, ReviewParentType } from '@m-cafe-app/shared-constants';
+import { ContactParentType, DetailGroupParentType, FacilityType, LocParentType, LocType, PictureParentType, ReviewParentType } from '@m-cafe-app/shared-constants';
 import { Order } from './Order.js';
 import { Address } from './Address.js';
 import { Loc } from './Loc.js';
@@ -18,6 +18,7 @@ import { Picture } from './Picture.js';
 import { Review } from './Review.js';
 import { Organization } from './Organization.js';
 import { Contact } from './Contact.js';
+import { DetailGroup } from './DetailGroup.js';
 
 
 export class Facility extends Model<InferAttributes<Facility>, InferCreationAttributes<Facility>> {
@@ -37,6 +38,7 @@ export class Facility extends Model<InferAttributes<Facility>, InferCreationAttr
   declare reviews?: NonAttribute<Review[]>;
   declare pictures?: NonAttribute<Picture[]>;
   declare contacts?: NonAttribute<Contact[]>;
+  declare detailGroups?: NonAttribute<DetailGroup[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -104,13 +106,13 @@ export const initFacilityModel = async (dbInstance: Sequelize) => {
             exclude: ['createdAt', 'updatedAt']
           }
         },
-        // See initFacilityScopes.ts for more
         scopes: {
           raw: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
             }
-          }
+          },
+          allWithTimestamps: {}
         }
       });
 
@@ -212,6 +214,16 @@ export const initFacilityAssociations = async () => {
         as: 'contacts',
         scope: {
           parentType: ContactParentType.Facility
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Facility.hasMany(DetailGroup, {
+        foreignKey: 'parentId',
+        as: 'detailGroups',
+        scope: {
+          parentType: DetailGroupParentType.Facility
         },
         constraints: false,
         foreignKeyConstraint: false

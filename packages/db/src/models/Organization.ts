@@ -7,10 +7,11 @@ import type {
   Sequelize
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { ContactParentType, LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { ContactParentType, DetailGroupParentType, LocParentType, LocType } from '@m-cafe-app/shared-constants';
 import { Loc } from './Loc.js';
 import { User } from './User.js';
 import { Contact } from './Contact.js';
+import { DetailGroup } from './DetailGroup.js';
 
 
 export class Organization extends Model<InferAttributes<Organization>, InferCreationAttributes<Organization>> {
@@ -20,6 +21,7 @@ export class Organization extends Model<InferAttributes<Organization>, InferCrea
   declare descriptionLocs?: NonAttribute<Loc>[];
   declare orgAdmin?: NonAttribute<User>;
   declare contacts?: NonAttribute<Contact[]>;
+  declare detailGroups?: NonAttribute<DetailGroup[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -97,6 +99,16 @@ export const initOrganizationAssociations = async () => {
         as: 'contacts',
         scope: {
           parentType: ContactParentType.Organization
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Organization.hasMany(DetailGroup, {
+        foreignKey: 'parentId',
+        as: 'detailGroups',
+        scope: {
+          parentType: DetailGroupParentType.Organization
         },
         constraints: false,
         foreignKeyConstraint: false
