@@ -7,20 +7,26 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
+import { DetailGroupParentType, LocParentType, LocType } from '@m-cafe-app/shared-constants';
 import { Loc } from './Loc.js';
-import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
-import { Organization } from './Organization.js';
 import { User } from './User.js';
+import { Product } from './Product.js';
+import { Facility } from './Facility.js';
+import { Organization } from './Organization.js';
+import { Detail } from './Detail.js';
 
 
-export class OrganizationDetail extends Model<InferAttributes<OrganizationDetail>, InferCreationAttributes<OrganizationDetail>> {
+export class DetailGroup extends Model<InferAttributes<DetailGroup>, InferCreationAttributes<DetailGroup>> {
   declare id: CreationOptional<number>;
-  declare organizationId: ForeignKey<Organization['id']>;
+  declare parentId: ForeignKey<DetailGroup['id']>;
+  declare parentType: DetailGroupParentType;
   declare createdBy: ForeignKey<User['id']>;
   declare updatedBy: ForeignKey<User['id']>;
   declare nameLocs?: NonAttribute<Loc[]>;
-  declare descriptionLocs?: NonAttribute<Loc[]>;
+  declare product?: NonAttribute<Product>;
   declare organization?: NonAttribute<Organization>;
+  declare facility?: NonAttribute<Facility>;
+  declare details?: NonAttribute<Detail[]>;
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
@@ -28,21 +34,25 @@ export class OrganizationDetail extends Model<InferAttributes<OrganizationDetail
 }
 
 
-export const initOrganizationDetailModel = (dbInstance: Sequelize) => {
+export const initDetailGroupModel = (dbInstance: Sequelize) => {
   return new Promise<void>((resolve, reject) => {
     try {
-      OrganizationDetail.init({
+      DetailGroup.init({
         id: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
         },
-        organizationId: {
+        parentId: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          references: { model: 'organizations', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+        },
+        parentType: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(DetailGroupParentType)]
+          }
         },
         createdBy: {
           type: DataTypes.INTEGER,
@@ -58,7 +68,7 @@ export const initOrganizationDetailModel = (dbInstance: Sequelize) => {
           onUpdate: 'CASCADE',
           onDelete: 'RESTRICT'
         },
-        // name and description locs are referenced from locs table
+        // name locs are referenced from locs table
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false
@@ -71,7 +81,7 @@ export const initOrganizationDetailModel = (dbInstance: Sequelize) => {
         sequelize: dbInstance,
         underscored: true,
         timestamps: true,
-        modelName: 'organization_detail',
+        modelName: 'detail_group',
         defaultScope: {
           attributes: {
             exclude: ['createdAt', 'updatedAt']
@@ -100,48 +110,69 @@ export const initOrganizationDetailModel = (dbInstance: Sequelize) => {
 };
 
 
-export const initOrganizationDetailAssociations = async () => {
+export const initDetailGroupAssociations = async () => {
   return new Promise<void>((resolve, reject) => {
     try {
 
-      OrganizationDetail.belongsTo(Organization, {
-        targetKey: 'id',
-        foreignKey: 'organizationId',
-        as: 'organization'
-      });
-
-      OrganizationDetail.hasMany(Loc, {
+      DetailGroup.hasMany(Loc, {
         foreignKey: 'parentId',
         as: 'nameLocs',
         scope: {
-          parentType: LocParentType.OrganizationDetail,
+          parentType: LocParentType.DetailGroup,
           locType: LocType.Name
         },
         constraints: false,
         foreignKeyConstraint: false
       });
 
-      OrganizationDetail.hasMany(Loc, {
-        foreignKey: 'parentId',
-        as: 'descriptionLocs',
-        scope: {
-          parentType: LocParentType.OrganizationDetail,
-          locType: LocType.Description
-        },
-        constraints: false,
-        foreignKeyConstraint: false
-      });
-
-      OrganizationDetail.belongsTo(User, {
+      DetailGroup.belongsTo(User, {
         targetKey: 'id',
         foreignKey: 'createdBy',
         as: 'createdByAuthor'
       });
       
-      OrganizationDetail.belongsTo(User, {
+      DetailGroup.belongsTo(User, {
         targetKey: 'id',
         foreignKey: 'updatedBy',
         as: 'updatedByAuthor'
+      });
+
+      DetailGroup.belongsTo(Product, {
+        targetKey: 'id',
+        foreignKey: 'parentId',
+        as: 'product',
+        scope: {
+          parentType: DetailGroupParentType.Product
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      DetailGroup.belongsTo(Organization, {
+        targetKey: 'id',
+        foreignKey: 'parentId',
+        as: 'organization',
+        scope: {
+          parentType: DetailGroupParentType.Organization
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      DetailGroup.belongsTo(Facility, {
+        targetKey: 'id',
+        foreignKey: 'parentId',
+        as: 'facility',
+        scope: {
+          parentType: DetailGroupParentType.Facility
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      DetailGroup.hasMany(Detail, {
+        foreignKey: 'detailGroupId',
+        as: 'details',
       });
 
       resolve();

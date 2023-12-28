@@ -7,20 +7,24 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { Loc } from './Loc.js';
-import { Product } from './Product.js';
 import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { Loc } from './Loc.js';
 import { User } from './User.js';
+import { DetailGroup } from './DetailGroup.js';
+import { SemanticValue } from './SemanticValue.js';
 
 
-export class ProductDetail extends Model<InferAttributes<ProductDetail>, InferCreationAttributes<ProductDetail>> {
+export class Detail extends Model<InferAttributes<Detail>, InferCreationAttributes<Detail>> {
   declare id: CreationOptional<number>;
-  declare productId: ForeignKey<Product['id']>;
+  declare detailGroupId: ForeignKey<DetailGroup['id']>;
   declare createdBy: ForeignKey<User['id']>;
   declare updatedBy: ForeignKey<User['id']>;
+  declare semanticValueId: ForeignKey<SemanticValue['id']> | null;
+  declare semanticValueNumeric: number | null;
   declare nameLocs?: NonAttribute<Loc[]>;
-  declare descriptionLocs?: NonAttribute<Loc[]>;
-  declare product?: NonAttribute<Product>;
+  declare valueLocs?: NonAttribute<Loc[]>;
+  declare semanticValue?: NonAttribute<SemanticValue>;
+  declare detailGroup?: NonAttribute<DetailGroup>;
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
@@ -28,19 +32,19 @@ export class ProductDetail extends Model<InferAttributes<ProductDetail>, InferCr
 }
 
 
-export const initProductDetailModel = (dbInstance: Sequelize) => {
+export const initDetailModel = (dbInstance: Sequelize) => {
   return new Promise<void>((resolve, reject) => {
     try {
-      ProductDetail.init({
+      Detail.init({
         id: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
         },
-        productId: {
+        detailGroupId: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          references: { model: 'products', key: 'id' },
+          references: { model: 'detail_groups', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
         },
@@ -58,7 +62,21 @@ export const initProductDetailModel = (dbInstance: Sequelize) => {
           onUpdate: 'CASCADE',
           onDelete: 'RESTRICT'
         },
-        // name and description locs are referenced from locs table
+        // name and value locs are referenced from locs table
+        // Search and filter for Products can be done through semantic values
+        semanticValueId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'semantic_values', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        // Semantic value numeric is a supplementary column that can represent, e.g. 1000 rpm for some engines or 270.5 C as a melting point for some materials
+        // If null, semantic value numeric is not applicable
+        semanticValueNumeric: {
+          type: DataTypes.FLOAT,
+          allowNull: true
+        },
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false
@@ -71,7 +89,7 @@ export const initProductDetailModel = (dbInstance: Sequelize) => {
         sequelize: dbInstance,
         underscored: true,
         timestamps: true,
-        modelName: 'product_detail',
+        modelName: 'detail',
         defaultScope: {
           attributes: {
             exclude: ['createdAt', 'updatedAt']
@@ -100,48 +118,54 @@ export const initProductDetailModel = (dbInstance: Sequelize) => {
 };
 
 
-export const initProductDetailAssociations = async () => {
+export const initDetailAssociations = async () => {
   return new Promise<void>((resolve, reject) => {
     try {
 
-      ProductDetail.belongsTo(Product, {
-        targetKey: 'id',
-        foreignKey: 'productId',
-        as: 'product'
-      });
-
-      ProductDetail.hasMany(Loc, {
+      Detail.hasMany(Loc, {
         foreignKey: 'parentId',
         as: 'nameLocs',
         scope: {
-          parentType: LocParentType.ProductDetail,
+          parentType: LocParentType.Detail,
           locType: LocType.Name
         },
         constraints: false,
         foreignKeyConstraint: false
       });
 
-      ProductDetail.hasMany(Loc, {
+      Detail.hasMany(Loc, {
         foreignKey: 'parentId',
-        as: 'descriptionLocs',
+        as: 'valueLocs',
         scope: {
-          parentType: LocParentType.ProductDetail,
-          locType: LocType.Description
+          parentType: LocParentType.Detail,
+          locType: LocType.Value
         },
         constraints: false,
         foreignKeyConstraint: false
       });
 
-      ProductDetail.belongsTo(User, {
+      Detail.belongsTo(User, {
         targetKey: 'id',
         foreignKey: 'createdBy',
         as: 'createdByAuthor'
       });
       
-      ProductDetail.belongsTo(User, {
+      Detail.belongsTo(User, {
         targetKey: 'id',
         foreignKey: 'updatedBy',
         as: 'updatedByAuthor'
+      });
+
+      Detail.belongsTo(DetailGroup, {
+        targetKey: 'id',
+        foreignKey: 'detailGroupId',
+        as: 'detailGroup',
+      });
+
+      Detail.belongsTo(SemanticValue, {
+        targetKey: 'id',
+        foreignKey: 'semanticValueId',
+        as: 'semanticValue'
       });
 
       resolve();

@@ -1,19 +1,24 @@
 import type { MigrationContext } from '../types/Migrations.js';
+import { DetailGroupParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('product_details', {
+  await queryInterface.createTable('detail_groups', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    product_id: {
+    parent_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'products', key: 'id' },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+    },
+    parent_type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: [Object.values(DetailGroupParentType)]
+      }
     },
     created_by: {
       type: DataTypes.INTEGER,
@@ -29,7 +34,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'RESTRICT'
     },
-    // name and description locs are referenced from locs table
+    // name locs are referenced from locs table
     created_at: {
       type: DataTypes.DATE,
       allowNull: false
@@ -42,5 +47,5 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('product_details');
+  await queryInterface.dropTable('detail_groups');
 };

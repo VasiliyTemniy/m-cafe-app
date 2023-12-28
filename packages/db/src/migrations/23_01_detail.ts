@@ -2,16 +2,16 @@ import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('facility_details', {
+  await queryInterface.createTable('details', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    facility_id: {
+    detail_group_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'facilities', key: 'id' },
+      references: { model: 'detail_groups', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
@@ -29,7 +29,21 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'RESTRICT'
     },
-    // name and description locs are referenced from locs table
+    // name and value locs are referenced from locs table
+    // Search and filter for Products can be done through semantic values
+    semantic_value_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'semantic_values', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT'
+    },
+    // Semantic value numeric is a supplementary column that can represent, e.g. 1000 rpm for some engines or 270.5 C as a melting point for some materials
+    // If null, semantic value numeric is not applicable
+    semantic_value_numeric: {
+      type: DataTypes.FLOAT,
+      allowNull: true
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false
@@ -42,5 +56,5 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('facility_details');
+  await queryInterface.dropTable('details');
 };
