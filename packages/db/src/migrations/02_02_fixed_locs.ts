@@ -27,7 +27,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       },
       unique: 'unique_fixed_loc'
     },
-    // actual locs are referenced from loc_references table
+    // actual locs are referenced from locs table
   }, {
     uniqueKeys: {
       unique_fixed_loc: {
