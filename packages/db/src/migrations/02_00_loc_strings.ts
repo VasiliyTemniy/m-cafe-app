@@ -2,7 +2,7 @@ import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('locs', {
+  await queryInterface.createTable('loc_strings', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -17,5 +17,5 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('locs');
+  await queryInterface.dropTable('loc_strings');
 };

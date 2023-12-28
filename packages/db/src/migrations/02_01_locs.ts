@@ -3,7 +3,7 @@ import { DataTypes, QueryTypes } from 'sequelize';
 import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.createTable('loc_references', {
+  await queryInterface.createTable('locs', {
     loc_id: {
       type: DataTypes.INTEGER,
       references: { model: 'locs', key: 'id' },
@@ -40,21 +40,21 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
   });
 
   const constraintCheck = await queryInterface.sequelize.query(
-    "SELECT * FROM pg_constraint WHERE conname = 'loc_references_pkey'",
+    "SELECT * FROM pg_constraint WHERE conname = 'locs_pkey'",
     { type: QueryTypes.SELECT }
   );
 
   if (!constraintCheck[0]) {
-    await queryInterface.addConstraint('loc_references', {
+    await queryInterface.addConstraint('locs', {
       fields: [
         'loc_id', 'language_id', 'loc_type', 'parent_id', 'parent_type'
       ],
       type: 'primary key',
-      name: 'loc_references_pkey'
+      name: 'locs_pkey'
     });
   }
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
-  await queryInterface.dropTable('loc_references');
+  await queryInterface.dropTable('locs');
 };
