@@ -8,25 +8,10 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       primaryKey: true,
       autoIncrement: true
     },
-    language_id: {
-      type: DataTypes.INTEGER,
-      references: { model: 'languages', key: 'id' },
-      allowNull: false,
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      unique: 'unique_loc'
-    },
     text: {
       type: DataTypes.STRING(5000),
       allowNull: false,
-      unique: 'unique_loc'
-    }
-  }, {
-    uniqueKeys: {
-      unique_loc: {
-        customIndex: true,
-        fields: ['language_id', 'text']
-      }
+      unique: true
     }
   });
 };

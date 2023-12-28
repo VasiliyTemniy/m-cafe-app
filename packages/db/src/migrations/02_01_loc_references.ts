@@ -11,6 +11,14 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
+    language_id: {
+      type: DataTypes.INTEGER,
+      references: { model: 'languages', key: 'id' },
+      allowNull: false,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+      unique: 'unique_loc'
+    },
     loc_type: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -39,7 +47,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
   if (!constraintCheck[0]) {
     await queryInterface.addConstraint('loc_references', {
       fields: [
-        'loc_id', 'loc_type', 'parent_id', 'parent_type'
+        'loc_id', 'language_id', 'loc_type', 'parent_id', 'parent_type'
       ],
       type: 'primary key',
       name: 'loc_references_pkey'
