@@ -43,3 +43,28 @@ export enum UiSettingInlineCSS {
 
 export const isUiSettingInlineCSS = (inlineCSS: unknown): inlineCSS is UiSettingInlineCSS =>
   (typeof inlineCSS === 'number' || typeof inlineCSS === 'string') && (inlineCSS in UiSettingInlineCSS);
+
+
+export enum UiSettingComponentGroup {
+  Input = 0,
+  Container = 1,
+  Wrapper = 2,
+  Tooltip = 3,
+  Text = 4,
+  Button = 5,
+  ButtonGroup = 6,
+  NavItem = 7,
+  Notification = 8,
+  Modal = 9,
+  SvgImage = 10,
+  SvgButton = 11,
+  Switch = 12,
+  Dropbox = 13,
+  Table = 14,
+  Image = 15,
+  Scrollbar = 16,
+  // Layout components will be added by names as keys later
+}
+
+export const isUiSettingComponentGroup = (componentType: unknown): componentType is UiSettingComponentGroup =>
+  (typeof componentType === 'number' || typeof componentType === 'string') && (componentType in UiSettingComponentGroup);

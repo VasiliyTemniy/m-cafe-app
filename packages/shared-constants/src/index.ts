@@ -1,7 +1,6 @@
 export * from './validationConstants.js';
 export * from './baseUrls.js';
 export * from './uiSettingEnums.js';
-export * from './componentGroups.js';
 export * from './fixedLocEnums.js';
 export * from './specificUiSettings.js';
 export * from './timestampsKeys.js';
