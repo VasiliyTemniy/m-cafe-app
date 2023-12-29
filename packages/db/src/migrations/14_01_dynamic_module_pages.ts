@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-import { DynamicModulePageType } from '@m-cafe-app/shared-constants';
+// import { DynamicModulePageType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('dynamic_module_pages', {
@@ -12,11 +12,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onDelete: 'CASCADE'
     },
     page_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(DynamicModulePageType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(DynamicModulePageType)]
+      // }
     }
   });
 

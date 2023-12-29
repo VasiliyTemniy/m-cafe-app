@@ -30,12 +30,12 @@ export const initDynamicModulePageModel = async (dbInstance: Sequelize) => {
           onDelete: 'CASCADE'
         },
         pageType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
           primaryKey: true,
-          validate: {
-            isIn: [Object.values(DynamicModulePageType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(DynamicModulePageType)]
+          // }
         }
       }, {
         sequelize: dbInstance,
