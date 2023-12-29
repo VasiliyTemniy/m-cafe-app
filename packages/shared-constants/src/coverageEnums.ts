@@ -1,58 +1,23 @@
 export enum CoverageParentType {
-  OfferPolicy = 'offerPolicy',
-  DeliveryPolicy = 'deliveryPolicy',
-  OrderPolicy = 'orderPolicy',
-  SaleEvent = 'saleEvent',
-  PromoEvent = 'promoEvent',
-  Permission = 'permission',
+  OfferPolicy = 0,
+  DeliveryPolicy = 1,
+  OrderPolicy = 2,
+  SaleEvent = 3,
+  PromoEvent = 4,
+  Permission = 5,
 }
 
-export const CoverageParentTypeNumericMapping = {
-  [CoverageParentType.OfferPolicy]: 0,
-  [CoverageParentType.DeliveryPolicy]: 1,
-  [CoverageParentType.OrderPolicy]: 2,
-  [CoverageParentType.SaleEvent]: 3,
-  [CoverageParentType.PromoEvent]: 4,
-  [CoverageParentType.Permission]: 5,
-};
-
-export const NumericToCoverageParentTypeMapping: { [key: number]: CoverageParentType } = {};
-Object.values(CoverageParentType).forEach((value) => {
-  NumericToCoverageParentTypeMapping[CoverageParentTypeNumericMapping[value]] = value;
-});
-
-export const isCoverageParentType = (type: unknown): type is CoverageParentType => {
-  if (!(typeof type === 'string')) {
-    return false;
-  }
-  return Object.values(CoverageParentType).includes(type as CoverageParentType);
-};
+export const isCoverageParentType = (type: unknown): type is CoverageParentType =>
+  (typeof type === 'number' || typeof type === 'string') && (type in CoverageParentType);
 
 
 export enum CoverageEntityType {
-  Organization = 'organization',
-  Product = 'product',
-  ProductType = 'productType',
-  Category = 'category',
-  Facility = 'facility',
+  Organization = 0,
+  Product = 1,
+  ProductType = 2,
+  Category = 3,
+  Facility = 4,
 }
 
-export const CoverageEntityTypeNumericMapping = {
-  [CoverageEntityType.Organization]: 0,
-  [CoverageEntityType.Product]: 1,
-  [CoverageEntityType.ProductType]: 2,
-  [CoverageEntityType.Category]: 3,
-  [CoverageEntityType.Facility]: 4,
-};
-
-export const NumericToCoverageEntityTypeMapping: { [key: number]: CoverageEntityType } = {};
-Object.values(CoverageEntityType).forEach((value) => {
-  NumericToCoverageEntityTypeMapping[CoverageEntityTypeNumericMapping[value]] = value;
-});
-
-export const isCoverageEntityType = (type: unknown): type is CoverageEntityType => {
-  if (!(typeof type === 'string')) {
-    return false;
-  }
-  return Object.values(CoverageEntityType).includes(type as CoverageEntityType);
-};
+export const isCoverageEntityType = (type: unknown): type is CoverageEntityType =>
+  (typeof type === 'number' || typeof type === 'string') && (type in CoverageEntityType);

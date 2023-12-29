@@ -1,180 +1,74 @@
 export enum OrderStatus {
-  Accepted = 'accepted',
-  Cooking = 'cooking',
-  Pending = 'pending',
-  Preparing = 'preparing',
-  Sorting = 'sorting',
-  Delivering = 'delivering',
-  Delivered = 'delivered',
-  Cancelled = 'cancelled',
-  Rejected = 'rejected',
-  Transit = 'transit',
-  Lost = 'lost',
-  Ready = 'ready', // for a pickup
-  Unconfirmed = 'unconfirmed',
+  Accepted = 0,
+  Cooking = 1,
+  Pending = 2,
+  Preparing = 3,
+  Sorting = 4,
+  Delivering = 5,
+  Delivered = 6,
+  Cancelled = 7,
+  Rejected = 8,
+  Transit = 9,
+  Lost = 10,
+  Ready = 11, // for a pickup
+  Unconfirmed = 12,
 }
 
-export const OrderStatusToNumericMapping = {
-  [OrderStatus.Accepted]: 0,
-  [OrderStatus.Cooking]: 1,
-  [OrderStatus.Pending]: 2,
-  [OrderStatus.Preparing]: 3,
-  [OrderStatus.Sorting]: 4,
-  [OrderStatus.Delivering]: 5,
-  [OrderStatus.Delivered]: 6,
-  [OrderStatus.Cancelled]: 7,
-  [OrderStatus.Rejected]: 8,
-  [OrderStatus.Transit]: 9,
-  [OrderStatus.Lost]: 10,
-  [OrderStatus.Ready]: 11,
-  [OrderStatus.Unconfirmed]: 12,
-};
-
-export const NumericToOrderStatusMapping: { [key: string]: OrderStatus } = {};
-Object.values(OrderStatus).forEach((value) => {
-  NumericToOrderStatusMapping[OrderStatusToNumericMapping[value]] = value;
-});
-
-export const isOrderStatus = (status: unknown): status is OrderStatus => {
-  if (!(typeof status === 'string')) {
-    return false;
-  }
-  return Object.values(OrderStatus).includes(status as OrderStatus);
-};
+export const isOrderStatus = (status: unknown): status is OrderStatus =>
+  (typeof status === 'number' || typeof status === 'string') && (status in OrderStatus);
 
 
 
 export enum OrderPaymentMethod {
-  Cash = 'cash',
-  Card = 'card',
-  Online = 'online',
+  Cash = 0,
+  Card = 1,
+  Online = 2,
 }
 
-export const OrderPaymentMethodToNumericMapping = {
-  [OrderPaymentMethod.Cash]: 0,
-  [OrderPaymentMethod.Card]: 1,
-  [OrderPaymentMethod.Online]: 2,
-};
-
-export const NumericToOrderPaymentMethodMapping: { [key: string]: OrderPaymentMethod } = {};
-Object.values(OrderPaymentMethod).forEach((value) => {
-  NumericToOrderPaymentMethodMapping[OrderPaymentMethodToNumericMapping[value]] = value;
-});
-
-export const isOrderPaymentMethod = (paymentMethod: unknown): paymentMethod is OrderPaymentMethod => {
-  if (!(typeof paymentMethod === 'string')) {
-    return false;
-  }
-  return Object.values(OrderPaymentMethod).includes(paymentMethod as OrderPaymentMethod);
-};
-
+export const isOrderPaymentMethod = (paymentMethod: unknown): paymentMethod is OrderPaymentMethod =>
+  (typeof paymentMethod === 'number' || typeof paymentMethod === 'string') && (paymentMethod in OrderPaymentMethod);
 
 
 export enum OrderPaymentStatus {
-  Paid = 'paid',
-  Unpaid = 'unpaid',
-  Refunded = 'refunded',
+  Paid = 0,
+  Unpaid = 1,
+  Refunded = 2,
 }
 
-export const OrderPaymentStatusToNumericMapping = {
-  [OrderPaymentStatus.Paid]: 0,
-  [OrderPaymentStatus.Unpaid]: 1,
-  [OrderPaymentStatus.Refunded]: 2,
-};
-
-export const NumericToOrderPaymentStatusMapping: { [key: string]: OrderPaymentStatus } = {};
-Object.values(OrderPaymentStatus).forEach((value) => {
-  NumericToOrderPaymentStatusMapping[OrderPaymentStatusToNumericMapping[value]] = value;
-});
-
-export const isOrderPaymentStatus = (paymentStatus: unknown): paymentStatus is OrderPaymentStatus => {
-  if (!(typeof paymentStatus === 'string')) {
-    return false;
-  }
-  return Object.values(OrderPaymentStatus).includes(paymentStatus as OrderPaymentStatus);
-};
+export const isOrderPaymentStatus = (paymentStatus: unknown): paymentStatus is OrderPaymentStatus =>
+  (typeof paymentStatus === 'number' || typeof paymentStatus === 'string') && (paymentStatus in OrderPaymentStatus);
 
 
 export enum OrderDeliveryType {
-  FacilityPickup = 'facilityPickup',
-  HomeDelivery = 'homeDelivery',
+  FacilityPickup = 0,
+  HomeDelivery = 1,
 }
 
-export const OrderDeliveryTypeNumericMapping = {
-  [OrderDeliveryType.FacilityPickup]: 0,
-  [OrderDeliveryType.HomeDelivery]: 1,
-};
-
-export const NumericToOrderDeliveryTypeMapping: { [key: number]: OrderDeliveryType } = {};
-Object.values(OrderDeliveryType).forEach((value) => {
-  NumericToOrderDeliveryTypeMapping[OrderDeliveryTypeNumericMapping[value]] = value;
-});
-
-export const isOrderDeliveryType = (type: unknown): type is OrderDeliveryType => {
-  if (!(typeof type === 'string')) {
-    return false;
-  }
-  return Object.values(OrderDeliveryType).includes(type as OrderDeliveryType);
-};
+export const isOrderDeliveryType = (type: unknown): type is OrderDeliveryType =>
+  (typeof type === 'number' || typeof type === 'string') && (type in OrderDeliveryType);
 
 
 export enum OrderDistanceAvailability {
-  Anywhere = 'anywhere',
-  SameCountry = 'sameCountry',
-  SameRegion = 'sameRegion',
-  SameCity = 'sameCity',
+  Anywhere = 0,
+  SameCountry = 1,
+  SameRegion = 2,
+  SameCity = 3,
 }
 
-export const OrderDistanceAvailabilityNumericMapping = {
-  [OrderDistanceAvailability.Anywhere]: 0,
-  [OrderDistanceAvailability.SameCountry]: 1,
-  [OrderDistanceAvailability.SameRegion]: 2,
-  [OrderDistanceAvailability.SameCity]: 3,
-};
-
-export const NumericToOrderDistanceAvailabilityMapping: { [key: number]: OrderDistanceAvailability } = {};
-Object.values(OrderDistanceAvailability).forEach((value) => {
-  NumericToOrderDistanceAvailabilityMapping[OrderDistanceAvailabilityNumericMapping[value]] = value;
-});
-
-export const isOrderDistanceAvailability = (availability: unknown): availability is OrderDistanceAvailability => {
-  if (!(typeof availability === 'string')) {
-    return false;
-  }
-  return Object.values(OrderDistanceAvailability).includes(availability as OrderDistanceAvailability);
-};
+export const isOrderDistanceAvailability = (availability: unknown): availability is OrderDistanceAvailability =>
+  (typeof availability === 'number' || typeof availability === 'string') && (availability in OrderDistanceAvailability);
 
 
 export enum OrderConfirmationMethod {
-  Auto = 'auto',
-  AutoCall = 'autoCall',
-  AutoSMS = 'autoSMS',
-  AutoEmail = 'autoEmail',
-  ManualCall = 'manualCall',
-  ManualSMS = 'manualSMS',
-  ManualEmail = 'manualEmail',
-  ManualOther = 'manualOther',
+  Auto = 0,
+  AutoCall = 1,
+  AutoSMS = 2,
+  AutoEmail = 3,
+  ManualCall = 4,
+  ManualSMS = 5,
+  ManualEmail = 6,
+  ManualOther = 7,
 }
 
-export const OrderConfirmationMethodToNumericMapping = {
-  [OrderConfirmationMethod.Auto]: 0,
-  [OrderConfirmationMethod.AutoCall]: 1,
-  [OrderConfirmationMethod.AutoSMS]: 2,
-  [OrderConfirmationMethod.AutoEmail]: 3,
-  [OrderConfirmationMethod.ManualCall]: 4,
-  [OrderConfirmationMethod.ManualSMS]: 5,
-  [OrderConfirmationMethod.ManualEmail]: 6,
-  [OrderConfirmationMethod.ManualOther]: 7,
-};
-
-export const NumericToOrderConfirmationMethodMapping: { [key: string]: OrderConfirmationMethod } = {};
-Object.values(OrderConfirmationMethod).forEach((value) => {
-  NumericToOrderConfirmationMethodMapping[OrderConfirmationMethodToNumericMapping[value]] = value;
-});
-
-export const isOrderConfirmationMethod = (method: unknown): method is OrderConfirmationMethod => {
-  if (!(typeof method === 'string')) {
-    return false;
-  }
-  return Object.values(OrderConfirmationMethod).includes(method as OrderConfirmationMethod);
-};
+export const isOrderConfirmationMethod = (method: unknown): method is OrderConfirmationMethod =>
+  (typeof method === 'number' || typeof method === 'string') && (method in OrderConfirmationMethod);

@@ -1,44 +1,16 @@
 export enum StockStatus {
-  InStock = 'inStock',
-  EnRoute = 'enRoute',
+  InStock = 0,
+  EnRoute = 1,
 }
 
-export const StockStatusNumericMapping = {
-  [StockStatus.InStock]: 0,
-  [StockStatus.EnRoute]: 1
-};
-
-export const NumericToStockStatusMapping: { [key: number]: StockStatus } = {};
-Object.values(StockStatus).forEach((value) => {
-  NumericToStockStatusMapping[StockStatusNumericMapping[value]] = value;
-});
-
-export const isStockStatus = (state: unknown): state is StockStatus => {
-  if (!(typeof state === 'string')) {
-    return false;
-  }
-  return Object.values(StockStatus).includes(state as StockStatus);
-};
+export const isStockStatus = (state: unknown): state is StockStatus =>
+  (typeof state === 'number' || typeof state === 'string') && (state in StockStatus);
 
 
 export enum StockEntityType {
-  Product = 'product',
-  Ingredient = 'ingredient',
+  Product = 0,
+  Ingredient = 1,
 }
 
-export const StockEntityTypeNumericMapping = {
-  [StockEntityType.Product]: 0,
-  [StockEntityType.Ingredient]: 1,
-};
-
-export const NumericToStockEntityTypeMapping: { [key: number]: StockEntityType } = {};
-Object.values(StockEntityType).forEach((value) => {
-  NumericToStockEntityTypeMapping[StockEntityTypeNumericMapping[value]] = value;
-});
-
-export const isStockEntityType = (type: unknown): type is StockEntityType => {
-  if (!(typeof type === 'string')) {
-    return false;
-  }
-  return Object.values(StockEntityType).includes(type as StockEntityType);
-};
+export const isStockEntityType = (type: unknown): type is StockEntityType =>
+  (typeof type === 'number' || typeof type === 'string') && (type in StockEntityType);
