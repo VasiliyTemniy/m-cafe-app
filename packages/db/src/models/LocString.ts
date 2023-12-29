@@ -2,14 +2,17 @@ import type {
   Sequelize,
   InferAttributes,
   InferCreationAttributes,
-  CreationOptional
+  CreationOptional,
+  NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
+import { Loc } from './Loc';
 
 
 export class LocString extends Model<InferAttributes<LocString>, InferCreationAttributes<LocString>> {
   declare id: CreationOptional<number>;
   declare text: string;
+  declare locs?: NonAttribute<Loc[]>;
 }
 
 
@@ -31,6 +34,23 @@ export const initLocStringModel = async (dbInstance: Sequelize) => {
         underscored: true,
         timestamps: false,
         modelName: 'loc'
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initLocStringAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      LocString.hasMany(Loc, {
+        foreignKey: 'locId',
+        as: 'locs',
       });
 
       resolve();
