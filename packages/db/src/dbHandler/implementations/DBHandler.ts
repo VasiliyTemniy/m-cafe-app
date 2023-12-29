@@ -1,4 +1,4 @@
-import type { IDatabaseConnectionHandler, IMigration, IMigrationConf } from '../interfaces';
+import type { IDBHandler, IMigration, IMigrationConf } from '../interfaces';
 import type { Options } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { Umzug, SequelizeStorage } from 'umzug';
@@ -7,7 +7,7 @@ import { DATABASE_URL } from '../../config';
 import * as models from '../../models';
 
 
-export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
+export class DBHandler implements IDBHandler {
 
   public dbInstance: Sequelize | undefined = undefined;
   public models = models;

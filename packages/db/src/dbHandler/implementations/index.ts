@@ -1,1 +1,1 @@
-export * from './DatabaseConnectionHandler.js';
+export * from './DBHandler.js';

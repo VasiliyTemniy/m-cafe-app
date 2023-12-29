@@ -1,7 +1,7 @@
 import type { Sequelize } from 'sequelize';
 import type * as models from '../../models';
 
-export interface IDatabaseConnectionHandler {
+export interface IDBHandler {
   dbInstance: Sequelize | undefined;
   models: typeof models;
   connect(): Promise<void>;
