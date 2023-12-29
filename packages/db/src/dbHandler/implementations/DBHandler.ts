@@ -5,6 +5,7 @@ import { Umzug, SequelizeStorage } from 'umzug';
 import { logger } from '@m-cafe-app/utils';
 import { DATABASE_URL } from '../../config';
 import * as models from '../../models';
+import * as constants from '@m-cafe-app/shared-constants';
 
 
 export class DBHandler implements IDBHandler {
@@ -200,6 +201,7 @@ export class DBHandler implements IDBHandler {
     await this.models.initDetailModel(this.dbInstance);
     await this.models.initViewModel(this.dbInstance);
     await this.models.initTagModel(this.dbInstance);
+    await this.models.initFixedEnumModel(this.dbInstance);
 
     await this.models.initAddressAssociations();
     await this.models.initLanguageAssociations();
@@ -259,5 +261,85 @@ export class DBHandler implements IDBHandler {
     await this.models.initStockHooks();
 
     await this.models.initUserScopes();
+  }
+
+  private async initFixedEnums(): Promise<void> {
+    
+    const checkEnum = async (name: keyof typeof constants) => {
+      const constant = constants[name];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      for (const key in constant as Record<string, any>) {
+
+        const foundEnum = await this.models.FixedEnum.findOne({
+          where: {
+            name,
+            key
+          }
+        });
+      
+        if (!foundEnum) {
+          await this.models.FixedEnum.create({
+            name,
+            key,
+            value: constant[key as keyof typeof constant]
+          });
+          return;
+        }
+
+        if (foundEnum?.value !== constant[key as keyof typeof constant]) {
+          throw new Error(`${name} enum value mismatch: ${foundEnum?.value} !== ${constant[key as keyof typeof constant]}`);
+        }
+      }
+    };
+
+    await checkEnum('LocType');
+    await checkEnum('LocParentType');
+    await checkEnum('FixedLocScope');
+    await checkEnum('PictureParentType');
+    await checkEnum('UserRights');
+    await checkEnum('CoverageParentType');
+    await checkEnum('CoverageEntityType');
+    await checkEnum('OfferType');
+    await checkEnum('OfferGrantMethod');
+    await checkEnum('OfferCodeGenerationMethod');
+    await checkEnum('OrderStatus');
+    await checkEnum('OrderPaymentMethod');
+    await checkEnum('OrderPaymentStatus');
+    await checkEnum('OrderDeliveryType');
+    await checkEnum('OrderDistanceAvailability');
+    await checkEnum('OrderConfirmationMethod');
+    await checkEnum('DeliveryCostCalculationType');
+    await checkEnum('MassEnum');
+    await checkEnum('SizingEnum');
+    await checkEnum('VolumeEnum');
+    await checkEnum('PermissionTarget');
+    await checkEnum('PermissionAccess');
+    await checkEnum('PermissionAction');
+    await checkEnum('PriceCutPermission');
+    await checkEnum('FacilityType');
+    await checkEnum('StockEntityType');
+    await checkEnum('StockStatus');
+    await checkEnum('CommentParentType');
+    await checkEnum('OrderTrackingStatus');
+    await checkEnum('DynamicModuleType');
+    await checkEnum('DynamicModulePreset');
+    await checkEnum('DynamicModulePlacementType');
+    await checkEnum('DynamicModulePageType');
+    await checkEnum('UiSettingComponentGroup');
+    await checkEnum('UiSettingTheme');
+    await checkEnum('ReviewParentType');
+    await checkEnum('ApiRequestReason');
+    await checkEnum('ApiRequestMethod');
+    await checkEnum('ApiRequestExpectedResponseDataPlacementKey');
+    await checkEnum('ApiRequestExpectedResponseDataType');
+    await checkEnum('ApiRequestProtocol');
+    await checkEnum('ApiRequestTokenPlacement');
+    await checkEnum('ContactType');
+    await checkEnum('ContactTarget');
+    await checkEnum('ContactParentType');
+    await checkEnum('DetailGroupParentType');
+    await checkEnum('ViewParentType');
+    await checkEnum('TagParentType');
+
   }
 }
