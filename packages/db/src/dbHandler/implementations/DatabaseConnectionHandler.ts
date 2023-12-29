@@ -146,12 +146,12 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
 
     await this.models.initAddressModel(this.dbInstance);
     await this.models.initLanguageModel(this.dbInstance);
+    await this.models.initLocStringModel(this.dbInstance);
     await this.models.initLocModel(this.dbInstance);
     await this.models.initFixedLocModel(this.dbInstance);
     await this.models.initCurrencyModel(this.dbInstance);
     await this.models.initCurrencyConversionModel(this.dbInstance);
     await this.models.initPictureModel(this.dbInstance);
-    await this.models.initPictureViewModel(this.dbInstance);
     await this.models.initUserModel(this.dbInstance);
     await this.models.initUserAddressModel(this.dbInstance);
     await this.models.initCoverageModel(this.dbInstance);
@@ -169,7 +169,6 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await this.models.initProductModel(this.dbInstance);
     await this.models.initProductCategoryReferenceModel(this.dbInstance);
     await this.models.initProductComponentModel(this.dbInstance);
-    await this.models.initProductViewModel(this.dbInstance);
     await this.models.initIngredientModel(this.dbInstance);
     await this.models.initFacilityModel(this.dbInstance);
     await this.models.initStockModel(this.dbInstance);
@@ -199,15 +198,17 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await this.models.initSemanticValueModel(this.dbInstance);
     await this.models.initDetailGroupModel(this.dbInstance);
     await this.models.initDetailModel(this.dbInstance);
+    await this.models.initViewModel(this.dbInstance);
+    await this.models.initTagModel(this.dbInstance);
 
     await this.models.initAddressAssociations();
     await this.models.initLanguageAssociations();
+    await this.models.initLocStringAssociations();
     await this.models.initLocAssociations();
     await this.models.initFixedLocAssociations();
     await this.models.initCurrencyAssociations();
     await this.models.initCurrencyConversionAssociations();
     await this.models.initPictureAssociations();
-    await this.models.initPictureViewAssociations();
     await this.models.initUserAssociations();
     await this.models.initOrganizationAssociations();
     await this.models.initOfferPolicyAssociations();
@@ -219,7 +220,6 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await this.models.initProductCategoryAssociations();
     await this.models.initProductAssociations();
     await this.models.initProductComponentAssociations();
-    await this.models.initProductViewAssociations();
     await this.models.initIngredientAssociations();
     await this.models.initFacilityAssociations();
     await this.models.initStockAssociations();
@@ -248,6 +248,8 @@ export class DatabaseConnectionHandler implements IDatabaseConnectionHandler {
     await this.models.initSemanticValueAssociations();
     await this.models.initDetailGroupAssociations();
     await this.models.initDetailAssociations();
+    await this.models.initViewAssociations();
+    await this.models.initTagAssociations();
 
     await this.models.initPictureHooks();
     await this.models.initCommentHooks();
