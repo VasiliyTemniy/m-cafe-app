@@ -8,7 +8,8 @@ import {
   orgDefaultMaxPictures,
   orgDefaultMaxPolicies,
   orgDefaultMaxProducts,
-  orgDefaultMaxRoles
+  orgDefaultMaxRoles,
+  orgDefaultMaxTags
 } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
@@ -79,6 +80,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false,
       defaultValue: orgDefaultMaxPermissions
     },
+    max_tags: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: orgDefaultMaxTags
+    },
     used_policies: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -120,6 +126,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       defaultValue: 0
     },
     used_permissions: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    used_tags: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0

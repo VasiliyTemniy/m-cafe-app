@@ -20,7 +20,8 @@ import {
   orgDefaultMaxPictures,
   orgDefaultMaxPolicies,
   orgDefaultMaxProducts,
-  orgDefaultMaxRoles
+  orgDefaultMaxRoles,
+  orgDefaultMaxTags
 } from '@m-cafe-app/shared-constants';
 import { Loc } from './Loc.js';
 import { User } from './User.js';
@@ -41,6 +42,7 @@ export class Organization extends Model<InferAttributes<Organization>, InferCrea
   declare maxEvents: CreationOptional<number>;
   declare maxRoles: CreationOptional<number>;
   declare maxPermissions: CreationOptional<number>;
+  declare maxTags: CreationOptional<number>;
   declare usedPolicies: CreationOptional<number>;
   declare usedManagers: CreationOptional<number>;
   declare usedProducts: CreationOptional<number>;
@@ -50,6 +52,7 @@ export class Organization extends Model<InferAttributes<Organization>, InferCrea
   declare usedEvents: CreationOptional<number>;
   declare usedRoles: CreationOptional<number>;
   declare usedPermissions: CreationOptional<number>;
+  declare usedTags: CreationOptional<number>;
   declare descriptionLocs?: NonAttribute<Loc>[];
   declare orgAdmin?: NonAttribute<User>;
   declare contacts?: NonAttribute<Contact[]>;
@@ -127,6 +130,11 @@ export const initOrganizationModel = async (dbInstance: Sequelize) => {
           allowNull: false,
           defaultValue: orgDefaultMaxPermissions
         },
+        maxTags: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: orgDefaultMaxTags
+        },
         usedPolicies: {
           type: DataTypes.INTEGER,
           allowNull: false,
@@ -168,6 +176,11 @@ export const initOrganizationModel = async (dbInstance: Sequelize) => {
           defaultValue: 0
         },
         usedPermissions: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0
+        },
+        usedTags: {
           type: DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 0
