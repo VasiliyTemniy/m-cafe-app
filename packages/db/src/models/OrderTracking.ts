@@ -52,11 +52,11 @@ export const initOrderTrackingModel = async (dbInstance: Sequelize) => {
           onDelete: 'CASCADE'
         },
         status: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OrderTrackingStatus)]
-          },
+          // validate: {
+          //   isIn: [Object.values(OrderTrackingStatus)]
+          // },
           defaultValue: OrderTrackingStatus.Acquired
         },
         pointNumber: {
@@ -77,11 +77,11 @@ export const initOrderTrackingModel = async (dbInstance: Sequelize) => {
           allowNull: true,
         },
         massMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(MassEnum)]
-          }
+          // validate: {
+          //   isIn: [Object.values(MassEnum)]
+          // }
         },
         deliveredAt: {
           type: DataTypes.DATE,

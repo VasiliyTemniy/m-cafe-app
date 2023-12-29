@@ -1,5 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { MassEnum, PriceCutPermission, SizingEnum, VolumeEnum } from '@m-cafe-app/shared-constants';
+// import { MassEnum, PriceCutPermission, SizingEnum, VolumeEnum } from '@m-cafe-app/shared-constants';
+import { PriceCutPermission } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -50,11 +51,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onDelete: 'RESTRICT'
     },
     price_cut_permissions: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(PriceCutPermission)]
-      },
+      // validate: {
+      //   isIn: [Object.values(PriceCutPermission)]
+      // },
       defaultValue: PriceCutPermission.None
     },
     display_priority: {
@@ -136,22 +137,22 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true
     },
     mass_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(MassEnum)]
-      }
+      // validate: {
+      //   isIn: [Object.values(MassEnum)]
+      // }
     },
     total_volume: {
       type: DataTypes.FLOAT,
       allowNull: true
     },
     volume_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(VolumeEnum)]
-      }
+      // validate: {
+      //   isIn: [Object.values(VolumeEnum)]
+      // }
     },
     box_sizing_x: {
       type: DataTypes.FLOAT,
@@ -166,11 +167,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true
     },
     sizing_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(SizingEnum)]
-      }
+      // validate: {
+      //   isIn: [Object.values(SizingEnum)]
+      // }
     },
     // product categories are handled in many-many junction table
     created_at: {

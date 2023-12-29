@@ -1,10 +1,10 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import {
-  DeliveryCostCalculationType,
-  MassEnum,
-  SizingEnum,
-  VolumeEnum
-} from '@m-cafe-app/shared-constants';
+// import {
+//   DeliveryCostCalculationType,
+//   MassEnum,
+//   SizingEnum,
+//   VolumeEnum
+// } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -46,11 +46,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false,
     },
     delivery_cost_calculation_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(DeliveryCostCalculationType)],
-      }
+      // validate: {
+      //   isIn: [Object.values(DeliveryCostCalculationType)],
+      // }
     },
     fixed_cost_addon: {
       type: DataTypes.INTEGER,
@@ -65,11 +65,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
     },
     distance_step_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(SizingEnum)],
-      }
+      // validate: {
+      //   isIn: [Object.values(SizingEnum)],
+      // }
     },
     mass_step_cost: {
       type: DataTypes.INTEGER,
@@ -80,11 +80,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
     },
     mass_step_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(MassEnum)],
-      }
+      // validate: {
+      //   isIn: [Object.values(MassEnum)],
+      // }
     },
     volume_step_cost: {
       type: DataTypes.INTEGER,
@@ -95,11 +95,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
     },
     volume_step_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(VolumeEnum)],
-      }
+      // validate: {
+      //   isIn: [Object.values(VolumeEnum)],
+      // }
     },
     starts_at: {
       type: DataTypes.DATE,

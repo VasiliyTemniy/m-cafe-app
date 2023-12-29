@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { OfferGrantMethod, OfferType } from '@m-cafe-app/shared-constants';
+// import { OfferGrantMethod, OfferType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -26,19 +26,19 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       unique: 'unique_offer'
     },
     type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OfferType)],
-      },
+      // validate: {
+      //   isIn: [Object.values(OfferType)],
+      // },
       unique: 'unique_offer'
     },
     grant_method: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OfferGrantMethod)],
-      },
+      // validate: {
+      //   isIn: [Object.values(OfferGrantMethod)],
+      // },
     },
     name: {
       type: DataTypes.STRING,

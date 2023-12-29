@@ -98,11 +98,11 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         reason: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ApiRequestReason)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ApiRequestReason)]
+          // }
         },
         host: {
           type: DataTypes.STRING,
@@ -113,11 +113,11 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         method: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ApiRequestMethod)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ApiRequestMethod)]
+          // }
         },
         // Path before query string - e.g. /api/v1/users
         pathBeforeQuery: {
@@ -129,18 +129,18 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         expectedResponseDataPlacementKey: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ApiRequestExpectedResponseDataPlacementKey)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ApiRequestExpectedResponseDataPlacementKey)]
+          // }
         },
         expectedResponseDataType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ApiRequestExpectedResponseDataType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ApiRequestExpectedResponseDataType)]
+          // }
         },
         // auth <string> Basic authentication ('user:password') to compute an Authorization header. (from NodeJS docs)
         auth: {
@@ -190,11 +190,11 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
         },
         // protocol <string> Protocol to use. Default: 'http:'. (from NodeJS docs)
         protocol: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(ApiRequestProtocol)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ApiRequestProtocol)]
+          // }
         },
         // setHost <boolean>: Specifies whether or not to automatically add the Host header. Defaults to true. (from NodeJS docs)
         setHost: {

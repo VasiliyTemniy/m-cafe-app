@@ -61,29 +61,29 @@ export const initContactModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         type: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ContactType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ContactType)]
+          // }
         },
         target: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ContactTarget)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ContactTarget)]
+          // }
         },
         parentId: {
           type: DataTypes.INTEGER,
           allowNull: false
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ContactParentType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ContactParentType)]
+          // }
         },
         value: {
           type: DataTypes.STRING,

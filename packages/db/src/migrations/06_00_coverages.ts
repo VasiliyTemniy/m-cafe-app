@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { CoverageEntityType, CoverageParentType } from '@m-cafe-app/shared-constants';
+// import { CoverageEntityType, CoverageParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -9,18 +9,18 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false,
     },
     parent_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(CoverageParentType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(CoverageParentType)]
+      // }
     },
     entity_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(CoverageEntityType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(CoverageEntityType)]
+      // }
     },
     entity_id: {
       type: DataTypes.INTEGER,

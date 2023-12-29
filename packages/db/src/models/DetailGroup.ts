@@ -48,11 +48,11 @@ export const initDetailGroupModel = (dbInstance: Sequelize) => {
           allowNull: false,
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(DetailGroupParentType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(DetailGroupParentType)]
+          // }
         },
         createdBy: {
           type: DataTypes.INTEGER,

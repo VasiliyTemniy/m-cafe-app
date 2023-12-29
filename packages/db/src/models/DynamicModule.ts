@@ -80,22 +80,22 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
           onDelete: 'RESTRICT'
         },
         moduleType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(DynamicModuleType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(DynamicModuleType)]
+          // }
         },
         placement: {
           type: DataTypes.INTEGER,
           allowNull: false
         },
         placementType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(DynamicModulePlacementType)]
-          },
+          // validate: {
+          //   isIn: [Object.values(DynamicModulePlacementType)]
+          // },
           defaultValue: DynamicModulePlacementType.BeforeMenu,
         },
         nestLevel: {
@@ -104,11 +104,11 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
           defaultValue: 0
         },
         preset: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(DynamicModulePreset)]
-          }
+          // validate: {
+          //   isIn: [Object.values(DynamicModulePreset)]
+          // }
         },
         className: {
           type: DataTypes.STRING,

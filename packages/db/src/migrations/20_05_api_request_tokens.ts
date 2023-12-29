@@ -1,5 +1,5 @@
-import { ApiRequestTokenPlacement } from '@m-cafe-app/shared-constants';
 import type { MigrationContext } from '../types/Migrations.js';
+// import { ApiRequestTokenPlacement } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -26,11 +26,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false
     },
     placement: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(ApiRequestTokenPlacement)]
-      }
+      // validate: {
+      //   isIn: [Object.values(ApiRequestTokenPlacement)]
+      // }
     },
     // prefix example: 'Bearer ' with essential space in the end if there is one
     prefix: {

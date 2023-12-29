@@ -102,25 +102,25 @@ export const initOfferPolicyModel = async (dbInstance: Sequelize) => {
           defaultValue: 0,
         },
         offerType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OfferType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OfferType)]
+          // }
         },
         offerGrantMethod: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OfferGrantMethod)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OfferGrantMethod)]
+          // }
         },
         offerCodeGenerationMethod: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OfferCodeGenerationMethod)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OfferCodeGenerationMethod)]
+          // }
         },
         setOfferName: {
           type: DataTypes.STRING,

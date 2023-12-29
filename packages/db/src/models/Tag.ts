@@ -41,11 +41,11 @@ export const initTagModel = async (dbInstance: Sequelize) => {
           allowNull: false,
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(TagParentType)],
-          }
+          // validate: {
+          //   isIn: [Object.values(TagParentType)],
+          // }
         },
         // name locs are referenced from locs table
         name: {

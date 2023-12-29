@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { TagParentType } from '@m-cafe-app/shared-constants';
+// import { TagParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -14,11 +14,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false,
     },
     parent_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(TagParentType)],
-      }
+      // validate: {
+      //   isIn: [Object.values(TagParentType)],
+      // }
     },
     // name locs are referenced from locs table
     name: {

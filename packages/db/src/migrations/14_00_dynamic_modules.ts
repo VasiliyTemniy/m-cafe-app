@@ -1,6 +1,7 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import { DynamicModuleType, DynamicModulePlacementType, DynamicModulePreset } from '@m-cafe-app/shared-constants';
+// import { DynamicModuleType, DynamicModulePlacementType, DynamicModulePreset } from '@m-cafe-app/shared-constants';
+import { DynamicModulePlacementType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('dynamic_modules', {
@@ -31,22 +32,22 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onDelete: 'RESTRICT'
     },
     module_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(DynamicModuleType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(DynamicModuleType)]
+      // }
     },
     placement: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
     placement_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(DynamicModulePlacementType)]
-      },
+      // validate: {
+      //   isIn: [Object.values(DynamicModulePlacementType)]
+      // },
       defaultValue: DynamicModulePlacementType.BeforeMenu
     },
     nest_level: {
@@ -55,11 +56,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       defaultValue: 0
     },
     preset: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(DynamicModulePreset)]
-      }
+      // validate: {
+      //   isIn: [Object.values(DynamicModulePreset)]
+      // }
     },
     class_name: {
       type: DataTypes.STRING,

@@ -62,11 +62,11 @@ export const initPictureModel = (dbInstance: Sequelize) => {
           unique: 'picture_unique'
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(PictureParentType)]
-          },
+          // validate: {
+          //   isIn: [Object.values(PictureParentType)]
+          // },
           unique: 'picture_unique'
         },
         orderNumber: {

@@ -1,6 +1,7 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-import { MassEnum, OrderTrackingStatus } from '@m-cafe-app/shared-constants';
+// import { MassEnum, OrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { OrderTrackingStatus } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('order_trackings', {
@@ -19,11 +20,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onDelete: 'CASCADE'
     },
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OrderTrackingStatus)]
-      },
+      // validate: {
+      //   isIn: [Object.values(OrderTrackingStatus)]
+      // },
       defaultValue: OrderTrackingStatus.Acquired
     },
     point_number: {
@@ -43,11 +44,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
     },
     mass_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(MassEnum)]
-      }
+      // validate: {
+      //   isIn: [Object.values(MassEnum)]
+      // }
     },
     delivered_at: {
       type: DataTypes.DATE,

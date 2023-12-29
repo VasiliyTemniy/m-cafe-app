@@ -90,11 +90,11 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: false,
         },
         deliveryCostCalculationType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(DeliveryCostCalculationType)],
-          }
+          // validate: {
+          //   isIn: [Object.values(DeliveryCostCalculationType)],
+          // }
         },
         fixedCostAddon: {
           type: DataTypes.INTEGER,
@@ -109,11 +109,11 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
         },
         distanceStepMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(SizingEnum)],
-          }
+          // validate: {
+          //   isIn: [Object.values(SizingEnum)],
+          // }
         },
         massStepCost: {
           type: DataTypes.INTEGER,
@@ -124,11 +124,11 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
         },
         massStepMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(MassEnum)],
-          }
+          // validate: {
+          //   isIn: [Object.values(MassEnum)],
+          // }
         },
         volumeStepCost: {
           type: DataTypes.INTEGER,
@@ -139,11 +139,11 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
         },
         volumeStepMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(VolumeEnum)],
-          }
+          // validate: {
+          //   isIn: [Object.values(VolumeEnum)],
+          // }
         },
         startsAt: {
           type: DataTypes.DATE,

@@ -14,7 +14,7 @@ export class FixedLoc extends Model<InferAttributes<FixedLoc>, InferCreationAttr
   declare id: CreationOptional<number>;
   declare name: string;
   declare namespace: string;
-  declare scope: string;
+  declare scope: FixedLocScope;
   declare locs?: NonAttribute<Loc>[];
 }
 
@@ -39,11 +39,11 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
           unique: 'unique_fixed_loc'
         },
         scope: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(FixedLocScope)]
-          },
+          // validate: {
+          //   isIn: [Object.values(FixedLocScope)]
+          // },
           unique: 'unique_fixed_loc'
         }
         // actual locs are referenced from locs table

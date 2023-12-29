@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
+// import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('locs', {
@@ -20,22 +20,22 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       unique: 'unique_loc'
     },
     loc_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(LocType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(LocType)]
+      // }
     },
     parent_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
     parent_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(LocParentType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(LocParentType)]
+      // }
     },
     created_at: {
       type: DataTypes.DATE,

@@ -34,26 +34,26 @@ export const initPermissionModel = async (dbInstance: Sequelize) => {
           autoIncrement: true
         },
         target: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(PermissionTarget)]
-          }
+          // validate: {
+          //   isIn: [Object.values(PermissionTarget)]
+          // }
         },
         // if PermissionAccess === 'byCoverage' then access is referenced from coverages
         access: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(PermissionAccess)]
-          }
+          // validate: {
+          //   isIn: [Object.values(PermissionAccess)]
+          // }
         },
         action: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(PermissionAction)]
-          }
+          // validate: {
+          //   isIn: [Object.values(PermissionAction)]
+          // }
         },
         isActive: {
           type: DataTypes.BOOLEAN,

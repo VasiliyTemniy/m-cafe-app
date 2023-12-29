@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes, Op } from 'sequelize';
-import { UiSettingTheme, componentGroups } from '@m-cafe-app/shared-constants';
+import { UiSettingComponentGroup, UiSettingTheme } from '@m-cafe-app/shared-constants';
 import { Organization } from './Organization.js';
 import { User } from './User.js';
 
@@ -17,7 +17,7 @@ export class UiSetting extends Model<InferAttributes<UiSetting>, InferCreationAt
   declare organizationId: ForeignKey<Organization['id']> | null;
   declare updatedBy: ForeignKey<User['id']>;
   declare name: string;
-  declare group: string;
+  declare group: UiSettingComponentGroup;
   declare theme: UiSettingTheme;
   declare value: string;
   declare organization?: NonAttribute<Organization>;
@@ -55,19 +55,19 @@ export const initUiSettingModel = async (dbInstance: Sequelize) => {
           unique: 'unique_ui_setting'
         },
         group: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [componentGroups]
-          },
+          // validate: {
+          //   isIn: [Object.values(UiSettingComponentGroup)]
+          // },
           unique: 'unique_ui_setting'
         },
         theme: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(UiSettingTheme)]
-          },
+          // validate: {
+          //   isIn: [Object.values(UiSettingTheme)]
+          // },
           unique: 'unique_ui_setting'
         },
         value: {

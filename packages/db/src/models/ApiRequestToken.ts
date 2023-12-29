@@ -48,11 +48,11 @@ export const initApiRequestTokenModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         placement: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ApiRequestTokenPlacement)]
-          }
+          // validate: {
+          //   isIn: [Object.values(ApiRequestTokenPlacement)]
+          // }
         },
         // prefix example: 'Bearer ' with essential space in the end if there is one
         prefix: {

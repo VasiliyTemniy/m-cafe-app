@@ -53,11 +53,11 @@ export const initReviewModel = async (dbInstance: Sequelize) => {
           autoIncrement: true
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ReviewParentType)]
-          },
+          // validate: {
+          //   isIn: [Object.values(ReviewParentType)]
+          // },
           unique: 'review_unique'
         },
         parentId: {

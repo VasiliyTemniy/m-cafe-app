@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { PermissionAccess, PermissionAction, PermissionTarget } from '@m-cafe-app/shared-constants';
+// import { PermissionAccess, PermissionAction, PermissionTarget } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -10,26 +10,26 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       autoIncrement: true
     },
     target: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(PermissionTarget)]
-      }
+      // validate: {
+      //   isIn: [Object.values(PermissionTarget)]
+      // }
     },
     // if PermissionAccess === 'byCoverage' then access is referenced from coverages
     access: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(PermissionAccess)]
-      }
+      // validate: {
+      //   isIn: [Object.values(PermissionAccess)]
+      // }
     },
     action: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(PermissionAction)]
-      }
+      // validate: {
+      //   isIn: [Object.values(PermissionAction)]
+      // }
     },
     is_active: {
       type: DataTypes.BOOLEAN,

@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import { StockEntityType, StockStatus } from '@m-cafe-app/shared-constants';
+// import { StockEntityType, StockStatus } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('stocks', {
@@ -37,11 +37,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       unique: 'unique_stock'
     },
     entity_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(StockEntityType)]
-      },
+      // validate: {
+      //   isIn: [Object.values(StockEntityType)]
+      // },
       unique: 'unique_stock'
     },
     quantity: {
@@ -49,11 +49,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false
     },
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(StockStatus)]
-      },
+      // validate: {
+      //   isIn: [Object.values(StockStatus)]
+      // },
       unique: 'unique_stock'
     },
     created_at: {

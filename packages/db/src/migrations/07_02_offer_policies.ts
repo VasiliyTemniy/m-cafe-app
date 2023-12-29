@@ -1,9 +1,9 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import {
-  OfferCodeGenerationMethod,
-  OfferGrantMethod,
-  OfferType
-} from '@m-cafe-app/shared-constants';
+// import {
+//   OfferCodeGenerationMethod,
+//   OfferGrantMethod,
+//   OfferType
+// } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -55,25 +55,25 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       defaultValue: 0,
     },
     offer_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OfferType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OfferType)]
+      // }
     },
     offer_grant_method: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OfferGrantMethod)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OfferGrantMethod)]
+      // }
     },
     offer_code_generation_method: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OfferCodeGenerationMethod)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OfferCodeGenerationMethod)]
+      // }
     },
     set_offer_name: {
       type: DataTypes.STRING,

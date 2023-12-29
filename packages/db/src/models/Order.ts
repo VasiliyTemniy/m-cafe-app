@@ -93,18 +93,18 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           }
         },
         deliveryType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OrderDeliveryType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OrderDeliveryType)]
+          // }
         },
         status: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OrderStatus)]
-          },
+          // validate: {
+          //   isIn: [Object.values(OrderStatus)]
+          // },
         },
         totalCost: {
           type: DataTypes.INTEGER,
@@ -146,18 +146,18 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         paymentMethod: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OrderPaymentMethod)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OrderPaymentMethod)]
+          // }
         },
         paymentStatus: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OrderPaymentStatus)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OrderPaymentStatus)]
+          // }
         },
         boxSizingX: {
           type: DataTypes.INTEGER,
@@ -172,11 +172,11 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           allowNull: true
         },
         sizingMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(SizingEnum)]
-          }
+          // validate: {
+          //   isIn: [Object.values(SizingEnum)]
+          // }
         },
         userId: {
           type: DataTypes.INTEGER,

@@ -1,13 +1,13 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import {
-  MassEnum,
-  OrderDeliveryType,
-  OrderPaymentMethod,
-  OrderPaymentStatus,
-  OrderStatus,
-  SizingEnum
-} from '@m-cafe-app/shared-constants';
+// import {
+//   MassEnum,
+//   OrderDeliveryType,
+//   OrderPaymentMethod,
+//   OrderPaymentStatus,
+//   OrderStatus,
+//   SizingEnum
+// } from '@m-cafe-app/shared-constants';
 
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -33,18 +33,18 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       }
     },
     delivery_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OrderDeliveryType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OrderDeliveryType)]
+      // }
     },
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OrderStatus)]
-      },
+      // validate: {
+      //   isIn: [Object.values(OrderStatus)]
+      // },
     },
     total_cost: {
       type: DataTypes.INTEGER,
@@ -86,18 +86,18 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false
     },
     payment_method: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OrderPaymentMethod)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OrderPaymentMethod)]
+      // }
     },
     payment_status: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(OrderPaymentStatus)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OrderPaymentStatus)]
+      // }
     },
     box_sizing_x: {
       type: DataTypes.INTEGER,
@@ -112,11 +112,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true
     },
     sizing_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(SizingEnum)]
-      }
+      // validate: {
+      //   isIn: [Object.values(SizingEnum)]
+      // }
     },
     user_id: {
       type: DataTypes.INTEGER,
@@ -152,11 +152,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
     },
     mass_measure: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(MassEnum)]
-      }
+      // validate: {
+      //   isIn: [Object.values(MassEnum)]
+      // }
     },
     comment: {
       type: DataTypes.STRING,

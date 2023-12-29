@@ -140,11 +140,11 @@ export const initProductModel = (dbInstance: Sequelize) => {
           onDelete: 'RESTRICT'
         },
         priceCutPermissions: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(PriceCutPermission)]
-          },
+          // validate: {
+          //   isIn: [Object.values(PriceCutPermission)]
+          // },
           defaultValue: PriceCutPermission.None
         },
         displayPriority: {
@@ -226,22 +226,22 @@ export const initProductModel = (dbInstance: Sequelize) => {
           allowNull: true
         },
         massMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(MassEnum)]
-          }
+          // validate: {
+          //   isIn: [Object.values(MassEnum)]
+          // }
         },
         totalVolume: {
           type: DataTypes.FLOAT,
           allowNull: true
         },
         volumeMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(VolumeEnum)]
-          }
+          // validate: {
+          //   isIn: [Object.values(VolumeEnum)]
+          // }
         },
         boxSizingX: {
           type: DataTypes.FLOAT,
@@ -256,11 +256,11 @@ export const initProductModel = (dbInstance: Sequelize) => {
           allowNull: true
         },
         sizingMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(SizingEnum)]
-          }
+          // validate: {
+          //   isIn: [Object.values(SizingEnum)]
+          // }
         },
         // product categories are handled in many-many junction table
         createdAt: {

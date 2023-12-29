@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import { FacilityType } from '@m-cafe-app/shared-constants';
+// import { FacilityType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('facilities', {
@@ -40,11 +40,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     // name and description locs are referenced from locs table
     // contacts are referenced from contacts table
     facility_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(FacilityType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(FacilityType)]
+      // }
     },
     created_at: {
       type: DataTypes.DATE,

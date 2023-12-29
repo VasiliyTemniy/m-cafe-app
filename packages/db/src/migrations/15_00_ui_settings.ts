@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { UiSettingTheme, componentGroups } from '@m-cafe-app/shared-constants';
+// import { UiSettingComponentGroup, UiSettingTheme } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -30,19 +30,19 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       unique: 'unique_ui_setting'
     },
     group: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [componentGroups]
-      },
+      // validate: {
+      //   isIn: [Object.values(UiSettingComponentGroup)]
+      // },
       unique: 'unique_ui_setting'
     },
     theme: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(UiSettingTheme)]
-      },
+      // validate: {
+      //   isIn: [Object.values(UiSettingTheme)]
+      // },
       unique: 'unique_ui_setting'
     },
     value: {

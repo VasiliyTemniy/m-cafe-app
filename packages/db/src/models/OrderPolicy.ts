@@ -81,25 +81,25 @@ export const initOrderPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: false,
         },
         paymentMethod: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(OrderPaymentMethod)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OrderPaymentMethod)]
+          // }
         },
         confirmationMethod: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(OrderConfirmationMethod)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OrderConfirmationMethod)]
+          // }
         },
         distanceAvailability: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          validate: {
-            isIn: [Object.values(OrderDistanceAvailability)]
-          }
+          // validate: {
+          //   isIn: [Object.values(OrderDistanceAvailability)]
+          // }
         },
         startsAt: {
           type: DataTypes.DATE,

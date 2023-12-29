@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { OrderConfirmationMethod, OrderDistanceAvailability, OrderPaymentMethod } from '@m-cafe-app/shared-constants';
+// import { OrderConfirmationMethod, OrderDistanceAvailability, OrderPaymentMethod } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -41,25 +41,25 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false,
     },
     payment_method: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(OrderPaymentMethod)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OrderPaymentMethod)]
+      // }
     },
     confirmation_method: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(OrderConfirmationMethod)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OrderConfirmationMethod)]
+      // }
     },
     distance_availability: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(OrderDistanceAvailability)]
-      }
+      // validate: {
+      //   isIn: [Object.values(OrderDistanceAvailability)]
+      // }
     },
     starts_at: {
       type: DataTypes.DATE,

@@ -33,12 +33,12 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       }
     },
     rights: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      defaultValue: 'customer',
-      validate: {
-        isIn: [Object.values(UserRights)]
-      }
+      defaultValue: UserRights.Customer,
+      // validate: {
+      //   isIn: [Object.values(UserRights)]
+      // }
     },
     lookup_hash: {
       type: DataTypes.STRING,

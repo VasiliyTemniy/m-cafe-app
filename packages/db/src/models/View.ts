@@ -34,11 +34,11 @@ export const initViewModel = async (dbInstance: Sequelize) => {
           allowNull: false,
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(ViewParentType)],
-          }
+          // validate: {
+          //   isIn: [Object.values(ViewParentType)],
+          // }
         },
         count: {
           type: DataTypes.INTEGER,

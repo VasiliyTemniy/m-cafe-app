@@ -3,7 +3,7 @@ import { DataTypes } from 'sequelize';
 import {
   productRatingLowest,
   productRatingHighest,
-  ReviewParentType
+  // ReviewParentType
 } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -14,11 +14,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       autoIncrement: true
     },
     parent_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(ReviewParentType)]
-      },
+      // validate: {
+      //   isIn: [Object.values(ReviewParentType)]
+      // },
       unique: 'review_unique'
     },
     parent_id: {

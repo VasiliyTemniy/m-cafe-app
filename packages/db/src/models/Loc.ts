@@ -46,12 +46,12 @@ export const initLocModel = async (dbInstance: Sequelize) => {
           onDelete: 'CASCADE'
         },
         locType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           primaryKey: true,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(LocType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(LocType)]
+          // }
         },
         parentId: {
           type: DataTypes.INTEGER,
@@ -59,12 +59,12 @@ export const initLocModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           primaryKey: true,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(LocParentType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(LocParentType)]
+          // }
         },
         createdAt: {
           type: DataTypes.DATE,

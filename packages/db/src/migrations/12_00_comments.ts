@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import { CommentParentType } from '@m-cafe-app/shared-constants';
+// import { CommentParentType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('comments', {
@@ -18,11 +18,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false
     },
     parent_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(CommentParentType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(CommentParentType)]
+      // }
     },
     order_number: {
       type: DataTypes.INTEGER,

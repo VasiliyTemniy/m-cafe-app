@@ -25,20 +25,20 @@ export const initCoverageModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           primaryKey: true,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(CoverageParentType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(CoverageParentType)]
+          // }
         },
         entityType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           primaryKey: true,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(CoverageEntityType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(CoverageEntityType)]
+          // }
         },
         entityId: {
           type: DataTypes.INTEGER,

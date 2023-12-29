@@ -72,11 +72,11 @@ export const initStockModel = async (dbInstance: Sequelize) => {
           unique: 'unique_stock'
         },
         entityType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(StockEntityType)]
-          },
+          // validate: {
+          //   isIn: [Object.values(StockEntityType)]
+          // },
           unique: 'unique_stock'
         },
         quantity: {
@@ -84,11 +84,11 @@ export const initStockModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         status: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(StockStatus)]
-          },
+          // validate: {
+          //   isIn: [Object.values(StockStatus)]
+          // },
           unique: 'unique_stock'
         },
         createdAt: {

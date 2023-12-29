@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-import { ContactParentType, ContactTarget, ContactType } from '@m-cafe-app/shared-constants';
+// import { ContactParentType, ContactTarget, ContactType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('contacts', {
@@ -32,29 +32,29 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false
     },
     type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(ContactType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(ContactType)]
+      // }
     },
     target: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(ContactTarget)]
-      }
+      // validate: {
+      //   isIn: [Object.values(ContactTarget)]
+      // }
     },
     parent_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
     parent_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(ContactParentType)]
-      }
+      // validate: {
+      //   isIn: [Object.values(ContactParentType)]
+      // }
     },
     value: {
       type: DataTypes.STRING,

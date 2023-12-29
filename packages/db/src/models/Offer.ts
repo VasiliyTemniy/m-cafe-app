@@ -72,19 +72,19 @@ export const initOfferModel = async (dbInstance: Sequelize) => {
           unique: 'unique_offer'
         },
         type: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OfferType)],
-          },
+          // validate: {
+          //   isIn: [Object.values(OfferType)],
+          // },
           unique: 'unique_offer'
         },
         grantMethod: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(OfferGrantMethod)],
-          },
+          // validate: {
+          //   isIn: [Object.values(OfferGrantMethod)],
+          // },
         },
         name: {
           type: DataTypes.STRING,

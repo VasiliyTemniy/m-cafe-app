@@ -7,7 +7,15 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { ContactParentType, DetailGroupParentType, FacilityType, LocParentType, LocType, PictureParentType, ReviewParentType } from '@m-cafe-app/shared-constants';
+import {
+  ContactParentType,
+  DetailGroupParentType,
+  FacilityType,
+  LocParentType,
+  LocType,
+  PictureParentType,
+  ReviewParentType
+} from '@m-cafe-app/shared-constants';
 import { Order } from './Order.js';
 import { Address } from './Address.js';
 import { Loc } from './Loc.js';
@@ -27,7 +35,7 @@ export class Facility extends Model<InferAttributes<Facility>, InferCreationAttr
   declare createdBy: ForeignKey<User['id']>;
   declare updatedBy: ForeignKey<User['id']>;
   declare addressId: ForeignKey<Address['id']>;
-  declare facilityType: string;
+  declare facilityType: FacilityType;
   declare address?: NonAttribute<Address>;  
   declare nameLocs?: NonAttribute<Loc[]>;
   declare descriptionLocs?: NonAttribute<Loc[]>;
@@ -82,11 +90,11 @@ export const initFacilityModel = async (dbInstance: Sequelize) => {
         // name and description locs are referenced from locs table
         // contacts are referenced from contacts table
         facilityType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(FacilityType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(FacilityType)]
+          // }
         },
         createdAt: {
           type: DataTypes.DATE,

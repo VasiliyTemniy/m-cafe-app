@@ -85,12 +85,12 @@ export const initUserModel = async (dbInstance: Sequelize) => {
           }
         },
         rights: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          defaultValue: 'customer',
-          validate: {
-            isIn: [Object.values(UserRights)]
-          }
+          defaultValue: UserRights.Customer,
+          // validate: {
+          //   isIn: [Object.values(UserRights)]
+          // }
         },
         lookupHash: {
           type: DataTypes.STRING,

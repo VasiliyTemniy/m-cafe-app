@@ -53,11 +53,11 @@ export const initCommentModel = async (dbInstance: Sequelize) => {
           allowNull: false
         },
         parentType: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          validate: {
-            isIn: [Object.values(CommentParentType)]
-          }
+          // validate: {
+          //   isIn: [Object.values(CommentParentType)]
+          // }
         },
         orderNumber: {
           type: DataTypes.INTEGER,
