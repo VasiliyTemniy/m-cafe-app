@@ -268,25 +268,25 @@ export class DBHandler implements IDBHandler {
     const checkEnum = async (name: keyof typeof constants) => {
       const constant = constants[name];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      for (const key in constant as Record<string, any>) {
+      for (const key in constant as { [key: string]: any }) {
 
         const foundEnum = await this.models.FixedEnum.findOne({
           where: {
             name,
-            key
+            key: String(key)
           }
         });
       
         if (!foundEnum) {
           await this.models.FixedEnum.create({
             name,
-            key,
-            value: constant[key as keyof typeof constant]
+            key: String(key),
+            value: String(constant[key as keyof typeof constant])
           });
           return;
         }
 
-        if (foundEnum?.value !== constant[key as keyof typeof constant]) {
+        if (foundEnum.value !== String(constant[key as keyof typeof constant])) {
           throw new Error(`${name} enum value mismatch: ${foundEnum?.value} !== ${constant[key as keyof typeof constant]}`);
         }
       }
