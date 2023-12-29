@@ -18,6 +18,7 @@ import { User } from './User.js';
 export class ProductCategory extends Model<InferAttributes<ProductCategory>, InferCreationAttributes<ProductCategory>> {
   declare id: CreationOptional<number>;
   declare approvedBy: ForeignKey<User['id']> | null;
+  declare name: string;
   declare productTypeId: ForeignKey<ProductType['id']>;
   declare parentCategoryId: ForeignKey<ProductCategory['id']> | null;
   declare nestLevel: number;
@@ -50,6 +51,11 @@ export const initProductCategoryModel = (dbInstance: Sequelize) => {
           onDelete: 'RESTRICT'
         },
         // name and description locs are referenced from locs table
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false
+          // not unique to allow sub-categories to have the same name
+        },
         productTypeId: {
           type: DataTypes.INTEGER,
           allowNull: false,

@@ -16,6 +16,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onDelete: 'RESTRICT'
     },
     // name and description locs are referenced from locs table
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false

@@ -17,6 +17,7 @@ import { User } from './User.js';
 export class ProductType extends Model<InferAttributes<ProductType>, InferCreationAttributes<ProductType>> {
   declare id: CreationOptional<number>;
   declare approvedBy: ForeignKey<User['id']> | null;
+  declare name: string;
   declare nameLocs?: NonAttribute<Loc[]>;
   declare descriptionLocs?: NonAttribute<Loc[]>;
   declare categories?: NonAttribute<ProductCategory[]>;
@@ -44,6 +45,11 @@ export const initProductTypeModel = (dbInstance: Sequelize) => {
           onDelete: 'RESTRICT'
         },
         // name and description locs are referenced from locs table
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: true
+        },
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false

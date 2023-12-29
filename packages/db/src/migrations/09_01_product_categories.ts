@@ -16,6 +16,11 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onDelete: 'RESTRICT'
     },
     // name and description locs are referenced from locs table
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+      // not unique to allow sub-categories to have the same name
+    },
     product_type_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
