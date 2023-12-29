@@ -6,7 +6,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType, PictureParentType, ViewParentType } from '@m-cafe-app/shared-constants';
+import { LocParentType, LocType, PictureParentType, TagParentType, ViewParentType } from '@m-cafe-app/shared-constants';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { Loc } from './Loc.js';
 import { Ingredient } from './Ingredient.js';
@@ -16,6 +16,7 @@ import { Review } from './Review.js';
 import { User } from './User.js';
 import { DynamicModule } from './DynamicModule.js';
 import { View } from './View.js';
+import { Tag } from './Tag.js';
 
 
 export class Picture extends Model<InferAttributes<Picture>, InferCreationAttributes<Picture>> {
@@ -35,6 +36,7 @@ export class Picture extends Model<InferAttributes<Picture>, InferCreationAttrib
   declare user?: NonAttribute<User>;
   declare dynamicModule?: NonAttribute<DynamicModule>;
   declare views?: NonAttribute<View[]>;
+  declare tags?: NonAttribute<Tag[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -217,10 +219,20 @@ export const initPictureAssociations = async () => {
       });
 
       Picture.hasMany(View, {
-        foreignKey: 'entityId',
+        foreignKey: 'parentId',
         as: 'views',
         scope: {
-          entityType: ViewParentType.Picture
+          parentType: ViewParentType.Picture
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Picture.hasMany(Tag, {
+        foreignKey: 'parentId',
+        as: 'tags',
+        scope: {
+          parentType: TagParentType.Picture
         },
         constraints: false,
         foreignKeyConstraint: false

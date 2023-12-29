@@ -17,6 +17,7 @@ import {
   ReviewParentType,
   SizingEnum,
   StockEntityType,
+  TagParentType,
   ViewParentType,
   VolumeEnum
 } from '@m-cafe-app/shared-constants';
@@ -33,6 +34,7 @@ import { User } from './User.js';
 import { Organization } from './Organization.js';
 import { Currency } from './Currency.js';
 import { View } from './View.js';
+import { Tag } from './Tag.js';
 
 
 export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
@@ -82,6 +84,7 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;
   declare views?: NonAttribute<View[]>;
+  declare tags?: NonAttribute<Tag[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -413,10 +416,20 @@ export const initProductAssociations = async () => {
       });
 
       Product.hasMany(View, {
-        foreignKey: 'entityId',
+        foreignKey: 'parentId',
         as: 'views',
         scope: {
-          entityType: ViewParentType.Product
+          parentType: ViewParentType.Product
+        },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Product.hasMany(Tag, {
+        foreignKey: 'parentId',
+        as: 'tags',
+        scope: {
+          parentType: TagParentType.Product
         },
         constraints: false,
         foreignKeyConstraint: false
