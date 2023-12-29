@@ -6,14 +6,14 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import { Picture } from './Picture.js';
-import { ViewEntityType } from '@m-cafe-app/shared-constants';
+import { ViewParentType } from '@m-cafe-app/shared-constants';
 import { Product } from './Product.js';
 
 
 export class View extends Model<InferAttributes<View>, InferCreationAttributes<View>> {
   declare userIp: string;
-  declare entityId: number;
-  declare entityType: ViewEntityType;
+  declare parentId: number;
+  declare parentType: ViewParentType;
   declare count: number;
   declare product?: NonAttribute<Product>;
   declare picture?: NonAttribute<Picture>;
@@ -29,15 +29,15 @@ export const initViewModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           allowNull: false
         },
-        entityId: {
+        parentId: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        entityType: {
+        parentType: {
           type: DataTypes.STRING,
           allowNull: false,
           validate: {
-            isIn: [Object.values(ViewEntityType)],
+            isIn: [Object.values(ViewParentType)],
           }
         },
         count: {
@@ -64,22 +64,22 @@ export const initViewAssociations = async () => {
     try {
 
       View.belongsTo(Picture, {
-        foreignKey: 'entityId',
+        foreignKey: 'parentId',
         targetKey: 'id',
         as: 'picture',
         scope: {
-          entityType: ViewEntityType.Picture
+          parentType: ViewParentType.Picture
         },
         constraints: false,
         foreignKeyConstraint: false
       });
 
       View.belongsTo(Product, {
-        foreignKey: 'entityId',
+        foreignKey: 'parentId',
         targetKey: 'id',
         as: 'product',
         scope: {
-          entityType: ViewEntityType.Product
+          parentType: ViewParentType.Product
         },
         constraints: false,
         foreignKeyConstraint: false
