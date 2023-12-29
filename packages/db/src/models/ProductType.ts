@@ -3,21 +3,25 @@ import type {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  NonAttribute
+  NonAttribute,
+  ForeignKey
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
 import { Loc } from './Loc.js';
 import { ProductCategory } from './ProductCategory.js';
 import { Product } from './Product.js';
+import { User } from './User.js';
 
 
 export class ProductType extends Model<InferAttributes<ProductType>, InferCreationAttributes<ProductType>> {
   declare id: CreationOptional<number>;
+  declare approvedBy: ForeignKey<User['id']> | null;
   declare nameLocs?: NonAttribute<Loc[]>;
   declare descriptionLocs?: NonAttribute<Loc[]>;
   declare categories?: NonAttribute<ProductCategory[]>;
   declare products?: NonAttribute<Product[]>;
+  declare approvedByAppAdmin?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -31,6 +35,13 @@ export const initProductTypeModel = (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
+        },
+        approvedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         },
         // name and description locs are referenced from locs table
         createdAt: {
@@ -108,6 +119,11 @@ export const initProductTypeAssociations = async () => {
       ProductType.hasMany(Product, {
         foreignKey: 'productTypeId',
         as: 'products'
+      });
+
+      ProductType.belongsTo(User, {
+        foreignKey: 'approvedBy',
+        as: 'approvedByAppAdmin'
       });
 
       resolve();

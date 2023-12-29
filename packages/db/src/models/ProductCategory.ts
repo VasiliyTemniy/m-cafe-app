@@ -12,10 +12,12 @@ import { Loc } from './Loc.js';
 import { ProductType } from './ProductType.js';
 import { Product } from './Product.js';
 import { ProductCategoryReference } from './ProductCategoryReference.js';
+import { User } from './User.js';
 
 
 export class ProductCategory extends Model<InferAttributes<ProductCategory>, InferCreationAttributes<ProductCategory>> {
   declare id: CreationOptional<number>;
+  declare approvedBy: ForeignKey<User['id']> | null;
   declare productTypeId: ForeignKey<ProductType['id']>;
   declare parentCategoryId: ForeignKey<ProductCategory['id']> | null;
   declare nestLevel: number;
@@ -25,6 +27,7 @@ export class ProductCategory extends Model<InferAttributes<ProductCategory>, Inf
   declare parentCategory?: NonAttribute<ProductCategory>;
   declare childCategories?: NonAttribute<ProductCategory[]>;
   declare products?: NonAttribute<Product[]>;
+  declare approvedByAppAdmin?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -38,6 +41,13 @@ export const initProductCategoryModel = (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
+        },
+        approvedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         },
         // name and description locs are referenced from locs table
         productTypeId: {
@@ -153,6 +163,12 @@ export const initProductCategoryAssociations = async () => {
         foreignKey: 'productCategoryId',
         otherKey: 'productId',
         as: 'products'
+      });
+
+      ProductCategory.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'approvedBy',
+        as: 'approvedByAppAdmin'
       });
 
       resolve();
