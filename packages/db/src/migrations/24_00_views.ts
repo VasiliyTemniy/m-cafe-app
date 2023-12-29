@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { ViewEntityType } from '@m-cafe-app/shared-constants';
+import { ViewParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -8,15 +8,15 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    entity_id: {
+    parent_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    entity_type: {
+    parent_type: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isIn: [Object.values(ViewEntityType)],
+        isIn: [Object.values(ViewParentType)],
       }
     },
     count: {
@@ -33,7 +33,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
   if (!constraintCheck[0]) {
     await queryInterface.addConstraint('views', {
       fields: [
-        'user_ip', 'entity_id', 'entity_type'
+        'user_ip', 'parent_id', 'parent_type'
       ],
       type: 'primary key',
       name: 'views_pkey'

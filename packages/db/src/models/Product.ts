@@ -17,7 +17,7 @@ import {
   ReviewParentType,
   SizingEnum,
   StockEntityType,
-  ViewEntityType,
+  ViewParentType,
   VolumeEnum
 } from '@m-cafe-app/shared-constants';
 import { ProductType } from './ProductType.js';
@@ -416,7 +416,7 @@ export const initProductAssociations = async () => {
         foreignKey: 'entityId',
         as: 'views',
         scope: {
-          entityType: ViewEntityType.Product
+          entityType: ViewParentType.Product
         },
         constraints: false,
         foreignKeyConstraint: false

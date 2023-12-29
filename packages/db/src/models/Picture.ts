@@ -6,7 +6,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType, PictureParentType, ViewEntityType } from '@m-cafe-app/shared-constants';
+import { LocParentType, LocType, PictureParentType, ViewParentType } from '@m-cafe-app/shared-constants';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { Loc } from './Loc.js';
 import { Ingredient } from './Ingredient.js';
@@ -220,7 +220,7 @@ export const initPictureAssociations = async () => {
         foreignKey: 'entityId',
         as: 'views',
         scope: {
-          entityType: ViewEntityType.Picture
+          entityType: ViewParentType.Picture
         },
         constraints: false,
         foreignKeyConstraint: false
