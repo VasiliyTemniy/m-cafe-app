@@ -39,9 +39,15 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'RESTRICT'
     },
+    // Price is stored as real_price * CurrencyDecimalMultiplier;
+    // BIGINT to prevent overflows;
+    // Validate for less than 9,000,000,000,000,000 to prevent JS 'number' type overflow
     price: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      validate: {
+        max: 9000000000000000
+      }
     },
     currency_id: {
       type: DataTypes.INTEGER,
