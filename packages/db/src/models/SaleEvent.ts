@@ -6,11 +6,10 @@ import type {
   NonAttribute,
   ForeignKey
 } from 'sequelize';
-import { CoverageParentType, LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { CoverageParentType, CurrencyCode, LocParentType, LocType, isCurrencyCode } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Organization } from './Organization.js';
 import { User } from './User.js';
-import { Currency } from './Currency.js';
 import { Coverage } from './Coverage.js';
 import { Loc } from './Loc.js';
 
@@ -23,7 +22,7 @@ export class SaleEvent extends Model<InferAttributes<SaleEvent>, InferCreationAt
   declare discount: number;
   declare usedCount: number;
   declare accumulatedPriceCut: number;
-  declare currencyId: ForeignKey<Currency['id']>;
+  declare currencyCode: CurrencyCode;
   declare isActive: boolean;
   declare startsAt: Date | null;
   declare endsAt: Date | null;
@@ -85,12 +84,16 @@ export const initSaleEventModel = async (dbInstance: Sequelize) => {
           allowNull: false,
           defaultValue: 0
         },
-        currencyId: {
-          type: DataTypes.INTEGER,
+        currencyCode: {
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          references: { model: 'currencies', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
+          validate: {
+            isCurrencyCodeValidator(value: unknown) {
+              if (!isCurrencyCode(value)) {
+                throw new Error(`Invalid currency code: ${value}`);
+              }
+            }
+          }
         },
         isActive: {
           type: DataTypes.BOOLEAN,
@@ -148,12 +151,6 @@ export const initSaleEventAssociations = async () => {
         targetKey: 'id',
         foreignKey: 'updatedBy',
         as: 'updatedByAuthor',
-      });
-
-      SaleEvent.belongsTo(Currency, {
-        targetKey: 'id',
-        foreignKey: 'currencyId',
-        as: 'currency',
       });
       
       SaleEvent.hasMany(Coverage, {

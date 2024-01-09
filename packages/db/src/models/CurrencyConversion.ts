@@ -2,20 +2,16 @@ import type {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  NonAttribute,
-  ForeignKey,
   Sequelize
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { Currency } from './Currency.js';
+import { CurrencyCode, isCurrencyCode } from '@m-cafe-app/shared-constants';
 
 
 export class CurrencyConversion extends Model<InferAttributes<CurrencyConversion>, InferCreationAttributes<CurrencyConversion>> {
-  declare sourceId: ForeignKey<Currency['id']>;
-  declare targetId: ForeignKey<Currency['id']>;
+  declare sourceCurrencyCode: CurrencyCode;
+  declare targetCurrencyCode: CurrencyCode;
   declare rate: number;
-  declare sourceCurrency?: NonAttribute<Currency>;
-  declare targetCurrency?: NonAttribute<Currency>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -25,21 +21,27 @@ export const initCurrencyConversionModel = async (dbInstance: Sequelize) => {
   return new Promise<void>((resolve, reject) => {
     try {
       CurrencyConversion.init({
-        sourceId: {
-          type: DataTypes.INTEGER,
+        sourceCurrencyCode: {
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          primaryKey: true,
-          references: { model: 'currencies', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+          validate: {
+            isCurrencyCodeValidator(value: unknown) {
+              if (!isCurrencyCode(value)) {
+                throw new Error(`Invalid currency code: ${value}`);
+              }
+            }
+          }
         },
-        targetId: {
-          type: DataTypes.INTEGER,
+        targetCurrencyCode: {
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          primaryKey: true,
-          references: { model: 'currencies', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+          validate: {
+            isCurrencyCodeValidator(value: unknown) {
+              if (!isCurrencyCode(value)) {
+                throw new Error(`Invalid currency code: ${value}`);
+              }
+            }
+          }
         },
         rate: {
           type: DataTypes.DOUBLE,
@@ -85,17 +87,7 @@ export const initCurrencyConversionAssociations = async () => {
   return new Promise<void>((resolve, reject) => {
     try {
 
-      CurrencyConversion.belongsTo(Currency, {
-        foreignKey: 'sourceId',
-        targetKey: 'id',
-        as: 'sourceCurrency'
-      });
-
-      CurrencyConversion.belongsTo(Currency, {
-        foreignKey: 'targetId',
-        targetKey: 'id',
-        as: 'targetCurrency'
-      });
+      // Placeholder
 
       resolve();
     } catch (err) {

@@ -8,6 +8,7 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import {
+  CurrencyCode,
   DetailGroupParentType,
   LocParentType,
   LocType,
@@ -20,6 +21,7 @@ import {
   TagParentType,
   ViewParentType,
   VolumeMeasure,
+  isCurrencyCode,
   isMassMeasure,
   isPriceCutPermission,
   isSizingMeasure,
@@ -36,7 +38,6 @@ import { Stock } from './Stock.js';
 import { DetailGroup } from './DetailGroup.js';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
-import { Currency } from './Currency.js';
 import { View } from './View.js';
 import { Tag } from './Tag.js';
 
@@ -48,7 +49,7 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   declare updatedBy: ForeignKey<User['id']>;
   declare productTypeId: ForeignKey<ProductType['id']>;
   declare price: number;
-  declare currencyId: ForeignKey<Currency['id']>;
+  declare currencyCode: CurrencyCode;
   declare priceCutPermissions: PriceCutPermission;
   declare displayPriority: number;
   declare isFeatured: boolean;
@@ -82,7 +83,6 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   declare pictures?: NonAttribute<Picture[]>;
   declare reviews?: NonAttribute<Review[]>;
   declare categories?: NonAttribute<ProductCategory[]>;
-  declare currency?: NonAttribute<Currency>;
   declare detailGroups?: NonAttribute<DetailGroup[]>;
   declare organization?: NonAttribute<Organization>;
   declare createdByAuthor?: NonAttribute<User>;
@@ -142,12 +142,16 @@ export const initProductModel = (dbInstance: Sequelize) => {
             max: 9000000000000000
           }
         },
-        currencyId: {
-          type: DataTypes.INTEGER,
+        currencyCode: {
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          references: { model: 'currencies', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
+          validate: {
+            isCurrencyCodeValidator(value: unknown) {
+              if (!isCurrencyCode(value)) {
+                throw new Error(`Invalid currency code: ${value}`);
+              }
+            }
+          }
         },
         priceCutPermissions: {
           type: DataTypes.SMALLINT,
@@ -433,12 +437,6 @@ export const initProductAssociations = async () => {
         targetKey: 'id',
         foreignKey: 'updatedBy',
         as: 'updatedByAuthor',
-      });
-
-      Product.belongsTo(Currency, {
-        targetKey: 'id',
-        foreignKey: 'currencyId',
-        as: 'currency',
       });
 
       Product.hasMany(View, {

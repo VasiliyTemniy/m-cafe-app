@@ -7,10 +7,9 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { OfferType, OfferGrantMethod, isOfferType, isOfferGrantMethod } from '@m-cafe-app/shared-constants';
+import { OfferType, OfferGrantMethod, isOfferType, isOfferGrantMethod, isCurrencyCode, CurrencyCode } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
-import { Currency } from './Currency.js';
 import { OfferBonus } from './OfferBonus.js';
 
 
@@ -27,7 +26,7 @@ export class Offer extends Model<InferAttributes<Offer>, InferCreationAttributes
   declare bonusToCurrencyRate: number;
   declare bonusGainMultiplier: number;
   declare deliveryFreeThreshold: number;
-  declare currencyId: ForeignKey<Currency['id']>;
+  declare currencyCode: CurrencyCode;
   declare lastUsedAt: Date;
   declare availableAt: Date;
   declare unusedToDeactivateDiscountMs: number | null;
@@ -35,7 +34,6 @@ export class Offer extends Model<InferAttributes<Offer>, InferCreationAttributes
   declare bonusAvailableAtDelayMs: number | null;
   declare grantedBy: ForeignKey<User['id']> | null;
   declare updatedBy: ForeignKey<User['id']> | null;
-  declare currency?: NonAttribute<Currency>;
   declare organization?: NonAttribute<Organization>;
   declare user?: NonAttribute<User>;
   declare grantedByManager?: NonAttribute<User>;
@@ -126,12 +124,16 @@ export const initOfferModel = async (dbInstance: Sequelize) => {
           allowNull: false,
           defaultValue: 0,
         },
-        currencyId: {
-          type: DataTypes.INTEGER,
+        currencyCode: {
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          references: { model: 'currencies', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
+          validate: {
+            isCurrencyCodeValidator(value: unknown) {
+              if (!isCurrencyCode(value)) {
+                throw new Error(`Invalid currency code: ${value}`);
+              }
+            }
+          }
         },
         lastUsedAt: {
           type: DataTypes.DATE,
@@ -234,12 +236,6 @@ export const initOfferAssociations = async () => {
         targetKey: 'id',
         foreignKey: 'updatedBy',
         as: 'updatedByManager',
-      });
-      
-      Offer.belongsTo(Currency, {
-        targetKey: 'id',
-        foreignKey: 'currencyId',
-        as: 'currency',
       });
 
       Offer.hasMany(OfferBonus, {

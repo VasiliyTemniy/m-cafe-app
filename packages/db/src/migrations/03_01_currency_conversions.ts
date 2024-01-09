@@ -1,21 +1,30 @@
+import { isCurrencyCode } from '@m-cafe-app/shared-constants';
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('currency_conversions', {
-    source_id: {
-      type: DataTypes.INTEGER,
+    source_currency_code: {
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      references: { model: 'currencies', key: 'id' },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      validate: {
+        isCurrencyCodeValidator(value: unknown) {
+          if (!isCurrencyCode(value)) {
+            throw new Error(`Invalid currency code: ${value}`);
+          }
+        }
+      }
     },
-    target_id: {
-      type: DataTypes.INTEGER,
+    target_currency_code: {
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      references: { model: 'currencies', key: 'id' },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+      validate: {
+        isCurrencyCodeValidator(value: unknown) {
+          if (!isCurrencyCode(value)) {
+            throw new Error(`Invalid currency code: ${value}`);
+          }
+        }
+      }
     },
     rate: {
       type: DataTypes.DOUBLE,

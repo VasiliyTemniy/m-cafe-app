@@ -1,5 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import {
+  isCurrencyCode,
   isMassMeasure,
   isOrderDeliveryType,
   isOrderPaymentMethod,
@@ -74,12 +75,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    currency_id: {
-      type: DataTypes.INTEGER,
+    currency_code: {
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      references: { model: 'currencies', key: 'id' },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      validate: {
+        isCurrencyCodeValidator(value: unknown) {
+          if (!isCurrencyCode(value)) {
+            throw new Error(`Invalid currency code: ${value}`);
+          }
+        }
+      }
     },
     archive_address: {
       type: DataTypes.STRING,

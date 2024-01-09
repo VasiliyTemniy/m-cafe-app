@@ -6,20 +6,18 @@ import type {
   ForeignKey,
   CreationOptional
 } from 'sequelize';
-import { LocParentType, LocType, isLocParentType, isLocType } from '@m-cafe-app/shared-constants';
+import { LanguageCode, LocParentType, LocType, isLanguageCode, isLocParentType, isLocType } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
-import { Language } from './Language.js';
 import { LocString } from './LocString.js';
 
 
 export class Loc extends Model<InferAttributes<Loc>, InferCreationAttributes<Loc>> {
   declare locId: ForeignKey<LocString['id']>;
-  declare languageId: ForeignKey<Language['id']>;
+  declare languageCode: LanguageCode;
   declare locType: LocType;
   declare parentId: number;
   declare parentType: LocParentType;
   declare locString?: NonAttribute<LocString>;
-  declare language?: NonAttribute<Language>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -37,13 +35,17 @@ export const initLocModel = async (dbInstance: Sequelize) => {
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
         },
-        languageId: {
-          type: DataTypes.INTEGER,
+        languageCode: {
+          type: DataTypes.SMALLINT,
           primaryKey: true,
-          references: { model: 'languages', key: 'id' },
           allowNull: false,
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+          validate: {
+            isLanguageCodeValidator(value: unknown) {
+              if (!isLanguageCode(value)) {
+                throw new Error(`Invalid language code: ${value}`);
+              }
+            }
+          }
         },
         locType: {
           type: DataTypes.SMALLINT,
@@ -113,12 +115,6 @@ export const initLocModel = async (dbInstance: Sequelize) => {
 export const initLocAssociations = async () => {
   return new Promise<void>((resolve, reject) => {
     try {
-
-      Loc.belongsTo(Language, {
-        targetKey: 'id',
-        foreignKey: 'locId',
-        as: 'loc'
-      });
 
       Loc.belongsTo(LocString, {
         targetKey: 'id',

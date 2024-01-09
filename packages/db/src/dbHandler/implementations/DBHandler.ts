@@ -146,11 +146,9 @@ export class DBHandler implements IDBHandler {
     }
 
     await this.models.initAddressModel(this.dbInstance);
-    await this.models.initLanguageModel(this.dbInstance);
     await this.models.initLocStringModel(this.dbInstance);
     await this.models.initLocModel(this.dbInstance);
     await this.models.initFixedLocModel(this.dbInstance);
-    await this.models.initCurrencyModel(this.dbInstance);
     await this.models.initCurrencyConversionModel(this.dbInstance);
     await this.models.initPictureModel(this.dbInstance);
     await this.models.initUserModel(this.dbInstance);
@@ -187,6 +185,7 @@ export class DBHandler implements IDBHandler {
     await this.models.initSaleEventModel(this.dbInstance);
     await this.models.initPromoEventModel(this.dbInstance);
     await this.models.initPromoEventCodeModel(this.dbInstance);
+    await this.models.initPromoEventCodeUsageModel(this.dbInstance);
     await this.models.initApiRequestModel(this.dbInstance);
     await this.models.initApiRequestHeaderModel(this.dbInstance);
     await this.models.initApiRequestParamModel(this.dbInstance);
@@ -204,11 +203,9 @@ export class DBHandler implements IDBHandler {
     await this.models.initFixedEnumModel(this.dbInstance);
 
     await this.models.initAddressAssociations();
-    await this.models.initLanguageAssociations();
     await this.models.initLocStringAssociations();
     await this.models.initLocAssociations();
     await this.models.initFixedLocAssociations();
-    await this.models.initCurrencyAssociations();
     await this.models.initCurrencyConversionAssociations();
     await this.models.initPictureAssociations();
     await this.models.initUserAssociations();
@@ -238,6 +235,7 @@ export class DBHandler implements IDBHandler {
     await this.models.initSaleEventAssociations();
     await this.models.initPromoEventAssociations();
     await this.models.initPromoEventCodeAssociations();
+    await this.models.initPromoEventCodeUsageAssociations();
     await this.models.initApiRequestAssociations();
     await this.models.initApiRequestHeaderAssociations();
     await this.models.initApiRequestParamAssociations();
@@ -263,7 +261,7 @@ export class DBHandler implements IDBHandler {
     await this.models.initUserScopes();
   }
 
-  private async initFixedEnums(): Promise<void> {
+  async initFixedEnums(): Promise<void> {
     
     const checkEnum = async (name: keyof typeof constants) => {
       const constant = constants[name];
@@ -292,6 +290,10 @@ export class DBHandler implements IDBHandler {
       }
     };
 
+    await checkEnum('LanguageCode');
+    await checkEnum('CurrencyCode');
+    // Currency decimal multiplier is not an actual ts enum, but a special case
+    await checkEnum('CurrencyDecimalMultiplier');
     await checkEnum('LocType');
     await checkEnum('LocParentType');
     await checkEnum('FixedLocScope');
@@ -309,9 +311,9 @@ export class DBHandler implements IDBHandler {
     await checkEnum('OrderDistanceAvailability');
     await checkEnum('OrderConfirmationMethod');
     await checkEnum('DeliveryCostCalculationType');
-    await checkEnum('MassEnum');
-    await checkEnum('SizingEnum');
-    await checkEnum('VolumeEnum');
+    await checkEnum('MassMeasure');
+    await checkEnum('SizingMeasure');
+    await checkEnum('VolumeMeasure');
     await checkEnum('PermissionTarget');
     await checkEnum('PermissionAccess');
     await checkEnum('PermissionAction');

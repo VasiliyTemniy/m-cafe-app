@@ -6,14 +6,20 @@ import type {
   NonAttribute,
   ForeignKey,
 } from 'sequelize';
-import { LocParentType, LocType, PictureParentType, StockEntityType } from '@m-cafe-app/shared-constants';
+import {
+  CurrencyCode,
+  LocParentType,
+  LocType,
+  PictureParentType,
+  StockEntityType,
+  isCurrencyCode
+} from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Loc } from './Loc.js';
 import { Stock } from './Stock.js';
 import { Picture } from './Picture.js';
 import { Organization } from './Organization.js';
 import { User } from './User.js';
-import { Currency } from './Currency.js';
 
 
 export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreationAttributes<Ingredient>> {
@@ -22,7 +28,7 @@ export class Ingredient extends Model<InferAttributes<Ingredient>, InferCreation
   declare createdBy: ForeignKey<User['id']>;
   declare updatedBy: ForeignKey<User['id']>;
   declare price: number | null;
-  declare currencyId: ForeignKey<Currency['id']> | null;
+  declare currencyCode: CurrencyCode | null;
   declare unitMass: number | null;
   declare unitVolume: number | null;
   declare proteins: number | null;
@@ -73,12 +79,16 @@ export const initIngredientModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           allowNull: true
         },
-        currencyId: {
-          type: DataTypes.INTEGER,
+        currencyCode: {
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          references: { model: 'currencies', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'SET NULL'
+          validate: {
+            isCurrencyCodeValidator(value: unknown) {
+              if (!isCurrencyCode(value)) {
+                throw new Error(`Invalid currency code: ${value}`);
+              }
+            }
+          }
         },
         unitMass: {
           type: DataTypes.INTEGER,

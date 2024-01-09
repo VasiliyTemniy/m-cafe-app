@@ -1,4 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
+import { isCurrencyCode } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -39,12 +40,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false,
       defaultValue: 0
     },
-    currency_id: {
-      type: DataTypes.INTEGER,
+    currency_code: {
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      references: { model: 'currencies', key: 'id' },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
+      validate: {
+        isCurrencyCodeValidator(value: unknown) {
+          if (!isCurrencyCode(value)) {
+            throw new Error(`Invalid currency code: ${value}`);
+          }
+        }
+      }
     },
     is_active: {
       type: DataTypes.BOOLEAN,

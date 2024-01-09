@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-import { isLocType, isLocParentType } from '@m-cafe-app/shared-constants';
+import { isLocType, isLocParentType, isLanguageCode } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('locs', {
@@ -11,13 +11,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    language_id: {
-      type: DataTypes.INTEGER,
-      references: { model: 'languages', key: 'id' },
+    language_code: {
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-      unique: 'unique_loc'
+      validate: {
+        isLanguageCodeValidator(value: unknown) {
+          if (!isLanguageCode(value)) {
+            throw new Error(`Invalid language code: ${value}`);
+          }
+        }
+      }
     },
     loc_type: {
       type: DataTypes.SMALLINT,
@@ -63,7 +66,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
   if (!constraintCheck[0]) {
     await queryInterface.addConstraint('locs', {
       fields: [
-        'loc_id', 'language_id', 'loc_type', 'parent_id', 'parent_type'
+        'loc_id', 'language_code', 'loc_type', 'parent_id', 'parent_type'
       ],
       type: 'primary key',
       name: 'locs_pkey'

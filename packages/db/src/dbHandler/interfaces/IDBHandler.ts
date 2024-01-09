@@ -10,4 +10,5 @@ export interface IDBHandler {
   loadMigrations(): Promise<void>;
   runMigrations(): Promise<void>;
   rollbackMigration(): Promise<void>;
+  initFixedEnums(): Promise<void>;
 }

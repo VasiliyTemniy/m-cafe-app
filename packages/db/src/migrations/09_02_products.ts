@@ -1,6 +1,7 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import {
   PriceCutPermission,
+  isCurrencyCode,
   isMassMeasure,
   isPriceCutPermission,
   isSizingMeasure,
@@ -54,12 +55,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
         max: 9000000000000000
       }
     },
-    currency_id: {
-      type: DataTypes.INTEGER,
+    currency_code: {
+      type: DataTypes.SMALLINT,
       allowNull: false,
-      references: { model: 'currencies', key: 'id' },
-      onUpdate: 'CASCADE',
-      onDelete: 'RESTRICT'
+      validate: {
+        isCurrencyCodeValidator(value: unknown) {
+          if (!isCurrencyCode(value)) {
+            throw new Error(`Invalid currency code: ${value}`);
+          }
+        }
+      }
     },
     price_cut_permissions: {
       type: DataTypes.SMALLINT,

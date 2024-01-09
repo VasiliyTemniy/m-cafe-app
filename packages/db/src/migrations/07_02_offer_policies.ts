@@ -1,5 +1,10 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { isOfferCodeGenerationMethod, isOfferGrantMethod, isOfferType } from '@m-cafe-app/shared-constants';
+import {
+  isCurrencyCode,
+  isOfferCodeGenerationMethod,
+  isOfferGrantMethod,
+  isOfferType
+} from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -119,12 +124,16 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    set_offer_currency_id: {
-      type: DataTypes.INTEGER,
+    set_offer_currency_code: {
+      type: DataTypes.SMALLINT,
       allowNull: true,
-      references: { model: 'currencies', key: 'id' },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
+      validate: {
+        isCurrencyCodeValidator(value: unknown) {
+          if (!isCurrencyCode(value)) {
+            throw new Error(`Invalid currency code: ${value}`);
+          }
+        }
+      }
     },
     set_offer_available_at_delay_ms: {
       type: DataTypes.INTEGER,

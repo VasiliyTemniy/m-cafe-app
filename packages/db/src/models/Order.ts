@@ -9,6 +9,7 @@ import type {
 import { Model, DataTypes } from 'sequelize';
 import {
   CommentParentType,
+  CurrencyCode,
   MassMeasure,
   OrderDeliveryType,
   OrderPaymentMethod,
@@ -16,6 +17,7 @@ import {
   OrderStatus,
   ReviewParentType,
   SizingMeasure,
+  isCurrencyCode,
   isOrderDeliveryType,
   isOrderPaymentMethod,
   isOrderPaymentStatus,
@@ -29,7 +31,6 @@ import { OrderProduct } from './OrderProduct.js';
 import { OrderTracking } from './OrderTracking.js';
 import { Comment } from './Comment.js';
 import { Review } from './Review.js';
-import { Currency } from './Currency.js';
 
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
@@ -43,7 +44,7 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
   declare totalBonusCuts: number;
   declare totalBonusGains: number;
   declare deliveryCost: number;
-  declare currencyId: ForeignKey<Currency['id']>;
+  declare currencyCode: CurrencyCode;
   declare archiveAddress: string;
   declare customerName: string;
   declare customerPhonenumber: string;
@@ -63,7 +64,6 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
   declare trackingCode: string | null;
   declare user?: NonAttribute<User>;
   declare address?: NonAttribute<Address>;
-  declare currency?: NonAttribute<Currency>;
   declare orderProducts?: NonAttribute<OrderProduct[]>;
   declare facility?: NonAttribute<Facility>;
   declare tracking?: NonAttribute<OrderTracking[]>;
@@ -139,12 +139,16 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           allowNull: false
         },
-        currencyId: {
-          type: DataTypes.INTEGER,
+        currencyCode: {
+          type: DataTypes.SMALLINT,
           allowNull: false,
-          references: { model: 'currencies', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+          validate: {
+            isCurrencyCodeValidator(value: unknown) {
+              if (!isCurrencyCode(value)) {
+                throw new Error(`Invalid currency code: ${value}`);
+              }
+            }
+          }
         },
         archiveAddress: {
           type: DataTypes.STRING,
@@ -334,11 +338,6 @@ export const initOrderAssociations = async () => {
       Order.belongsTo(Address, {
         foreignKey: 'addressId',
         as: 'address'
-      });
-
-      Order.belongsTo(Currency, {
-        foreignKey: 'currencyId',
-        as: 'currency'
       });
 
       resolve();

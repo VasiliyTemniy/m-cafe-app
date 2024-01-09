@@ -9,16 +9,17 @@ import type {
 import { Model, DataTypes } from 'sequelize';
 import {
   CoverageParentType,
+  CurrencyCode,
   OfferCodeGenerationMethod,
   OfferGrantMethod,
   OfferType,
+  isCurrencyCode,
   isOfferCodeGenerationMethod,
   isOfferGrantMethod,
   isOfferType
 } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
-import { Currency } from './Currency.js';
 import { Coverage } from './Coverage.js';
 
 
@@ -43,7 +44,7 @@ export class OfferPolicy extends Model<InferAttributes<OfferPolicy>, InferCreati
   declare setBonusToCurrencyRate: number | null;
   declare setBonusExpiracyMs: number | null;
   declare setDeliveryFreeThreshold: number | null;
-  declare setOfferCurrencyId: ForeignKey<Currency['id']>;
+  declare setOfferCurrencyCode: CurrencyCode | null;
   declare setOfferAvailableAtDelayMs: number | null;
   declare setBonusAvailableAtDelayMs: number | null;
   declare isActive: boolean;
@@ -52,7 +53,6 @@ export class OfferPolicy extends Model<InferAttributes<OfferPolicy>, InferCreati
   declare organization?: NonAttribute<Organization>;
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;
-  declare setOfferCurrency?: NonAttribute<Currency>;
   declare coverages?: NonAttribute<Coverage[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -178,12 +178,16 @@ export const initOfferPolicyModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           allowNull: true,
         },
-        setOfferCurrencyId: {
-          type: DataTypes.INTEGER,
+        setOfferCurrencyCode: {
+          type: DataTypes.SMALLINT,
           allowNull: true,
-          references: { model: 'currencies', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
+          validate: {
+            isCurrencyCodeValidator(value: unknown) {
+              if (!isCurrencyCode(value)) {
+                throw new Error(`Invalid currency code: ${value}`);
+              }
+            }
+          }
         },
         setOfferAvailableAtDelayMs: {
           type: DataTypes.INTEGER,
@@ -249,12 +253,6 @@ export const initOfferPolicyAssociations = async () => {
         targetKey: 'id',
         foreignKey: 'updatedBy',
         as: 'updatedByAuthor',
-      });
-
-      OfferPolicy.belongsTo(Currency, {
-        targetKey: 'id',
-        foreignKey: 'setOfferCurrencyId',
-        as: 'setOfferCurrency',
       });
 
       OfferPolicy.hasMany(Coverage, {
