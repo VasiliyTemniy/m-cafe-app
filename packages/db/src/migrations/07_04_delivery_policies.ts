@@ -1,10 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import {
-//   DeliveryCostCalculationType,
-//   MassEnum,
-//   SizingEnum,
-//   VolumeEnum
-// } from '@m-cafe-app/shared-constants';
+import { isDeliveryCostCalculationType, isMassEnum, isSizingEnum, isVolumeEnum } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -48,9 +43,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     delivery_cost_calculation_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(DeliveryCostCalculationType)],
-      // }
+      validate: {
+        isDeliveryCostCalculationTypeValidator(value: unknown) {
+          if (!isDeliveryCostCalculationType(value)) {
+            throw new Error(`Invalid delivery cost calculation type: ${value}`);
+          }
+        }
+      },
     },
     fixed_cost_addon: {
       type: DataTypes.INTEGER,
@@ -67,9 +66,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     distance_step_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(SizingEnum)],
-      // }
+      validate: {
+        isSizingEnumValidator(value: unknown) {
+          if (!isSizingEnum(value)) {
+            throw new Error(`Invalid sizing measure: ${value}`);
+          }
+        }
+      },
     },
     mass_step_cost: {
       type: DataTypes.INTEGER,
@@ -82,9 +85,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     mass_step_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(MassEnum)],
-      // }
+      validate: {
+        isMassEnumValidator(value: unknown) {
+          if (!isMassEnum(value)) {
+            throw new Error(`Invalid mass measure: ${value}`);
+          }
+        }
+      },
     },
     volume_step_cost: {
       type: DataTypes.INTEGER,
@@ -97,9 +104,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     volume_step_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(VolumeEnum)],
-      // }
+      validate: {
+        isVolumeEnumValidator(value: unknown) {
+          if (!isVolumeEnum(value)) {
+            throw new Error(`Invalid volume measure: ${value}`);
+          }
+        }
+      },
     },
     starts_at: {
       type: DataTypes.DATE,

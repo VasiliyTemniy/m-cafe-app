@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { FixedLocScope } from '@m-cafe-app/shared-constants';
+import { isFixedLocScope } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -22,9 +22,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     scope: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(FixedLocScope)]
-      // },
+      validate: {
+        isFixedLocScopeValidator(value: unknown) {
+          if (!isFixedLocScope(value)) {
+            throw new Error(`Invalid fixed loc scope: ${value}`);
+          }
+        }
+      },
       unique: 'unique_fixed_loc'
     },
     // actual locs are referenced from locs table

@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { DetailGroupParentType, LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { DetailGroupParentType, LocParentType, LocType, isDetailGroupParentType } from '@m-cafe-app/shared-constants';
 import { Loc } from './Loc.js';
 import { User } from './User.js';
 import { Product } from './Product.js';
@@ -50,9 +50,13 @@ export const initDetailGroupModel = (dbInstance: Sequelize) => {
         parentType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(DetailGroupParentType)]
-          // }
+          validate: {
+            isDetailGroupParentTypeValidator(value: unknown) {
+              if (!isDetailGroupParentType(value)) {
+                throw new Error(`Invalid detail group parent type: ${value}`);
+              }
+            }
+          },
         },
         createdBy: {
           type: DataTypes.INTEGER,

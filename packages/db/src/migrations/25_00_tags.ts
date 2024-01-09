@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { TagParentType } from '@m-cafe-app/shared-constants';
+import { isTagParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -16,9 +16,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     parent_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(TagParentType)],
-      // }
+      validate: {
+        isTagParentTypeValidator(value: unknown) {
+          if (!isTagParentType(value)) {
+            throw new Error(`Invalid tag parent type: ${value}`);
+          }
+        }
+      },
     },
     // name locs are referenced from locs table
     name: {

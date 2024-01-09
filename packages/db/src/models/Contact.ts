@@ -6,7 +6,7 @@ import type {
   NonAttribute,
   ForeignKey
 } from 'sequelize';
-import { ContactParentType, ContactTarget, ContactType } from '@m-cafe-app/shared-constants';
+import { ContactParentType, ContactTarget, ContactType, isContactParentType, isContactTarget, isContactType } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { User } from './User.js';
 
@@ -63,16 +63,24 @@ export const initContactModel = async (dbInstance: Sequelize) => {
         type: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ContactType)]
-          // }
+          validate: {
+            isContactTypeValidator(value: unknown) {
+              if (!isContactType(value)) {
+                throw new Error(`Invalid contact type: ${value}`);
+              }
+            }
+          },
         },
         target: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ContactTarget)]
-          // }
+          validate: {
+            isContactTargetValidator(value: unknown) {
+              if (!isContactTarget(value)) {
+                throw new Error(`Invalid contact target: ${value}`);
+              }
+            }
+          },
         },
         parentId: {
           type: DataTypes.INTEGER,
@@ -81,9 +89,13 @@ export const initContactModel = async (dbInstance: Sequelize) => {
         parentType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ContactParentType)]
-          // }
+          validate: {
+            isContactParentTypeValidator(value: unknown) {
+              if (!isContactParentType(value)) {
+                throw new Error(`Invalid contact parent type: ${value}`);
+              }
+            }
+          },
         },
         value: {
           type: DataTypes.STRING,

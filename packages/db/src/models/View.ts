@@ -6,7 +6,7 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import { Picture } from './Picture.js';
-import { ViewParentType } from '@m-cafe-app/shared-constants';
+import { ViewParentType, isViewParentType } from '@m-cafe-app/shared-constants';
 import { Product } from './Product.js';
 
 
@@ -36,9 +36,13 @@ export const initViewModel = async (dbInstance: Sequelize) => {
         parentType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ViewParentType)],
-          // }
+          validate: {
+            isViewParentTypeValidator(value: unknown) {
+              if (!isViewParentType(value)) {
+                throw new Error(`Invalid view parent type: ${value}`);
+              }
+            }
+          },
         },
         count: {
           type: DataTypes.INTEGER,

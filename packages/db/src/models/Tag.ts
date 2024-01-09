@@ -6,7 +6,7 @@ import type {
   CreationOptional
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType, TagParentType } from '@m-cafe-app/shared-constants';
+import { LocParentType, LocType, TagParentType, isTagParentType } from '@m-cafe-app/shared-constants';
 import { Product } from './Product.js';
 import { Picture } from './Picture.js';
 import { Facility } from './Facility.js';
@@ -43,9 +43,13 @@ export const initTagModel = async (dbInstance: Sequelize) => {
         parentType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(TagParentType)],
-          // }
+          validate: {
+            isTagParentTypeValidator(value: unknown) {
+              if (!isTagParentType(value)) {
+                throw new Error(`Invalid tag parent type: ${value}`);
+              }
+            }
+          },
         },
         // name locs are referenced from locs table
         name: {

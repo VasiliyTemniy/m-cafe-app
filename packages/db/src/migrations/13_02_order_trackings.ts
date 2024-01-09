@@ -1,7 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-// import { MassEnum, OrderTrackingStatus } from '@m-cafe-app/shared-constants';
-import { OrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { OrderTrackingStatus, isMassEnum, isOrderTrackingStatus } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('order_trackings', {
@@ -22,9 +21,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     status: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(OrderTrackingStatus)]
-      // },
+      validate: {
+        isOrderTrackingStatusValidator(value: unknown) {
+          if (!isOrderTrackingStatus(value)) {
+            throw new Error(`Invalid order tracking status: ${value}`);
+          }
+        }
+      },
       defaultValue: OrderTrackingStatus.Acquired
     },
     point_number: {
@@ -46,9 +49,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     mass_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(MassEnum)]
-      // }
+      validate: {
+        isMassEnumValidator(value: unknown) {
+          if (!isMassEnum(value)) {
+            throw new Error(`Invalid mass measure: ${value}`);
+          }
+        }
+      },
     },
     delivered_at: {
       type: DataTypes.DATE,

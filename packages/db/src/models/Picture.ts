@@ -6,7 +6,14 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType, PictureParentType, TagParentType, ViewParentType } from '@m-cafe-app/shared-constants';
+import {
+  LocParentType,
+  LocType,
+  PictureParentType,
+  TagParentType,
+  ViewParentType,
+  isPictureParentType
+} from '@m-cafe-app/shared-constants';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { Loc } from './Loc.js';
 import { Ingredient } from './Ingredient.js';
@@ -64,9 +71,13 @@ export const initPictureModel = (dbInstance: Sequelize) => {
         parentType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(PictureParentType)]
-          // },
+          validate: {
+            isPictureParentTypeValidator(value: unknown) {
+              if (!isPictureParentType(value)) {
+                throw new Error(`Invalid picture parent type: ${value}`);
+              }
+            }
+          },
           unique: 'picture_unique'
         },
         orderNumber: {

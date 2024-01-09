@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes, Op } from 'sequelize';
-import { UiSettingComponentGroup, UiSettingTheme } from '@m-cafe-app/shared-constants';
+import { UiSettingComponentGroup, UiSettingTheme, isUiSettingComponentGroup, isUiSettingTheme } from '@m-cafe-app/shared-constants';
 import { Organization } from './Organization.js';
 import { User } from './User.js';
 
@@ -57,17 +57,25 @@ export const initUiSettingModel = async (dbInstance: Sequelize) => {
         group: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(UiSettingComponentGroup)]
-          // },
+          validate: {
+            isUiSettingGroupComponentValidator(value: unknown) {
+              if (!isUiSettingComponentGroup(value)) {
+                throw new Error(`Invalid ui setting component group: ${value}`);
+              }
+            }
+          },
           unique: 'unique_ui_setting'
         },
         theme: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(UiSettingTheme)]
-          // },
+          validate: {
+            isUiSettingThemeValidator(value: unknown) {
+              if (!isUiSettingTheme(value)) {
+                throw new Error(`Invalid ui setting theme: ${value}`);
+              }
+            }
+          },
           unique: 'unique_ui_setting'
         },
         value: {

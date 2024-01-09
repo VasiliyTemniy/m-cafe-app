@@ -8,7 +8,7 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import { ApiRequest } from './ApiRequest.js';
-import { ApiRequestTokenPlacement } from '@m-cafe-app/shared-constants';
+import { ApiRequestTokenPlacement, isApiRequestTokenPlacement } from '@m-cafe-app/shared-constants';
 
 // The only one api request table that does not need app admin approval
 
@@ -50,9 +50,13 @@ export const initApiRequestTokenModel = async (dbInstance: Sequelize) => {
         placement: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ApiRequestTokenPlacement)]
-          // }
+          validate: {
+            isApiRequestTokenPlacementValidator(value: unknown) {
+              if (!isApiRequestTokenPlacement(value)) {
+                throw new Error(`Invalid api request token placement: ${value}`);
+              }
+            }
+          },
         },
         // prefix example: 'Bearer ' with essential space in the end if there is one
         prefix: {

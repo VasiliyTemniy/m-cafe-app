@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { ViewParentType } from '@m-cafe-app/shared-constants';
+import { isViewParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -15,9 +15,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     parent_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ViewParentType)],
-      // }
+      validate: {
+        isViewParentTypeValidator(value: unknown) {
+          if (!isViewParentType(value)) {
+            throw new Error(`Invalid view parent type: ${value}`);
+          }
+        }
+      },
     },
     count: {
       type: DataTypes.INTEGER,

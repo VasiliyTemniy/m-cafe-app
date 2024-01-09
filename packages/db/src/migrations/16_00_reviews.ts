@@ -3,7 +3,7 @@ import { DataTypes } from 'sequelize';
 import {
   productRatingLowest,
   productRatingHighest,
-  // ReviewParentType
+  isReviewParentType,
 } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -16,9 +16,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     parent_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ReviewParentType)]
-      // },
+      validate: {
+        isReviewParentTypeValidator(value: unknown) {
+          if (!isReviewParentType(value)) {
+            throw new Error(`Invalid review parent type: ${value}`);
+          }
+        }
+      },
       unique: 'review_unique'
     },
     parent_id: {

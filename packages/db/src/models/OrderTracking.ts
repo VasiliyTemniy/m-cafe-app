@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { MassEnum, OrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { MassEnum, OrderTrackingStatus, isMassEnum, isOrderTrackingStatus } from '@m-cafe-app/shared-constants';
 import { Carrier } from './Carrier.js';
 import { Order } from './Order.js';
 import { Facility } from './Facility.js';
@@ -54,9 +54,13 @@ export const initOrderTrackingModel = async (dbInstance: Sequelize) => {
         status: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OrderTrackingStatus)]
-          // },
+          validate: {
+            isOrderTrackingStatusValidator(value: unknown) {
+              if (!isOrderTrackingStatus(value)) {
+                throw new Error(`Invalid order tracking status: ${value}`);
+              }
+            }
+          },
           defaultValue: OrderTrackingStatus.Acquired
         },
         pointNumber: {
@@ -79,9 +83,13 @@ export const initOrderTrackingModel = async (dbInstance: Sequelize) => {
         massMeasure: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(MassEnum)]
-          // }
+          validate: {
+            isMassEnumValidator(value: unknown) {
+              if (!isMassEnum(value)) {
+                throw new Error(`Invalid mass measure: ${value}`);
+              }
+            }
+          },
         },
         deliveredAt: {
           type: DataTypes.DATE,

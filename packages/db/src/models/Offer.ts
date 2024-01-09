@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { OfferType, OfferGrantMethod } from '@m-cafe-app/shared-constants';
+import { OfferType, OfferGrantMethod, isOfferType, isOfferGrantMethod } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
 import { Currency } from './Currency.js';
@@ -74,17 +74,25 @@ export const initOfferModel = async (dbInstance: Sequelize) => {
         type: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OfferType)],
-          // },
+          validate: {
+            isOfferTypeValidator(value: unknown) {
+              if (!isOfferType(value)) {
+                throw new Error(`Invalid offer type: ${value}`);
+              }
+            }
+          },
           unique: 'unique_offer'
         },
         grantMethod: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OfferGrantMethod)],
-          // },
+          validate: {
+            isOfferGrantMethodValidator(value: unknown) {
+              if (!isOfferGrantMethod(value)) {
+                throw new Error(`Invalid offer grant method: ${value}`);
+              }
+            }
+          },
         },
         name: {
           type: DataTypes.STRING,

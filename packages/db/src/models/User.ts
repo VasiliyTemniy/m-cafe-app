@@ -14,6 +14,7 @@ import {
   PictureParentType,
   UserRights,
   emailRegExp,
+  isUserRights,
   maxEmailLen,
   maxNameLen,
   maxPhonenumberLen,
@@ -88,9 +89,13 @@ export const initUserModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: false,
           defaultValue: UserRights.Customer,
-          // validate: {
-          //   isIn: [Object.values(UserRights)]
-          // }
+          validate: {
+            isUserRightsValidator(value: unknown) {
+              if (!isUserRights(value)) {
+                throw new Error(`Invalid user rights: ${value}`);
+              }
+            }
+          },
         },
         lookupHash: {
           type: DataTypes.STRING,

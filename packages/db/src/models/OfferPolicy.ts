@@ -7,7 +7,15 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { CoverageParentType, OfferCodeGenerationMethod, OfferGrantMethod, OfferType } from '@m-cafe-app/shared-constants';
+import {
+  CoverageParentType,
+  OfferCodeGenerationMethod,
+  OfferGrantMethod,
+  OfferType,
+  isOfferCodeGenerationMethod,
+  isOfferGrantMethod,
+  isOfferType
+} from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
 import { Currency } from './Currency.js';
@@ -104,23 +112,35 @@ export const initOfferPolicyModel = async (dbInstance: Sequelize) => {
         offerType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OfferType)]
-          // }
+          validate: {
+            isOfferTypeValidator(value: unknown) {
+              if (!isOfferType(value)) {
+                throw new Error(`Invalid offer type: ${value}`);
+              }
+            }
+          },
         },
         offerGrantMethod: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OfferGrantMethod)]
-          // }
+          validate: {
+            isOfferGrantMethodValidator(value: unknown) {
+              if (!isOfferGrantMethod(value)) {
+                throw new Error(`Invalid offer grant method: ${value}`);
+              }
+            }
+          },
         },
         offerCodeGenerationMethod: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OfferCodeGenerationMethod)]
-          // }
+          validate: {
+            isOfferCodeGenerationMethodValidator(value: unknown) {
+              if (!isOfferCodeGenerationMethod(value)) {
+                throw new Error(`Invalid offer code generation method: ${value}`);
+              }
+            }
+          },
         },
         setOfferName: {
           type: DataTypes.STRING,

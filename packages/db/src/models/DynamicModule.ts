@@ -12,7 +12,10 @@ import {
   DynamicModuleType,
   LocParentType,
   LocType,
-  PictureParentType
+  PictureParentType,
+  isDynamicModulePlacementType,
+  isDynamicModulePreset,
+  isDynamicModuleType
 } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Loc } from './Loc.js';
@@ -82,9 +85,13 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
         moduleType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(DynamicModuleType)]
-          // }
+          validate: {
+            isDynamicModuleTypeValidator(value: unknown) {
+              if (!isDynamicModuleType(value)) {
+                throw new Error(`Invalid dynamic module type: ${value}`);
+              }
+            }
+          },
         },
         placement: {
           type: DataTypes.INTEGER,
@@ -93,9 +100,13 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
         placementType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(DynamicModulePlacementType)]
-          // },
+          validate: {
+            isDynamicModulePlacementTypeValidator(value: unknown) {
+              if (!isDynamicModulePlacementType(value)) {
+                throw new Error(`Invalid dynamic module placement type: ${value}`);
+              }
+            }
+          },
           defaultValue: DynamicModulePlacementType.BeforeMenu,
         },
         nestLevel: {
@@ -106,9 +117,13 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
         preset: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(DynamicModulePreset)]
-          // }
+          validate: {
+            isDynamicModulePresetValidator(value: unknown) {
+              if (!isDynamicModulePreset(value)) {
+                throw new Error(`Invalid dynamic module preset: ${value}`);
+              }
+            }
+          },
         },
         className: {
           type: DataTypes.STRING,

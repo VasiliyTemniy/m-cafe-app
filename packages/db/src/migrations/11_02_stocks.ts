@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
+import { isStockEntityType, isStockStatus } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
-// import { StockEntityType, StockStatus } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('stocks', {
@@ -39,9 +39,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     entity_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(StockEntityType)]
-      // },
+      validate: {
+        isStockEntityTypeValidator(value: unknown) {
+          if (!isStockEntityType(value)) {
+            throw new Error(`Invalid stock entity type: ${value}`);
+          }
+        }
+      },
       unique: 'unique_stock'
     },
     quantity: {
@@ -51,9 +55,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     status: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(StockStatus)]
-      // },
+      validate: {
+        isStockStatusValidator(value: unknown) {
+          if (!isStockStatus(value)) {
+            throw new Error(`Invalid stock status: ${value}`);
+          }
+        }
+      },
       unique: 'unique_stock'
     },
     created_at: {

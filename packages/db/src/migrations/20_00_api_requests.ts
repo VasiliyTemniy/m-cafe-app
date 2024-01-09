@@ -1,5 +1,11 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { ApiRequestExpectedResponseDataPlacementKey, ApiRequestExpectedResponseDataType, ApiRequestMethod, ApiRequestProtocol, ApiRequestReason } from '@m-cafe-app/shared-constants';
+import {
+  isApiRequestExpectedResponseDataPlacementKey,
+  isApiRequestExpectedResponseDataType,
+  isApiRequestMethod,
+  isApiRequestProtocol,
+  isApiRequestReason
+} from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -44,9 +50,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     reason: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ApiRequestReason)]
-      // }
+      validate: {
+        isApiRequestReasonValidator(value: unknown) {
+          if (!isApiRequestReason(value)) {
+            throw new Error(`Invalid api request reason: ${value}`);
+          }
+        }
+      },
     },
     host: {
       type: DataTypes.STRING,
@@ -59,9 +69,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     method: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ApiRequestMethod)]
-      // }
+      validate: {
+        isApiRequestMethodValidator(value: unknown) {
+          if (!isApiRequestMethod(value)) {
+            throw new Error(`Invalid api request method: ${value}`);
+          }
+        }
+      },
     },
     // Path before query string - e.g. /api/v1/users
     path_before_query: {
@@ -75,16 +89,24 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     expected_response_data_placement_key: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ApiRequestExpectedResponseDataPlacementKey)]
-      // }
+      validate: {
+        isApiRequestExpectedResponseDataPlacementKeyValidator(value: unknown) {
+          if (!isApiRequestExpectedResponseDataPlacementKey(value)) {
+            throw new Error(`Invalid api request expected response data placement key: ${value}`);
+          }
+        }
+      },
     },
     expected_response_data_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ApiRequestExpectedResponseDataType)]
-      // }
+      validate: {
+        isApiRequestExpectedResponseDataTypeValidator(value: unknown) {
+          if (!isApiRequestExpectedResponseDataType(value)) {
+            throw new Error(`Invalid api request expected response data type: ${value}`);
+          }
+        }
+      },
     },
     // auth <string> Basic authentication ('user:password') to compute an Authorization header. (from NodeJS docs)
     auth: {
@@ -135,9 +157,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     protocol: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(ApiRequestProtocol)]
-      // }
+      validate: {
+        isApiRequestProtocolValidator(value: unknown) {
+          if (!isApiRequestProtocol(value)) {
+            throw new Error(`Invalid api request protocol: ${value}`);
+          }
+        }
+      },
     },
     // setHost <boolean>: Specifies whether or not to automatically add the Host header. Defaults to true. (from NodeJS docs)
     set_host: {

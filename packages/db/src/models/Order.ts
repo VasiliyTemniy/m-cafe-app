@@ -15,7 +15,12 @@ import {
   OrderPaymentStatus,
   OrderStatus,
   ReviewParentType,
-  SizingEnum
+  SizingEnum,
+  isOrderDeliveryType,
+  isOrderPaymentMethod,
+  isOrderPaymentStatus,
+  isOrderStatus,
+  isSizingEnum
 } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Address } from './Address.js';
@@ -95,16 +100,24 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
         deliveryType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OrderDeliveryType)]
-          // }
+          validate: {
+            isOrderDeliveryTypeValidator(value: unknown) {
+              if (!isOrderDeliveryType(value)) {
+                throw new Error(`Invalid order delivery type: ${value}`);
+              }
+            }
+          },
         },
         status: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OrderStatus)]
-          // },
+          validate: {
+            isOrderStatusValidator(value: unknown) {
+              if (!isOrderStatus(value)) {
+                throw new Error(`Invalid order status: ${value}`);
+              }
+            }
+          },
         },
         totalCost: {
           type: DataTypes.INTEGER,
@@ -148,16 +161,24 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
         paymentMethod: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OrderPaymentMethod)]
-          // }
+          validate: {
+            isOrderPaymentMethodValidator(value: unknown) {
+              if (!isOrderPaymentMethod(value)) {
+                throw new Error(`Invalid order payment method: ${value}`);
+              }
+            }
+          },
         },
         paymentStatus: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(OrderPaymentStatus)]
-          // }
+          validate: {
+            isOrderPaymentStatusValidator(value: unknown) {
+              if (!isOrderPaymentStatus(value)) {
+                throw new Error(`Invalid order payment status: ${value}`);
+              }
+            }
+          },
         },
         boxSizingX: {
           type: DataTypes.INTEGER,
@@ -174,9 +195,13 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
         sizingMeasure: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(SizingEnum)]
-          // }
+          validate: {
+            isSizingEnumValidator(value: unknown) {
+              if (!isSizingEnum(value)) {
+                throw new Error(`Invalid sizing measure: ${value}`);
+              }
+            }
+          },
         },
         userId: {
           type: DataTypes.INTEGER,

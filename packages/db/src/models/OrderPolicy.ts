@@ -11,7 +11,10 @@ import {
   CoverageParentType,
   OrderConfirmationMethod,
   OrderDistanceAvailability,
-  OrderPaymentMethod
+  OrderPaymentMethod,
+  isOrderConfirmationMethod,
+  isOrderDistanceAvailability,
+  isOrderPaymentMethod
 } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
@@ -83,23 +86,35 @@ export const initOrderPolicyModel = async (dbInstance: Sequelize) => {
         paymentMethod: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(OrderPaymentMethod)]
-          // }
+          validate: {
+            isOrderPaymentMethodValidator(value: unknown) {
+              if (!isOrderPaymentMethod(value)) {
+                throw new Error(`Invalid order payment method: ${value}`);
+              }
+            }
+          },
         },
         confirmationMethod: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(OrderConfirmationMethod)]
-          // }
+          validate: {
+            isOrderConfirmationMethodValidator(value: unknown) {
+              if (!isOrderConfirmationMethod(value)) {
+                throw new Error(`Invalid order confirmation method: ${value}`);
+              }
+            }
+          },
         },
         distanceAvailability: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(OrderDistanceAvailability)]
-          // }
+          validate: {
+            isOrderDistanceAvailabilityValidator(value: unknown) {
+              if (!isOrderDistanceAvailability(value)) {
+                throw new Error(`Invalid order distance availability: ${value}`);
+              }
+            }
+          },
         },
         startsAt: {
           type: DataTypes.DATE,

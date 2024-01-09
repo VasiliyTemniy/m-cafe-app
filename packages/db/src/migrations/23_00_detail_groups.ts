@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { DetailGroupParentType } from '@m-cafe-app/shared-constants';
+import { isDetailGroupParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -16,9 +16,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     parent_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(DetailGroupParentType)]
-      // }
+      validate: {
+        isDetailGroupParentTypeValidator(value: unknown) {
+          if (!isDetailGroupParentType(value)) {
+            throw new Error(`Invalid detail group parent type: ${value}`);
+          }
+        }
+      },
     },
     created_by: {
       type: DataTypes.INTEGER,

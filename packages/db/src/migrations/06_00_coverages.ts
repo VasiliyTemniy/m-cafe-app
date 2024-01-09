@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { CoverageEntityType, CoverageParentType } from '@m-cafe-app/shared-constants';
+import { isCoverageEntityType, isCoverageParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -11,16 +11,24 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     parent_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(CoverageParentType)]
-      // }
+      validate: {
+        isCoverageParentTypeValidator(value: unknown) {
+          if (!isCoverageParentType(value)) {
+            throw new Error(`Invalid coverage parent type: ${value}`);
+          }
+        }
+      },
     },
     entity_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(CoverageEntityType)]
-      // }
+      validate: {
+        isCoverageEntityTypeValidator(value: unknown) {
+          if (!isCoverageEntityType(value)) {
+            throw new Error(`Invalid coverage entity type: ${value}`);
+          }
+        }
+      },
     },
     entity_id: {
       type: DataTypes.INTEGER,

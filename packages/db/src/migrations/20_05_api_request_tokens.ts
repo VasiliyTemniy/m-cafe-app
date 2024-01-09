@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { ApiRequestTokenPlacement } from '@m-cafe-app/shared-constants';
+import { isApiRequestTokenPlacement } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -28,9 +28,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     placement: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ApiRequestTokenPlacement)]
-      // }
+      validate: {
+        isApiRequestTokenPlacementValidator(value: unknown) {
+          if (!isApiRequestTokenPlacement(value)) {
+            throw new Error(`Invalid api request token placement: ${value}`);
+          }
+        }
+      },
     },
     // prefix example: 'Bearer ' with essential space in the end if there is one
     prefix: {

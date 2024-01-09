@@ -5,7 +5,15 @@ import type {
   CreationOptional,
   NonAttribute,
 } from 'sequelize';
-import { CoverageParentType, PermissionAccess, PermissionAction, PermissionTarget } from '@m-cafe-app/shared-constants';
+import {
+  CoverageParentType,
+  PermissionAccess,
+  PermissionAction,
+  PermissionTarget,
+  isPermissionAccess,
+  isPermissionAction,
+  isPermissionTarget
+} from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Coverage } from './Coverage.js';
 
@@ -36,24 +44,36 @@ export const initPermissionModel = async (dbInstance: Sequelize) => {
         target: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(PermissionTarget)]
-          // }
+          validate: {
+            isPermissionTargetValidator(value: unknown) {
+              if (!isPermissionTarget(value)) {
+                throw new Error(`Invalid permission target: ${value}`);
+              }
+            }
+          },
         },
         // if PermissionAccess === 'byCoverage' then access is referenced from coverages
         access: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(PermissionAccess)]
-          // }
+          validate: {
+            isPermissionAccessValidator(value: unknown) {
+              if (!isPermissionAccess(value)) {
+                throw new Error(`Invalid permission access: ${value}`);
+              }
+            }
+          },
         },
         action: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(PermissionAction)]
-          // }
+          validate: {
+            isPermissionActionValidator(value: unknown) {
+              if (!isPermissionAction(value)) {
+                throw new Error(`Invalid permission action: ${value}`);
+              }
+            }
+          },
         },
         isActive: {
           type: DataTypes.BOOLEAN,

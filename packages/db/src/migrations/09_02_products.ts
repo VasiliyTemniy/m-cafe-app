@@ -1,6 +1,11 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { MassEnum, PriceCutPermission, SizingEnum, VolumeEnum } from '@m-cafe-app/shared-constants';
-import { PriceCutPermission } from '@m-cafe-app/shared-constants';
+import {
+  PriceCutPermission,
+  isMassEnum,
+  isPriceCutPermission,
+  isSizingEnum,
+  isVolumeEnum
+} from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -59,9 +64,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     price_cut_permissions: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(PriceCutPermission)]
-      // },
+      validate: {
+        isPriceCutPermissionValidator(value: unknown) {
+          if (!isPriceCutPermission(value)) {
+            throw new Error(`Invalid price cut permission: ${value}`);
+          }
+        }
+      },
       defaultValue: PriceCutPermission.None
     },
     display_priority: {
@@ -145,9 +154,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     mass_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(MassEnum)]
-      // }
+      validate: {
+        isMassEnumValidator(value: unknown) {
+          if (!isMassEnum(value)) {
+            throw new Error(`Invalid mass measure: ${value}`);
+          }
+        }
+      },
     },
     total_volume: {
       type: DataTypes.FLOAT,
@@ -156,9 +169,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     volume_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(VolumeEnum)]
-      // }
+      validate: {
+        isVolumeEnumValidator(value: unknown) {
+          if (!isVolumeEnum(value)) {
+            throw new Error(`Invalid volume measure: ${value}`);
+          }
+        }
+      },
     },
     box_sizing_x: {
       type: DataTypes.FLOAT,
@@ -175,9 +192,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     sizing_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(SizingEnum)]
-      // }
+      validate: {
+        isSizingEnumValidator(value: unknown) {
+          if (!isSizingEnum(value)) {
+            throw new Error(`Invalid sizing measure: ${value}`);
+          }
+        }
+      },
     },
     // product categories are handled in many-many junction table
     created_at: {

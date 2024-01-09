@@ -6,7 +6,7 @@ import type {
   Sequelize
 } from 'sequelize';
 import { Model, DataTypes, Op } from 'sequelize';
-import { FixedLocScope, LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { FixedLocScope, LocParentType, LocType, isFixedLocScope } from '@m-cafe-app/shared-constants';
 import { Loc } from './Loc.js';
 
 
@@ -41,9 +41,13 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
         scope: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(FixedLocScope)]
-          // },
+          validate: {
+            isFixedLocScopeValidator(value: unknown) {
+              if (!isFixedLocScope(value)) {
+                throw new Error(`Invalid fixed loc scope: ${value}`);
+              }
+            }
+          },
           unique: 'unique_fixed_loc'
         }
         // actual locs are referenced from locs table

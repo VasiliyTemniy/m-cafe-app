@@ -3,7 +3,12 @@ import type {
   InferAttributes,
   InferCreationAttributes,
 } from 'sequelize';
-import { CoverageEntityType, CoverageParentType } from '@m-cafe-app/shared-constants';
+import {
+  CoverageEntityType,
+  CoverageParentType,
+  isCoverageEntityType,
+  isCoverageParentType
+} from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 
 
@@ -28,17 +33,25 @@ export const initCoverageModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           primaryKey: true,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(CoverageParentType)]
-          // }
+          validate: {
+            isCoverageParentTypeValidator(value: unknown) {
+              if (!isCoverageParentType(value)) {
+                throw new Error(`Invalid coverage parent type: ${value}`);
+              }
+            }
+          },
         },
         entityType: {
           type: DataTypes.SMALLINT,
           primaryKey: true,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(CoverageEntityType)]
-          // }
+          validate: {
+            isCoverageEntityTypeValidator(value: unknown) {
+              if (!isCoverageEntityType(value)) {
+                throw new Error(`Invalid coverage entity type: ${value}`);
+              }
+            }
+          },
         },
         entityId: {
           type: DataTypes.INTEGER,

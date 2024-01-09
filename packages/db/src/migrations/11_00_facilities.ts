@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
+import { isFacilityType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
-// import { FacilityType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('facilities', {
@@ -42,9 +42,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     facility_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(FacilityType)]
-      // }
+      validate: {
+        isFacilityTypeValidator(value: unknown) {
+          if (!isFacilityType(value)) {
+            throw new Error(`Invalid facility type: ${value}`);
+          }
+        }
+      },
     },
     created_at: {
       type: DataTypes.DATE,

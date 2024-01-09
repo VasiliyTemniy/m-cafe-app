@@ -8,7 +8,7 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import { DatabaseError } from '@m-cafe-app/utils';
-import { CommentParentType } from '@m-cafe-app/shared-constants';
+import { CommentParentType, isCommentParentType } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Review } from './Review.js';
 import { Order } from './Order.js';
@@ -55,9 +55,13 @@ export const initCommentModel = async (dbInstance: Sequelize) => {
         parentType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(CommentParentType)]
-          // }
+          validate: {
+            isCommentParentTypeValidator(value: unknown) {
+              if (!isCommentParentType(value)) {
+                throw new Error(`Invalid comment parent type: ${value}`);
+              }
+            }
+          },
         },
         orderNumber: {
           type: DataTypes.INTEGER,

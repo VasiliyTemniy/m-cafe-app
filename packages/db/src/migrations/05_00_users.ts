@@ -3,6 +3,7 @@ import { DataTypes } from 'sequelize';
 import {
   UserRights,
   emailRegExp,
+  isUserRights,
   maxEmailLen,
   maxNameLen,
   maxPhonenumberLen,
@@ -36,9 +37,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.SMALLINT,
       allowNull: false,
       defaultValue: UserRights.Customer,
-      // validate: {
-      //   isIn: [Object.values(UserRights)]
-      // }
+      validate: {
+        isUserRightsValidator(value: unknown) {
+          if (!isUserRights(value)) {
+            throw new Error(`Invalid user rights: ${value}`);
+          }
+        }
+      },
     },
     lookup_hash: {
       type: DataTypes.STRING,

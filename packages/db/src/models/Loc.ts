@@ -6,7 +6,7 @@ import type {
   ForeignKey,
   CreationOptional
 } from 'sequelize';
-import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { LocParentType, LocType, isLocParentType, isLocType } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Language } from './Language.js';
 import { LocString } from './LocString.js';
@@ -49,9 +49,13 @@ export const initLocModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           primaryKey: true,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(LocType)]
-          // }
+          validate: {
+            isLocTypeValidator(value: unknown) {
+              if (!isLocType(value)) {
+                throw new Error(`Invalid loc type: ${value}`);
+              }
+            }
+          }
         },
         parentId: {
           type: DataTypes.INTEGER,
@@ -62,9 +66,13 @@ export const initLocModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           primaryKey: true,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(LocParentType)]
-          // }
+          validate: {
+            isLocParentTypeValidator(value: unknown) {
+              if (!isLocParentType(value)) {
+                throw new Error(`Invalid loc parent type: ${value}`);
+              }
+            }
+          }
         },
         createdAt: {
           type: DataTypes.DATE,

@@ -19,7 +19,11 @@ import {
   StockEntityType,
   TagParentType,
   ViewParentType,
-  VolumeEnum
+  VolumeEnum,
+  isMassEnum,
+  isPriceCutPermission,
+  isSizingEnum,
+  isVolumeEnum
 } from '@m-cafe-app/shared-constants';
 import { ProductType } from './ProductType.js';
 import { Loc } from './Loc.js';
@@ -148,9 +152,13 @@ export const initProductModel = (dbInstance: Sequelize) => {
         priceCutPermissions: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(PriceCutPermission)]
-          // },
+          validate: {
+            isPriceCutPermissionValidator(value: unknown) {
+              if (!isPriceCutPermission(value)) {
+                throw new Error(`Invalid price cut permission: ${value}`);
+              }
+            }
+          },
           defaultValue: PriceCutPermission.None
         },
         displayPriority: {
@@ -234,9 +242,13 @@ export const initProductModel = (dbInstance: Sequelize) => {
         massMeasure: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(MassEnum)]
-          // }
+          validate: {
+            isMassEnumValidator(value: unknown) {
+              if (!isMassEnum(value)) {
+                throw new Error(`Invalid mass measure: ${value}`);
+              }
+            }
+          },
         },
         totalVolume: {
           type: DataTypes.FLOAT,
@@ -245,9 +257,13 @@ export const initProductModel = (dbInstance: Sequelize) => {
         volumeMeasure: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(VolumeEnum)]
-          // }
+          validate: {
+            isVolumeEnumValidator(value: unknown) {
+              if (!isVolumeEnum(value)) {
+                throw new Error(`Invalid volume measure: ${value}`);
+              }
+            }
+          },
         },
         boxSizingX: {
           type: DataTypes.FLOAT,
@@ -264,9 +280,13 @@ export const initProductModel = (dbInstance: Sequelize) => {
         sizingMeasure: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(SizingEnum)]
-          // }
+          validate: {
+            isSizingEnumValidator(value: unknown) {
+              if (!isSizingEnum(value)) {
+                throw new Error(`Invalid sizing measure: ${value}`);
+              }
+            }
+          },
         },
         // product categories are handled in many-many junction table
         createdAt: {

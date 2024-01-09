@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { PermissionAccess, PermissionAction, PermissionTarget } from '@m-cafe-app/shared-constants';
+import { isPermissionAccess, isPermissionAction, isPermissionTarget } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -12,24 +12,36 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     target: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(PermissionTarget)]
-      // }
+      validate: {
+        isPermissionTargetValidator(value: unknown) {
+          if (!isPermissionTarget(value)) {
+            throw new Error(`Invalid permission target: ${value}`);
+          }
+        }
+      },
     },
     // if PermissionAccess === 'byCoverage' then access is referenced from coverages
     access: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(PermissionAccess)]
-      // }
+      validate: {
+        isPermissionAccessValidator(value: unknown) {
+          if (!isPermissionAccess(value)) {
+            throw new Error(`Invalid permission access: ${value}`);
+          }
+        }
+      },
     },
     action: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(PermissionAction)]
-      // }
+      validate: {
+        isPermissionActionValidator(value: unknown) {
+          if (!isPermissionAction(value)) {
+            throw new Error(`Invalid permission action: ${value}`);
+          }
+        }
+      },
     },
     is_active: {
       type: DataTypes.BOOLEAN,

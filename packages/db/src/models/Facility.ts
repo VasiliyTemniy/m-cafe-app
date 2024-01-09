@@ -14,7 +14,8 @@ import {
   LocParentType,
   LocType,
   PictureParentType,
-  ReviewParentType
+  ReviewParentType,
+  isFacilityType
 } from '@m-cafe-app/shared-constants';
 import { Order } from './Order.js';
 import { Address } from './Address.js';
@@ -92,9 +93,13 @@ export const initFacilityModel = async (dbInstance: Sequelize) => {
         facilityType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(FacilityType)]
-          // }
+          validate: {
+            isFacilityTypeValidator(value: unknown) {
+              if (!isFacilityType(value)) {
+                throw new Error(`Invalid facility type: ${value}`);
+              }
+            }
+          },
         },
         createdAt: {
           type: DataTypes.DATE,

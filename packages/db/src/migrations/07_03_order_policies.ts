@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import { OrderConfirmationMethod, OrderDistanceAvailability, OrderPaymentMethod } from '@m-cafe-app/shared-constants';
+import { isOrderConfirmationMethod, isOrderDistanceAvailability, isOrderPaymentMethod } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -43,23 +43,35 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     payment_method: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(OrderPaymentMethod)]
-      // }
+      validate: {
+        isOrderPaymentMethodValidator(value: unknown) {
+          if (!isOrderPaymentMethod(value)) {
+            throw new Error(`Invalid order payment method: ${value}`);
+          }
+        }
+      },
     },
     confirmation_method: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(OrderConfirmationMethod)]
-      // }
+      validate: {
+        isOrderConfirmationMethodValidator(value: unknown) {
+          if (!isOrderConfirmationMethod(value)) {
+            throw new Error(`Invalid order confirmation method: ${value}`);
+          }
+        }
+      },
     },
     distance_availability: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(OrderDistanceAvailability)]
-      // }
+      validate: {
+        isOrderDistanceAvailabilityValidator(value: unknown) {
+          if (!isOrderDistanceAvailability(value)) {
+            throw new Error(`Invalid order distance availability: ${value}`);
+          }
+        }
+      },
     },
     starts_at: {
       type: DataTypes.DATE,

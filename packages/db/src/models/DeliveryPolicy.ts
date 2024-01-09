@@ -12,7 +12,11 @@ import {
   DeliveryCostCalculationType,
   MassEnum,
   SizingEnum,
-  VolumeEnum
+  VolumeEnum,
+  isDeliveryCostCalculationType,
+  isMassEnum,
+  isSizingEnum,
+  isVolumeEnum
 } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
@@ -92,9 +96,13 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
         deliveryCostCalculationType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(DeliveryCostCalculationType)],
-          // }
+          validate: {
+            isDeliveryCostCalculationTypeValidator(value: unknown) {
+              if (!isDeliveryCostCalculationType(value)) {
+                throw new Error(`Invalid delivery cost calculation type: ${value}`);
+              }
+            }
+          },
         },
         fixedCostAddon: {
           type: DataTypes.INTEGER,
@@ -111,9 +119,13 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
         distanceStepMeasure: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(SizingEnum)],
-          // }
+          validate: {
+            isSizingEnumValidator(value: unknown) {
+              if (!isSizingEnum(value)) {
+                throw new Error(`Invalid sizing measure: ${value}`);
+              }
+            }
+          },
         },
         massStepCost: {
           type: DataTypes.INTEGER,
@@ -126,9 +138,13 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
         massStepMeasure: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(MassEnum)],
-          // }
+          validate: {
+            isMassEnumValidator(value: unknown) {
+              if (!isMassEnum(value)) {
+                throw new Error(`Invalid mass measure: ${value}`);
+              }
+            }
+          },
         },
         volumeStepCost: {
           type: DataTypes.INTEGER,
@@ -141,9 +157,13 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
         volumeStepMeasure: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(VolumeEnum)],
-          // }
+          validate: {
+            isVolumeEnumValidator(value: unknown) {
+              if (!isVolumeEnum(value)) {
+                throw new Error(`Invalid volume measure: ${value}`);
+              }
+            }
+          },
         },
         startsAt: {
           type: DataTypes.DATE,

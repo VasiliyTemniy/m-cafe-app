@@ -1,7 +1,11 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
-// import { DynamicModuleType, DynamicModulePlacementType, DynamicModulePreset } from '@m-cafe-app/shared-constants';
-import { DynamicModulePlacementType } from '@m-cafe-app/shared-constants';
+import {
+  DynamicModulePlacementType,
+  isDynamicModulePlacementType,
+  isDynamicModulePreset,
+  isDynamicModuleType
+} from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('dynamic_modules', {
@@ -34,9 +38,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     module_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(DynamicModuleType)]
-      // }
+      validate: {
+        isDynamicModuleTypeValidator(value: unknown) {
+          if (!isDynamicModuleType(value)) {
+            throw new Error(`Invalid dynamic module type: ${value}`);
+          }
+        }
+      },
     },
     placement: {
       type: DataTypes.INTEGER,
@@ -45,9 +53,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     placement_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(DynamicModulePlacementType)]
-      // },
+      validate: {
+        isDynamicModulePlacementTypeValidator(value: unknown) {
+          if (!isDynamicModulePlacementType(value)) {
+            throw new Error(`Invalid dynamic module placement type: ${value}`);
+          }
+        }
+      },
       defaultValue: DynamicModulePlacementType.BeforeMenu
     },
     nest_level: {
@@ -58,9 +70,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     preset: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(DynamicModulePreset)]
-      // }
+      validate: {
+        isDynamicModulePresetValidator(value: unknown) {
+          if (!isDynamicModulePreset(value)) {
+            throw new Error(`Invalid dynamic module preset: ${value}`);
+          }
+        }
+      },
     },
     class_name: {
       type: DataTypes.STRING,

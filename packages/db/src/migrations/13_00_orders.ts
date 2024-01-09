@@ -1,13 +1,13 @@
 import type { MigrationContext } from '../types/Migrations.js';
+import {
+  isMassEnum,
+  isOrderDeliveryType,
+  isOrderPaymentMethod,
+  isOrderPaymentStatus,
+  isOrderStatus,
+  isSizingEnum
+} from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
-// import {
-//   MassEnum,
-//   OrderDeliveryType,
-//   OrderPaymentMethod,
-//   OrderPaymentStatus,
-//   OrderStatus,
-//   SizingEnum
-// } from '@m-cafe-app/shared-constants';
 
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -35,16 +35,24 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     delivery_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(OrderDeliveryType)]
-      // }
+      validate: {
+        isOrderDeliveryTypeValidator(value: unknown) {
+          if (!isOrderDeliveryType(value)) {
+            throw new Error(`Invalid order delivery type: ${value}`);
+          }
+        }
+      },
     },
     status: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(OrderStatus)]
-      // },
+      validate: {
+        isOrderStatusValidator(value: unknown) {
+          if (!isOrderStatus(value)) {
+            throw new Error(`Invalid order status: ${value}`);
+          }
+        }
+      },
     },
     total_cost: {
       type: DataTypes.INTEGER,
@@ -88,16 +96,24 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     payment_method: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(OrderPaymentMethod)]
-      // }
+      validate: {
+        isOrderPaymentMethodValidator(value: unknown) {
+          if (!isOrderPaymentMethod(value)) {
+            throw new Error(`Invalid order payment method: ${value}`);
+          }
+        }
+      },
     },
     payment_status: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(OrderPaymentStatus)]
-      // }
+      validate: {
+        isOrderPaymentStatusValidator(value: unknown) {
+          if (!isOrderPaymentStatus(value)) {
+            throw new Error(`Invalid order payment status: ${value}`);
+          }
+        }
+      },
     },
     box_sizing_x: {
       type: DataTypes.INTEGER,
@@ -114,9 +130,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     sizing_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(SizingEnum)]
-      // }
+      validate: {
+        isSizingEnumValidator(value: unknown) {
+          if (!isSizingEnum(value)) {
+            throw new Error(`Invalid sizing measure: ${value}`);
+          }
+        }
+      },
     },
     user_id: {
       type: DataTypes.INTEGER,
@@ -154,9 +174,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     mass_measure: {
       type: DataTypes.SMALLINT,
       allowNull: true,
-      // validate: {
-      //   isIn: [Object.values(MassEnum)]
-      // }
+      validate: {
+        isMassEnumValidator(value: unknown) {
+          if (!isMassEnum(value)) {
+            throw new Error(`Invalid mass measure: ${value}`);
+          }
+        }
+      },
     },
     comment: {
       type: DataTypes.STRING,

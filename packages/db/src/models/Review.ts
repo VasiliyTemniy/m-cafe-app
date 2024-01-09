@@ -11,6 +11,7 @@ import {
   CommentParentType,
   PictureParentType,
   ReviewParentType,
+  isReviewParentType,
   productRatingHighest,
   productRatingLowest
 } from '@m-cafe-app/shared-constants';
@@ -55,9 +56,13 @@ export const initReviewModel = async (dbInstance: Sequelize) => {
         parentType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ReviewParentType)]
-          // },
+          validate: {
+            isReviewParentTypeValidator(value: unknown) {
+              if (!isReviewParentType(value)) {
+                throw new Error(`Invalid review parent type: ${value}`);
+              }
+            }
+          },
           unique: 'review_unique'
         },
         parentId: {

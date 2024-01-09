@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
+import { isPictureParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
-// import { PictureParentType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('pictures', {
@@ -22,9 +22,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     parent_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(PictureParentType)]
-      // },
+      validate: {
+        isPictureParentTypeValidator(value: unknown) {
+          if (!isPictureParentType(value)) {
+            throw new Error(`Invalid picture parent type: ${value}`);
+          }
+        }
+      },
       unique: 'picture_unique'
     },
     order_number: {

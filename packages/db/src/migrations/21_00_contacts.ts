@@ -1,6 +1,10 @@
 import type { MigrationContext } from '../types/Migrations.js';
+import {
+  isContactParentType,
+  isContactTarget,
+  isContactType
+} from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
-// import { ContactParentType, ContactTarget, ContactType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('contacts', {
@@ -34,16 +38,24 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ContactType)]
-      // }
+      validate: {
+        isContactTypeValidator(value: unknown) {
+          if (!isContactType(value)) {
+            throw new Error(`Invalid contact type: ${value}`);
+          }
+        }
+      },
     },
     target: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ContactTarget)]
-      // }
+      validate: {
+        isContactTargetValidator(value: unknown) {
+          if (!isContactTarget(value)) {
+            throw new Error(`Invalid contact target: ${value}`);
+          }
+        }
+      },
     },
     parent_id: {
       type: DataTypes.INTEGER,
@@ -52,9 +64,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     parent_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(ContactParentType)]
-      // }
+      validate: {
+        isContactParentTypeValidator(value: unknown) {
+          if (!isContactParentType(value)) {
+            throw new Error(`Invalid contact parent type: ${value}`);
+          }
+        }
+      },
     },
     value: {
       type: DataTypes.STRING,

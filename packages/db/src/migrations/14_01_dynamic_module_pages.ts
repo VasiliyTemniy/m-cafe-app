@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
+import { isDynamicModulePageType } from '@m-cafe-app/shared-constants';
 import { DataTypes, QueryTypes } from 'sequelize';
-// import { DynamicModulePageType } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('dynamic_module_pages', {
@@ -14,9 +14,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     page_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(DynamicModulePageType)]
-      // }
+      validate: {
+        isDynamicModulePageTypeValidator(value: unknown) {
+          if (!isDynamicModulePageType(value)) {
+            throw new Error(`Invalid dynamic module page type: ${value}`);
+          }
+        }
+      },
     }
   });
 

@@ -11,7 +11,12 @@ import {
   ApiRequestExpectedResponseDataType,
   ApiRequestMethod,
   ApiRequestProtocol,
-  ApiRequestReason
+  ApiRequestReason,
+  isApiRequestExpectedResponseDataPlacementKey,
+  isApiRequestExpectedResponseDataType,
+  isApiRequestMethod,
+  isApiRequestProtocol,
+  isApiRequestReason
 } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Organization } from './Organization.js';
@@ -100,9 +105,13 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
         reason: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ApiRequestReason)]
-          // }
+          validate: {
+            isApiRequestReasonValidator(value: unknown) {
+              if (!isApiRequestReason(value)) {
+                throw new Error(`Invalid api request reason: ${value}`);
+              }
+            }
+          },
         },
         host: {
           type: DataTypes.STRING,
@@ -115,9 +124,13 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
         method: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ApiRequestMethod)]
-          // }
+          validate: {
+            isApiRequestMethodValidator(value: unknown) {
+              if (!isApiRequestMethod(value)) {
+                throw new Error(`Invalid api request method: ${value}`);
+              }
+            }
+          },
         },
         // Path before query string - e.g. /api/v1/users
         pathBeforeQuery: {
@@ -131,16 +144,24 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
         expectedResponseDataPlacementKey: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ApiRequestExpectedResponseDataPlacementKey)]
-          // }
+          validate: {
+            isApiRequestExpectedResponseDataPlacementKeyValidator(value: unknown) {
+              if (!isApiRequestExpectedResponseDataPlacementKey(value)) {
+                throw new Error(`Invalid api request expected response data placement key: ${value}`);
+              }
+            }
+          },
         },
         expectedResponseDataType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(ApiRequestExpectedResponseDataType)]
-          // }
+          validate: {
+            isApiRequestExpectedResponseDataTypeValidator(value: unknown) {
+              if (!isApiRequestExpectedResponseDataType(value)) {
+                throw new Error(`Invalid api request expected response data type: ${value}`);
+              }
+            }
+          },
         },
         // auth <string> Basic authentication ('user:password') to compute an Authorization header. (from NodeJS docs)
         auth: {
@@ -192,9 +213,13 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
         protocol: {
           type: DataTypes.SMALLINT,
           allowNull: true,
-          // validate: {
-          //   isIn: [Object.values(ApiRequestProtocol)]
-          // }
+          validate: {
+            isApiRequestProtocolValidator(value: unknown) {
+              if (!isApiRequestProtocol(value)) {
+                throw new Error(`Invalid api request protocol: ${value}`);
+              }
+            }
+          },
         },
         // setHost <boolean>: Specifies whether or not to automatically add the Host header. Defaults to true. (from NodeJS docs)
         setHost: {

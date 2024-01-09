@@ -1,9 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-// import {
-//   OfferCodeGenerationMethod,
-//   OfferGrantMethod,
-//   OfferType
-// } from '@m-cafe-app/shared-constants';
+import { isOfferCodeGenerationMethod, isOfferGrantMethod, isOfferType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -57,23 +53,35 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
     offer_type: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(OfferType)]
-      // }
+      validate: {
+        isOfferTypeValidator(value: unknown) {
+          if (!isOfferType(value)) {
+            throw new Error(`Invalid offer type: ${value}`);
+          }
+        }
+      },
     },
     offer_grant_method: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(OfferGrantMethod)]
-      // }
+      validate: {
+        isOfferGrantMethodValidator(value: unknown) {
+          if (!isOfferGrantMethod(value)) {
+            throw new Error(`Invalid offer grant method: ${value}`);
+          }
+        }
+      },
     },
     offer_code_generation_method: {
       type: DataTypes.SMALLINT,
       allowNull: false,
-      // validate: {
-      //   isIn: [Object.values(OfferCodeGenerationMethod)]
-      // }
+      validate: {
+        isOfferCodeGenerationMethodValidator(value: unknown) {
+          if (!isOfferCodeGenerationMethod(value)) {
+            throw new Error(`Invalid offer code generation method: ${value}`);
+          }
+        }
+      },
     },
     set_offer_name: {
       type: DataTypes.STRING,

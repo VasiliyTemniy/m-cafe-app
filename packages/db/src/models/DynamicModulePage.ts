@@ -5,7 +5,7 @@ import type {
   ForeignKey,
   NonAttribute
 } from 'sequelize';
-import { DynamicModulePageType } from '@m-cafe-app/shared-constants';
+import { DynamicModulePageType, isDynamicModulePageType } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { DynamicModule } from './DynamicModule.js';
 
@@ -33,9 +33,13 @@ export const initDynamicModulePageModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: false,
           primaryKey: true,
-          // validate: {
-          //   isIn: [Object.values(DynamicModulePageType)]
-          // }
+          validate: {
+            isDynamicModulePageTypeValidator(value: unknown) {
+              if (!isDynamicModulePageType(value)) {
+                throw new Error(`Invalid dynamic module page type: ${value}`);
+              }
+            }
+          },
         }
       }, {
         sequelize: dbInstance,

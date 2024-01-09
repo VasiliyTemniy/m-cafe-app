@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { StockStatus, StockEntityType } from '@m-cafe-app/shared-constants';
+import { StockStatus, StockEntityType, isStockEntityType, isStockStatus } from '@m-cafe-app/shared-constants';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { Ingredient } from './Ingredient.js';
 import { Product } from './Product.js';
@@ -74,9 +74,13 @@ export const initStockModel = async (dbInstance: Sequelize) => {
         entityType: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(StockEntityType)]
-          // },
+          validate: {
+            isStockEntityTypeValidator(value: unknown) {
+              if (!isStockEntityType(value)) {
+                throw new Error(`Invalid stock entity type: ${value}`);
+              }
+            }
+          },
           unique: 'unique_stock'
         },
         quantity: {
@@ -86,9 +90,13 @@ export const initStockModel = async (dbInstance: Sequelize) => {
         status: {
           type: DataTypes.SMALLINT,
           allowNull: false,
-          // validate: {
-          //   isIn: [Object.values(StockStatus)]
-          // },
+          validate: {
+            isStockStatusValidator(value: unknown) {
+              if (!isStockStatus(value)) {
+                throw new Error(`Invalid stock status: ${value}`);
+              }
+            }
+          },
           unique: 'unique_stock'
         },
         createdAt: {
