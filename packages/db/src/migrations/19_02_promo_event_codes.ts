@@ -48,16 +48,17 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false,
       defaultValue: false
     },
-    usage_limit: {
+    usage_total_limit: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    used_count: {
+    usage_per_user_limit: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
+    // used_count is held in event_promo_code_usages table, tracked by users
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,

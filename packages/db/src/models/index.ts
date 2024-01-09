@@ -40,6 +40,7 @@ export * from './OfferBonus.js';
 export * from './SaleEvent.js';
 export * from './PromoEvent.js';
 export * from './PromoEventCode.js';
+export * from './PromoEventCodeUsage.js';
 export * from './ApiRequest.js';
 export * from './ApiRequestHeader.js';
 export * from './ApiRequestParam.js';

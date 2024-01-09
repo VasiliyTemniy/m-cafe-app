@@ -71,7 +71,7 @@ export const initPromoEventModel = async (dbInstance: Sequelize) => {
         // name and description locs are referenced from locs table
         // coverage is referenced from coverages table
         // codes are referenced from event_promo_codes table
-        // used_count is held in event_promo_codes table
+        // used_count is held in event_promo_code_usages table, tracked by users
         // discount and/or price_cut_absolute are held in event_promo_codes table
         accumulatedPriceCut: {
           type: DataTypes.INTEGER,

@@ -20,8 +20,8 @@ export class PromoEventCode extends Model<InferAttributes<PromoEventCode>, Infer
   declare discount: number;
   declare priceCutAbsolute: number;
   declare isUsageLimited: boolean;
-  declare usageLimit: number;
-  declare usedCount: number;
+  declare usageTotalLimit: number;
+  declare usagePerUserLimit: number;
   declare promo?: NonAttribute<PromoEvent>;
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;
@@ -79,16 +79,17 @@ export const initPromoEventCodeModel = async (dbInstance: Sequelize) => {
           allowNull: false,
           defaultValue: false
         },
-        usageLimit: {
+        usageTotalLimit: {
           type: DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 0
         },
-        usedCount: {
+        usagePerUserLimit: {
           type: DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 0
         },
+        // used_count is held in event_promo_code_usages table, tracked by users
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false
