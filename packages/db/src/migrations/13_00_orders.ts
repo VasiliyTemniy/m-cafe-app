@@ -1,11 +1,11 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import {
-  isMassEnum,
+  isMassMeasure,
   isOrderDeliveryType,
   isOrderPaymentMethod,
   isOrderPaymentStatus,
   isOrderStatus,
-  isSizingEnum
+  isSizingMeasure
 } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
@@ -131,8 +131,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.SMALLINT,
       allowNull: true,
       validate: {
-        isSizingEnumValidator(value: unknown) {
-          if (!isSizingEnum(value)) {
+        isSizingMeasureValidator(value: unknown) {
+          if (!isSizingMeasure(value)) {
             throw new Error(`Invalid sizing measure: ${value}`);
           }
         }
@@ -175,8 +175,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.SMALLINT,
       allowNull: true,
       validate: {
-        isMassEnumValidator(value: unknown) {
-          if (!isMassEnum(value)) {
+        isMassMeasureValidator(value: unknown) {
+          if (!isMassMeasure(value)) {
             throw new Error(`Invalid mass measure: ${value}`);
           }
         }

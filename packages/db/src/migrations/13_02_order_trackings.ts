@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-import { OrderTrackingStatus, isMassEnum, isOrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { OrderTrackingStatus, isMassMeasure, isOrderTrackingStatus } from '@m-cafe-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('order_trackings', {
@@ -50,8 +50,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.SMALLINT,
       allowNull: true,
       validate: {
-        isMassEnumValidator(value: unknown) {
-          if (!isMassEnum(value)) {
+        isMassMeasureValidator(value: unknown) {
+          if (!isMassMeasure(value)) {
             throw new Error(`Invalid mass measure: ${value}`);
           }
         }

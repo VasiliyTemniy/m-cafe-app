@@ -11,19 +11,19 @@ import {
   DetailGroupParentType,
   LocParentType,
   LocType,
-  MassEnum,
+  MassMeasure,
   PictureParentType,
   PriceCutPermission,
   ReviewParentType,
-  SizingEnum,
+  SizingMeasure,
   StockEntityType,
   TagParentType,
   ViewParentType,
-  VolumeEnum,
-  isMassEnum,
+  VolumeMeasure,
+  isMassMeasure,
   isPriceCutPermission,
-  isSizingEnum,
-  isVolumeEnum
+  isSizingMeasure,
+  isVolumeMeasure
 } from '@m-cafe-app/shared-constants';
 import { ProductType } from './ProductType.js';
 import { Loc } from './Loc.js';
@@ -68,13 +68,13 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   declare maxTotalCutAbsolute: number | null;
   declare maxTotalCutRelative: number | null;
   declare totalMass: number | null;
-  declare massMeasure: MassEnum | null;
+  declare massMeasure: MassMeasure | null;
   declare totalVolume: number | null;
-  declare volumeMeasure: VolumeEnum | null;
+  declare volumeMeasure: VolumeMeasure | null;
   declare boxSizingX: number | null;
   declare boxSizingY: number | null;
   declare boxSizingZ: number | null;
-  declare sizingMeasure: SizingEnum | null;
+  declare sizingMeasure: SizingMeasure | null;
   declare nameLocs?: NonAttribute<Loc[]>;
   declare descriptionLocs?: NonAttribute<Loc[]>;
   declare productType?: NonAttribute<ProductType>;
@@ -243,8 +243,8 @@ export const initProductModel = (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isMassEnumValidator(value: unknown) {
-              if (!isMassEnum(value)) {
+            isMassMeasureValidator(value: unknown) {
+              if (!isMassMeasure(value)) {
                 throw new Error(`Invalid mass measure: ${value}`);
               }
             }
@@ -258,8 +258,8 @@ export const initProductModel = (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isVolumeEnumValidator(value: unknown) {
-              if (!isVolumeEnum(value)) {
+            isVolumeMeasureValidator(value: unknown) {
+              if (!isVolumeMeasure(value)) {
                 throw new Error(`Invalid volume measure: ${value}`);
               }
             }
@@ -281,8 +281,8 @@ export const initProductModel = (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isSizingEnumValidator(value: unknown) {
-              if (!isSizingEnum(value)) {
+            isSizingMeasureValidator(value: unknown) {
+              if (!isSizingMeasure(value)) {
                 throw new Error(`Invalid sizing measure: ${value}`);
               }
             }

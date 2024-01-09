@@ -1,4 +1,4 @@
-export enum SizingEnum {
+export enum SizingMeasure {
   Mm = 0,
   Cm = 1,
   M = 2,
@@ -9,11 +9,11 @@ export enum SizingEnum {
   Mile = 7,
 }
 
-export const isSizingEnum = (type: unknown): type is SizingEnum =>
-  (typeof type === 'number' || typeof type === 'string') && (type in SizingEnum);
+export const isSizingMeasure = (type: unknown): type is SizingMeasure =>
+  (typeof type === 'number' || typeof type === 'string') && (type in SizingMeasure);
 
 
-export enum VolumeEnum {
+export enum VolumeMeasure {
   L = 0,
   Ml = 1,
   Cm3 = 2,
@@ -25,11 +25,11 @@ export enum VolumeEnum {
   Gallon = 8,
 }
 
-export const isVolumeEnum = (type: unknown): type is VolumeEnum =>
-  (typeof type === 'number' || typeof type === 'string') && (type in VolumeEnum);
+export const isVolumeMeasure = (type: unknown): type is VolumeMeasure =>
+  (typeof type === 'number' || typeof type === 'string') && (type in VolumeMeasure);
 
 
-export enum MassEnum {
+export enum MassMeasure {
   G = 0,
   Kg = 1,
   T = 2,
@@ -41,5 +41,5 @@ export enum MassEnum {
   Tonne = 8,
 }
 
-export const isMassEnum = (type: unknown): type is MassEnum =>
-  (typeof type === 'number' || typeof type === 'string') && (type in MassEnum);
+export const isMassMeasure = (type: unknown): type is MassMeasure =>
+  (typeof type === 'number' || typeof type === 'string') && (type in MassMeasure);

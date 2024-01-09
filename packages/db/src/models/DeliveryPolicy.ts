@@ -10,13 +10,13 @@ import { Model, DataTypes } from 'sequelize';
 import {
   CoverageParentType,
   DeliveryCostCalculationType,
-  MassEnum,
-  SizingEnum,
-  VolumeEnum,
+  MassMeasure,
+  SizingMeasure,
+  VolumeMeasure,
   isDeliveryCostCalculationType,
-  isMassEnum,
-  isSizingEnum,
-  isVolumeEnum
+  isMassMeasure,
+  isSizingMeasure,
+  isVolumeMeasure
 } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
@@ -34,13 +34,13 @@ export class DeliveryPolicy extends Model<InferAttributes<DeliveryPolicy>, Infer
   declare fixedCostAddon: number | null;
   declare distanceStepCost: number | null;
   declare distanceStepQuantity: number | null;
-  declare distanceStepMeasure: SizingEnum | null;
+  declare distanceStepMeasure: SizingMeasure | null;
   declare massStepCost: number | null;
   declare massStepQuantity: number | null;
-  declare massStepMeasure: MassEnum | null;
+  declare massStepMeasure: MassMeasure | null;
   declare volumeStepCost: number | null;
   declare volumeStepQuantity: number | null;
-  declare volumeStepMeasure: VolumeEnum | null;
+  declare volumeStepMeasure: VolumeMeasure | null;
   declare startsAt: Date | null;
   declare endsAt: Date | null;
   declare isActive: boolean;
@@ -120,8 +120,8 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isSizingEnumValidator(value: unknown) {
-              if (!isSizingEnum(value)) {
+            isSizingMeasureValidator(value: unknown) {
+              if (!isSizingMeasure(value)) {
                 throw new Error(`Invalid sizing measure: ${value}`);
               }
             }
@@ -139,8 +139,8 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isMassEnumValidator(value: unknown) {
-              if (!isMassEnum(value)) {
+            isMassMeasureValidator(value: unknown) {
+              if (!isMassMeasure(value)) {
                 throw new Error(`Invalid mass measure: ${value}`);
               }
             }
@@ -158,8 +158,8 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isVolumeEnumValidator(value: unknown) {
-              if (!isVolumeEnum(value)) {
+            isVolumeMeasureValidator(value: unknown) {
+              if (!isVolumeMeasure(value)) {
                 throw new Error(`Invalid volume measure: ${value}`);
               }
             }

@@ -1,10 +1,10 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import {
   PriceCutPermission,
-  isMassEnum,
+  isMassMeasure,
   isPriceCutPermission,
-  isSizingEnum,
-  isVolumeEnum
+  isSizingMeasure,
+  isVolumeMeasure
 } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
@@ -155,8 +155,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.SMALLINT,
       allowNull: true,
       validate: {
-        isMassEnumValidator(value: unknown) {
-          if (!isMassEnum(value)) {
+        isMassMeasureValidator(value: unknown) {
+          if (!isMassMeasure(value)) {
             throw new Error(`Invalid mass measure: ${value}`);
           }
         }
@@ -170,8 +170,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.SMALLINT,
       allowNull: true,
       validate: {
-        isVolumeEnumValidator(value: unknown) {
-          if (!isVolumeEnum(value)) {
+        isVolumeMeasureValidator(value: unknown) {
+          if (!isVolumeMeasure(value)) {
             throw new Error(`Invalid volume measure: ${value}`);
           }
         }
@@ -193,8 +193,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.SMALLINT,
       allowNull: true,
       validate: {
-        isSizingEnumValidator(value: unknown) {
-          if (!isSizingEnum(value)) {
+        isSizingMeasureValidator(value: unknown) {
+          if (!isSizingMeasure(value)) {
             throw new Error(`Invalid sizing measure: ${value}`);
           }
         }

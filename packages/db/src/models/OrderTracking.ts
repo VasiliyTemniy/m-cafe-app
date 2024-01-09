@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { MassEnum, OrderTrackingStatus, isMassEnum, isOrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { MassMeasure, OrderTrackingStatus, isMassMeasure, isOrderTrackingStatus } from '@m-cafe-app/shared-constants';
 import { Carrier } from './Carrier.js';
 import { Order } from './Order.js';
 import { Facility } from './Facility.js';
@@ -20,7 +20,7 @@ export class OrderTracking extends Model<InferAttributes<OrderTracking>, InferCr
   declare pointNumber: number;
   declare estimatedDeliveryAt: Date;
   declare massControlValue: number | null;
-  declare massMeasure: MassEnum | null;
+  declare massMeasure: MassMeasure | null;
   declare deliveredAt: Date | null;
   declare carrierId: ForeignKey<Carrier['id']> | null;
   declare order?: NonAttribute<Order>;
@@ -84,8 +84,8 @@ export const initOrderTrackingModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isMassEnumValidator(value: unknown) {
-              if (!isMassEnum(value)) {
+            isMassMeasureValidator(value: unknown) {
+              if (!isMassMeasure(value)) {
                 throw new Error(`Invalid mass measure: ${value}`);
               }
             }

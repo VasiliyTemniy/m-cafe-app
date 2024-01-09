@@ -9,18 +9,18 @@ import type {
 import { Model, DataTypes } from 'sequelize';
 import {
   CommentParentType,
-  MassEnum,
+  MassMeasure,
   OrderDeliveryType,
   OrderPaymentMethod,
   OrderPaymentStatus,
   OrderStatus,
   ReviewParentType,
-  SizingEnum,
+  SizingMeasure,
   isOrderDeliveryType,
   isOrderPaymentMethod,
   isOrderPaymentStatus,
   isOrderStatus,
-  isSizingEnum
+  isSizingMeasure
 } from '@m-cafe-app/shared-constants';
 import { User } from './User.js';
 import { Address } from './Address.js';
@@ -52,13 +52,13 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
   declare boxSizingX: number | null;
   declare boxSizingY: number | null;
   declare boxSizingZ: number | null;
-  declare sizingMeasure: SizingEnum | null;
+  declare sizingMeasure: SizingMeasure | null;
   declare userId: ForeignKey<User['id']> | null;
   declare addressId: ForeignKey<Address['id']> | null;
   declare deliverAt: Date | null;
   declare recievedAt: Date | null;
   declare massControlValue: number | null;
-  declare massMeasure: MassEnum | null;
+  declare massMeasure: MassMeasure | null;
   declare comment: string | null;
   declare trackingCode: string | null;
   declare user?: NonAttribute<User>;
@@ -196,8 +196,8 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isSizingEnumValidator(value: unknown) {
-              if (!isSizingEnum(value)) {
+            isSizingMeasureValidator(value: unknown) {
+              if (!isSizingMeasure(value)) {
                 throw new Error(`Invalid sizing measure: ${value}`);
               }
             }
@@ -240,7 +240,7 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           type: DataTypes.STRING,
           allowNull: true,
           validate: {
-            isIn: [Object.values(MassEnum)]
+            isIn: [Object.values(MassMeasure)]
           }
         },
         comment: {
