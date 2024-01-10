@@ -23,6 +23,7 @@ export const initCurrencyConversionModel = async (dbInstance: Sequelize) => {
       CurrencyConversion.init({
         sourceCurrencyCode: {
           type: DataTypes.SMALLINT,
+          primaryKey: true,
           allowNull: false,
           validate: {
             isCurrencyCodeValidator(value: unknown) {
@@ -34,6 +35,7 @@ export const initCurrencyConversionModel = async (dbInstance: Sequelize) => {
         },
         targetCurrencyCode: {
           type: DataTypes.SMALLINT,
+          primaryKey: true,
           allowNull: false,
           validate: {
             isCurrencyCodeValidator(value: unknown) {
