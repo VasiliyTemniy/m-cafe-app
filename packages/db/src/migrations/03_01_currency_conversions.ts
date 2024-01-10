@@ -48,7 +48,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
   if (!constraintCheck[0]) {
     await queryInterface.addConstraint('currency_conversions', {
       fields: [
-        'source_id', 'target_id'
+        'source_currency_code', 'target_currency_code'
       ],
       type: 'primary key',
       name: 'currency_conversions_pkey'
