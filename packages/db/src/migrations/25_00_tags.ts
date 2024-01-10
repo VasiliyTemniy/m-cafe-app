@@ -1,5 +1,4 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { isTagParentType } from '@m-cafe-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
@@ -9,20 +8,12 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       primaryKey: true,
       autoIncrement: true
     },
-    parent_id: {
+    approved_by: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    parent_type: {
-      type: DataTypes.SMALLINT,
-      allowNull: false,
-      validate: {
-        isTagParentTypeValidator(value: unknown) {
-          if (!isTagParentType(value)) {
-            throw new Error(`Invalid tag parent type: ${value}`);
-          }
-        }
-      },
+      allowNull: true,
+      references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT'
     },
     // name locs are referenced from locs table
     name: {

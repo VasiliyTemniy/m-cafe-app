@@ -24,6 +24,7 @@ import { User } from './User.js';
 import { DynamicModule } from './DynamicModule.js';
 import { View } from './View.js';
 import { Tag } from './Tag.js';
+import { TagRelation } from './TagRelation.js';
 
 
 export class Picture extends Model<InferAttributes<Picture>, InferCreationAttributes<Picture>> {
@@ -239,12 +240,16 @@ export const initPictureAssociations = async () => {
         foreignKeyConstraint: false
       });
 
-      Picture.hasMany(Tag, {
-        foreignKey: 'parentId',
-        as: 'tags',
-        scope: {
-          parentType: TagParentType.Picture
+      Picture.belongsToMany(Tag, {
+        through: {
+          model: TagRelation,
+          scope: {
+            parentType: TagParentType.Picture
+          },
         },
+        foreignKey: 'parentId',
+        otherKey: 'tagId',
+        as: 'tags',
         constraints: false,
         foreignKeyConstraint: false
       });

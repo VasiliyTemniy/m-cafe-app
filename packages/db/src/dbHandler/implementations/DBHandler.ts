@@ -200,6 +200,7 @@ export class DBHandler implements IDBHandler {
     await this.models.initDetailModel(this.dbInstance);
     await this.models.initViewModel(this.dbInstance);
     await this.models.initTagModel(this.dbInstance);
+    await this.models.initTagRelationModel(this.dbInstance);
     await this.models.initFixedEnumModel(this.dbInstance);
 
     await this.models.initAddressAssociations();

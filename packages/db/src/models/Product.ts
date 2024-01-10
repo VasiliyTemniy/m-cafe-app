@@ -40,6 +40,7 @@ import { User } from './User.js';
 import { Organization } from './Organization.js';
 import { View } from './View.js';
 import { Tag } from './Tag.js';
+import { TagRelation } from './TagRelation.js';
 
 
 export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
@@ -449,12 +450,16 @@ export const initProductAssociations = async () => {
         foreignKeyConstraint: false
       });
 
-      Product.hasMany(Tag, {
-        foreignKey: 'parentId',
-        as: 'tags',
-        scope: {
-          parentType: TagParentType.Product
+      Product.belongsToMany(Tag, {
+        through: {
+          model: TagRelation,
+          scope: {
+            parentType: TagParentType.Product
+          },
         },
+        foreignKey: 'parentId',
+        otherKey: 'tagId',
+        as: 'tags',
         constraints: false,
         foreignKeyConstraint: false
       });

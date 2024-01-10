@@ -3,27 +3,30 @@ import type {
   InferCreationAttributes,
   NonAttribute,
   Sequelize,
-  CreationOptional
+  CreationOptional,
+  ForeignKey
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType, TagParentType, isTagParentType } from '@m-cafe-app/shared-constants';
+import { LocParentType, LocType, TagParentType } from '@m-cafe-app/shared-constants';
 import { Product } from './Product.js';
 import { Picture } from './Picture.js';
 import { Facility } from './Facility.js';
 import { Organization } from './Organization.js';
 import { Loc } from './Loc.js';
+import { User } from './User.js';
+import { TagRelation } from './TagRelation.js';
 
 
 export class Tag extends Model<InferAttributes<Tag>, InferCreationAttributes<Tag>> {
   declare id: CreationOptional<number>;
-  declare parentId: number;
-  declare parentType: TagParentType;
+  declare approvedBy: ForeignKey<User['id']> | null;
   declare name: string;
   declare product?: NonAttribute<Product>;
   declare picture?: NonAttribute<Picture>;
   declare organization?: NonAttribute<Organization>;
   declare facility?: NonAttribute<Facility>;
   declare nameLocs?: NonAttribute<Loc[]>;
+  declare approvedByAuthor?: NonAttribute<User>;
 }
 
 
@@ -36,20 +39,12 @@ export const initTagModel = async (dbInstance: Sequelize) => {
           primaryKey: true,
           autoIncrement: true
         },
-        parentId: {
+        approvedBy: {
           type: DataTypes.INTEGER,
-          allowNull: false,
-        },
-        parentType: {
-          type: DataTypes.SMALLINT,
-          allowNull: false,
-          validate: {
-            isTagParentTypeValidator(value: unknown) {
-              if (!isTagParentType(value)) {
-                throw new Error(`Invalid tag parent type: ${value}`);
-              }
-            }
-          },
+          allowNull: true,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         },
         // name locs are referenced from locs table
         name: {
@@ -75,46 +70,56 @@ export const initTagAssociations = async () => {
   return new Promise<void>((resolve, reject) => {
     try {
 
-      Tag.belongsTo(Picture, {
-        foreignKey: 'parentId',
-        targetKey: 'id',
+      Tag.belongsToMany(Picture, {
+        through: {
+          model: TagRelation,
+          scope: {
+            parentType: TagParentType.Picture
+          }
+        },
+        foreignKey: 'tagId',
+        otherKey: 'parentId',
         as: 'picture',
-        scope: {
-          parentType: TagParentType.Picture
-        },
         constraints: false,
         foreignKeyConstraint: false
       });
 
-      Tag.belongsTo(Product, {
-        foreignKey: 'parentId',
-        targetKey: 'id',
+      Tag.belongsToMany(Product, {
+        through: {
+          model: TagRelation,
+          scope: {
+            parentType: TagParentType.Product
+          }
+        },
+        foreignKey: 'tagId',
+        otherKey: 'parentId',
         as: 'product',
-        scope: {
-          parentType: TagParentType.Product
-        },
         constraints: false,
         foreignKeyConstraint: false
       });
 
-      Tag.belongsTo(Organization, {
-        foreignKey: 'parentId',
-        targetKey: 'id',
+      Tag.belongsToMany(Organization, {
+        through: {
+          model: TagRelation,
+          scope: {
+            parentType: TagParentType.Organization
+          }
+        },
+        foreignKey: 'tagId',
+        otherKey: 'parentId',
         as: 'organization',
-        scope: {
-          parentType: TagParentType.Organization
-        },
         constraints: false,
         foreignKeyConstraint: false
       });
 
-      Tag.belongsTo(Facility, {
-        foreignKey: 'parentId',
-        targetKey: 'id',
-        as: 'facility',
-        scope: {
-          parentType: TagParentType.Facility
+      Tag.belongsToMany(Facility, {
+        through: {
+          model: TagRelation,
+          scope: {
+            parentType: TagParentType.Facility
+          }
         },
+        as: 'facility',
         constraints: false,
         foreignKeyConstraint: false
       });
@@ -128,6 +133,12 @@ export const initTagAssociations = async () => {
         },
         constraints: false,
         foreignKeyConstraint: false
+      });
+
+      Tag.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'approvedBy',
+        as: 'approvedByAppAdmin',
       });
 
       resolve();

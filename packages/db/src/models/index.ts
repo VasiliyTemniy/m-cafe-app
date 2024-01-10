@@ -53,5 +53,6 @@ export * from './DetailGroup.js';
 export * from './Detail.js';
 export * from './View.js';
 export * from './Tag.js';
+export * from './TagRelation.js';
 export * from './FixedEnum.js';
 export * from './commonIncludes.js';
