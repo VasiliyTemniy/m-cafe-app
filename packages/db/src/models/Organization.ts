@@ -198,6 +198,19 @@ export const initOrganizationModel = async (dbInstance: Sequelize) => {
         underscored: true,
         timestamps: true,
         modelName: 'organization',
+        defaultScope: {
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          }
+        },
+        scopes: {
+          raw: {
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          },
+          allWithTimestamps: {}
+        }
       });
       
       resolve();
