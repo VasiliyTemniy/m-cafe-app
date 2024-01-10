@@ -215,6 +215,9 @@ export const initApiRequestModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isApiRequestProtocolValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isApiRequestProtocol(value)) {
                 throw new Error(`Invalid api request protocol: ${value}`);
               }

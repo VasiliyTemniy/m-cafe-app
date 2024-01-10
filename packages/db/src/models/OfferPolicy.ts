@@ -183,6 +183,9 @@ export const initOfferPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isCurrencyCodeValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isCurrencyCode(value)) {
                 throw new Error(`Invalid currency code: ${value}`);
               }

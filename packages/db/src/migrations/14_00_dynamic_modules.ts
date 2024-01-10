@@ -72,6 +72,9 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
       validate: {
         isDynamicModulePresetValidator(value: unknown) {
+          if (!value) {
+            return;
+          }
           if (!isDynamicModulePreset(value)) {
             throw new Error(`Invalid dynamic module preset: ${value}`);
           }

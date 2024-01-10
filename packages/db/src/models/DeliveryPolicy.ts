@@ -121,6 +121,9 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isSizingMeasureValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isSizingMeasure(value)) {
                 throw new Error(`Invalid sizing measure: ${value}`);
               }
@@ -140,6 +143,9 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isMassMeasureValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isMassMeasure(value)) {
                 throw new Error(`Invalid mass measure: ${value}`);
               }
@@ -159,6 +165,9 @@ export const initDeliveryPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isVolumeMeasureValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isVolumeMeasure(value)) {
                 throw new Error(`Invalid volume measure: ${value}`);
               }

@@ -88,6 +88,9 @@ export const initOrderPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isOrderPaymentMethodValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isOrderPaymentMethod(value)) {
                 throw new Error(`Invalid order payment method: ${value}`);
               }
@@ -99,6 +102,9 @@ export const initOrderPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isOrderConfirmationMethodValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isOrderConfirmationMethod(value)) {
                 throw new Error(`Invalid order confirmation method: ${value}`);
               }
@@ -110,6 +116,9 @@ export const initOrderPolicyModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isOrderDistanceAvailabilityValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isOrderDistanceAvailability(value)) {
                 throw new Error(`Invalid order distance availability: ${value}`);
               }

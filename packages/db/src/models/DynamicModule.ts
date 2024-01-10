@@ -119,6 +119,9 @@ export const initDynamicModuleModel = async (dbInstance: Sequelize) => {
           allowNull: true,
           validate: {
             isDynamicModulePresetValidator(value: unknown) {
+              if (!value) {
+                return;
+              }
               if (!isDynamicModulePreset(value)) {
                 throw new Error(`Invalid dynamic module preset: ${value}`);
               }

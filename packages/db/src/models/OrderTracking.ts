@@ -86,6 +86,9 @@ export const initOrderTrackingModel = async (dbInstance: Sequelize) => {
           validate: {
             isMassMeasureValidator(value: unknown) {
               if (!isMassMeasure(value)) {
+                if (!value) {
+                  return;
+                }
                 throw new Error(`Invalid mass measure: ${value}`);
               }
             }

@@ -129,6 +129,9 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
       validate: {
         isCurrencyCodeValidator(value: unknown) {
+          if (!value) {
+            return;
+          }
           if (!isCurrencyCode(value)) {
             throw new Error(`Invalid currency code: ${value}`);
           }

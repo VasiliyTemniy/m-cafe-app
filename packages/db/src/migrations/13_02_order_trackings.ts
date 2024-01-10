@@ -51,6 +51,9 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: true,
       validate: {
         isMassMeasureValidator(value: unknown) {
+          if (!value) {
+            return;
+          }
           if (!isMassMeasure(value)) {
             throw new Error(`Invalid mass measure: ${value}`);
           }
