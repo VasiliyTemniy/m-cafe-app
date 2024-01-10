@@ -181,7 +181,7 @@ export const initUserModel = async (dbInstance: Sequelize) => {
         defaultScope: {
           where: {
             rights: {
-              [Op.ne]: 'disabled'
+              [Op.ne]: UserRights.Disabled
             }
           },
           attributes: {
