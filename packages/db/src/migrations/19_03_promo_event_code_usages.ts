@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { DataTypes } from 'sequelize';
+import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('promo_event_code_usages', {
@@ -22,6 +22,21 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       allowNull: false
     }
   });
+
+  const constraintCheck = await queryInterface.sequelize.query(
+    "SELECT * FROM pg_constraint WHERE conname = 'promo_event_code_usages_pkey'",
+    { type: QueryTypes.SELECT }
+  );
+
+  if (!constraintCheck[0]) {
+    await queryInterface.addConstraint('promo_event_code_usages', {
+      fields: [
+        'promo_code_id', 'user_id'
+      ],
+      type: 'primary key',
+      name: 'promo_event_code_usages_pkey'
+    });
+  }
 };
 
 export const down = async ({ context: queryInterface }: MigrationContext) => {
