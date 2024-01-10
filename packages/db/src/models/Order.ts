@@ -18,6 +18,7 @@ import {
   ReviewParentType,
   SizingMeasure,
   isCurrencyCode,
+  isMassMeasure,
   isOrderDeliveryType,
   isOrderPaymentMethod,
   isOrderPaymentStatus,
@@ -241,11 +242,15 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
           allowNull: true,
         },
         massMeasure: {
-          type: DataTypes.STRING,
+          type: DataTypes.SMALLINT,
           allowNull: true,
           validate: {
-            isIn: [Object.values(MassMeasure)]
-          }
+            isMassMeasureValidator(value: unknown) {
+              if (!isMassMeasure(value)) {
+                throw new Error(`Invalid mass measure: ${value}`);
+              }
+            }
+          },
         },
         comment: {
           type: DataTypes.STRING,
@@ -273,13 +278,13 @@ export const initOrderModel = async (dbInstance: Sequelize) => {
             exclude: ['createdAt', 'updatedAt']
           }
         },
-        // See initOrderScopes.ts for more
         scopes: {
           raw: {
             attributes: {
               exclude: ['createdAt', 'updatedAt']
             }
-          }
+          },
+          allWithTimestamps: {}
         }
       });
 
