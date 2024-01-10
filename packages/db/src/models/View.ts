@@ -31,10 +31,12 @@ export const initViewModel = async (dbInstance: Sequelize) => {
         },
         parentId: {
           type: DataTypes.INTEGER,
+          primaryKey: true,
           allowNull: false,
         },
         parentType: {
           type: DataTypes.SMALLINT,
+          primaryKey: true,
           allowNull: false,
           validate: {
             isViewParentTypeValidator(value: unknown) {
