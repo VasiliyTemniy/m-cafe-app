@@ -33,7 +33,7 @@ export const initLocStringModel = async (dbInstance: Sequelize) => {
         sequelize: dbInstance,
         underscored: true,
         timestamps: false,
-        modelName: 'loc'
+        modelName: 'loc_string'
       });
 
       resolve();
@@ -49,7 +49,7 @@ export const initLocStringAssociations = async () => {
     try {
 
       LocString.hasMany(Loc, {
-        foreignKey: 'locId',
+        foreignKey: 'locStringId',
         as: 'locs',
       });
 
