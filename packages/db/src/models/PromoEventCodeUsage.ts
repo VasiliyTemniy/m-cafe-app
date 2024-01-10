@@ -26,6 +26,7 @@ export const initPromoEventCodeUsageModel = async (dbInstance: Sequelize) => {
       PromoEventCodeUsage.init({
         promoCodeId: {
           type: DataTypes.INTEGER,
+          primaryKey: true,
           allowNull: false,
           references: { model: 'promo_event_codes', key: 'id' },
           onUpdate: 'CASCADE',
@@ -33,6 +34,7 @@ export const initPromoEventCodeUsageModel = async (dbInstance: Sequelize) => {
         },
         userId: {
           type: DataTypes.INTEGER,
+          primaryKey: true,
           allowNull: false,
           references: { model: 'users', key: 'id' },
           onUpdate: 'CASCADE',
@@ -46,7 +48,7 @@ export const initPromoEventCodeUsageModel = async (dbInstance: Sequelize) => {
         sequelize: dbInstance,
         underscored: true,
         timestamps: false,
-        modelName: 'promo_event_code'
+        modelName: 'promo_event_code_usage'
       });
 
       resolve();
