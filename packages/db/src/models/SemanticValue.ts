@@ -64,7 +64,7 @@ export const initSemanticValueModel = (dbInstance: Sequelize) => {
         indexes: [
           {
             unique: true,
-            fields: ['semanticId', 'technicalValue']
+            fields: ['semantic_id', 'technical_value']
           }
         ],
       });
