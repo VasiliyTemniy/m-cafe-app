@@ -12,7 +12,7 @@ import { LocString } from './LocString.js';
 
 
 export class Loc extends Model<InferAttributes<Loc>, InferCreationAttributes<Loc>> {
-  declare locId: ForeignKey<LocString['id']>;
+  declare locStringId: ForeignKey<LocString['id']>;
   declare languageCode: LanguageCode;
   declare locType: LocType;
   declare parentId: number;
@@ -27,10 +27,10 @@ export const initLocModel = async (dbInstance: Sequelize) => {
   return new Promise<void>((resolve, reject) => {
     try {
       Loc.init({
-        locId: {
+        locStringId: {
           type: DataTypes.INTEGER,
           primaryKey: true,
-          references: { model: 'locs', key: 'id' },
+          references: { model: 'loc_strings', key: 'id' },
           allowNull: false,
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
@@ -118,7 +118,7 @@ export const initLocAssociations = async () => {
 
       Loc.belongsTo(LocString, {
         targetKey: 'id',
-        foreignKey: 'locId',
+        foreignKey: 'locStringId',
         as: 'locString',
       });
 

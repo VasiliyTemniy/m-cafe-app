@@ -4,9 +4,9 @@ import { isLocType, isLocParentType, isLanguageCode } from '@m-cafe-app/shared-c
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('locs', {
-    loc_id: {
+    loc_string_id: {
       type: DataTypes.INTEGER,
-      references: { model: 'locs', key: 'id' },
+      references: { model: 'loc_strings', key: 'id' },
       allowNull: false,
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
@@ -66,7 +66,7 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
   if (!constraintCheck[0]) {
     await queryInterface.addConstraint('locs', {
       fields: [
-        'loc_id', 'language_code', 'loc_type', 'parent_id', 'parent_type'
+        'loc_string_id', 'language_code', 'loc_type', 'parent_id', 'parent_type'
       ],
       type: 'primary key',
       name: 'locs_pkey'
