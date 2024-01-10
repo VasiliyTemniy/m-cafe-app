@@ -15,6 +15,7 @@ import {
   LocType,
   PictureParentType,
   ReviewParentType,
+  TagParentType,
   isFacilityType
 } from '@m-cafe-app/shared-constants';
 import { Order } from './Order.js';
@@ -28,6 +29,8 @@ import { Review } from './Review.js';
 import { Organization } from './Organization.js';
 import { Contact } from './Contact.js';
 import { DetailGroup } from './DetailGroup.js';
+import { TagRelation } from './TagRelation.js';
+import { Tag } from './Tag.js';
 
 
 export class Facility extends Model<InferAttributes<Facility>, InferCreationAttributes<Facility>> {
@@ -238,6 +241,20 @@ export const initFacilityAssociations = async () => {
         scope: {
           parentType: DetailGroupParentType.Facility
         },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Facility.belongsToMany(Tag, {
+        through: {
+          model: TagRelation,
+          scope: {
+            parentType: TagParentType.Facility
+          },
+        },
+        foreignKey: 'parentId',
+        otherKey: 'tagId',
+        as: 'tags',
         constraints: false,
         foreignKeyConstraint: false
       });

@@ -12,6 +12,7 @@ import {
   DetailGroupParentType,
   LocParentType,
   LocType,
+  TagParentType,
   orgDefaultMaxDetails,
   orgDefaultMaxDynamicModules,
   orgDefaultMaxEvents,
@@ -27,6 +28,8 @@ import { Loc } from './Loc.js';
 import { User } from './User.js';
 import { Contact } from './Contact.js';
 import { DetailGroup } from './DetailGroup.js';
+import { Tag } from './Tag.js';
+import { TagRelation } from './TagRelation.js';
 
 
 export class Organization extends Model<InferAttributes<Organization>, InferCreationAttributes<Organization>> {
@@ -57,6 +60,7 @@ export class Organization extends Model<InferAttributes<Organization>, InferCrea
   declare orgAdmin?: NonAttribute<User>;
   declare contacts?: NonAttribute<Contact[]>;
   declare detailGroups?: NonAttribute<DetailGroup[]>;
+  declare tags?: NonAttribute<Tag[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -258,6 +262,20 @@ export const initOrganizationAssociations = async () => {
         scope: {
           parentType: DetailGroupParentType.Organization
         },
+        constraints: false,
+        foreignKeyConstraint: false
+      });
+
+      Organization.belongsToMany(Tag, {
+        through: {
+          model: TagRelation,
+          scope: {
+            parentType: TagParentType.Organization
+          },
+        },
+        foreignKey: 'parentId',
+        otherKey: 'tagId',
+        as: 'tags',
         constraints: false,
         foreignKeyConstraint: false
       });
