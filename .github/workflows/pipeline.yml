@@ -72,7 +72,7 @@ jobs:
       #   run: yarn prepare
 
       # Temporary build
-      -name: Temporary Build - shared-constants
+      - name: Temporary Build - shared-constants
         run: yarn run build:shared-constants
 
       # Temporary build
