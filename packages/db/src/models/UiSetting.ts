@@ -104,7 +104,7 @@ export const initUiSettingModel = async (dbInstance: Sequelize) => {
           light: {
             where: {
               theme: {
-                [Op.eq]: 'light'
+                [Op.eq]: UiSettingTheme.Light
               },
               value: {
                 [Op.ne]: 'false'
@@ -114,7 +114,7 @@ export const initUiSettingModel = async (dbInstance: Sequelize) => {
           dark: {
             where: {
               theme: {
-                [Op.eq]: 'dark'
+                [Op.eq]: UiSettingTheme.Dark
               },
               value: {
                 [Op.ne]: 'false'
