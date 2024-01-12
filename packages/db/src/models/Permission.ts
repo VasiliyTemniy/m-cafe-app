@@ -4,6 +4,7 @@ import type {
   InferCreationAttributes,
   CreationOptional,
   NonAttribute,
+  ForeignKey
 } from 'sequelize';
 import {
   CoverageParentType,
@@ -16,17 +17,25 @@ import {
 } from '@m-cafe-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Coverage } from './Coverage.js';
+import { User } from './User.js';
+import { Organization } from './Organization.js';
 
 
 export class Permission extends Model<InferAttributes<Permission>, InferCreationAttributes<Permission>> {
   declare id: CreationOptional<number>;
+  declare organizationId: ForeignKey<Organization['id']>;
+  declare createdBy: ForeignKey<User['id']>;
+  declare updatedBy: ForeignKey<User['id']>;
   declare target: PermissionTarget;
   declare access: PermissionAccess;
   declare action: PermissionAction;
-  declare isActive: boolean;
+  declare isActive: CreationOptional<boolean>;
   declare startsAt: Date | null;
   declare endsAt: Date | null;
   declare coverages?: NonAttribute<Coverage[]>;
+  declare organization?: NonAttribute<Organization>;
+  declare createdByAuthor?: NonAttribute<User>;
+  declare updatedByAuthor?: NonAttribute<User>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -40,6 +49,27 @@ export const initPermissionModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
+        },
+        organizationId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'organizations', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+        },
+        createdBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         },
         target: {
           type: DataTypes.SMALLINT,
@@ -114,6 +144,24 @@ export const initPermissionModel = async (dbInstance: Sequelize) => {
 export const initPermissionAssociations = async () => {
   return new Promise<void>((resolve, reject) => {
     try {
+
+      Permission.belongsTo(Organization, {
+        targetKey: 'id',
+        foreignKey: 'organizationId',
+        as: 'organization',
+      });
+
+      Permission.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'createdBy',
+        as: 'createdByAuthor',
+      });
+
+      Permission.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'updatedBy',
+        as: 'updatedByAuthor',
+      });
 
       Permission.hasMany(Coverage, {
         sourceKey: 'id',
