@@ -8,7 +8,7 @@ import {
   CoverageParentType,
   isCoverageEntityType,
   isCoverageParentType
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 
 

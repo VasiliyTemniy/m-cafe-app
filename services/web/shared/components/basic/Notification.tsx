@@ -1,5 +1,5 @@
-import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
-import { useAppSelector, useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
+import type { CommonProps } from '@m-market-app/frontend-logic/types';
+import { useAppSelector, useInitLC } from '@m-market-app/frontend-logic/shared/hooks';
 
 const notificationTimeout = Number(process.env.NOTIFICATION_TIMEOUT) || 4000;
 

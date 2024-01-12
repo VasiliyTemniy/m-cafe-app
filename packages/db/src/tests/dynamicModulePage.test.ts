@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 import { dbHandler } from '../db';
 import { createOrgAdminManager, randomEnumValue } from './db_test_helper';
-import { DynamicModulePlacementType, DynamicModuleType } from '@m-cafe-app/shared-constants';
+import { DynamicModulePlacementType, DynamicModuleType } from '@m-market-app/shared-constants';
 
 
 

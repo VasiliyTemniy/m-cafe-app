@@ -1,10 +1,10 @@
-import type { EditIngredientBody, NewIngredientBody } from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/shared-constants';
+import type { EditIngredientBody, NewIngredientBody } from '@m-market-app/utils';
+import { timestampsKeys } from '@m-market-app/shared-constants';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../app';
-import { connectToDatabase, Ingredient, LocString, User } from '@m-cafe-app/db';
+import { connectToDatabase, Ingredient, LocString, User } from '@m-market-app/db';
 import config from '../utils/config';
 import { validAdminInDB, validManagerInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
@@ -36,13 +36,13 @@ describe('Ingredient requests tests', () => {
       }
     });
 
-    await User.create(validAdminInDB.dbEntry);
-    await User.create(validManagerInDB.dbEntry);
+    await User.create(validAdminInDB.dtn);
+    await User.create(validManagerInDB.dtn);
 
     await Session.destroy({ where: {} });
     
-    tokenCookieAdmin = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
-    tokenCookieManager = await initLogin(validManagerInDB.dbEntry, validManagerInDB.password, api, 201, userAgent) as string;
+    tokenCookieAdmin = await initLogin(validAdminInDB.dtn, validAdminInDB.password, api, 201, userAgent) as string;
+    tokenCookieManager = await initLogin(validManagerInDB.dtn, validManagerInDB.password, api, 201, userAgent) as string;
 
     // on delete - cascade to ingredient, etc
     await LocString.destroy({ where: {} });
@@ -107,9 +107,9 @@ describe('Ingredient requests tests', () => {
 
     expect(response1.body.error.name).to.equal('AuthorizationError');
 
-    await User.create(validUserInDB.dbEntry);
+    await User.create(validUserInDB.dtn);
 
-    const commonUserTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string; 
+    const commonUserTokenCookie = await initLogin(validUserInDB.dtn, validUserInDB.password, api, 201, userAgent) as string; 
 
     const response2 = await api
       .delete(`${apiBaseUrl}/ingredient/${ingredients[0].id}`)

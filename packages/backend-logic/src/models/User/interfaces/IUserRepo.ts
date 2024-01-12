@@ -1,4 +1,4 @@
-import type { User, UserDTN, UserUniqueProperties } from '@m-cafe-app/models';
+import type { User, UserDTN, UserUniqueProperties } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 export interface IUserRepo extends Omit<ICRUDRepo<User, UserDTN>, 'create'> {

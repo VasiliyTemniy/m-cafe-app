@@ -1,9 +1,9 @@
-import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
+import type { CommonFieldProps } from '@m-market-app/frontend-logic/types';
 import type { FieldHookConfig } from 'formik';
 import { useField } from 'formik';
 import { Image } from '../Image';
 import { Tooltip } from '../Tooltip';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 import { Input } from '../Input';
 
 type FormikTimeFieldProps = FieldHookConfig<string> & CommonFieldProps & {

@@ -1,4 +1,4 @@
-import { CurrencyCode } from '@m-cafe-app/shared-constants';
+import { CurrencyCode } from '@m-market-app/shared-constants';
 import { expect } from 'chai';
 import 'mocha';
 import { dbHandler } from '../db';

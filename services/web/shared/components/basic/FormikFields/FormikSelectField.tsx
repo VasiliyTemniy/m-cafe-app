@@ -1,4 +1,4 @@
-import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
+import type { CommonFieldProps } from '@m-market-app/frontend-logic/types';
 import type { FieldHookConfig } from 'formik';
 import type { MouseEvent } from 'react';
 import { useField } from 'formik';

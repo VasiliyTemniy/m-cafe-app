@@ -6,7 +6,7 @@ import type {
   NonAttribute,
   ForeignKey
 } from 'sequelize';
-import { CoverageParentType, CurrencyCode, LocParentType, LocType, isCurrencyCode } from '@m-cafe-app/shared-constants';
+import { CoverageParentType, CurrencyCode, LocParentType, LocType, isCurrencyCode } from '@m-market-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Organization } from './Organization.js';
 import { User } from './User.js';

@@ -1,7 +1,7 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
-import type { LocStringDT, LocStringDTN } from './LocStringDT';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
+import type { LocDT, LocDTN } from './LocDT';
 import type { Ingredient, IngredientS } from '../domain';
-import { isEntity, isNumber } from '@m-cafe-app/utils';
+import { isEntity, isNumber } from '@m-market-app/utils';
 import { idRequired, nameLocNewProperty, nameLocProperty, stockMeasureLocNewProperty, stockMeasureLocProperty } from './validationHelpers.js';
 
 const ingredientPropertiesGroup: PropertyGroup = {
@@ -11,8 +11,8 @@ const ingredientPropertiesGroup: PropertyGroup = {
 };
 
 export type IngredientDT = Omit<MapToDT<Ingredient>, 'stockMeasureLoc' | 'nameLoc'> & {
-  nameLoc: LocStringDT;
-  stockMeasureLoc: LocStringDT;
+  nameLoc: LocDT;
+  stockMeasureLoc: LocDT;
 };
 
 export const isIngredientDT = (obj: unknown): obj is IngredientDT =>
@@ -21,8 +21,8 @@ export const isIngredientDT = (obj: unknown): obj is IngredientDT =>
   
 
 export type IngredientDTN = Omit<MapToDTN<Ingredient>, 'stockMeasureLoc' | 'nameLoc'> & {
-  nameLoc: LocStringDTN;
-  stockMeasureLoc: LocStringDTN;
+  nameLoc: LocDTN;
+  stockMeasureLoc: LocDTN;
 };
 
 export const isIngredientDTN = (obj: unknown): obj is IngredientDTN =>
@@ -33,7 +33,7 @@ export const isIngredientDTN = (obj: unknown): obj is IngredientDTN =>
  * Simple Ingredient data to be included in foodComponent
  */
 export type IngredientDTS = Omit<MapToDT<IngredientS>, 'nameLoc'> & {
-  nameLoc: LocStringDT;
+  nameLoc: LocDT;
 };
 
 export const isIngredientDTS = (obj: unknown): obj is IngredientDTS =>

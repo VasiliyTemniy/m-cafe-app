@@ -1,8 +1,8 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { UserDT, UserDTU } from '@m-cafe-app/models';
-import { User } from '@m-cafe-app/models';
-import { User as UserPG } from '@m-cafe-app/db';
-import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
+import type { UserDT, UserDTU } from '@m-market-app/models';
+import { User } from '@m-market-app/models';
+import { User as UserPG } from '@m-market-app/db';
+import { toOptionalDate, toOptionalISOString } from '@m-market-app/utils';
 import { AddressMapper } from '../../Address';
 
 

@@ -1,4 +1,4 @@
-import { isCurrencyCode } from '@m-cafe-app/shared-constants';
+import { isCurrencyCode } from '@m-market-app/shared-constants';
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
 

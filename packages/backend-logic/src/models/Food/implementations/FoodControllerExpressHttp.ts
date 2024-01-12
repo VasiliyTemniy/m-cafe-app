@@ -1,8 +1,8 @@
-import type { FoodDT, PictureDT } from '@m-cafe-app/models';
+import type { FoodDT, PictureDT } from '@m-market-app/models';
 import type { IFoodControllerHttp, IFoodService } from '../interfaces';
 import type { Request, Response } from 'express';
-import { isFoodDTN, isFoodDT, isPictureForFoodDTN, isPictureDT, isFoodPictureDTNUMany } from '@m-cafe-app/models';
-import { RequestBodyError, RequestQueryError, UploadFileError } from '@m-cafe-app/utils';
+import { isFoodDTN, isFoodDT, isPictureForFoodDTN, isPictureDT, isFoodPictureDTNUMany } from '@m-market-app/models';
+import { RequestBodyError, RequestQueryError, UploadFileError } from '@m-market-app/utils';
 
 
 export class FoodControllerExpressHttp implements IFoodControllerHttp {

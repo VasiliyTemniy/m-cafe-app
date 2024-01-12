@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 import { dbHandler } from '../db';
-import { CurrencyCode, OfferCodeGenerationMethod, OfferGrantMethod, OfferType } from '@m-cafe-app/shared-constants';
+import { CurrencyCode, OfferCodeGenerationMethod, OfferGrantMethod, OfferType } from '@m-market-app/shared-constants';
 import { createOrgAdminManager } from './db_test_helper';
 
 

@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes, Op } from 'sequelize';
-import { UiSettingComponentGroup, UiSettingTheme, isUiSettingComponentGroup, isUiSettingTheme } from '@m-cafe-app/shared-constants';
+import { UiSettingComponentGroup, UiSettingTheme, isUiSettingComponentGroup, isUiSettingTheme } from '@m-market-app/shared-constants';
 import { Organization } from './Organization.js';
 import { User } from './User.js';
 

@@ -1,8 +1,8 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { DynamicModuleDT } from '@m-cafe-app/models';
-import { DynamicModule } from '@m-cafe-app/models';
-import { DynamicModule as DynamicModulePG } from '@m-cafe-app/db';
-import { toOptionalISOString } from '@m-cafe-app/utils';
+import type { DynamicModuleDT } from '@m-market-app/models';
+import { DynamicModule } from '@m-market-app/models';
+import { DynamicModule as DynamicModulePG } from '@m-market-app/db';
+import { toOptionalISOString } from '@m-market-app/utils';
 import { LocStringMapper } from '../../LocString';
 import { PictureMapper } from '../../Picture';
 

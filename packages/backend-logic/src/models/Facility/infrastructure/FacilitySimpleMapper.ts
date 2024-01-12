@@ -1,8 +1,8 @@
 import type { EntitySimpleMapper } from '../../../utils';
-import type { FacilityDTS } from '@m-cafe-app/models';
-import { Facility, FacilityS } from '@m-cafe-app/models';
-import { Facility as FacilityPG } from '@m-cafe-app/db';
-import { ApplicationError } from '@m-cafe-app/utils';
+import type { FacilityDTS } from '@m-market-app/models';
+import { Facility, FacilityS } from '@m-market-app/models';
+import { Facility as FacilityPG } from '@m-market-app/db';
+import { ApplicationError } from '@m-market-app/utils';
 import { LocStringMapper } from '../../LocString';
 
 

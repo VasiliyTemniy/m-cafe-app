@@ -11,6 +11,7 @@ export class Address {
     readonly cityDistrict?: string,
     readonly region?: string,
     readonly regionDistrict?: string,
+    readonly postalCode?: string,
     readonly createdAt?: Date,
     readonly updatedAt?: Date
   ) {}

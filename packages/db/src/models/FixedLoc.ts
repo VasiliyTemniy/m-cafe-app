@@ -6,7 +6,7 @@ import type {
   Sequelize
 } from 'sequelize';
 import { Model, DataTypes, Op } from 'sequelize';
-import { FixedLocScope, LocParentType, LocType, isFixedLocScope } from '@m-cafe-app/shared-constants';
+import { FixedLocScope, LocParentType, LocType, isFixedLocScope } from '@m-market-app/shared-constants';
 import { Loc } from './Loc.js';
 
 

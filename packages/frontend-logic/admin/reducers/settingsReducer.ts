@@ -1,8 +1,8 @@
 import type { AppDispatch } from '../store';
 import type { TFunction } from '../../shared/hooks';
-import type { UiSettingDT, SafeyAny } from '@m-cafe-app/utils';
+import type { UiSettingDT, SafeyAny } from '@m-market-app/utils';
 import type { ParsedUiSettings, SettingsState } from '../../shared/reducers';
-import { ApplicationError, isUiSettingDT } from '@m-cafe-app/utils';
+import { ApplicationError, isUiSettingDT } from '@m-market-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';

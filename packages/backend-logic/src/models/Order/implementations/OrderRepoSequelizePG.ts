@@ -1,10 +1,10 @@
 import type { IOrderRepo, OrderItem } from '../interfaces';
 import type { Transaction } from 'sequelize';
-import type { OrderPaymentStatus, OrderStatus } from '@m-cafe-app/shared-constants';
-import { Order } from '@m-cafe-app/models';
-import { Order as OrderPG } from '@m-cafe-app/db';
+import type { OrderPaymentStatus, OrderStatus } from '@m-market-app/shared-constants';
+import { Order } from '@m-market-app/models';
+import { Order as OrderPG } from '@m-market-app/db';
 import { OrderMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 
 export class OrderRepoSequelizePG implements IOrderRepo {

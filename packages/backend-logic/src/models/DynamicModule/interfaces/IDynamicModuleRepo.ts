@@ -1,4 +1,4 @@
-import type { DynamicModule, DynamicModuleDTN, LocString } from '@m-cafe-app/models';
+import type { DynamicModule, DynamicModuleDTN, LocString } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 export interface IDynamicModuleRepo extends ICRUDRepo<DynamicModule, DynamicModuleDTN> {

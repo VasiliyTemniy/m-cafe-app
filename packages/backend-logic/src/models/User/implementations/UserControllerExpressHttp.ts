@@ -1,10 +1,10 @@
 import type { IUserControllerHttp, IUserService } from '../interfaces';
 import type { Request, Response } from 'express';
-import type { AddressDT, UserDT } from '@m-cafe-app/models';
+import type { AddressDT, UserDT } from '@m-market-app/models';
 import type { RequestWithUserRights } from '../../../utils';
 import { isRequestCustom } from '../../../utils';
-import { isAddressDT, isAddressDTN, isAdministrateUserBody, isUserDTN, isUserDTU, isUserLoginDT } from '@m-cafe-app/models';
-import { HackError, RequestBodyError, RequestQueryError, UnknownError, hasOwnProperty, isNumber } from '@m-cafe-app/utils';
+import { isAddressDT, isAddressDTN, isAdministrateUserBody, isUserDTN, isUserDTU, isUserLoginDT } from '@m-market-app/models';
+import { HackError, RequestBodyError, RequestQueryError, UnknownError, hasOwnProperty, isNumber } from '@m-market-app/utils';
 import config from '../../../config';
 
 

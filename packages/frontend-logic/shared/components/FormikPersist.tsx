@@ -22,8 +22,8 @@ export const FormikPersist = ({
 
   useEffect(() => {
     const storedState = isSessionStorage
-      ? window.sessionStorage.getItem(`CafeApp:${formName}`)
-      : window.localStorage.getItem(`CafeApp:${formName}`);
+      ? window.sessionStorage.getItem(`marketApp:${formName}`)
+      : window.localStorage.getItem(`marketApp:${formName}`);
     if (storedState && storedState !== null) {
       void setValues(JSON.parse(storedState), true);
     }
@@ -31,9 +31,9 @@ export const FormikPersist = ({
 
   useEffect(() => {
     if (isSessionStorage && dirty) {
-      window.sessionStorage.setItem(`CafeApp:${formName}`, JSON.stringify(debouncedValues));
+      window.sessionStorage.setItem(`marketApp:${formName}`, JSON.stringify(debouncedValues));
     } else {
-      window.localStorage.setItem(`CafeApp:${formName}`, JSON.stringify(debouncedValues));
+      window.localStorage.setItem(`marketApp:${formName}`, JSON.stringify(debouncedValues));
     }
   }, [debouncedValues]);
 

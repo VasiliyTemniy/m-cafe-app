@@ -1,9 +1,9 @@
 import type { IDynamicModuleRepo } from '../interfaces';
-import type { DynamicModule, DynamicModuleDTN, LocString } from '@m-cafe-app/models';
+import type { DynamicModule, DynamicModuleDTN, LocString } from '@m-market-app/models';
 import type { Transaction } from 'sequelize';
-import { DynamicModule as DynamicModulePG } from '@m-cafe-app/db';
+import { DynamicModule as DynamicModulePG } from '@m-market-app/db';
 import { DynamicModuleMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 
 export class DynamicModuleRepoSequelizePG implements IDynamicModuleRepo {

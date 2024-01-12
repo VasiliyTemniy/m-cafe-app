@@ -6,7 +6,7 @@ import type {
   NonAttribute,
   ForeignKey
 } from 'sequelize';
-import { ContactParentType, ContactTarget, ContactType, isContactParentType, isContactTarget, isContactType } from '@m-cafe-app/shared-constants';
+import { ContactParentType, ContactTarget, ContactType, isContactParentType, isContactTarget, isContactType } from '@m-market-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { User } from './User.js';
 

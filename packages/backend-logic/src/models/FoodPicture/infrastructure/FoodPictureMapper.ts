@@ -1,8 +1,8 @@
-import type { FoodPicture as FoodPicturePG } from '@m-cafe-app/db';
-import type { FoodPictureDT } from '@m-cafe-app/models';
+import type { FoodPicture as FoodPicturePG } from '@m-market-app/db';
+import type { FoodPictureDT } from '@m-market-app/models';
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import { FoodPicture } from '@m-cafe-app/models';
-import { ApplicationError } from '@m-cafe-app/utils';
+import { FoodPicture } from '@m-market-app/models';
+import { ApplicationError } from '@m-market-app/utils';
 import { PictureMapper } from '../../Picture';
 
 export class FoodPictureMapper implements EntityDBMapper<FoodPicture, FoodPicturePG>, EntityDTMapper<FoodPicture, FoodPictureDT> {

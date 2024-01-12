@@ -1,7 +1,7 @@
-import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
+import type { CommonProps } from '@m-market-app/frontend-logic/types';
 // import { useCallback, useEffect, useRef, useState } from 'react';
-// import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-// import { debounceMouseEvent } from '@m-cafe-app/frontend-logic/utils';
+// import { useInitLC } from '@m-market-app/frontend-logic/shared/hooks';
+// import { debounceMouseEvent } from '@m-market-app/frontend-logic/utils';
 
 interface TooltipProps extends CommonProps {
   text: string;

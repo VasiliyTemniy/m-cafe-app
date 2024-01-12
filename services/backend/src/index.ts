@@ -1,10 +1,11 @@
 import { PORT } from './utils/config.js';
 import app from './app.js';
 import http from 'http';
-import { logger } from '@m-cafe-app/utils';
-import { dbHandler } from '@m-cafe-app/db';
+import { logger } from '@m-market-app/utils';
+import { dbHandler } from '@m-market-app/db';
 import { authController, fixedLocService, sessionService, uiSettingService } from './controllers';
 import { userController } from './controllers';
+import { FIXED_LOCS_PATH, FIXED_LOCS_EXT } from './utils/config.js';
 
 const start = async () => {
   await dbHandler.connect();
@@ -28,7 +29,7 @@ const start = async () => {
   await fixedLocService.connectInmem();
   await fixedLocService.pingInmem();
   logger.info('connected to fixed loc inmem');
-  await fixedLocService.initFixedLocs('locales', 'jsonc');
+  await fixedLocService.initFixedLocs(FIXED_LOCS_PATH, FIXED_LOCS_EXT);
   logger.info('initialized fixed locs');
   await sessionService.connectInmem();
   await sessionService.pingInmem();

@@ -17,7 +17,7 @@ import {
   ReviewParentType,
   TagParentType,
   isFacilityType
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { Order } from './Order.js';
 import { Address } from './Address.js';
 import { Loc } from './Loc.js';

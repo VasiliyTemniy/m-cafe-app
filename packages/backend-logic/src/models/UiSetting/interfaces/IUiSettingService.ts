@@ -1,4 +1,4 @@
-import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingDTS } from '@m-cafe-app/models';
+import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingDTS } from '@m-market-app/models';
 import type { ICRUDService, IHasInmemRepoService } from '../../../utils';
 
 export interface IUiSettingService extends ICRUDService<UiSettingDT, UiSettingDTN>, IHasInmemRepoService {

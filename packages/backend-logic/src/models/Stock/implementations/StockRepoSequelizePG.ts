@@ -1,10 +1,10 @@
 import type { IStockRepo } from '../interfaces';
-import type { StockDTN } from '@m-cafe-app/models';
+import type { StockDTN } from '@m-market-app/models';
 import type { Transaction } from 'sequelize';
-import { Stock } from '@m-cafe-app/models';
-import { Stock as StockPG } from '@m-cafe-app/db';
+import { Stock } from '@m-market-app/models';
+import { Stock as StockPG } from '@m-market-app/db';
 import { StockMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 export class StockRepoSequelizePG implements IStockRepo {
 

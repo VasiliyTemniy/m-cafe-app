@@ -1,7 +1,7 @@
-import type { MapToDT, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, PropertyGroup } from '@m-market-app/utils';
 import type { OrderFood } from '../domain';
 import type { FoodDTS } from './FoodDT.js';
-import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
+import { isEntity, isNumber, isString } from '@m-market-app/utils';
 import { isFoodDTS } from './FoodDT.js';
 
 

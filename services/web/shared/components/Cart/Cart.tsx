@@ -1,4 +1,4 @@
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 import { Image } from '../basic';
 
 export const Cart = () => {

@@ -3,9 +3,9 @@ import type {
   EditUiSettingBody,
   EditManyUiSettingBody,
   UiSettingDT
-} from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
 import axios from 'axios';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 import sharedUiSettingsService from '../../shared/services/uiSetting';
 
 /**

@@ -1,6 +1,6 @@
 import type { DestroySessionWhere, ISessionRepo, ISessionService } from '../interfaces';
-import { AuthResponse, Session } from '@m-cafe-app/models';
-import { ApplicationError } from '@m-cafe-app/utils';
+import { AuthResponse, Session } from '@m-market-app/models';
+import { ApplicationError } from '@m-market-app/utils';
 import sha1 from 'sha1';
 
 

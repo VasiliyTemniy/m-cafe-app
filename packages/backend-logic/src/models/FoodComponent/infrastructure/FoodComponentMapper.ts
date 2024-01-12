@@ -1,8 +1,8 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { FoodComponentDT, FoodDTS, IngredientDTS } from '@m-cafe-app/models';
-import { FoodComponent } from '@m-cafe-app/models';
-import { FoodComponent as FoodComponentPG, Food as FoodPG, Ingredient as IngredientPG } from '@m-cafe-app/db';
-import { ApplicationError, toOptionalISOString } from '@m-cafe-app/utils';
+import type { FoodComponentDT, FoodDTS, IngredientDTS } from '@m-market-app/models';
+import { FoodComponent } from '@m-market-app/models';
+import { FoodComponent as FoodComponentPG, Food as FoodPG, Ingredient as IngredientPG } from '@m-market-app/db';
+import { ApplicationError, toOptionalISOString } from '@m-market-app/utils';
 import { FoodSimpleMapper } from '../../Food/infrastructure';
 import { IngredientSimpleMapper } from '../../Ingredient';
 

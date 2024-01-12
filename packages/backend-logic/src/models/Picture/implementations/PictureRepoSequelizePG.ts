@@ -1,9 +1,9 @@
-import type { LocString, Picture } from '@m-cafe-app/models';
+import type { LocString, Picture } from '@m-market-app/models';
 import type { IPictureRepo } from '../interfaces';
 import type { Transaction } from 'sequelize';
-import { Picture as PicturePG } from '@m-cafe-app/db';
+import { Picture as PicturePG } from '@m-market-app/db';
 import { PictureMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 
 export class PictureRepoSequelizePG implements IPictureRepo {

@@ -1,4 +1,4 @@
-import type { LocString, LocStringDTN, PictureDT } from '@m-cafe-app/models';
+import type { LocString, LocStringDTN, PictureDT } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDService } from '../../../utils';
 
 

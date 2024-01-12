@@ -1,6 +1,6 @@
 import type { EntitySimpleMapper } from '../../../utils';
-import type { Ingredient as IngredientPG } from '@m-cafe-app/db';
-import { IngredientS, type Ingredient, type IngredientDTS } from '@m-cafe-app/models';
+import type { Ingredient as IngredientPG } from '@m-market-app/db';
+import { IngredientS, type Ingredient, type IngredientDTS } from '@m-market-app/models';
 import { LocStringMapper } from '../../LocString';
 
 export class IngredientSimpleMapper implements EntitySimpleMapper<Ingredient, IngredientS, IngredientPG, IngredientDTS> {

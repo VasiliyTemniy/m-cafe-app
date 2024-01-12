@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-import { OrderTrackingStatus, isMassMeasure, isOrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { OrderTrackingStatus, isMassMeasure, isOrderTrackingStatus } from '@m-market-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('order_trackings', {

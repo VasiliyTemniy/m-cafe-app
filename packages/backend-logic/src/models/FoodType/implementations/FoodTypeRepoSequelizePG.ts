@@ -1,10 +1,10 @@
 import type { IFoodTypeRepo } from '../interfaces';
-import type { FoodTypeDTN, LocString } from '@m-cafe-app/models';
+import type { FoodTypeDTN, LocString } from '@m-market-app/models';
 import type { Transaction } from 'sequelize';
-import { FoodType } from '@m-cafe-app/models';
-import { FoodType as FoodTypePG } from '@m-cafe-app/db';
+import { FoodType } from '@m-market-app/models';
+import { FoodType as FoodTypePG } from '@m-market-app/db';
 import { FoodTypeMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 export class FoodTypeRepoSequelizePG implements IFoodTypeRepo {
 

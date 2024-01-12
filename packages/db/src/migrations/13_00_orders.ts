@@ -7,7 +7,7 @@ import {
   isOrderPaymentStatus,
   isOrderStatus,
   isSizingMeasure
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 

@@ -1,9 +1,9 @@
-import type { UiSetting, UiSettingDTN, UiSettingUniqiePropertiesGroup } from '@m-cafe-app/models';
+import type { UiSetting, UiSettingDTN, UiSettingUniqiePropertiesGroup } from '@m-market-app/models';
 import type { IUiSettingRepo } from '../interfaces';
 import type { Transaction } from 'sequelize';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 import { UiSettingMapper } from '../infrastructure';
-import { UiSetting as UiSettingPG } from '@m-cafe-app/db';
+import { UiSetting as UiSettingPG } from '@m-market-app/db';
 
 export class UiSettingRepoSequelizePG implements IUiSettingRepo {
 

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 import { Organization, User } from '../models';
 import { dbHandler } from '../db';
-import { PermissionAccess, PermissionAction, PermissionTarget } from '@m-cafe-app/shared-constants';
+import { PermissionAccess, PermissionAction, PermissionTarget } from '@m-market-app/shared-constants';
 import { createOrgAdminManager } from './db_test_helper';
 
 

@@ -7,8 +7,8 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { DatabaseError } from '@m-cafe-app/utils';
-import { CommentParentType, isCommentParentType } from '@m-cafe-app/shared-constants';
+import { DatabaseError } from '@m-market-app/utils';
+import { CommentParentType, isCommentParentType } from '@m-market-app/shared-constants';
 import { User } from './User.js';
 import { Review } from './Review.js';
 import { Order } from './Order.js';

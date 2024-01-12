@@ -1,7 +1,7 @@
-import type { FixedLoc, FixedLocS } from '@m-cafe-app/models';
+import type { FixedLoc, FixedLocS } from '@m-market-app/models';
 import type { IFixedLocSRepo } from '../interfaces';
 import { RedisRepoBase } from '../../../utils';
-import { fixedLocFilter, fixedLocsScopesReadonly } from '@m-cafe-app/shared-constants';
+import { fixedLocFilter, fixedLocsScopesReadonly } from '@m-market-app/shared-constants';
 
 export class FixedLocRepoRedis extends RedisRepoBase implements IFixedLocSRepo  {
 

@@ -1,14 +1,14 @@
 import type { IAddressRepo } from '../interfaces';
-import type { AddressDTN } from '@m-cafe-app/models';
+import type { AddressDTN } from '@m-market-app/models';
 import type { Transaction } from 'sequelize';
 import {
   Address as AddressPG,
   User as UserPG,
   UserAddress as UserAddressPG,
-  Facility as FacilityPG } from '@m-cafe-app/db';
-import { Address } from '@m-cafe-app/models';
+  Facility as FacilityPG } from '@m-market-app/db';
+import { Address } from '@m-market-app/models';
 import { AddressMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 export class AddressRepoSequelizePG implements IAddressRepo {
 

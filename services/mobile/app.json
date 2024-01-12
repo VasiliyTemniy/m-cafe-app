@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "m-cafe-mobile",
-    "slug": "m-cafe-mobile",
+    "name": "m-market-mobile",
+    "slug": "m-market-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

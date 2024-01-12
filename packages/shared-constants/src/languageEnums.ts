@@ -1,6 +1,6 @@
 /**
  * Language codes in ISO 639-1 format\
- * Check out \@m-cafe-app/packages/shared-constants/src/languageEnums.ts\
+ * Check out \@m-market-app/packages/shared-constants/src/languageEnums.ts\
  * To allow more languages, uncomment according lines and restart the app
  * 
  * Language names will be stored in FixedLocs table

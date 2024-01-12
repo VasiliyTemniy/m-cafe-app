@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 import { UiSettingRepoRedis, UiSettingRepoSequelizePG, UiSettingService } from '../models/UiSetting';
-import { dbHandler } from '@m-cafe-app/db';
+import { dbHandler } from '@m-market-app/db';
 import { redisUiSettingsClient } from '../config';
 import { TransactionHandlerSequelizePG } from '../utils';
 

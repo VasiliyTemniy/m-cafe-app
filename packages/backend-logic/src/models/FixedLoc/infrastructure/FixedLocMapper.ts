@@ -1,8 +1,8 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { FixedLocDT } from '@m-cafe-app/models';
-import { FixedLoc } from '@m-cafe-app/models';
-import { FixedLoc as FixedLocPG } from '@m-cafe-app/db';
-import { ApplicationError } from '@m-cafe-app/utils';
+import type { FixedLocDT } from '@m-market-app/models';
+import { FixedLoc } from '@m-market-app/models';
+import { FixedLoc as FixedLocPG } from '@m-market-app/db';
+import { ApplicationError } from '@m-market-app/utils';
 import { LocStringMapper } from '../../LocString';
 
 

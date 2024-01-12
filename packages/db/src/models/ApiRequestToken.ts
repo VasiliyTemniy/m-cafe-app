@@ -8,7 +8,7 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import { ApiRequest } from './ApiRequest.js';
-import { ApiRequestTokenPlacement, isApiRequestTokenPlacement } from '@m-cafe-app/shared-constants';
+import { ApiRequestTokenPlacement, isApiRequestTokenPlacement } from '@m-market-app/shared-constants';
 
 // The only one api request table that does not need app admin approval
 

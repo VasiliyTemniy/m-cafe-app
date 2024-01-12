@@ -13,7 +13,7 @@ import {
   PictureParentType,
   StockEntityType,
   isCurrencyCode
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Loc } from './Loc.js';
 import { Stock } from './Stock.js';

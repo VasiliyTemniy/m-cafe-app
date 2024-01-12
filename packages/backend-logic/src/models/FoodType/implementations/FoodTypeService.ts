@@ -1,4 +1,4 @@
-import type { FoodTypeDT, FoodTypeDTN } from '@m-cafe-app/models';
+import type { FoodTypeDT, FoodTypeDTN } from '@m-market-app/models';
 import type { IFoodTypeRepo, IFoodTypeService } from '../interfaces';
 import type { ITransactionHandler } from '../../../utils';
 import type { ILocStringRepo } from '../../LocString';

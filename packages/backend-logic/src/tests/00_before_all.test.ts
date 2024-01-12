@@ -1,5 +1,5 @@
 import '../config';
-import { dbHandler } from '@m-cafe-app/db';
+import { dbHandler } from '@m-market-app/db';
 import { expect } from 'chai';
 import 'mocha';
 

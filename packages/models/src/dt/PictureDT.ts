@@ -1,72 +1,84 @@
-import type { MapToDT, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, PropertyGroup } from '@m-market-app/utils';
 import type { Picture } from '../domain';
-import type { LocStringDT } from './LocStringDT';
-import { isLocStringDT } from './LocStringDT.js';
-import { isString, isEntity, checkProperties, isUnknownObject } from '@m-cafe-app/utils';
-import { idRequired } from './validationHelpers';
+import type { LocDTS } from './LocDT';
+import { isLocDTS } from './LocDT.js';
+import { isString, isEntity, checkProperties, isUnknownObject, isNumber } from '@m-market-app/utils';
+import { PictureParentType, isPictureParentType } from '@m-market-app/shared-constants';
 
-const picturePropertiesGroups: PropertyGroup[] = [{
+
+/**
+ * Full data transit for Picture\
+ * Use to update or retrieve unassociated data
+ */
+export type PictureDT = Omit<MapToDT<Picture>, 'altTextLocs'> & {
+  altTextLocs: LocDTS[];
+};
+
+const pictureDTPropertiesGroups: PropertyGroup[] = [{
+  properties: ['id', 'parentId', 'orderNumber'],
+  validator: isNumber,
+}, {
   properties: ['src'],
   validator: isString,
 }, {
-  properties: ['altTextLoc'],
-  validator: isLocStringDT,
+  properties: ['parentType'],
+  validator: isPictureParentType,
+}, {
+  properties: ['altTextLocs'],
+  validator: isLocDTS,
 }];
 
-export type PictureDT = Omit<MapToDT<Picture>, 'altTextLoc'> & {
-  altTextLoc: LocStringDT;
+export const isPictureDT = (obj: unknown): obj is PictureDT =>
+  isEntity(obj, pictureDTPropertiesGroups);
+
+
+/**
+ * Simple data transit for Picture\
+ * Included in other model's DTs
+ */
+export type PictureDTS = Omit<MapToDT<Picture>, 'altTextLocs'> & {
+  altTextLocs: LocDTS[];
 };
 
-export const isPictureDT = (obj: unknown): obj is PictureDT =>
-  isEntity(obj, [ idRequired, ...picturePropertiesGroups ]);
+const pictureDTSPropertiesGroups: PropertyGroup[] = [{
+  properties: ['orderNumber'],
+  validator: isNumber,
+}, {
+  properties: ['src'],
+  validator: isString,
+}, {
+  properties: ['altTextLocs'],
+  validator: isLocDTS,
+}];
+
+export const isPictureDTS = (obj: unknown): obj is PictureDTS =>
+  isEntity(obj, pictureDTSPropertiesGroups);
 
 
-export type PictureForFoodDTN = {
-  altTextMainStr: string,
-  altTextSecStr?: string,
-  altTextAltStr?: string,
-  foodId: string,
+/**
+ * Data transit for new Picture\
+ * All fields are strings because of multipart form data to upload an image\
+ * Add optional altTextLocs with LocController
+ */
+export type PictureDTN = {
+  altText: string,
+  languageId: string,
+  parentId: string,
+  parentType: PictureParentType,
   orderNumber: string
 };
 
-export const isPictureForFoodDTN = (obj: unknown): obj is PictureForFoodDTN => {
+export const isPictureDTN = (obj: unknown): obj is PictureDTN => {
 
   if (!isUnknownObject(obj)) return false;
 
   if (!checkProperties({ obj, properties: [
-    'altTextMainStr', 'foodId', 'orderNumber'
+    'altText', 'languageId', 'parentId', 'orderNumber'
   ], required: true, validator: isString })) return false;
 
-  if (isNaN(Number(obj.orderNumber)) || isNaN(Number(obj.foodId))) return false;
+  if (!isPictureParentType(obj.parentType)) return false;
 
-  if (!checkProperties({ obj, properties: [
-    'altTextSecStr', 'altTextAltStr'
-  ], required: false, validator: isString })) return false;
-
-  return true;
-};
-
-
-export type PictureForDynamicModuleDTN = {
-  altTextMainStr: string,
-  altTextSecStr?: string,
-  altTextAltStr?: string,
-  dynamicModuleId: string
-};
-
-export const isPictureForDynamicModuleDTN = (obj: unknown): obj is PictureForDynamicModuleDTN => {
-
-  if (!isUnknownObject(obj)) return false;
-
-  if (!checkProperties({ obj, properties: [
-    'altTextMainStr', 'dynamicModuleId'
-  ], required: true, validator: isString })) return false;
-
-  if (isNaN(Number(obj.orderNumber)) || isNaN(Number(obj.foodId))) return false;
-
-  if (!checkProperties({ obj, properties: [
-    'altTextSecStr', 'altTextAltStr'
-  ], required: false, validator: isString })) return false;
+  if (isNaN(Number(obj.orderNumber)) || isNaN(Number(obj.parentId)) || isNaN(Number(obj.languageId))) return false;
 
   return true;
 };

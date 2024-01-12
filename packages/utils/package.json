@@ -1,6 +1,6 @@
 {
-  "name": "@m-cafe-app/utils",
-  "productName": "Modular cafe app",
+  "name": "@m-market-app/utils",
+  "productName": "Modular marketplace app",
   "version": "1.0.0",
   "description": "This package contains common and transit for frontend and backend: types, type guards, validators, errors",
   "main": "build/index.js",
@@ -12,7 +12,7 @@
     "eslint": "eslint \"./src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
-    "@m-cafe-app/shared-constants": "workspace:^",
+    "@m-market-app/shared-constants": "workspace:^",
     "chai": "^4.3.7",
     "cross-env": "^7.0.3",
     "mocha": "^10.2.0",

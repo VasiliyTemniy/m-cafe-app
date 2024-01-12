@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import type { IExpressErrorHandler } from '../interfaces';
 import type { ISessionService } from '../../models/Session';
 import type { JwtPayloadCustom } from '../../utils';
-import { AuthorizationError, hasOwnProperty, isCustomError, isNamedError, logger } from '@m-cafe-app/utils';
+import { AuthorizationError, hasOwnProperty, isCustomError, isNamedError, logger } from '@m-market-app/utils';
 import { AggregateError as SequelizeAggregateError } from 'sequelize';
 import jwt from 'jsonwebtoken';
 

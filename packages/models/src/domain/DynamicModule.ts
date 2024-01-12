@@ -1,18 +1,22 @@
-import type { LocString } from './LocString.js';
-import type { Picture } from './Picture.js';
+import type { DynamicModulePageType, DynamicModulePlacementType, DynamicModulePreset, DynamicModuleType } from '@m-market-app/shared-constants';
+import type { LocS } from './Loc.js';
+import type { PictureS } from './Picture.js';
 
 export class DynamicModule {
   constructor (
     readonly id: number,
-    readonly moduleType: string,
-    readonly page: string,
+    readonly moduleType: DynamicModuleType,
     readonly placement: number,
-    readonly placementType: string,
-    readonly locString?: LocString,
+    readonly placementType: DynamicModulePlacementType,
+    readonly nestLevel: number,
+    readonly pages: DynamicModulePageType[],
+    readonly locs?: LocS[],
+    readonly preset?: DynamicModulePreset,
     readonly className?: string,
     readonly inlineCss?: string,
-    readonly picture?: Picture,
+    readonly pictures?: PictureS[],
     readonly url?: string,
+    readonly childDynamicModules?: DynamicModule[],
     readonly createdAt?: Date,
     readonly updatedAt?: Date
   ) {}

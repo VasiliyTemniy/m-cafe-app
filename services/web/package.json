@@ -1,8 +1,8 @@
 {
-  "name": "m-cafe-web",
-  "productName": "Modular cafe app",
+  "name": "m-market-web",
+  "productName": "Modular marketplace app",
   "version": "0.1.0",
-  "description": "DIY cafe app web frontend",
+  "description": "m-market-app web frontend",
   "main": ".webpack/main",
   "type": "module",
   "scripts": {
@@ -19,7 +19,7 @@
     "eslint": "eslint \"./{customer,admin,manager}/src/**/*.{ts,tsx}\"",
     "stylelint": "stylelint \"**/*.scss\""
   },
-  "repository": "https://github.com/VasiliyTemniy/m-cafe-app.git",
+  "repository": "https://github.com/VasiliyTemniy/m-market-app.git",
   "author": "VasiliyTemniy <flash_er@mail.ru>",
   "license": "MIT",
   "private": true,
@@ -31,16 +31,16 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@m-cafe-app/frontend-logic": "workspace:^",
-    "@m-cafe-app/shared-constants": "workspace:^",
-    "@m-cafe-app/shared-frontend-deps": "workspace:^",
-    "@m-cafe-app/utils": "workspace:^",
+    "@m-market-app/frontend-logic": "workspace:^",
+    "@m-market-app/shared-constants": "workspace:^",
+    "@m-market-app/shared-frontend-deps": "workspace:^",
+    "@m-market-app/utils": "workspace:^",
     "react-router-dom": "^6.11.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.22.15",
-    "@m-cafe-app/shared-dev-deps": "workspace:^",
+    "@m-market-app/shared-dev-deps": "workspace:^",
     "@svgr/webpack": "^8.0.1",
     "@types/node": "^20.2.0",
     "babel-loader": "^9.1.3",

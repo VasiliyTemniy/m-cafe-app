@@ -1,6 +1,6 @@
 import type { Request } from 'express';
-import { checkProperties, isNumber, isString } from '@m-cafe-app/utils';
-import { User } from '@m-cafe-app/models';
+import { checkProperties, isNumber, isString } from '@m-market-app/utils';
+import { User } from '@m-market-app/models';
 
 export interface RequestMiddle extends Request {
   userId?: number;

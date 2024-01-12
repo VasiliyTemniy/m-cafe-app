@@ -1,11 +1,11 @@
 {
-  "name": "m-cafe-backend",
-  "productName": "Modular cafe app",
+  "name": "m-market-backend",
+  "productName": "Modular marketplace app",
   "version": "0.4.0",
-  "description": "cafe app backend",
+  "description": "m-market-app backend",
   "main": "build/index.js",
   "type": "module",
-  "repository": "https://github.com/VasiliyTemniy/m-cafe-app.git",
+  "repository": "https://github.com/VasiliyTemniy/m-market-app.git",
   "author": "VasiliyTemniy <flash_er@mail.ru>",
   "license": "MIT",
   "private": true,
@@ -18,12 +18,12 @@
     "eslint": "eslint \"./src/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@m-cafe-app/backend-logic": "workspace:^",
-    "@m-cafe-app/db": "workspace:^",
-    "@m-cafe-app/models": "workspace:^",
-    "@m-cafe-app/shared-backend-deps": "workspace:^",
-    "@m-cafe-app/shared-constants": "workspace:^",
-    "@m-cafe-app/utils": "workspace:^",
+    "@m-market-app/backend-logic": "workspace:^",
+    "@m-market-app/db": "workspace:^",
+    "@m-market-app/models": "workspace:^",
+    "@m-market-app/shared-backend-deps": "workspace:^",
+    "@m-market-app/shared-constants": "workspace:^",
+    "@m-market-app/utils": "workspace:^",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.18.2",
@@ -36,7 +36,7 @@
     "sha1": "^1.1.1"
   },
   "devDependencies": {
-    "@m-cafe-app/shared-dev-deps": "workspace:^",
+    "@m-market-app/shared-dev-deps": "workspace:^",
     "@types/bcryptjs": "^2.4.2",
     "@types/chai": "^4.3.5",
     "@types/cookie-parser": "^1.4.3",

@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   web:
-    image: m-cafe-web-dev-customer
+    image: m-market-web-dev-customer
     build:
       context: ./
       dockerfile: ./services/web/dev.Dockerfile
@@ -17,14 +17,14 @@ services:
       - ./packages/shared-frontend-deps:/usr/src/app/packages/shared-frontend-deps
       - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-web-dev-customer
+    container_name: m-market-web-dev-customer
     env_file:
       - ./docker-envs/.dev.docker-front.env
       - ./docker-envs/.docker.validation-overrides.env
 
   redis:
     image: redis:7.0.12-alpine3.18
-    container_name: m-cafe-redis-dev
+    container_name: m-market-redis-dev
     restart: always
     command: ["redis-server", "/etc/redis/redis.conf"]
     ports:
@@ -39,8 +39,8 @@ services:
     environment:
       POSTGRES_USER: vasuser
       POSTGRES_PASSWORD: crapassword
-      POSTGRES_DB: cafe
-    container_name: m-cafe-postgres_db-dev
+      POSTGRES_DB: market
+    container_name: m-market-postgres_db-dev
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -49,12 +49,12 @@ services:
     restart: unless-stopped
     environment:
       ADMINER_DEFAULT_SERVER: postgres_db
-    container_name: m-cafe-adminer-dev
+    container_name: m-market-adminer-dev
     depends_on:
       - postgres_db
 
   backend:
-    image: m-cafe-backend-dev
+    image: m-market-backend-dev
     build:
       context: ./
       dockerfile: ./services/backend/dev.Dockerfile
@@ -65,7 +65,7 @@ services:
       - ./packages/shared-backend-deps:/usr/src/app/packages/shared-backend-deps
       - ./packages/shared-constants:/usr/src/app/packages/shared-constants
       - ./packages/shared-dev-deps:/usr/src/app/packages/shared-dev-deps
-    container_name: m-cafe-backend-dev
+    container_name: m-market-backend-dev
     env_file:
       - ./docker-envs/.dev.docker-back.env
       - ./docker-envs/.docker.validation-overrides.env
@@ -80,7 +80,7 @@ services:
       - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 8080:80
-    container_name: m-cafe-reverse-proxy-dev
+    container_name: m-market-reverse-proxy-dev
 
 volumes:
   pgdata:

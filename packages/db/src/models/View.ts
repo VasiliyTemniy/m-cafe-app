@@ -6,7 +6,7 @@ import type {
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
 import { Picture } from './Picture.js';
-import { ViewParentType, isViewParentType } from '@m-cafe-app/shared-constants';
+import { ViewParentType, isViewParentType } from '@m-market-app/shared-constants';
 import { Product } from './Product.js';
 
 

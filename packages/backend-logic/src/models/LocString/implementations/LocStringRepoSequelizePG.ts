@@ -1,10 +1,10 @@
 import type { ILocStringRepo } from '../interfaces';
-import type { LocStringDTN } from '@m-cafe-app/models';
+import type { LocStringDTN } from '@m-market-app/models';
 import type { Transaction } from 'sequelize';
-import { LocString } from '@m-cafe-app/models';
-import { LocString as LocStringPG } from '@m-cafe-app/db';
+import { LocString } from '@m-market-app/models';
+import { LocString as LocStringPG } from '@m-market-app/db';
 import { LocStringMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 export class LocStringRepoSequelizePG implements ILocStringRepo {
 

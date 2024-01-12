@@ -1,6 +1,6 @@
 import type { ISessionRepo } from '../interfaces';
-import { RedisError, logger } from '@m-cafe-app/utils';
-import { AuthResponse, Session } from '@m-cafe-app/models';
+import { RedisError, logger } from '@m-market-app/utils';
+import { AuthResponse, Session } from '@m-market-app/models';
 import { RedisRepoBase } from '../../../utils';
 
 

@@ -1,10 +1,10 @@
 import type { IFacilityRepo } from '../interfaces';
-import type { FacilityDTN, LocString, Address } from '@m-cafe-app/models';
+import type { FacilityDTN, LocString, Address } from '@m-market-app/models';
 import type { Transaction } from 'sequelize';
-import { Facility } from '@m-cafe-app/models';
-import { Facility as FacilityPG, FacilityManager as FacilityManagerPG } from '@m-cafe-app/db';
+import { Facility } from '@m-market-app/models';
+import { Facility as FacilityPG, FacilityManager as FacilityManagerPG } from '@m-market-app/db';
 import { FacilityMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 export class FacilityRepoSequelizePG implements IFacilityRepo {
 

@@ -1,9 +1,9 @@
-import { isAllowedTheme } from '@m-cafe-app/shared-constants';
+import { isAllowedTheme } from '@m-market-app/shared-constants';
 import { useEffect } from 'react';
 import { useTranslation } from './useTranslation';
 import { setTheme, sendRefreshToken, setLanguage } from '../reducers';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
-import { isString } from '@m-cafe-app/utils';
+import { isString } from '@m-market-app/utils';
 import { getFirstBrowserLanguage } from '../../utils';
 
 export const useInitAppShared = () => {
@@ -18,33 +18,33 @@ export const useInitAppShared = () => {
   const user = useAppSelector(state => state.user);
 
   useEffect(() => {
-    const storedTheme = window.localStorage.getItem('CafeAppTheme');
-    if (!storedTheme) window.localStorage.setItem('CafeAppTheme', JSON.stringify(theme));
+    const storedTheme = window.localStorage.getItem('marketAppTheme');
+    if (!storedTheme) window.localStorage.setItem('marketAppTheme', JSON.stringify(theme));
     else { 
       const parsedTheme = JSON.parse(storedTheme) as unknown;
       if (isString(parsedTheme) && parsedTheme !== theme && (isAllowedTheme(parsedTheme))) {
         void dispatch(setTheme(parsedTheme));
       }
     }
-    const userRegistered = window.localStorage.getItem('CafeAppUserRegistered');
+    const userRegistered = window.localStorage.getItem('marketAppUserRegistered');
     if (!user.phonenumber && userRegistered && JSON.parse(userRegistered) === 'true') {
       void dispatch(sendRefreshToken(t));
     }
   }, []);
 
   useEffect(() => {
-    const preferredLanguage = window.localStorage.getItem('CafeAppLanguage');
+    const preferredLanguage = window.localStorage.getItem('marketAppLanguage');
     if (!preferredLanguage) {
       // No preferred language found - check browser navigator for lang info
       const detectedLanguage = getFirstBrowserLanguage();
       if (!detectedLanguage) {
         // No language detected in browser navigator - set main language
-        window.localStorage.setItem('CafeAppLanguage', JSON.stringify('main'));
+        window.localStorage.setItem('marketAppLanguage', JSON.stringify('main'));
       } else {
         for (const languageAlias of ['main', 'sec', 'alt']) {
           // Check if any of provided languages is detected
           if (detectedLanguage.startsWith(t(`main.detectLanguageNames.${languageAlias}`))) {
-            window.localStorage.setItem('CafeAppLanguage', JSON.stringify(languageAlias));
+            window.localStorage.setItem('marketAppLanguage', JSON.stringify(languageAlias));
             break;
           }
         }

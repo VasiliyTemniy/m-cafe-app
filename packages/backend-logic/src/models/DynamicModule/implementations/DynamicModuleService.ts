@@ -2,7 +2,7 @@ import type { ITransactionHandler } from '../../../utils';
 import type { ILocStringRepo } from '../../LocString';
 import type { IPictureService } from '../../Picture';
 import type { IDynamicModuleRepo, IDynamicModuleService } from '../interfaces';
-import type { DynamicModuleDT, DynamicModuleDTN, LocStringDTN, PictureForDynamicModuleDTN } from '@m-cafe-app/models';
+import type { DynamicModuleDT, DynamicModuleDTN, LocStringDTN, PictureForDynamicModuleDTN } from '@m-market-app/models';
 import { LocStringMapper } from '../../LocString';
 import { DynamicModuleMapper } from '../infrastructure';
 

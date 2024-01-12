@@ -1,16 +1,16 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { Order, OrderS } from '../domain';
 import type { OrderFoodDTN, OrderFoodDT } from './OrderFoodDT.js';
 import type { FacilityDTS } from './FacilityDT.js';
 import type { UserDT } from './UserDT.js';
 import type { AddressDT } from './AddressDT.js';
-import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
+import { isEntity, isNumber, isString } from '@m-market-app/utils';
 import { isAddressDT } from './AddressDT.js';
 import { isUserDT } from './UserDT.js';
 import { isOrderFoodDTN, isOrderFoodDT } from './OrderFoodDT.js';
 import { isFacilityDTS } from './FacilityDT.js';
 import { idRequired } from './validationHelpers';
-import { isOrderPaymentMethod, isOrderPaymentStatus, isOrderStatus } from '@m-cafe-app/shared-constants';
+import { isOrderPaymentMethod, isOrderPaymentStatus, isOrderStatus } from '@m-market-app/shared-constants';
 
 
 const orderPropertiesGroups: PropertyGroup[] = [{

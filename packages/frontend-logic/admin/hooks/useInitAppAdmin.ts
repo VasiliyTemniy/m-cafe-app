@@ -2,7 +2,7 @@ import { useLayoutEffect } from 'react';
 import { useInitAppShared, useTranslation } from '../../shared/hooks';
 import { initAdminFixedLocs, initAdminUiSettings } from '../reducers';
 import { useAppDispatch } from './reduxHooks';
-import { domainBaseUrl } from '@m-cafe-app/shared-constants';
+import { domainBaseUrl } from '@m-market-app/shared-constants';
 
 export const useInitAppAdmin = () => {
 

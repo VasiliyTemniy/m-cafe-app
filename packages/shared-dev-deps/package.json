@@ -1,6 +1,6 @@
 {
-  "name": "@m-cafe-app/shared-dev-deps",
-  "productName": "Modular cafe app",
+  "name": "@m-market-app/shared-dev-deps",
+  "productName": "Modular marketplace app",
   "version": "1.0.0",
   "description": "This package contains shared development dependencies, for all services",
   "main": "./index.js",

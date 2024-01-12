@@ -1,6 +1,6 @@
-import type { NewUserBody, LoginUserBody, EditUserBody } from '@m-cafe-app/utils';
+import type { NewUserBody, LoginUserBody, EditUserBody } from '@m-market-app/utils';
 import axios from 'axios';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 
 
 const createUser = async (newUser: NewUserBody) => {

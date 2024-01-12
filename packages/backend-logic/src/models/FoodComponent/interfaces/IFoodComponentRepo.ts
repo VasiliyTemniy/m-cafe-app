@@ -1,4 +1,4 @@
-import type { FoodComponent, FoodComponentDTN, FoodS, IngredientS } from '@m-cafe-app/models';
+import type { FoodComponent, FoodComponentDTN, FoodS, IngredientS } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 

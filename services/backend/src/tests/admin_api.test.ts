@@ -1,4 +1,4 @@
-import type { FixedLocDT, UiSettingDT, UserDT } from '@m-cafe-app/models';
+import type { FixedLocDT, UiSettingDT, UserDT } from '@m-market-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -6,10 +6,10 @@ import app from '../app';
 import { apiBaseUrl } from './test_helper';
 import { initLogin, userAgent } from './sessions_api_helper';
 import { createUser, validNewUser, validUserInDB } from './user_api_helper';
-import backendLogicConfig from '@m-cafe-app/backend-logic';
+import backendLogicConfig from '@m-market-app/backend-logic';
 import { createAdmin, validAdminInDB } from './admin_api_helper';
 import { authController, fixedLocService, sessionService, uiSettingService, userService } from '../controllers';
-import { User as UserPG } from '@m-cafe-app/db';
+import { User as UserPG } from '@m-market-app/db';
 
 
 const api = supertest(app);

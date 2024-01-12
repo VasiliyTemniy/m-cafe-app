@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   web:
-    image: m-cafe-web
+    image: m-market-web
     build:
       context: ./
       dockerfile: ./services/web/Dockerfile
@@ -12,18 +12,18 @@ services:
         - DOMAIN_URL=http://localhost:8080
         - NOTIFICATION_ARRAY_LENGTH=100
         - NOTIFICATION_TIMEOUT=4000
-    container_name: m-cafe-web
+    container_name: m-market-web
     env_file:
       - ./docker-envs/.docker.validation-overrides.env
     depends_on:
       - nginx
 
   redis:
-    image: m-cafe-redis
+    image: m-market-redis
     build:
       context: ./
       dockerfile: ./redis/Dockerfile
-    container_name: m-cafe-redis
+    container_name: m-market-redis
     restart: always
     command: ["redis-server", "/etc/redis/redis.conf"]
     # #######################
@@ -38,11 +38,11 @@ services:
       - ./redis/redis.conf:/etc/redis/redis.conf:ro
 
   backend:
-    image: m-cafe-backend
+    image: m-market-backend
     build:
       context: ./
       dockerfile: ./services/backend/Dockerfile
-    container_name: m-cafe-backend
+    container_name: m-market-backend
     env_file:
       - ./docker-envs/.docker-back.env
       - ./docker-envs/.docker.validation-overrides.env
@@ -57,7 +57,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 8080:80
-    container_name: m-cafe-reverse-proxy
+    container_name: m-market-reverse-proxy
 
 volumes:
   pgdata:

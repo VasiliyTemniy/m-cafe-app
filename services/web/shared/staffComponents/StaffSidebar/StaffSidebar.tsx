@@ -1,4 +1,4 @@
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 import { useEffect, useRef, useState } from 'react';
 import { Scrollable, SVGButton } from '../../components';
 

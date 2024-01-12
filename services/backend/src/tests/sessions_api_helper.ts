@@ -1,4 +1,4 @@
-import type { UserDT, UserLoginDT } from '@m-cafe-app/models';
+import type { UserDT, UserLoginDT } from '@m-market-app/models';
 import supertest from 'supertest';
 import { apiBaseUrl } from './test_helper';
 import { expect } from 'chai';

@@ -1,9 +1,9 @@
-import type { FoodPicture, FoodPictureDTNU } from '@m-cafe-app/models';
+import type { FoodPicture, FoodPictureDTNU } from '@m-market-app/models';
 import type { IFoodPictureRepo } from '../interfaces';
 import type { Transaction } from 'sequelize';
-import { FoodPicture as FoodPicturePG } from '@m-cafe-app/db';
+import { FoodPicture as FoodPicturePG } from '@m-market-app/db';
 import { FoodPictureMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 
 export class FoodPictureRepoSequelizePG implements IFoodPictureRepo {

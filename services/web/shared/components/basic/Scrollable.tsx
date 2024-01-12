@@ -6,8 +6,8 @@ import {
   useRef,
   useCallback
 } from 'react';
-import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { debounceResizeObserver } from '@m-cafe-app/frontend-logic/utils';
+import { useInitLC } from '@m-market-app/frontend-logic/shared/hooks';
+import { debounceResizeObserver } from '@m-market-app/frontend-logic/utils';
 
 interface ScrollableProps extends ContainerProps {
   wrapperClassNameAddon?: string;

@@ -1,4 +1,4 @@
-import type { LocStringS, LocString } from './LocString.js';
+import type { LocS } from './Loc.js';
 
 
 export class FixedLoc {
@@ -7,7 +7,7 @@ export class FixedLoc {
     readonly name: string,
     readonly namespace: string,
     readonly scope: string,
-    readonly locString: LocString
+    readonly locs: LocS[]
   ) {}
 }
 
@@ -16,7 +16,7 @@ export class FixedLocS {
     readonly name: string,
     readonly namespace: string,
     readonly scope: string,
-    readonly locString: LocStringS
+    readonly locs: LocS[]
   ) {}
 }
 

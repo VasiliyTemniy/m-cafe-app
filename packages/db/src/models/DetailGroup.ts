@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { DetailGroupParentType, LocParentType, LocType, isDetailGroupParentType } from '@m-cafe-app/shared-constants';
+import { DetailGroupParentType, LocParentType, LocType, isDetailGroupParentType } from '@m-market-app/shared-constants';
 import { Loc } from './Loc.js';
 import { User } from './User.js';
 import { Product } from './Product.js';

@@ -5,7 +5,7 @@ import type {
   Sequelize
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { CurrencyCode, isCurrencyCode } from '@m-cafe-app/shared-constants';
+import { CurrencyCode, isCurrencyCode } from '@m-market-app/shared-constants';
 
 
 export class CurrencyConversion extends Model<InferAttributes<CurrencyConversion>, InferCreationAttributes<CurrencyConversion>> {

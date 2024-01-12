@@ -1,4 +1,4 @@
-import type { Stock, StockDTN } from '@m-cafe-app/models';
+import type { Stock, StockDTN } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 

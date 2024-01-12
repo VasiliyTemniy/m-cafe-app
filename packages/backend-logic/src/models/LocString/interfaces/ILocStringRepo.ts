@@ -1,4 +1,4 @@
-import type { LocString, LocStringDTN } from '@m-cafe-app/models';
+import type { LocString, LocStringDTN } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 

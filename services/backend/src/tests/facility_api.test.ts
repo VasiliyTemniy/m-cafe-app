@@ -6,8 +6,8 @@ import type {
   NewStock,
   StockDT,
   UserDT
-} from '@m-cafe-app/utils';
-import { isStockDT } from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
+import { isStockDT } from '@m-market-app/utils';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -20,7 +20,7 @@ import {
   LocString,
   User,
   UserAddress
-} from '@m-cafe-app/db';
+} from '@m-market-app/db';
 import config from '../utils/config';
 import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
@@ -55,12 +55,12 @@ describe('Facility requests tests', () => {
       }
     });
 
-    await User.create(validAdminInDB.dbEntry);
-    await User.create(validUserInDB.dbEntry);
+    await User.create(validAdminInDB.dtn);
+    await User.create(validUserInDB.dtn);
     await User.bulkCreate(initialUsers);
     await Address.destroy({ where: {} });
     await Session.destroy({ where: {} });
-    tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
+    tokenCookie = await initLogin(validAdminInDB.dtn, validAdminInDB.password, api, 201, userAgent) as string;
 
     // on delete - cascade to facility, etc
     await LocString.destroy({ where: {} });
@@ -95,7 +95,7 @@ describe('Facility requests tests', () => {
 
     expect(response1.body.error.name).to.equal('AuthorizationError');
 
-    const commonUserTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string; 
+    const commonUserTokenCookie = await initLogin(validUserInDB.dtn, validUserInDB.password, api, 201, userAgent) as string; 
 
     const response2 = await api
       .delete(`${apiBaseUrl}/facility/${facilities[0].id}`)
@@ -211,7 +211,7 @@ describe('Facility requests tests', () => {
       street: 'Ленина'
     };
 
-    const userTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    const userTokenCookie = await initLogin(validUserInDB.dtn, validUserInDB.password, api, 201, userAgent) as string;
 
     // User adds doubleUserAddress
     await api

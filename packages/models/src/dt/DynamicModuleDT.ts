@@ -1,50 +1,101 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { DynamicModule } from '../domain';
-import type { LocStringDT, LocStringDTN } from './LocStringDT.js';
-import type { PictureDT } from './PictureDT.js';
-import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
-import { isPictureDT } from './PictureDT.js';
-import { idRequired, locStringOptionalProperty, locStringNewOptionalProperty } from './validationHelpers';
+import type { LocDTN, LocDTS } from './LocDT.js';
+import type { PictureDTS } from './PictureDT.js';
+import { isLocDTN, isLocDTS } from './LocDT.js';
+import { isEntity, isNumber, isString, isUnknownObject } from '@m-market-app/utils';
+import { isPictureDTS } from './PictureDT.js';
+import {
+  isDynamicModulePageType,
+  isDynamicModulePlacementType,
+  isDynamicModulePreset,
+  isDynamicModuleType
+} from '@m-market-app/shared-constants';
 
 
-const dynamicModulePropertiesGroups: PropertyGroup[] = [{
-  properties: ['moduleType', 'page', 'placementType'],
+export type DynamicModuleDT = Omit<MapToDT<DynamicModule>, 'pictures' | 'locs'> & {
+  pictures?: PictureDTS[];
+  locs?: LocDTS[];
+};
+
+const dynamicModuleDTPropertiesGroups: PropertyGroup[] = [{
+  properties: ['moduleType'],
+  validator: isDynamicModuleType
+}, {
+  properties: ['placementType'],
+  validator: isDynamicModulePlacementType
+}, {
+  properties: ['pages'],
+  validator: isDynamicModulePageType,
+  isArray: true
+}, {
+  properties: ['id', 'placement', 'nestLevel'],
+  validator: isNumber
+}, {
+  properties: ['preset'],
+  required: false,
+  validator: isDynamicModulePreset
+}, {
+  properties: ['locs'],
+  required: false,
+  validator: isLocDTS,
+  isArray: true
+}, {
+  properties: ['className', 'inlineCss', 'url'],
+  required: false,
   validator: isString
 }, {
-  properties: ['placement'],
+  properties: ['pictures'],
+  required: false,
+  validator: isPictureDTS,
+  isArray: true
+}];
+
+export const isDynamicModuleDT = (obj: unknown): obj is DynamicModuleDT => {
+  if (!isUnknownObject(obj)) return false;
+
+  if (!isEntity(obj, dynamicModuleDTPropertiesGroups)) return false;
+  if (obj.childDynamicModules) {
+    if (!Array.isArray(obj.childDynamicModules)) return false;
+    if (!obj.childDynamicModules.every(isDynamicModuleDT)) return false;
+  }
+
+  return true;
+};
+
+
+export type DynamicModuleDTN = Omit<MapToDTN<DynamicModule>, 'pictures' | 'locs'> & {
+  // pictures?: PictureDTN; // Add pictures after dynamic module creation
+  locs?: LocDTN[];
+};
+
+const dynamicModuleDTNPropertiesGroups: PropertyGroup[] = [{
+  properties: ['moduleType'],
+  validator: isDynamicModuleType
+}, {
+  properties: ['placementType'],
+  validator: isDynamicModulePlacementType
+}, {
+  properties: ['pages'],
+  validator: isDynamicModulePageType,
+  isArray: true
+}, {
+  properties: ['placement', 'nestLevel'],
   validator: isNumber
+}, {
+  properties: ['preset'],
+  required: false,
+  validator: isDynamicModulePreset
+}, {
+  properties: ['locs'],
+  required: false,
+  validator: isLocDTN,
+  isArray: true
 }, {
   properties: ['className', 'inlineCss', 'url'],
   required: false,
   validator: isString
 }];
 
-
-const hasPictureOptionalProperty: PropertyGroup = {
-  properties: ['picture'],
-  required: false,
-  validator: isPictureDT
-};
-
-
-export type DynamicModuleDT = Omit<MapToDT<DynamicModule>, 'picture' | 'locString'> & {
-  picture?: PictureDT;
-  locString?: LocStringDT;
-};
-
-export const isDynamicModuleDT = (obj: unknown): obj is DynamicModuleDT =>
-  isEntity(obj, [
-    idRequired,
-    locStringOptionalProperty,
-    hasPictureOptionalProperty,
-    ...dynamicModulePropertiesGroups
-  ]);
-
-
-export type DynamicModuleDTN = Omit<MapToDTN<DynamicModule>, 'picture' | 'locString'> & {
-  // picture?: PictureForDynamicModuleDTN; // Add picture after dynamic module creation
-  locString?: LocStringDTN;
-};
-
 export const isDynamicModuleDTN = (obj: unknown): obj is DynamicModuleDTN =>
-  isEntity(obj, [ locStringNewOptionalProperty, ...dynamicModulePropertiesGroups ]);
+  isEntity(obj, dynamicModuleDTNPropertiesGroups);

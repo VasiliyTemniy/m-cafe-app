@@ -1,12 +1,12 @@
 import type { AppDispatch } from '../store';
 import type  { TFunction } from '../hooks';
-import type { FixedLocDT, SafeyAny } from '@m-cafe-app/utils';
+import type { FixedLocDT, SafeyAny } from '@m-market-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
 import fixedLocService from '../services/fixedLoc';
-import { ApplicationError, hasOwnProperty, isFixedLocDT } from '@m-cafe-app/utils';
+import { ApplicationError, hasOwnProperty, isFixedLocDT } from '@m-market-app/utils';
 import { Md5 } from 'ts-md5';
-import { fixedLocFilter } from '@m-cafe-app/shared-constants';
+import { fixedLocFilter } from '@m-market-app/shared-constants';
 
 type ParseFixedLocsAction = {
   payload: {

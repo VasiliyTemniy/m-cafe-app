@@ -46,13 +46,13 @@ import {
   FacilityControllerExpressHttp,
   OrderControllerExpressHttp,
   DynamicModuleControllerExpressHttp
-} from '@m-cafe-app/backend-logic';
+} from '@m-market-app/backend-logic';
 import {
   dbHandler
-} from '@m-cafe-app/db';
-import { TransactionHandlerSequelizePG } from '@m-cafe-app/backend-logic/build/utils';
-import { LocStringRepoSequelizePG } from '@m-cafe-app/backend-logic/build/models/LocString';
-import config from '@m-cafe-app/backend-logic';
+} from '@m-market-app/db';
+import { TransactionHandlerSequelizePG } from '@m-market-app/backend-logic/build/utils';
+import { LocStringRepoSequelizePG } from '@m-market-app/backend-logic/build/models/LocString';
+import config from '@m-market-app/backend-logic';
 import multer from 'multer';
 
 

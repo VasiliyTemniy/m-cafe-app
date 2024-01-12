@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { OfferType, OfferGrantMethod, isOfferType, isOfferGrantMethod, isCurrencyCode, CurrencyCode } from '@m-cafe-app/shared-constants';
+import { OfferType, OfferGrantMethod, isOfferType, isOfferGrantMethod, isCurrencyCode, CurrencyCode } from '@m-market-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
 import { OfferBonus } from './OfferBonus.js';

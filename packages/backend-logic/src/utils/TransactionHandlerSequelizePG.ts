@@ -1,6 +1,6 @@
-import type { IDatabaseConnectionHandler } from '@m-cafe-app/db';
+import type { IDatabaseConnectionHandler } from '@m-market-app/db';
 import type { ITransactionHandler } from './ITransactionHandler.js';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 import { Sequelize, Transaction as SequelizeTransaction } from 'sequelize';
 
 

@@ -1,4 +1,5 @@
-import type { LocString } from './LocString.js';
+import type { LocS } from './Loc.js';
+import type { PictureS } from './Picture.js';
 
 
 /**
@@ -7,12 +8,16 @@ import type { LocString } from './LocString.js';
 export class Ingredient {
   constructor (
     readonly id: number,
-    readonly nameLoc: LocString,
-    readonly stockMeasureLoc: LocString,
+    readonly nameLocs: LocS[],
+    readonly descriptionLocs: LocS[],
+    readonly stockMeasureLocs: LocS[],
+    readonly unitMass?: number,
+    readonly unitVolume?: number,
     readonly proteins?: number,
     readonly fats?: number,
     readonly carbohydrates?: number,
     readonly calories?: number,
+    readonly pictures?: PictureS[],
     readonly createdAt?: Date,
     readonly updatedAt?: Date
   ) {}
@@ -20,13 +25,15 @@ export class Ingredient {
 
 
 /**
- * Simple Ingredient data to be included in foodComponent
+ * Simple Ingredient data to be included in productComponent
  */
 export class IngredientS {
   constructor (
     readonly id: number,
-    readonly nameLoc: LocString,
-    // readonly proteins?: number, // Possibly remove these
+    readonly nameLoc: LocS[],
+    // readonly unitMass?: number, // Possibly remove these
+    // readonly unitVolume?: number,
+    // readonly proteins?: number,
     // readonly fats?: number,
     // readonly carbohydrates?: number,
     // readonly calories?: number,

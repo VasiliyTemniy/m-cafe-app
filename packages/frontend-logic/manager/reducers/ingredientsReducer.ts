@@ -1,10 +1,10 @@
 import type { AppDispatch } from '../store';
 import type { TFunction } from '../../shared/hooks';
-import type { IngredientDT, SafeyAny } from '@m-cafe-app/utils';
+import type { IngredientDT, SafeyAny } from '@m-market-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
 import ingredientService from '../services/ingredient';
-import { ApplicationError, isIngredientDT } from '@m-cafe-app/utils';
+import { ApplicationError, isIngredientDT } from '@m-market-app/utils';
 
 type SetIngredientAction = {
   payload: {

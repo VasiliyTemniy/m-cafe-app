@@ -1,7 +1,7 @@
 import type { JwtPayload } from 'jsonwebtoken';
 import type { IAuthService } from '../interfaces';
-import { AuthResponse } from '@m-cafe-app/models';
-import { AuthorizationError, UnknownError } from '@m-cafe-app/utils';
+import { AuthResponse } from '@m-market-app/models';
+import { AuthorizationError, UnknownError } from '@m-market-app/utils';
 import jwt from 'jsonwebtoken';
 import { isCustomPayload } from '../../../utils';
 

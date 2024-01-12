@@ -1,4 +1,4 @@
-import type { TFunction } from '@m-cafe-app/frontend-logic/shared/hooks';
+import type { TFunction } from '@m-market-app/frontend-logic/shared/hooks';
 import * as yup from 'yup';
 
 export const fixedLocValidationSchema = (t: TFunction) => {

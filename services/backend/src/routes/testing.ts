@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import { Router } from 'express';
-import { dbHandler } from '@m-cafe-app/db';
+import { dbHandler } from '@m-market-app/db';
 
 const testingRouter = Router();
 
@@ -13,7 +13,7 @@ testingRouter.get(
 testingRouter.get(
   '/reset',
   (async (req, res) => {
-    await dbHandler.dbInstance?.query('DELETE FROM migrations');
+    await dbHandler.dbInstance?.query('DELETE TABLE IF EXISTS migrations');
     await dbHandler.dbInstance?.drop({ cascade: true });
     await dbHandler.runMigrations();
 

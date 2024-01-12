@@ -6,9 +6,9 @@ import {
   SessionRepoRedis,
   SessionService,
   UserRepoSequelizePG
-} from '@m-cafe-app/backend-logic';
-import { redisSessionClient } from '@m-cafe-app/backend-logic/build/config';
-import config from '@m-cafe-app/backend-logic';
+} from '@m-market-app/backend-logic';
+import { redisSessionClient } from '@m-market-app/backend-logic/build/config';
+import config from '@m-market-app/backend-logic';
 
 
 export const middleware = new ControllerExpressHttpMiddleware(

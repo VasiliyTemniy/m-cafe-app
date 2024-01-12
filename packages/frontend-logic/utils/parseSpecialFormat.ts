@@ -1,4 +1,4 @@
-import type { FixedLocDT, UiSettingDT } from '@m-cafe-app/utils';
+import type { FixedLocDT, UiSettingDT } from '@m-market-app/utils';
 
 export const parseFixedLoc = (fixedLoc: FixedLocDT): { parsedFixedLoc: FixedLocDT, namespace: string } => {
   const firstDotIndex = fixedLoc.name.indexOf('.');

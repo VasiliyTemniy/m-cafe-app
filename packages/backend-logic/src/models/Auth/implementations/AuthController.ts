@@ -6,12 +6,12 @@ import type {
   RefreshTokenRequest,
   VerifyResponse,
   VerifyTokenRequest
-} from '@m-cafe-app/models';
+} from '@m-market-app/models';
 import type { IAuthController, IAuthService } from '../interfaces';
 import type { AuthServiceClient } from '../../../external';
 import type { IAuthConnectionHandler } from '../infrastructure';
-import { isAuthDTResponse } from '@m-cafe-app/models';
-import { ApplicationError, GrpcClientError, isBoolean, isString } from '@m-cafe-app/utils';
+import { isAuthDTResponse } from '@m-market-app/models';
+import { ApplicationError, GrpcClientError, isBoolean, isString } from '@m-market-app/utils';
 
 export class AuthController implements IAuthController {
 

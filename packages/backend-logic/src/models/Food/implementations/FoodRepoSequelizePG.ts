@@ -1,7 +1,7 @@
 import type { FoodInclude, IFoodRepo } from '../interfaces';
-import type { FoodDTN, FoodType, LocString } from '@m-cafe-app/models';
+import type { FoodDTN, FoodType, LocString } from '@m-market-app/models';
 import type { Transaction, Includeable } from 'sequelize';
-import { Food } from '@m-cafe-app/models';
+import { Food } from '@m-market-app/models';
 import {
   Food as FoodPG,
   includeFoodComponents,
@@ -9,9 +9,9 @@ import {
   includeFoodMainPicture,
   includeFoodGallery,
   includeNameLoc
-} from '@m-cafe-app/db';
+} from '@m-market-app/db';
 import { FoodMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 export class FoodRepoSequelizePG implements IFoodRepo {
 

@@ -1,5 +1,5 @@
 import type { JwtPayload } from 'jsonwebtoken';
-import { hasOwnProperty } from '@m-cafe-app/utils';
+import { hasOwnProperty } from '@m-market-app/utils';
 
 export interface JwtPayloadCustom extends JwtPayload {
   id: number;

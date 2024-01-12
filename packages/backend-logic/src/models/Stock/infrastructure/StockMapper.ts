@@ -1,8 +1,8 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { StockDT } from '@m-cafe-app/models';
-import { Stock } from '@m-cafe-app/models';
-import { Stock as StockPG } from '@m-cafe-app/db';
-import { toOptionalISOString } from '@m-cafe-app/utils';
+import type { StockDT } from '@m-market-app/models';
+import { Stock } from '@m-market-app/models';
+import { Stock as StockPG } from '@m-market-app/db';
+import { toOptionalISOString } from '@m-market-app/utils';
 
 
 export class StockMapper implements EntityDBMapper<Stock, StockPG>, EntityDTMapper<Stock, StockDT> {

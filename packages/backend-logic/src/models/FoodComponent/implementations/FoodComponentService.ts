@@ -1,9 +1,9 @@
-import type { FoodComponentDT, FoodComponentDTN } from '@m-cafe-app/models';
+import type { FoodComponentDT, FoodComponentDTN } from '@m-market-app/models';
 import type { IFoodComponentRepo, IFoodComponentService } from '../interfaces';
 import type { IFoodRepo } from '../../Food';
 import type { IIngredientRepo } from '../../Ingredient';
 import type { ITransactionHandler } from '../../../utils';
-import type { Food, Ingredient } from '@m-cafe-app/models';
+import type { Food, Ingredient } from '@m-market-app/models';
 import { FoodComponentMapper } from '../infrastructure';
 import { FoodSimpleMapper } from '../../Food';
 import { IngredientSimpleMapper } from '../../Ingredient';

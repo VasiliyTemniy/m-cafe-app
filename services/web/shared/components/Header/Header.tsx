@@ -1,10 +1,10 @@
 import type { MouseEvent } from 'react';
 import { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector, useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-// import { sendLogout, setTheme } from "@m-cafe-app/frontend-logic/shared/reducers";
-import { setTheme } from '@m-cafe-app/frontend-logic/shared/reducers';
+import { useAppDispatch, useAppSelector, useInitLC, useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
+// import { sendLogout, setTheme } from "@m-market-app/frontend-logic/shared/reducers";
+import { setTheme } from '@m-market-app/frontend-logic/shared/reducers';
 import { Button, ButtonGroup, Switch, TextComp, Image } from '../basic';
-import { apiBaseUrl, fixedLocFilter } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl, fixedLocFilter } from '@m-market-app/shared-constants';
 import { LanguageBox } from './LanguageBox';
 import { Cart } from '../Cart';
 import { AuthModal } from '../AuthModal';

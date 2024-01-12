@@ -7,7 +7,7 @@ import type {
   AdministrateUserBody,
   AddressDTN,
   AddressDT
-} from '@m-cafe-app/models';
+} from '@m-market-app/models';
 import type { ICRUDService } from '../../../utils';
 
 

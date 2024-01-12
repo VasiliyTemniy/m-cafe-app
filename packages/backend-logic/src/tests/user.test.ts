@@ -1,14 +1,14 @@
-import type { AuthDTRequest, UserDTU } from '@m-cafe-app/models';
+import type { AuthDTRequest, UserDTU } from '@m-market-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import { UserRepoSequelizePG, UserService } from '../models/User';
 import { SessionRepoRedis, SessionService } from '../models/Session';
 import { AddressRepoSequelizePG } from '../models/Address';
 import { AuthController, AuthServiceInternal } from '../models/Auth';
-import { dbHandler } from '@m-cafe-app/db';
+import { dbHandler } from '@m-market-app/db';
 import { initialUsers, newUserInfo } from './user_helper';
-import { toOptionalDate, toOptionalISOString } from '@m-cafe-app/utils';
-import { User as UserPG } from '@m-cafe-app/db';
+import { toOptionalDate, toOptionalISOString } from '@m-market-app/utils';
+import { User as UserPG } from '@m-market-app/db';
 import sha1 from 'sha1';
 import { AuthConnectionHandler } from '../models/Auth';
 import config, { redisSessionClient } from '../config';

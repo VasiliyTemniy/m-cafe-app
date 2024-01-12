@@ -26,7 +26,7 @@ import {
   isPriceCutPermission,
   isSizingMeasure,
   isVolumeMeasure
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { ProductType } from './ProductType.js';
 import { Loc } from './Loc.js';
 import { ProductComponent } from './ProductComponent.js';

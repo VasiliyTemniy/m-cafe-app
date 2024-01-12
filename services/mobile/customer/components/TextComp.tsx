@@ -1,4 +1,4 @@
-import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
+import type { CommonProps } from '@m-market-app/frontend-logic/types';
 import { Text, StyleSheet, TextStyle, ViewStyle, ImageStyle, StyleProp } from 'react-native';
 import { useMemo } from 'react';
 

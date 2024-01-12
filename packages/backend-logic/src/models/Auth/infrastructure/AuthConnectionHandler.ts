@@ -1,7 +1,7 @@
 import type { AuthServiceClient, ProtoGrpcType } from '../../../external';
 import grpc from '@grpc/grpc-js';
 import config from '../../../config.js';
-import { logger } from '@m-cafe-app/utils';
+import { logger } from '@m-market-app/utils';
 
 export interface IAuthConnectionHandler {
   connect(): Promise<void>;

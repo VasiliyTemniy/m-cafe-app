@@ -2,8 +2,4 @@
 
 Backend service package with REST api architecture.
 
-Uses database from @m-cafe-app/db package
-
-## TODO
-
-Add Redis caching for uiSettings and fixedLocs
+Uses database from @m-market-app/db package

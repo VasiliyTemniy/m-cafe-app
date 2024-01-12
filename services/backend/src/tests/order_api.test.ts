@@ -6,7 +6,7 @@ import type {
   EditOrderStatusBody,
   OrderDTS,
   OrderDT
-} from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -21,7 +21,7 @@ import {
   Order,
   OrderFood,
   FacilityManager
-} from '@m-cafe-app/db';
+} from '@m-market-app/db';
 import config from '../utils/config';
 import { validAdminInDB, validManagerInDB } from './admin_api_helper';
 import { Op } from 'sequelize';
@@ -61,16 +61,16 @@ describe('Order requests tests', () => {
       }
     });
 
-    await User.create(validAdminInDB.dbEntry);
-    const manager = await User.create(validManagerInDB.dbEntry);
-    const user = await User.create(validUserInDB.dbEntry);
+    await User.create(validAdminInDB.dtn);
+    const manager = await User.create(validManagerInDB.dtn);
+    const user = await User.create(validUserInDB.dtn);
     await User.bulkCreate(initialUsers);
     await Address.destroy({ where: {} });
     await Session.destroy({ where: {} });
     await Order.destroy({ where: {} });
-    adminTokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
-    managerTokenCookie = await initLogin(validManagerInDB.dbEntry, validManagerInDB.password, api, 201, userAgent) as string;
-    userTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string;
+    adminTokenCookie = await initLogin(validAdminInDB.dtn, validAdminInDB.password, api, 201, userAgent) as string;
+    managerTokenCookie = await initLogin(validManagerInDB.dtn, validManagerInDB.password, api, 201, userAgent) as string;
+    userTokenCookie = await initLogin(validUserInDB.dtn, validUserInDB.password, api, 201, userAgent) as string;
 
     validManagerInDBID = manager.id;
     validUserInDBID = user.id;
@@ -151,14 +151,14 @@ describe('Order requests tests', () => {
       .set('User-Agent', userAgent)
       .send({
         ...validOrder,
-        customerName: validUserInDB.dbEntry.name
+        customerName: validUserInDB.dtn.name
       })
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     const orderInDB2 = await Order.findOne({
       where: {
-        customerName: validUserInDB.dbEntry.name,
+        customerName: validUserInDB.dtn.name,
         customerPhonenumber: validOrder.customerPhonenumber
       },
       include: [
@@ -413,7 +413,7 @@ this facility`s manager or admin. Other facility`s managers also cannot get this
 
   it('Order GET /user/:userId request gives info about order without details. Can be used by user, manager or admin', async () => {
 
-    await Order.destroy({ where: { userId: validUserInDBID }});
+    await Order.destroy({ where: { userId: validUserInDBID } });
 
     const userOrders = await initOrders(api, facilities, foods, userTokenCookie);
 

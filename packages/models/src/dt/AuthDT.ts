@@ -1,20 +1,22 @@
-import type { MapToDT, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, PropertyGroup } from '@m-market-app/utils';
 import type { AuthRequest, AuthResponse, VerifyResponse } from '../domain';
-import { isEntity, isString, isBoolean } from '@m-cafe-app/utils';
-import { idRequired } from './validationHelpers.js';
+import { isEntity, isString, isBoolean, isNumber } from '@m-market-app/utils';
 
 
 export type AuthDTRequest = Omit<MapToDT<AuthRequest>, 'newPassword' | 'oldPassword'> & {
   password: string
 };
 
-const authDTRequestPropertiesGroup: PropertyGroup = {
+const authDTRequestPropertiesGroups: PropertyGroup[] = [{
+  properties: ['id'],
+  validator: isNumber
+}, {
   properties: ['password', 'lookupHash', 'ttl'],
   validator: isString,
-};
+}];
 
 export const isAuthDTRequest = (obj: unknown): obj is AuthDTRequest => 
-  isEntity(obj, [idRequired, authDTRequestPropertiesGroup]);
+  isEntity(obj, authDTRequestPropertiesGroups);
 
 
 export type AuthDTURequest = Omit<MapToDT<AuthRequest>, 'password'> & {
@@ -22,13 +24,16 @@ export type AuthDTURequest = Omit<MapToDT<AuthRequest>, 'password'> & {
   newPassword: string
 };
 
-const authDTURequestPropertiesGroup: PropertyGroup = {
+const authDTURequestPropertiesGroups: PropertyGroup[] = [{
+  properties: ['id'],
+  validator: isNumber
+}, {
   properties: ['oldPassword', 'newPassword', 'lookupHash', 'ttl'],
   validator: isString,
-};
+}];
 
 export const isAuthDTURequest = (obj: unknown): obj is AuthDTURequest => 
-  isEntity(obj, [idRequired, authDTURequestPropertiesGroup]);
+  isEntity(obj, authDTURequestPropertiesGroups);
 
 
 export type AuthDTResponse = MapToDT<AuthResponse>;

@@ -26,15 +26,15 @@ FROM copy-package-files-stage-back as install-stage-back
 
 ENV NODE_ENV development
 
-RUN yarn workspaces focus @m-cafe-app/shared-dev-deps
-RUN yarn workspaces focus @m-cafe-app/shared-backend-deps
-RUN yarn workspaces focus @m-cafe-app/shared-constants
-RUN yarn workspaces focus @m-cafe-app/db
-RUN yarn workspaces focus @m-cafe-app/utils
+RUN yarn workspaces focus @m-market-app/shared-dev-deps
+RUN yarn workspaces focus @m-market-app/shared-backend-deps
+RUN yarn workspaces focus @m-market-app/shared-constants
+RUN yarn workspaces focus @m-market-app/db
+RUN yarn workspaces focus @m-market-app/utils
 
-RUN yarn workspaces focus m-cafe-app
+RUN yarn workspaces focus m-market-app
 
-RUN yarn workspaces focus m-cafe-backend
+RUN yarn workspaces focus m-market-backend
 
 
 FROM install-stage-back as copy-stage-back
@@ -105,10 +105,10 @@ COPY --chown=node:node yarn.lock .
 FROM copy-prod-stage-back as install-prod-stage-back
 
 # INSTALL shared deps, backend shared deps, then backend itself
-RUN yarn workspaces focus @m-cafe-app/shared-backend-deps --production
-RUN yarn workspaces focus @m-cafe-app/shared-constants --production
+RUN yarn workspaces focus @m-market-app/shared-backend-deps --production
+RUN yarn workspaces focus @m-market-app/shared-constants --production
 
-RUN yarn workspaces focus m-cafe-backend --production
+RUN yarn workspaces focus m-market-backend --production
 
 # Delete unused
 RUN rm -rf .yarn/cache

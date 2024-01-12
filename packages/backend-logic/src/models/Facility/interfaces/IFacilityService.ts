@@ -1,4 +1,4 @@
-import type { FacilityDT, FacilityDTN, StockDT, StockDTN } from '@m-cafe-app/models';
+import type { FacilityDT, FacilityDTN, StockDT, StockDTN } from '@m-market-app/models';
 import type { ICRUDService } from '../../../utils';
 
 export interface IFacilityService extends ICRUDService<FacilityDT, FacilityDTN> {

@@ -1,6 +1,6 @@
 import type { MyRedisClientType } from '../config';
 import type { IInmemRepoBase } from './IInmemRepo';
-import { logger } from '@m-cafe-app/utils';
+import { logger } from '@m-market-app/utils';
 
 
 /**

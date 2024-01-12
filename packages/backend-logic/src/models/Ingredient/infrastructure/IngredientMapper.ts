@@ -1,8 +1,8 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { IngredientDT } from '@m-cafe-app/models';
-import { Ingredient } from '@m-cafe-app/models';
-import { Ingredient as IngredientPG } from '@m-cafe-app/db';
-import { ApplicationError, toOptionalISOString } from '@m-cafe-app/utils';
+import type { IngredientDT } from '@m-market-app/models';
+import { Ingredient } from '@m-market-app/models';
+import { Ingredient as IngredientPG } from '@m-market-app/db';
+import { ApplicationError, toOptionalISOString } from '@m-market-app/utils';
 import { LocStringMapper } from '../../LocString';
 
 
