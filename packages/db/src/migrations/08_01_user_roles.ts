@@ -16,6 +16,13 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       references: { model: 'roles', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
+    },
+    granted_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT'
     }
   });
 
