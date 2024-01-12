@@ -1,8 +1,8 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes } from 'sequelize';
 import {
-  productRatingLowest,
-  productRatingHighest,
+  ratingLowestLimit,
+  ratingHighestLimit,
   isReviewParentType,
 } from '@m-cafe-app/shared-constants';
 
@@ -46,8 +46,8 @@ export const up = async ({ context: queryInterface }: MigrationContext) => {
       type: DataTypes.INTEGER,
       allowNull: true,
       validate: {
-        min: productRatingLowest,
-        max: productRatingHighest
+        min: ratingLowestLimit,
+        max: ratingHighestLimit
       }
     },
     blocked_reason: {
