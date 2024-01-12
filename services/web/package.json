@@ -1,8 +1,8 @@
 {
   "name": "m-market-web",
-  "productName": "Modular market app",
+  "productName": "Modular marketplace app",
   "version": "0.1.0",
-  "description": "DIY market app web frontend",
+  "description": "m-market-app web frontend",
   "main": ".webpack/main",
   "type": "module",
   "scripts": {

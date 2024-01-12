@@ -1,6 +1,6 @@
 {
   "name": "m-market-app",
-  "productName": "Modular market app",
+  "productName": "Modular marketplace app",
   "version": "0.1.0",
   "description": "Quickly deployable market app template with slight customization via admin ui",
   "main": "services/web/.webpack/main",

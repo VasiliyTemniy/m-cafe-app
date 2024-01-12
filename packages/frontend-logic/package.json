@@ -1,6 +1,6 @@
 {
   "name": "@m-market-app/frontend-logic",
-  "productName": "Modular market app",
+  "productName": "Modular marketplace app",
   "version": "1.0.0",
   "description": "This package contains redux stores, frontend services and hooks for web and mobile frontend",
   "main": "build/index.js",

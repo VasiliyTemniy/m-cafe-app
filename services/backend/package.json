@@ -1,8 +1,8 @@
 {
   "name": "m-market-backend",
-  "productName": "Modular market app",
+  "productName": "Modular marketplace app",
   "version": "0.4.0",
-  "description": "market app backend",
+  "description": "m-market-app backend",
   "main": "build/index.js",
   "type": "module",
   "repository": "https://github.com/VasiliyTemniy/m-market-app.git",

@@ -1,6 +1,6 @@
 {
   "name": "@m-market-app/backend-logic",
-  "productName": "Modular market app",
+  "productName": "Modular marketplace app",
   "version": "1.0.0",
   "description": "This package contains backend logic with onion-like or hexagonal-like architecture",
   "main": "build/index.js",

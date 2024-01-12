@@ -1,6 +1,6 @@
 {
   "name": "@m-market-app/db",
-  "productName": "Modular market app",
+  "productName": "Modular marketplace app",
   "version": "2.0.0",
   "description": "This package contains db model definitions. Suitable for a market app, food service app as a subtype of a market app",
   "main": "build/index.js",

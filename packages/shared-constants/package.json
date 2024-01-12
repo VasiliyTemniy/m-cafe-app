@@ -1,6 +1,6 @@
 {
   "name": "@m-market-app/shared-constants",
-  "productName": "Modular market app",
+  "productName": "Modular marketplace app",
   "version": "1.0.0",
   "description": "This package contains shared constants, for all services",
   "main": "build/index.js",
