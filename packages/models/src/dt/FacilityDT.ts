@@ -1,5 +1,5 @@
 import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
-import type { LocStringDT, LocStringDTN } from './LocStringDT';
+import type { LocDT, LocDTN } from './LocDT';
 import type { Facility, FacilityS } from '../domain';
 import type { UserDT } from './UserDT.js';
 import type { StockDTS } from './StockDT.js';
@@ -33,8 +33,8 @@ const facilityPropertiesGroups: PropertyGroup[] = [{
 }];
 
 export type FacilityDT = Omit<MapToDT<Facility>, 'nameLoc' | 'descriptionLoc' | 'managers' | 'stocks' | 'address'> & {
-  nameLoc: LocStringDT;
-  descriptionLoc: LocStringDT;
+  nameLoc: LocDT;
+  descriptionLoc: LocDT;
   address: AddressDT;
   managers?: UserDT[];
   stocks?: StockDTS[];
@@ -47,8 +47,8 @@ export const isFacilityDT = (obj: unknown): obj is FacilityDT =>
 
 
 export type FacilityDTN = Omit<MapToDTN<Facility>, 'nameLoc' | 'descriptionLoc' | 'managers' | 'stocks' | 'address'> & {
-  nameLoc: LocStringDTN;
-  descriptionLoc: LocStringDTN;
+  nameLoc: LocDTN;
+  descriptionLoc: LocDTN;
   address: AddressDTN;
 };
 
@@ -61,8 +61,8 @@ export const isFacilityDTN = (obj: unknown): obj is FacilityDTN =>
  * Simple data about Facility contains only nameLoc and descriptionLoc
  */
 export type FacilityDTS = Omit<MapToDT<FacilityS>, 'nameLoc' | 'descriptionLoc'> & {
-  nameLoc: LocStringDT;
-  descriptionLoc: LocStringDT;
+  nameLoc: LocDT;
+  descriptionLoc: LocDT;
 };
 
 export const isFacilityDTS = (obj: unknown): obj is FacilityDTS =>

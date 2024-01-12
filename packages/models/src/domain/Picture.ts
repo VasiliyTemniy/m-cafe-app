@@ -1,11 +1,23 @@
-import type { LocString } from './LocString.js';
+import type { PictureParentType } from '@m-cafe-app/shared-constants';
+import type { Loc } from './Loc.js';
 
 export class Picture {
   constructor (
     readonly id: number,
     readonly src: string,
-    readonly altTextLoc: LocString,
+    readonly parentId: number,
+    readonly parentType: PictureParentType,
+    readonly orderNumber: number,
+    readonly altTextLocs: Loc[],
     readonly createdAt?: Date,
     readonly updatedAt?: Date
+  ) {}
+}
+
+export class PictureS {
+  constructor (
+    readonly src: string,
+    readonly orderNumber: number,
+    readonly altTextLocs: Loc[]
   ) {}
 }

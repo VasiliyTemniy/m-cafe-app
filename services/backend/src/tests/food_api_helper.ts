@@ -1,8 +1,8 @@
-import type { FoodData, FoodTypeData, LocStringData } from '@m-cafe-app/db';
-import { Food, FoodType, LocString } from '@m-cafe-app/db';
+import type { FoodDTN, FoodTypeDT, FoodTypeDTN, LocStringDTN } from '@m-cafe-app/models';
+import { foodService, foodTypeService } from '../controllers';
 
 
-export const initialFoodLocStrings: Omit<LocStringData, 'id'>[] = [
+export const initialFoodLocStrings: LocStringDTN[] = [
   {
     mainStr: 'Роллы',
     secStr: 'Rolls',
@@ -69,55 +69,47 @@ export const initialFoodLocStrings: Omit<LocStringData, 'id'>[] = [
   }
 ];
 
-export const initialFoodTypes: Omit<FoodTypeData, 'id' | 'nameLocId' | 'descriptionLocId'>[] = [
+export const initialFoodTypes: FoodTypeDTN[] = [
   {
-    // id: 1,
-    // nameLocId: 1,
-    // descriptionLocId: 2
+    nameLoc: initialFoodLocStrings[0],
+    descriptionLoc: initialFoodLocStrings[1]
   },
   {
-    // id: 2,
-    // nameLocId: 3,
-    // descriptionLocId: 4
+    nameLoc: initialFoodLocStrings[2],
+    descriptionLoc: initialFoodLocStrings[3]
   },
   {
-    // id: 3,
-    // nameLocId: 5,
-    // descriptionLocId: 6
+    nameLoc: initialFoodLocStrings[4],
+    descriptionLoc: initialFoodLocStrings[5]
   },
   {
-    // id: 4,
-    // nameLocId: 7,
-    // descriptionLocId: 8
+    nameLoc: initialFoodLocStrings[6],
+    descriptionLoc: initialFoodLocStrings[7]
   }
 ];
 
-export const initialFoods: Omit<FoodData, 'id' | 'nameLocId' | 'descriptionLocId' | 'foodTypeId'>[] = [
+export const initialFoods: Omit<FoodDTN, 'foodTypeId'>[] = [
   {
-    // id: 1,
-    // nameLocId: 9,
-    // descriptionLocId: 10,
+    nameLoc: initialFoodLocStrings[8],
+    descriptionLoc: initialFoodLocStrings[9],
     price: 150,
     // foodTypeId: 1
   },
   {
-    // id: 2,
-    // nameLocId: 11,
-    // descriptionLocId: 12,
+    nameLoc: initialFoodLocStrings[10],
+    descriptionLoc: initialFoodLocStrings[11],
     price: 250,
     // foodTypeId: 1
   },
   {
-    // id: 3,
-    // nameLocId: 13,
-    // descriptionLocId: 14,
+    nameLoc: initialFoodLocStrings[12],
+    descriptionLoc: initialFoodLocStrings[13],
     price: 357,
     // foodTypeId: 1
   },
   {
-    // id: 4,
-    // nameLocId: 15,
-    // descriptionLocId: 16,
+    nameLoc: initialFoodLocStrings[14],
+    descriptionLoc: initialFoodLocStrings[15],
     price: 480,
     // foodTypeId: 2
   }
@@ -126,62 +118,39 @@ export const initialFoods: Omit<FoodData, 'id' | 'nameLocId' | 'descriptionLocId
 
 export const initFoodTypes = async (foodTypesCount?: number) => {
 
-  const locStrings = await LocString.bulkCreate(initialFoodLocStrings);
+  const foodTypes = [];
 
   let i = 0;
 
-  let j = 0;
-
-  const foodTypes = [];
-
   for (const _newFoodType of initialFoodTypes) {
-    const foodType = await FoodType.create({
-      nameLocId: locStrings[i].id,
-      descriptionLocId: locStrings[i+1].id
-    });
-    i += 2;
-    j++;
+    const foodType = await foodTypeService.create(initialFoodTypes[i]);
+    i++;
     foodTypes.push(foodType);
 
-    if (foodTypesCount && j >= foodTypesCount) return foodTypes;
+    if (foodTypesCount && i >= foodTypesCount) return foodTypes;
   }
 
   return foodTypes;
 };
 
-export const initFoods = async (foodsCount?: number) => {
-
-  const locStrings = await LocString.bulkCreate(initialFoodLocStrings);
-
-  let i = 0;
-
-  const foodTypes = [];
-
-  for (const _newFoodType of initialFoodTypes) {
-    const foodType = await FoodType.create({
-      nameLocId: locStrings[i].id,
-      descriptionLocId: locStrings[i+1].id
-    });
-    i += 2;
-    foodTypes.push(foodType);
-  }
-
-  let j = 0;
+export const initFoods = async (foodTypes: FoodTypeDT[], foodsCount?: number) => {
 
   const foods = [];
 
+  let i = 0;
+
   for (const newFood of initialFoods) {
-    const food = await Food.create({
-      nameLocId: locStrings[i].id,
-      descriptionLocId: locStrings[i+1].id,
-      price: newFood.price,
-      foodTypeId: foodTypes[j].id
+
+    const randomFoodTypeId = foodTypes[Math.round(Math.random() * (foodTypes.length - 1))].id;
+
+    const food = await foodService.create({
+      ...newFood,
+      foodTypeId: randomFoodTypeId
     });
-    i += 2;
-    j++;
+    i++;
     foods.push(food);
 
-    if (foodsCount && j >= foodsCount) return foods;
+    if (foodsCount && i >= foodsCount) return foods;
   }
 
   return foods;

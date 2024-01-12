@@ -1,9 +1,8 @@
-import type { FoodData, LocStringData } from '@m-cafe-app/db';
-import { FoodType } from '@m-cafe-app/db';
-import { Food, FoodComponent, LocString, Ingredient } from '@m-cafe-app/db';
+import type { FoodDT, FoodDTN, IngredientDT, LocStringDTN } from '@m-cafe-app/models';
+import { foodComponentService, foodService, foodTypeService } from '../controllers';
 
 
-const newCompositeFoodLocStrings: Omit<LocStringData, 'id'>[] = [
+const newCompositeFoodLocStrings: LocStringDTN[] = [
   {
     mainStr: 'Сет "Домик в деревне"'
   },
@@ -12,12 +11,10 @@ const newCompositeFoodLocStrings: Omit<LocStringData, 'id'>[] = [
   }
 ];
 
-const newCompositeFood: Omit<FoodData, 'id' | 'nameLocId' | 'descriptionLocId' | 'foodTypeId'> = {
-  // id: 4,
-  // nameLocId: 15,
-  // descriptionLocId: 16,
-  price: 4800,
-  // foodTypeId: 2
+const newCompositeFood: Omit<FoodDTN, 'foodTypeId'> = {
+  nameLoc: newCompositeFoodLocStrings[0],
+  descriptionLoc: newCompositeFoodLocStrings[1],
+  price: 4800
 };
 
 
@@ -36,9 +33,9 @@ const createFoodComponents = async (
 
     const componentId = unusedComponentIds[Math.round(Math.random() * (unusedComponentIds.length - 1))];
 
-    await FoodComponent.create({
+    await foodComponentService.create({
       foodId,
-      amount: Math.round(Math.random() * (amountMax - amountMin)) + amountMin,
+      quantity: Math.round(Math.random() * (amountMax - amountMin)) + amountMin,
       compositeFood,
       componentId
     });
@@ -59,8 +56,8 @@ const createFoodComponents = async (
  * @param componentsMax 
  */
 export const initFoodComponents = async (
-  foods: Food[],
-  ingredients: Ingredient[],
+  foods: FoodDT[],
+  ingredients: IngredientDT[],
   amountMin: number = 1,
   amountMax: number = 10,
   componentsMin: number = 1,
@@ -71,15 +68,12 @@ export const initFoodComponents = async (
   const ingredientIds = ingredients.map(ingredient => ingredient.id);
 
   // init just one composite food for tests to have less problems with cross-dependencies of foods
-  const compositeFoodLocStrings = await LocString.bulkCreate(newCompositeFoodLocStrings);
+  const withFoodOnly = false;
+  const foodTypes = await foodTypeService.getAll(withFoodOnly);
 
-  const foodTypes = await FoodType.findAll();
-
-  const compositeFood = await Food.create({
+  const compositeFood = await foodService.create({
+    ...newCompositeFood,
     foodTypeId: foodTypes[Math.round(Math.random() * (foodTypes.length - 1))].id,
-    price: newCompositeFood.price,
-    nameLocId: compositeFoodLocStrings[0].id,
-    descriptionLocId: compositeFoodLocStrings[1].id
   });
 
   await createFoodComponents(true, foodIds, amountMin, amountMax, componentsMin, componentsMax, compositeFood.id);

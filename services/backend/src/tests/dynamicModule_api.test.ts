@@ -45,9 +45,9 @@ describe('DynamicModule requests tests', () => {
       }
     });
 
-    await User.create(validAdminInDB.dbEntry);
+    await User.create(validAdminInDB.dtn);
     await Session.destroy({ where: {} });
-    tokenCookie = await initLogin(validAdminInDB.dbEntry, validAdminInDB.password, api, 201, userAgent) as string;
+    tokenCookie = await initLogin(validAdminInDB.dtn, validAdminInDB.password, api, 201, userAgent) as string;
 
     await LocString.destroy({ where: {} });
     await DynamicModule.destroy({ where: {} });
@@ -114,9 +114,9 @@ describe('DynamicModule requests tests', () => {
 
     expect(response1.body.error.name).to.equal('AuthorizationError');
 
-    await User.create(validUserInDB.dbEntry);
+    await User.create(validUserInDB.dtn);
 
-    const commonUserTokenCookie = await initLogin(validUserInDB.dbEntry, validUserInDB.password, api, 201, userAgent) as string; 
+    const commonUserTokenCookie = await initLogin(validUserInDB.dtn, validUserInDB.password, api, 201, userAgent) as string; 
 
     const response2 = await api
       .delete(`${apiBaseUrl}/dynamic-module/${dynamicModules[0].id}`)

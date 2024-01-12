@@ -13,7 +13,7 @@ testingRouter.get(
 testingRouter.get(
   '/reset',
   (async (req, res) => {
-    await dbHandler.dbInstance?.query('DELETE FROM migrations');
+    await dbHandler.dbInstance?.query('DELETE TABLE IF EXISTS migrations');
     await dbHandler.dbInstance?.drop({ cascade: true });
     await dbHandler.runMigrations();
 

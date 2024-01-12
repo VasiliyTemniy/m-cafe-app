@@ -1,40 +1,59 @@
 import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils'; 
 import type { FixedLoc, FixedLocS } from '../domain';
-import type { LocStringDT, LocStringDTS } from './LocStringDT';
-import { isEntity, isString } from '@m-cafe-app/utils';
-import { idRequired, locStringProperty, locStringSimpleProperty } from './validationHelpers.js';
+import type { LocDTS } from './LocDT.js';
+import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
+import { isLocDTS } from './LocDT.js';
 
 
-const fixedLocPropertiesGroup: PropertyGroup = {
+export type FixedLocDT = Omit<MapToDT<FixedLoc>, 'locs'> & {
+  locs: LocDTS[];
+};
+
+const fixedLocDTPropertiesGroups: PropertyGroup[] = [{
+  properties: ['id'],
+  validator: isNumber,
+}, {
   properties: ['name', 'namespace', 'scope'],
   validator: isString,
-};
-
-
-export type FixedLocDT = Omit<MapToDT<FixedLoc>, 'locString'> & {
-  locString: LocStringDT;
-};
+}, {
+  properties: ['locs'],
+  validator: isLocDTS,
+  isArray: true
+}];
 
 export const isFixedLocDT = (obj: unknown): obj is FixedLocDT =>
-  isEntity(obj, [ idRequired, fixedLocPropertiesGroup, locStringProperty ]);
+  isEntity(obj, fixedLocDTPropertiesGroups);
 
 export const isFixedLocDTMany = (obj: unknown): obj is FixedLocDT[] =>
   Array.isArray(obj) && obj.every(isFixedLocDT);
   
 
-export type FixedLocDTS = Omit<MapToDT<FixedLocS>, 'locString'> & {
-  locString: LocStringDTS;
+export type FixedLocDTS = Omit<MapToDT<FixedLocS>, 'locs'> & {
+  locs: LocDTS[];
 };
 
+const fixedLocDTSPropertiesGroups: PropertyGroup[] = [{
+  properties: ['name', 'namespace', 'scope'],
+  validator: isString,
+}, {
+  properties: ['locs'],
+  validator: isLocDTS,
+  isArray: true
+}];
+
 export const isFixedLocDTS = (obj: unknown): obj is FixedLocDTS =>
-  isEntity(obj, [ fixedLocPropertiesGroup, locStringSimpleProperty ]);
+  isEntity(obj, fixedLocDTSPropertiesGroups);
 
 
-// export type FixedLocDTN = Omit<MapToDTN<FixedLoc>, 'locString'> & {
-//   locString: LocStringDTN;
-// };
+/**
+ * Used only for initFixedLocs - no new fixed locs are allowed for anyone
+ */
+export type FixedLocDTN = Omit<MapToDTN<FixedLoc>, 'locs'>;
 
-export type FixedLocDTN = Omit<MapToDTN<FixedLoc>, 'locString'>;
+const fixedLocDTNPropertiesGroups: PropertyGroup[] = [{
+  properties: ['name', 'namespace', 'scope'],
+  validator: isString,
+}];
 
 export const isFixedLocDTN = (obj: unknown): obj is FixedLocDTN =>
-  isEntity(obj, [ fixedLocPropertiesGroup ]);
+  isEntity(obj, fixedLocDTNPropertiesGroups);
