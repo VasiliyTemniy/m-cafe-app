@@ -1,4 +1,4 @@
-import type { TFunction } from '@m-cafe-app/frontend-logic/shared/hooks';
+import type { TFunction } from '@m-market-app/frontend-logic/shared/hooks';
 import * as yup from 'yup';
 import {
   minUsernameLen,
@@ -16,7 +16,7 @@ import {
   minEmailLen,
   maxEmailLen,
   emailRegExp
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 
 export const loginValidationSchema = (t: TFunction) => {
 

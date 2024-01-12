@@ -1,4 +1,4 @@
-import type { OrderDeliveryType, OrderPaymentMethod, OrderPaymentStatus, OrderStatus } from '@m-cafe-app/shared-constants';
+import type { OrderDeliveryType, OrderPaymentMethod, OrderPaymentStatus, OrderStatus } from '@m-market-app/shared-constants';
 import type { Address } from './Address.js';
 import type { FacilityS } from './Facility.js';
 import type { OrderProduct } from './OrderProduct.js';

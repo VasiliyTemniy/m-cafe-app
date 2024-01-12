@@ -6,8 +6,8 @@ import type {
   NewStock,
   StockDT,
   UserDT
-} from '@m-cafe-app/utils';
-import { isStockDT } from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
+import { isStockDT } from '@m-market-app/utils';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -20,7 +20,7 @@ import {
   LocString,
   User,
   UserAddress
-} from '@m-cafe-app/db';
+} from '@m-market-app/db';
 import config from '../utils/config';
 import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';

@@ -1,4 +1,4 @@
-import type { FacilityDT, StockDT } from '@m-cafe-app/models';
+import type { FacilityDT, StockDT } from '@m-market-app/models';
 import type { IFacilityControllerHttp, IFacilityService } from '../interfaces';
 import type { Request, Response } from 'express';
 import {
@@ -9,8 +9,8 @@ import {
   isStockDT,
   isStockDTMany,
   isManageManagersBody
-} from '@m-cafe-app/models';
-import { ProhibitedError, RequestBodyError, UnknownError, isNumber } from '@m-cafe-app/utils';
+} from '@m-market-app/models';
+import { ProhibitedError, RequestBodyError, UnknownError, isNumber } from '@m-market-app/utils';
 import { isRequestCustom } from '../../../utils';
 
 export class FacilityControllerExpressHttp implements IFacilityControllerHttp {

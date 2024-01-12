@@ -1,7 +1,7 @@
-import { useAppSelector } from '@m-cafe-app/frontend-logic/admin/hooks';
-import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { useAppSelector } from '@m-market-app/frontend-logic/admin/hooks';
+import { useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
 import { AppContent, Header, NavItem, Notification, Container } from 'shared/components';
-import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
+import { collapseExpanded } from '@m-market-app/frontend-logic/utils';
 import { StaffSidebar } from 'shared/staffComponents';
 import { Outlet } from 'react-router-dom';
 

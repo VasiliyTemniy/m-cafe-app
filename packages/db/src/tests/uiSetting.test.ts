@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { UiSettingTheme } from '@m-cafe-app/shared-constants';
+import { UiSettingTheme } from '@m-market-app/shared-constants';
 import { dbHandler } from '../db';
 import { createOrgAdminManager, randomEnumValue } from './db_test_helper';
 

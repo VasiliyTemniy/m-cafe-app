@@ -1,4 +1,4 @@
-import type { UserDT, UserDTN } from '@m-cafe-app/models';
+import type { UserDT, UserDTN } from '@m-market-app/models';
 import { userService } from '../controllers';
 
 export const validAdminInDB: {

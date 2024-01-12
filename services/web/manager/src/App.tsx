@@ -1,7 +1,7 @@
-import { useAppSelector, useInitAppManager } from '@m-cafe-app/frontend-logic/manager/hooks';
+import { useAppSelector, useInitAppManager } from '@m-market-app/frontend-logic/manager/hooks';
 import { AppRoutes } from './AppRoutes';
 import { AppContent, Header, Loading, Container } from 'shared/components';
-import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
+import { collapseExpanded } from '@m-market-app/frontend-logic/utils';
 import { StaffSidebar } from 'shared/staffComponents';
 
 

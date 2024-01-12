@@ -1,4 +1,4 @@
-import type { AuthResponse, Session } from '@m-cafe-app/models';
+import type { AuthResponse, Session } from '@m-market-app/models';
 import type { ICRUDRepo, IInmemRepoBase } from '../../../utils';
 
 // SessionDT, SessionDTN does not exist so the arguments are Session

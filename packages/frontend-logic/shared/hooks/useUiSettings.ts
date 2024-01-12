@@ -1,4 +1,4 @@
-import type { UiSettingDT } from '@m-cafe-app/utils';
+import type { UiSettingDT } from '@m-market-app/utils';
 import { useCallback } from 'react';
 import { useAppSelector } from './reduxHooks';
 

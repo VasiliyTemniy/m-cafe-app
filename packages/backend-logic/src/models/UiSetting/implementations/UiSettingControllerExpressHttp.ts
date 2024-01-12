@@ -1,9 +1,9 @@
 import type { IUiSettingControllerHttp, IUiSettingService } from '../interfaces';
 import type { Request, Response } from 'express';
-import type { UiSettingDT, UiSettingDTS } from '@m-cafe-app/models';
+import type { UiSettingDT, UiSettingDTS } from '@m-market-app/models';
 import { isRequestWithUserRights } from '../../../utils';
-import { isUiSettingDTMany, isUiSettingDTN } from '@m-cafe-app/models';
-import { ApplicationError, RequestBodyError, UnknownError, isString } from '@m-cafe-app/utils';
+import { isUiSettingDTMany, isUiSettingDTN } from '@m-market-app/models';
+import { ApplicationError, RequestBodyError, UnknownError, isString } from '@m-market-app/utils';
 
 
 export class UiSettingControllerExpressHttp implements IUiSettingControllerHttp {

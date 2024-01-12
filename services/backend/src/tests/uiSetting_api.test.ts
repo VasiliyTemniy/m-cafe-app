@@ -1,4 +1,4 @@
-import type { UiSettingDT, UiSettingDTN } from '@m-cafe-app/models';
+import type { UiSettingDT, UiSettingDTN } from '@m-market-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';

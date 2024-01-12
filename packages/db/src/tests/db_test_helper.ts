@@ -1,6 +1,6 @@
 import type { IDBHandler } from '../dbHandler';
-import * as constants from '@m-cafe-app/shared-constants';
-import { UserRights } from '@m-cafe-app/shared-constants';
+import * as constants from '@m-market-app/shared-constants';
+import { UserRights } from '@m-market-app/shared-constants';
 
 
 /**

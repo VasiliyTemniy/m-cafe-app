@@ -1,5 +1,5 @@
 import type { Response } from 'supertest';
-import type { Address, AddressDTN, UserDT, UserDTN, UserDTU } from '@m-cafe-app/models';
+import type { Address, AddressDTN, UserDT, UserDTN, UserDTU } from '@m-market-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -35,10 +35,10 @@ import {
   nameRegExp,
   phonenumberRegExp,
   usernameRegExp
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { initLogin, userAgent } from './sessions_api_helper';
 import { sessionService, userService } from '../controllers';
-import { redisSessionClient } from '@m-cafe-app/backend-logic';
+import { redisSessionClient } from '@m-market-app/backend-logic';
 
 
 

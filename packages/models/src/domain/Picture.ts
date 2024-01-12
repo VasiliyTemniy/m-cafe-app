@@ -1,4 +1,4 @@
-import type { PictureParentType } from '@m-cafe-app/shared-constants';
+import type { PictureParentType } from '@m-market-app/shared-constants';
 import type { Loc } from './Loc.js';
 
 export class Picture {

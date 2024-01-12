@@ -1,4 +1,4 @@
-import type { FacilityType } from '@m-cafe-app/shared-constants';
+import type { FacilityType } from '@m-market-app/shared-constants';
 import type { Address } from './Address.js';
 import type { LocS } from './Loc.js';
 import type { StockS } from './Stock.js';

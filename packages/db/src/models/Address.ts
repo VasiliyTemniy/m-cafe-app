@@ -33,7 +33,7 @@ import {
   minStreetLen,
   regionRegExp,
   streetRegExp
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { User } from './User.js';
 import { UserAddress } from './UserAddress.js';
 import { Facility } from './Facility.js';

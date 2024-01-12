@@ -1,7 +1,7 @@
-import type { PropertiesTimestamps } from '@m-cafe-app/shared-constants';
+import type { PropertiesTimestamps } from '@m-market-app/shared-constants';
 import { ApplicationError, RedisError } from './Errors.js';
 import { isBoolean, isDate, isNumber, isString } from './typeValidators.js';
-import { timestampsKeys } from '@m-cafe-app/shared-constants';
+import { timestampsKeys } from '@m-market-app/shared-constants';
 
 export type MapToUnknown<T> = {
   [Property in keyof T]: unknown

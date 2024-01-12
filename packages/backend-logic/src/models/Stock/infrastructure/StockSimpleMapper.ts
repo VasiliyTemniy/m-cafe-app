@@ -1,7 +1,7 @@
 import type { EntitySimpleMapper } from '../../../utils';
-import type { StockDTS } from '@m-cafe-app/models';
-import { Stock, StockS } from '@m-cafe-app/models';
-import { Stock as StockPG } from '@m-cafe-app/db';
+import type { StockDTS } from '@m-market-app/models';
+import { Stock, StockS } from '@m-market-app/models';
+import { Stock as StockPG } from '@m-market-app/db';
 
 
 export class StockSimpleMapper implements EntitySimpleMapper<Stock, StockS, StockPG, StockDTS> {

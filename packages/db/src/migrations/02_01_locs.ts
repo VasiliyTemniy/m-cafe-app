@@ -1,6 +1,6 @@
 import type { MigrationContext } from '../types/Migrations.js';
 import { DataTypes, QueryTypes } from 'sequelize';
-import { isLocType, isLocParentType, isLanguageCode } from '@m-cafe-app/shared-constants';
+import { isLocType, isLocParentType, isLanguageCode } from '@m-market-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('locs', {

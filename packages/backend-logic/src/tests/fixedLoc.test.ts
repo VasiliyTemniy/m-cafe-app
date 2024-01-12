@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 import { FixedLocRepoRedis, FixedLocRepoSequelizePG, FixedLocService } from '../models/FixedLoc';
-import { dbHandler } from '@m-cafe-app/db';
+import { dbHandler } from '@m-market-app/db';
 import { redisFixedLocsClient } from '../config';
 import { LocStringRepoSequelizePG } from '../models/LocString';
 import { TransactionHandlerSequelizePG } from '../utils';

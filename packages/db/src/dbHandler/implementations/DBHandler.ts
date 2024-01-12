@@ -2,10 +2,10 @@ import type { IDBHandler, IMigration, IMigrationConf } from '../interfaces';
 import type { Options } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { Umzug, SequelizeStorage } from 'umzug';
-import { logger } from '@m-cafe-app/utils';
+import { logger } from '@m-market-app/utils';
 import { DATABASE_URL } from '../../config';
 import * as models from '../../models';
-import * as constants from '@m-cafe-app/shared-constants';
+import * as constants from '@m-market-app/shared-constants';
 
 
 export class DBHandler implements IDBHandler {

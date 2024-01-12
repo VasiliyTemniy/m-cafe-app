@@ -1,6 +1,6 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { Stock, StockS } from '../domain';
-import { isEntity, isNumber } from '@m-cafe-app/utils';
+import { isEntity, isNumber } from '@m-market-app/utils';
 import { idRequired } from './validationHelpers.js';
 
 

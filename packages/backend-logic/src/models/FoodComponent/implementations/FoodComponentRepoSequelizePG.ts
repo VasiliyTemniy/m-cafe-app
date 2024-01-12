@@ -1,10 +1,10 @@
 import type { IFoodComponentRepo } from '../interfaces';
-import type { FoodComponentDTN, FoodS, IngredientS } from '@m-cafe-app/models';
+import type { FoodComponentDTN, FoodS, IngredientS } from '@m-market-app/models';
 import type { Transaction } from 'sequelize';
-import { FoodComponent } from '@m-cafe-app/models';
-import { FoodComponent as FoodComponentPG } from '@m-cafe-app/db';
+import { FoodComponent } from '@m-market-app/models';
+import { FoodComponent as FoodComponentPG } from '@m-market-app/db';
 import { FoodComponentMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 
 export class FoodComponentRepoSequelizePG implements IFoodComponentRepo {

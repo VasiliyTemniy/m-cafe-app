@@ -1,7 +1,7 @@
-import type { UiSetting, UiSettingS } from '@m-cafe-app/models';
+import type { UiSetting, UiSettingS } from '@m-market-app/models';
 import type { IUiSettingSRepo } from '../interfaces';
 import { RedisRepoBase } from '../../../utils';
-import { allowedThemesReadonly } from '@m-cafe-app/shared-constants';
+import { allowedThemesReadonly } from '@m-market-app/shared-constants';
 
 export class UiSettingRepoRedis extends RedisRepoBase implements IUiSettingSRepo {
 

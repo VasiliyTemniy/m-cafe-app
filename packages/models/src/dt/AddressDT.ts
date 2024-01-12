@@ -1,6 +1,6 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { Address } from '../domain';
-import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
+import { isEntity, isNumber, isString } from '@m-market-app/utils';
 
 
 export type AddressDT = MapToDT<Address>;

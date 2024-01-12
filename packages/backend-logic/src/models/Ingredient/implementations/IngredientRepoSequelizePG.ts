@@ -1,10 +1,10 @@
 import type { IIngredientRepo } from '../interfaces';
-import type { IngredientDTN, LocString } from '@m-cafe-app/models';
+import type { IngredientDTN, LocString } from '@m-market-app/models';
 import type { Transaction } from 'sequelize';
-import { Ingredient } from '@m-cafe-app/models';
-import { Ingredient as IngredientPG } from '@m-cafe-app/db';
+import { Ingredient } from '@m-market-app/models';
+import { Ingredient as IngredientPG } from '@m-market-app/db';
 import { IngredientMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 
 export class IngredientRepoSequelizePG implements IIngredientRepo {

@@ -17,7 +17,7 @@ import {
   isApiRequestMethod,
   isApiRequestProtocol,
   isApiRequestReason
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Organization } from './Organization.js';
 import { User } from './User.js';

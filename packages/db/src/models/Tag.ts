@@ -7,7 +7,7 @@ import type {
   ForeignKey
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType, TagParentType } from '@m-cafe-app/shared-constants';
+import { LocParentType, LocType, TagParentType } from '@m-market-app/shared-constants';
 import { Product } from './Product.js';
 import { Picture } from './Picture.js';
 import { Facility } from './Facility.js';

@@ -9,7 +9,7 @@ import {
   OrderPaymentStatus,
   OrderStatus,
   OrderTrackingStatus
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { createAddress, createOrgAdminManager } from './db_test_helper';
 
 

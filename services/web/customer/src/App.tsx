@@ -1,7 +1,7 @@
-import { useInitAppCustomer } from '@m-cafe-app/frontend-logic/customer/hooks';
+import { useInitAppCustomer } from '@m-market-app/frontend-logic/customer/hooks';
 import { AppRoutes } from './AppRoutes';
 import { AppContent, Header, Container } from 'shared/components';
-import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
+import { collapseExpanded } from '@m-market-app/frontend-logic/utils';
 
 
 export const App = () => {

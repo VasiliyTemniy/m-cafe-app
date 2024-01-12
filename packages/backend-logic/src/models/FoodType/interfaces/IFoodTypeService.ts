@@ -1,4 +1,4 @@
-import type { FoodTypeDT, FoodTypeDTN } from '@m-cafe-app/models';
+import type { FoodTypeDT, FoodTypeDTN } from '@m-market-app/models';
 import type { ICRUDService } from '../../../utils';
 
 export interface IFoodTypeService extends Omit<ICRUDService<FoodTypeDT, FoodTypeDTN>, 'getAll'> {

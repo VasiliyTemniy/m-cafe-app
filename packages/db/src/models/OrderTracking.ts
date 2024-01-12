@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { MassMeasure, OrderTrackingStatus, isMassMeasure, isOrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import { MassMeasure, OrderTrackingStatus, isMassMeasure, isOrderTrackingStatus } from '@m-market-app/shared-constants';
 import { Carrier } from './Carrier.js';
 import { Order } from './Order.js';
 import { Facility } from './Facility.js';

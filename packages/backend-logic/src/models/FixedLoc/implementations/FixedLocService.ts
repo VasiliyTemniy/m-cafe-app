@@ -1,14 +1,14 @@
-import type { FixedLocDT, FixedLocDTS, LocStringDTN } from '@m-cafe-app/models';
+import type { FixedLocDT, FixedLocDTS, LocStringDTN } from '@m-market-app/models';
 import type { IFixedLocService, IFixedLocRepo, IFixedLocSRepo } from '../interfaces';
-import type { FixedLocsScope } from '@m-cafe-app/shared-constants';
+import type { FixedLocsScope } from '@m-market-app/shared-constants';
 import type { ILocStringRepo } from '../../LocString';
 import type { ITransactionHandler } from '../../../utils';
 import { LocStringMapper } from '../../LocString';
-import { FixedLoc } from '@m-cafe-app/models';
-import { isLocStringDTN } from '@m-cafe-app/models';
-import { ApplicationError, isString } from '@m-cafe-app/utils';
+import { FixedLoc } from '@m-market-app/models';
+import { isLocStringDTN } from '@m-market-app/models';
+import { ApplicationError, isString } from '@m-market-app/utils';
 import { FixedLocMapper } from '../infrastructure';
-import { logger } from '@m-cafe-app/utils';
+import { logger } from '@m-market-app/utils';
 import { getFileReadPromises } from '../../../utils';
 
 export class FixedLocService implements IFixedLocService {

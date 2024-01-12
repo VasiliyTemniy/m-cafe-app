@@ -1,14 +1,14 @@
 import type { LoginFormValues } from './LoginForm';
 import type { SignupFormValues } from './SignupForm';
-import type { LoginUserBody, NewUserBody } from '@m-cafe-app/utils';
-import { useAppDispatch } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { sendLogin, sendNewUser } from '@m-cafe-app/frontend-logic/shared/reducers';
-import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import type { LoginUserBody, NewUserBody } from '@m-market-app/utils';
+import { useAppDispatch } from '@m-market-app/frontend-logic/shared/hooks';
+import { sendLogin, sendNewUser } from '@m-market-app/frontend-logic/shared/reducers';
+import { useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
 import { useState, useEffect, useRef } from 'react';
 import { LoginForm } from './LoginForm';
 import { SignupForm } from './SignupForm';
-import { ApplicationError, mapEmptyStringsToUndefined } from '@m-cafe-app/utils';
-import { phonenumberRegExp, usernameRegExp } from '@m-cafe-app/shared-constants';
+import { ApplicationError, mapEmptyStringsToUndefined } from '@m-market-app/utils';
+import { phonenumberRegExp, usernameRegExp } from '@m-market-app/shared-constants';
 import { Modal } from '../basic';
 
 

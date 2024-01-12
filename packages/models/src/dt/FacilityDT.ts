@@ -1,10 +1,10 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { LocDT, LocDTN } from './LocDT';
 import type { Facility, FacilityS } from '../domain';
 import type { UserDT } from './UserDT.js';
 import type { StockDTS } from './StockDT.js';
 import type { AddressDT, AddressDTN } from './AddressDT.js';
-import { isEntity, isNumber, isUnknownObject } from '@m-cafe-app/utils';
+import { isEntity, isNumber, isUnknownObject } from '@m-market-app/utils';
 import { isAddressDT } from './AddressDT.js';
 import { isStockDTS } from './StockDT.js';
 import { isUserDT } from './UserDT.js';

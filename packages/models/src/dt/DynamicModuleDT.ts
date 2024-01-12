@@ -1,16 +1,16 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { DynamicModule } from '../domain';
 import type { LocDTN, LocDTS } from './LocDT.js';
 import type { PictureDTS } from './PictureDT.js';
 import { isLocDTN, isLocDTS } from './LocDT.js';
-import { isEntity, isNumber, isString, isUnknownObject } from '@m-cafe-app/utils';
+import { isEntity, isNumber, isString, isUnknownObject } from '@m-market-app/utils';
 import { isPictureDTS } from './PictureDT.js';
 import {
   isDynamicModulePageType,
   isDynamicModulePlacementType,
   isDynamicModulePreset,
   isDynamicModuleType
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 
 
 export type DynamicModuleDT = Omit<MapToDT<DynamicModule>, 'pictures' | 'locs'> & {

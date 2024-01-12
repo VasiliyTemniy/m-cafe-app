@@ -17,7 +17,7 @@ import {
   isMassMeasure,
   isSizingMeasure,
   isVolumeMeasure
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { User } from './User.js';
 import { Organization } from './Organization.js';
 import { Coverage } from './Coverage.js';

@@ -1,9 +1,9 @@
-import type { OrderFood } from '@m-cafe-app/models';
+import type { OrderFood } from '@m-market-app/models';
 import type { IOrderFoodRepo, OrderFoodItem } from '../interfaces';
 import type { Transaction } from 'sequelize';
-import { OrderFood as OrderFoodPG } from '@m-cafe-app/db';
+import { OrderFood as OrderFoodPG } from '@m-market-app/db';
 import { OrderFoodMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 
 

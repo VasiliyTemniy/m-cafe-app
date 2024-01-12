@@ -1,9 +1,9 @@
 import type { IFixedLocControllerHttp, IFixedLocService } from '../interfaces';
 import type { Request, Response } from 'express';
-import type { FixedLocDT, FixedLocDTS } from '@m-cafe-app/models';
+import type { FixedLocDT, FixedLocDTS } from '@m-market-app/models';
 import { isRequestWithUserRights } from '../../../utils';
-import { isFixedLocDT, isFixedLocDTMany } from '@m-cafe-app/models';
-import { ApplicationError, RequestBodyError, UnknownError, isString } from '@m-cafe-app/utils';
+import { isFixedLocDT, isFixedLocDTMany } from '@m-market-app/models';
+import { ApplicationError, RequestBodyError, UnknownError, isString } from '@m-market-app/utils';
 
 
 export class FixedLocControllerExpressHttp implements IFixedLocControllerHttp {

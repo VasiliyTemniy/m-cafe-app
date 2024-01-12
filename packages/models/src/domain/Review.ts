@@ -1,4 +1,4 @@
-import type { ReviewParentType } from '@m-cafe-app/shared-constants';
+import type { ReviewParentType } from '@m-market-app/shared-constants';
 import type { User } from './User.js';
 import type { CommentS } from './Comment.js';
 import type { PictureS } from './Picture.js';

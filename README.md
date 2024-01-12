@@ -1,6 +1,6 @@
-# m-cafe-app
+# m-market-app
 
-## modular cafe app
+## modular marketplace app
 
 Written in typescript almost without 'any', but with few type assertions
 'any' used only for some generics

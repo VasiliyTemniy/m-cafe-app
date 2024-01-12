@@ -1,4 +1,4 @@
-import type { DynamicModulePageType, DynamicModulePlacementType, DynamicModulePreset, DynamicModuleType } from '@m-cafe-app/shared-constants';
+import type { DynamicModulePageType, DynamicModulePlacementType, DynamicModulePreset, DynamicModuleType } from '@m-market-app/shared-constants';
 import type { LocS } from './Loc.js';
 import type { PictureS } from './Picture.js';
 

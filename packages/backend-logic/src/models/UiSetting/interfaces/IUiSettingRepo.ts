@@ -1,4 +1,4 @@
-import type { UiSetting, UiSettingDTN, UiSettingS, UiSettingUniqiePropertiesGroup } from '@m-cafe-app/models';
+import type { UiSetting, UiSettingDTN, UiSettingS, UiSettingUniqiePropertiesGroup } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo, IInmemRepo } from '../../../utils';
 
 export interface IUiSettingRepo extends ICRUDRepo<UiSetting, UiSettingDTN> {

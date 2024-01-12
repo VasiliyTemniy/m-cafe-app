@@ -1,7 +1,7 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { OrderFoodDT } from '@m-cafe-app/models';
-import { OrderFood } from '@m-cafe-app/models';
-import { OrderFood as OrderFoodPG } from '@m-cafe-app/db';
+import type { OrderFoodDT } from '@m-market-app/models';
+import { OrderFood } from '@m-market-app/models';
+import { OrderFood as OrderFoodPG } from '@m-market-app/db';
 import { FoodSimpleMapper } from '../../Food';
 
 

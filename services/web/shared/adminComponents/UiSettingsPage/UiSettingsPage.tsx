@@ -1,8 +1,8 @@
 import type { MouseEvent } from 'react';
-// import type { UiSettingDT } from '@m-cafe-app/utils';
+// import type { UiSettingDT } from '@m-market-app/utils';
 import { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@m-cafe-app/frontend-logic/admin/hooks';
-import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { useAppDispatch, useAppSelector } from '@m-market-app/frontend-logic/admin/hooks';
+import { useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
 import { Button, ButtonGroup, Container, Dropbox, Table, TextComp } from 'shared/components';
 import {
   parseUiSettings,
@@ -10,7 +10,7 @@ import {
   // sendResetUiSettings,
   sendUpdUiSettings,
   // updParsedUiSetting
-} from '@m-cafe-app/frontend-logic/admin/reducers';
+} from '@m-market-app/frontend-logic/admin/reducers';
 
 export const UiSettingsPage = () => {
 

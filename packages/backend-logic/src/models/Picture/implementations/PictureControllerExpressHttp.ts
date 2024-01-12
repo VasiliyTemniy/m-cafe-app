@@ -1,8 +1,8 @@
 import type { IPictureControllerHttp, IPictureService } from '../interfaces';
 import type { Request, Response } from 'express';
-import type { PictureDT } from '@m-cafe-app/models';
-import { RequestBodyError } from '@m-cafe-app/utils';
-import { isLocStringDT } from '@m-cafe-app/models';
+import type { PictureDT } from '@m-market-app/models';
+import { RequestBodyError } from '@m-market-app/utils';
+import { isLocStringDT } from '@m-market-app/models';
 
 
 export class PictureControllerExpressHttp implements IPictureControllerHttp {

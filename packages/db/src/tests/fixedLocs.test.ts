@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import 'mocha';
-import { LanguageCode, LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { LanguageCode, LocParentType, LocType } from '@m-market-app/shared-constants';
 import { dbHandler } from '../db';
 import { randomEnumValue } from './db_test_helper';
 

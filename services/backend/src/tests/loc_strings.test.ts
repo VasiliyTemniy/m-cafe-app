@@ -1,7 +1,7 @@
-import type { NewLocString } from '@m-cafe-app/utils';
+import type { NewLocString } from '@m-market-app/utils';
 import { expect } from 'chai';
 import 'mocha';
-import { connectToDatabase, LocString } from '@m-cafe-app/db';
+import { connectToDatabase, LocString } from '@m-market-app/db';
 
 
 

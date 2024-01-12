@@ -1,8 +1,8 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { FacilityDT } from '@m-cafe-app/models';
-import { Facility } from '@m-cafe-app/models';
-import { Facility as FacilityPG } from '@m-cafe-app/db';
-import { ApplicationError, toOptionalISOString } from '@m-cafe-app/utils';
+import type { FacilityDT } from '@m-market-app/models';
+import { Facility } from '@m-market-app/models';
+import { Facility as FacilityPG } from '@m-market-app/db';
+import { ApplicationError, toOptionalISOString } from '@m-market-app/utils';
 import { LocStringMapper } from '../../LocString';
 import { AddressMapper } from '../../Address';
 import { UserMapper } from '../../User/infrastructure';

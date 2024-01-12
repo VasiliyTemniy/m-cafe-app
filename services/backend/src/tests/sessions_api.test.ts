@@ -13,8 +13,8 @@ import * as fc from 'fast-check';
 import { initLogin, userAgent } from './sessions_api_helper';
 import sha1 from 'sha1';
 import { sessionService, userService } from '../controllers';
-import type { AuthDTRequest, UserDT, UserLoginDT } from '@m-cafe-app/models';
-import { logger } from '@m-cafe-app/utils';
+import type { AuthDTRequest, UserDT, UserLoginDT } from '@m-market-app/models';
+import { logger } from '@m-market-app/utils';
 
 
 

@@ -1,4 +1,4 @@
-import type { IngredientDTN, LocStringDTN } from '@m-cafe-app/models';
+import type { IngredientDTN, LocStringDTN } from '@m-market-app/models';
 import { ingredientService } from '../controllers';
 
 export const initialIngredientLocStrings: LocStringDTN[] = [

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 import { dbHandler } from '../db';
 import { createCustomer, randomEnumValue } from './db_test_helper';
-import { ratingLowestLimit, ratingHighestLimit } from '@m-cafe-app/shared-constants';
+import { ratingLowestLimit, ratingHighestLimit } from '@m-market-app/shared-constants';
 
 
 

@@ -1,10 +1,10 @@
-import type { EditIngredientBody, NewIngredientBody } from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/shared-constants';
+import type { EditIngredientBody, NewIngredientBody } from '@m-market-app/utils';
+import { timestampsKeys } from '@m-market-app/shared-constants';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../app';
-import { connectToDatabase, Ingredient, LocString, User } from '@m-cafe-app/db';
+import { connectToDatabase, Ingredient, LocString, User } from '@m-market-app/db';
 import config from '../utils/config';
 import { validAdminInDB, validManagerInDB } from './admin_api_helper';
 import { Op } from 'sequelize';

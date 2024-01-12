@@ -1,7 +1,7 @@
 import type { Loc, LocS } from '../domain';
-import type { MapToDT, PropertyGroup } from '@m-cafe-app/utils';
-import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
-import { isLocParentType, isLocType } from '@m-cafe-app/shared-constants';
+import type { MapToDT, PropertyGroup } from '@m-market-app/utils';
+import { isEntity, isNumber, isString } from '@m-market-app/utils';
+import { isLocParentType, isLocType } from '@m-market-app/shared-constants';
 
 
 /**

@@ -6,7 +6,7 @@ import type {
   RefreshTokenRequest,
   VerifyResponse,
   VerifyTokenRequest
-} from '@m-cafe-app/models';
+} from '@m-market-app/models';
 import type { ICRUDController } from '../../../utils';
 
 export interface IAuthController extends ICRUDController {

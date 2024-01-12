@@ -188,7 +188,7 @@
  * Leading zeroes are removed to make TS happy.\
  * If needed, add leading zeroes for some api calls
  * 
- * Check out \@m-cafe-app/packages/shared-constants/src/currencyEnums.ts\
+ * Check out \@m-market-app/packages/shared-constants/src/currencyEnums.ts\
  * To allow more currencies, uncomment according lines and restart the app
  * 
  * Currency names will be stored in FixedLocs table
@@ -368,7 +368,7 @@ export const isCurrencyCode = (code: unknown): code is CurrencyCode =>
  * applied as multiplier before storing price value in the database and\
  * applied as divider when retrieving price value from the database.
  * 
- * Check out \@m-cafe-app/packages/shared-constants/src/currencyEnums.ts\
+ * Check out \@m-market-app/packages/shared-constants/src/currencyEnums.ts\
  * To allow more currencies, uncomment according lines and restart the app
  * 
  */

@@ -1,8 +1,8 @@
 import type { EntitySimpleMapper } from '../../../utils';
-import type { FoodDTS } from '@m-cafe-app/models';
-import { Food, FoodS } from '@m-cafe-app/models';
-import { Food as FoodPG } from '@m-cafe-app/db';
-import { ApplicationError } from '@m-cafe-app/utils';
+import type { FoodDTS } from '@m-market-app/models';
+import { Food, FoodS } from '@m-market-app/models';
+import { Food as FoodPG } from '@m-market-app/db';
+import { ApplicationError } from '@m-market-app/utils';
 import { LocStringMapper } from '../../LocString';
 
 

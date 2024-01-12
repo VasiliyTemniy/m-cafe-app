@@ -14,7 +14,7 @@ import {
   isPermissionAccess,
   isPermissionAction,
   isPermissionTarget
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { Coverage } from './Coverage.js';
 import { User } from './User.js';

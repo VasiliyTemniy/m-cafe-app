@@ -1,7 +1,7 @@
-import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingDTS } from '@m-cafe-app/models';
+import type { UiSetting, UiSettingDT, UiSettingDTN, UiSettingDTS } from '@m-market-app/models';
 import type { IUiSettingService, IUiSettingRepo, IUiSettingSRepo } from '../interfaces';
 import type { ITransactionHandler } from '../../../utils';
-import { ApplicationError } from '@m-cafe-app/utils';
+import { ApplicationError } from '@m-market-app/utils';
 import { UiSettingMapper } from '../infrastructure';
 import {
   allowedCSSPropertiesKeys,
@@ -16,8 +16,8 @@ import {
   isUiSettingType,
   specificUiSettingsReadonly,
   uiSettingTypesReadonly
-} from '@m-cafe-app/shared-constants';
-import { logger } from '@m-cafe-app/utils';
+} from '@m-market-app/shared-constants';
+import { logger } from '@m-market-app/utils';
 
 export class UiSettingService implements IUiSettingService {
   constructor(

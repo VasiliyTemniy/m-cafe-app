@@ -1,9 +1,9 @@
 import type { MouseEventHandler, MouseEvent } from 'react';
-import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
-import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import type { CommonProps } from '@m-market-app/frontend-logic/types';
+import { useInitLC, useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
 import { Image } from './Image';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
-import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
+import { collapseExpanded } from '@m-market-app/frontend-logic/utils';
 import { Scrollable } from './Scrollable';
 
 interface DropboxProps extends CommonProps {

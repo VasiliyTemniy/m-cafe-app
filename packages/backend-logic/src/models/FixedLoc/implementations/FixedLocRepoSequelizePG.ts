@@ -1,10 +1,10 @@
-import type { FixedLocDTN, FixedLocUniquePropertiesGroup, LocString } from '@m-cafe-app/models';
+import type { FixedLocDTN, FixedLocUniquePropertiesGroup, LocString } from '@m-market-app/models';
 import type { IFixedLocRepo } from '../interfaces';
 import type { Transaction } from 'sequelize';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 import { FixedLocMapper } from '../infrastructure';
-import { FixedLoc as FixedLocPG } from '@m-cafe-app/db';
-import { FixedLoc } from '@m-cafe-app/models';
+import { FixedLoc as FixedLocPG } from '@m-market-app/db';
+import { FixedLoc } from '@m-market-app/models';
 
 export class FixedLocRepoSequelizePG implements IFixedLocRepo {
 

@@ -4,7 +4,7 @@
 
 import type { MigrationFn } from './types/Migrations.js';
 import { glob } from 'glob';
-import { logger } from '@m-cafe-app/utils';
+import { logger } from '@m-market-app/utils';
 import path from 'path';
 
 export const loadMigrations = async () => {

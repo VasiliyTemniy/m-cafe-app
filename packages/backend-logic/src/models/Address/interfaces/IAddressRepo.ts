@@ -1,4 +1,4 @@
-import type { Address, AddressDTN } from '@m-cafe-app/models';
+import type { Address, AddressDTN } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 export interface IAddressRepo extends Omit<ICRUDRepo<Address, AddressDTN>, 'create' | 'update' | 'remove'> {

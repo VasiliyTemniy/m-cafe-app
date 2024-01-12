@@ -2,7 +2,7 @@ import type { IOrderControllerExpressHttp, IOrderService } from '../interfaces';
 import type { Request, Response } from 'express';
 import type { IUserService } from '../../User';
 import type { IFacilityService } from '../../Facility';
-import type { OrderDT } from '@m-cafe-app/models';
+import type { OrderDT } from '@m-market-app/models';
 import {
   ApplicationError,
   ProhibitedError,
@@ -10,9 +10,9 @@ import {
   RequestQueryError,
   UnknownError,
   isString
-} from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
 import { isRequestCustom } from '../../../utils';
-import { isOrderDTN, isOrderDTU } from '@m-cafe-app/models';
+import { isOrderDTN, isOrderDTU } from '@m-market-app/models';
 import {
   NumericToOrderStatusMapping,
   NumericToOrderPaymentMethodMapping,
@@ -20,7 +20,7 @@ import {
   OrderStatus,
   OrderPaymentMethod,
   OrderPaymentStatus,
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import type { ParsedQs } from 'qs';
 
 

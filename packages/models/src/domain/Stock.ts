@@ -1,4 +1,4 @@
-import type { StockEntityType, StockStatus } from '@m-cafe-app/shared-constants';
+import type { StockEntityType, StockStatus } from '@m-market-app/shared-constants';
 import type { ProductS } from './Product';
 import type { IngredientS } from './Ingredient';
 

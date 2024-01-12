@@ -1,11 +1,11 @@
 import type { MouseEventHandler } from 'react';
 import type { InputProps } from './Input';
 import { useDeferredValue } from 'react';
-import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { useInitLC, useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 import { Image } from './Image';
 import { Scrollable } from './Scrollable';
-import { autoCompleteArray } from '@m-cafe-app/frontend-logic/utils';
+import { autoCompleteArray } from '@m-market-app/frontend-logic/utils';
 
 interface SelectInputProps extends InputProps {
   handleChooseOption: MouseEventHandler;

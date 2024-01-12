@@ -1,8 +1,8 @@
 import type { ProductType } from '../domain';
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { LocDTN, LocDTS } from './LocDT.js';
 import { isLocDTN, isLocDTS } from './LocDT.js';
-import { isEntity, isNumber } from '@m-cafe-app/utils';
+import { isEntity, isNumber } from '@m-market-app/utils';
 
 
 export type ProductTypeDT = Omit<MapToDT<ProductType>, 'nameLocs' | 'descriptionLocs'> & {

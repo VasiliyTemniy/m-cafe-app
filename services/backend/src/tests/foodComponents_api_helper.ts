@@ -1,4 +1,4 @@
-import type { FoodDT, FoodDTN, IngredientDT, LocStringDTN } from '@m-cafe-app/models';
+import type { FoodDT, FoodDTN, IngredientDT, LocStringDTN } from '@m-market-app/models';
 import { foodComponentService, foodService, foodTypeService } from '../controllers';
 
 

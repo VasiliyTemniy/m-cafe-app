@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import { Router } from 'express';
-import { dbHandler } from '@m-cafe-app/db';
+import { dbHandler } from '@m-market-app/db';
 
 const testingRouter = Router();
 

@@ -1,9 +1,9 @@
-import type { MapToDT, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, PropertyGroup } from '@m-market-app/utils';
 import type { Picture } from '../domain';
 import type { LocDTS } from './LocDT';
 import { isLocDTS } from './LocDT.js';
-import { isString, isEntity, checkProperties, isUnknownObject, isNumber } from '@m-cafe-app/utils';
-import { PictureParentType, isPictureParentType } from '@m-cafe-app/shared-constants';
+import { isString, isEntity, checkProperties, isUnknownObject, isNumber } from '@m-market-app/utils';
+import { PictureParentType, isPictureParentType } from '@m-market-app/shared-constants';
 
 
 /**

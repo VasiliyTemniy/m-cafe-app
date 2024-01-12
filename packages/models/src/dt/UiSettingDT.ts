@@ -1,9 +1,9 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { UiSetting, UiSettingS } from '../domain';
 import {
   isEntity,
   isString
-} from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
 import { idRequired } from './validationHelpers.js';
 
 

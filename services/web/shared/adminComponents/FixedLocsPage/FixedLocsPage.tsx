@@ -1,9 +1,9 @@
 import type { MouseEvent } from 'react';
 import type { EditFixedLocFormValues } from './EditFixedLocForm';
-import type { FixedLocDT } from '@m-cafe-app/utils';
+import type { FixedLocDT } from '@m-market-app/utils';
 import { useState, useDeferredValue } from 'react';
-import { useAppDispatch, useAppSelector } from '@m-cafe-app/frontend-logic/admin/hooks';
-import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { useAppDispatch, useAppSelector } from '@m-market-app/frontend-logic/admin/hooks';
+import { useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
 import { Button, ButtonGroup, Container, Dropbox, Input, Modal, Table, TextComp } from 'shared/components';
 import { EditFixedLocForm } from './EditFixedLocForm';
 import {
@@ -12,8 +12,8 @@ import {
   sendResetFixedLocs,
   sendUpdFixedLocs,
   updParsedFixedLoc
-} from '@m-cafe-app/frontend-logic/admin/reducers';
-import { parseFixedLoc } from '@m-cafe-app/frontend-logic/utils';
+} from '@m-market-app/frontend-logic/admin/reducers';
+import { parseFixedLoc } from '@m-market-app/frontend-logic/utils';
 
 export const FixedLocsPage = () => {
 

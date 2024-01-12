@@ -15,7 +15,7 @@ import {
   nameRegExp,
   phonenumberRegExp,
   usernameRegExp
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
   await queryInterface.createTable('users', {

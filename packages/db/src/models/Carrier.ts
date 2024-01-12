@@ -8,7 +8,7 @@ import type {
 import { Model, DataTypes } from 'sequelize';
 import { Order } from './Order.js';
 import { OrderTracking } from './OrderTracking.js';
-import { ContactParentType } from '@m-cafe-app/shared-constants';
+import { ContactParentType } from '@m-market-app/shared-constants';
 import { Contact } from './Contact.js';
 
 

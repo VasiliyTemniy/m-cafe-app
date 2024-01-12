@@ -7,14 +7,14 @@ import type {
   AdministrateUserBody,
   AddressDTN,
   AddressDT
-} from '@m-cafe-app/models';
+} from '@m-market-app/models';
 import type { IUserService, IUserRepo } from '../interfaces';
 import type { ISessionService } from '../../Session';
 import type { IAuthController } from '../../Auth';
 import type { IAddressRepo } from '../../Address';
 import type { ITransactionHandler } from '../../../utils';
 import { AddressMapper } from '../../Address';
-import { User } from '@m-cafe-app/models';
+import { User } from '@m-market-app/models';
 import {
   ApplicationError,
   AuthServiceError,
@@ -25,9 +25,9 @@ import {
   ProhibitedError,
   UnknownError,
   logger
-} from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
 import { UserMapper } from '../infrastructure';
-import { maxPasswordLen, minPasswordLen, possibleUserRights } from '@m-cafe-app/shared-constants';
+import { maxPasswordLen, minPasswordLen, possibleUserRights } from '@m-market-app/shared-constants';
 import config from '../../../config.js';
 
 

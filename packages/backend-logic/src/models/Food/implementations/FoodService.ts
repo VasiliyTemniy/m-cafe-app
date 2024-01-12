@@ -1,4 +1,4 @@
-import type { FoodDT, FoodDTN, FoodPictureDTNU, PictureDT, PictureForFoodDTN } from '@m-cafe-app/models';
+import type { FoodDT, FoodDTN, FoodPictureDTNU, PictureDT, PictureForFoodDTN } from '@m-market-app/models';
 import type { FoodInclude, IFoodRepo, IFoodService } from '../interfaces';
 import type { IFoodTypeRepo } from '../../FoodType';
 import type { ILocStringRepo } from '../../LocString';
@@ -8,7 +8,7 @@ import type { IPictureService } from '../../Picture';
 import { PictureMapper } from '../../Picture';
 import { LocStringMapper } from '../../LocString';
 import { FoodMapper } from '../infrastructure';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { DatabaseError } from '@m-market-app/utils';
 
 
 export class FoodService implements IFoodService {

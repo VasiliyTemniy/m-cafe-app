@@ -1,4 +1,4 @@
-import type { FixedLocDT } from '@m-cafe-app/models';
+import type { FixedLocDT } from '@m-market-app/models';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';

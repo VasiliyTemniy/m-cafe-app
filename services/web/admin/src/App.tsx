@@ -1,4 +1,4 @@
-import { useAppSelector, useInitAppAdmin } from '@m-cafe-app/frontend-logic/admin/hooks';
+import { useAppSelector, useInitAppAdmin } from '@m-market-app/frontend-logic/admin/hooks';
 import { Loading } from 'shared/components';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './router';

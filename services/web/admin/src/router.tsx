@@ -1,6 +1,6 @@
 import { Route, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { ErrorPage, UnderConstruction } from 'shared/components';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 import { AppLayout } from './AppLayout';
 import { FixedLocsPage, UiSettingsPage } from 'shared/adminComponents';
 

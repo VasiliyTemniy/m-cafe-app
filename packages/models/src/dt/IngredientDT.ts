@@ -1,7 +1,7 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { LocDT, LocDTN } from './LocDT';
 import type { Ingredient, IngredientS } from '../domain';
-import { isEntity, isNumber } from '@m-cafe-app/utils';
+import { isEntity, isNumber } from '@m-market-app/utils';
 import { idRequired, nameLocNewProperty, nameLocProperty, stockMeasureLocNewProperty, stockMeasureLocProperty } from './validationHelpers.js';
 
 const ingredientPropertiesGroup: PropertyGroup = {

@@ -24,7 +24,7 @@ import {
   isOrderPaymentStatus,
   isOrderStatus,
   isSizingMeasure
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { User } from './User.js';
 import { Address } from './Address.js';
 import { Facility } from './Facility.js';

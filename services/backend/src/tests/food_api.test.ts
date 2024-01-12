@@ -6,8 +6,8 @@ import type {
   FoodTypeDT,
   FoodTypeDTN,
   PictureForFoodDTN
-} from '@m-cafe-app/models';
-import { FoodType as FoodTypePG } from '@m-cafe-app/db';
+} from '@m-market-app/models';
+import { FoodType as FoodTypePG } from '@m-market-app/db';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -20,8 +20,8 @@ import { createUser, validUserInDB } from './user_api_helper';
 import { initFoodComponents } from './foodComponents_api_helper';
 import { initIngredients } from './ingredient_api_helper';
 import { foodService, foodTypeService, pictureService, sessionService, userService } from '../controllers';
-import { FoodPictureRepoSequelizePG } from '@m-cafe-app/backend-logic';
-import { LocStringRepoSequelizePG } from '@m-cafe-app/backend-logic/build/models/LocString';
+import { FoodPictureRepoSequelizePG } from '@m-market-app/backend-logic';
+import { LocStringRepoSequelizePG } from '@m-market-app/backend-logic/build/models/LocString';
 
 
 const api = supertest(app);

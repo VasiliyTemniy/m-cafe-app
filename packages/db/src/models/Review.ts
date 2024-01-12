@@ -14,8 +14,8 @@ import {
   isReviewParentType,
   ratingHighestLimit,
   ratingLowestLimit
-} from '@m-cafe-app/shared-constants';
-import { DatabaseError } from '@m-cafe-app/utils';
+} from '@m-market-app/shared-constants';
+import { DatabaseError } from '@m-market-app/utils';
 import { User } from './User.js';
 import { Comment } from './Comment.js';
 import { Picture } from './Picture.js';

@@ -7,7 +7,7 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { LocParentType, LocType } from '@m-market-app/shared-constants';
 import { Loc } from './Loc.js';
 import { User } from './User.js';
 import { Semantics } from './Semantics.js';

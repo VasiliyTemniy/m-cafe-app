@@ -6,7 +6,7 @@ import type {
   ForeignKey,
   CreationOptional
 } from 'sequelize';
-import { LanguageCode, LocParentType, LocType, isLanguageCode, isLocParentType, isLocType } from '@m-cafe-app/shared-constants';
+import { LanguageCode, LocParentType, LocType, isLanguageCode, isLocParentType, isLocType } from '@m-market-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { LocString } from './LocString.js';
 

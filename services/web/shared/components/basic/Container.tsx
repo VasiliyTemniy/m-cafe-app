@@ -1,6 +1,6 @@
-import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
+import type { CommonProps } from '@m-market-app/frontend-logic/types';
 import type { MouseEventHandler, Ref, CSSProperties } from 'react';
-import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { useInitLC } from '@m-market-app/frontend-logic/shared/hooks';
 
 export interface ContainerProps extends CommonProps {
   style?: CSSProperties

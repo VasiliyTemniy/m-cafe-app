@@ -7,8 +7,8 @@ import type {
   NonAttribute
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { StockStatus, StockEntityType, isStockEntityType, isStockStatus } from '@m-cafe-app/shared-constants';
-import { DatabaseError } from '@m-cafe-app/utils';
+import { StockStatus, StockEntityType, isStockEntityType, isStockStatus } from '@m-market-app/shared-constants';
+import { DatabaseError } from '@m-market-app/utils';
 import { Ingredient } from './Ingredient.js';
 import { Product } from './Product.js';
 import { Facility } from './Facility.js';

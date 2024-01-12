@@ -1,13 +1,13 @@
 import type { AppDispatch } from '../store';
 import type  { TFunction } from '../hooks';
-import type { UiSettingDT, SafeyAny } from '@m-cafe-app/utils';
-import type { AllowedThemes } from '@m-cafe-app/shared-constants';
-import { ApplicationError, hasOwnProperty, isUiSettingDT } from '@m-cafe-app/utils';
+import type { UiSettingDT, SafeyAny } from '@m-market-app/utils';
+import type { AllowedThemes } from '@m-market-app/shared-constants';
+import { ApplicationError, hasOwnProperty, isUiSettingDT } from '@m-market-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import uiSettingService from '../services/uiSetting';
 import { handleAxiosError } from '../../utils/errorHandler';
 import { Md5 } from 'ts-md5';
-import { allowedThemes } from '@m-cafe-app/shared-constants';
+import { allowedThemes } from '@m-market-app/shared-constants';
 
 
 type SettingsActionSetLanguage = { payload: 'main' | 'sec' | 'alt' };
@@ -49,7 +49,7 @@ export const sharedSettingsSliceBase = {
   initialState,
   reducers: {
     setLanguage: (state: SettingsState, action: SettingsActionSetLanguage): SettingsState => {
-      window.localStorage.setItem('CafeAppLanguage', JSON.stringify(action.payload));
+      window.localStorage.setItem('marketAppLanguage', JSON.stringify(action.payload));
       return { ...state, language: action.payload };
     },
     /**
@@ -87,7 +87,7 @@ export const sharedSettingsSliceBase = {
           rootElement.classList.remove(theme);
       }
       rootElement.classList.add(action.payload);
-      window.localStorage.setItem('CafeAppTheme', JSON.stringify(action.payload));
+      window.localStorage.setItem('marketAppTheme', JSON.stringify(action.payload));
       return { ...state, theme: action.payload };
     }
   },  

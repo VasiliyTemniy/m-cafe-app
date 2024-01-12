@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { isDynamicModulePageType } from '@m-cafe-app/shared-constants';
+import { isDynamicModulePageType } from '@m-market-app/shared-constants';
 import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {

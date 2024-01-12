@@ -8,7 +8,7 @@ import {
   possibleChars,
   usernameChars
 } from './test_helper';
-import type { AddressDTN, UserDT, UserDTN } from '@m-cafe-app/models';
+import type { AddressDTN, UserDT, UserDTN } from '@m-market-app/models';
 
 export const initialUsers: UserDTN[] = [
   {

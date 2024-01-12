@@ -5,7 +5,7 @@ import type {
   ForeignKey,
   NonAttribute
 } from 'sequelize';
-import { DynamicModulePageType, isDynamicModulePageType } from '@m-cafe-app/shared-constants';
+import { DynamicModulePageType, isDynamicModulePageType } from '@m-market-app/shared-constants';
 import { Model, DataTypes } from 'sequelize';
 import { DynamicModule } from './DynamicModule.js';
 

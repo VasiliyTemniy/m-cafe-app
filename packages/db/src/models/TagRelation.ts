@@ -5,7 +5,7 @@ import type {
   ForeignKey
 } from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { TagParentType, isTagParentType } from '@m-cafe-app/shared-constants';
+import { TagParentType, isTagParentType } from '@m-market-app/shared-constants';
 import { Tag } from './Tag.js';
 
 

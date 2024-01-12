@@ -1,4 +1,4 @@
-import type { IngredientDT, IngredientDTN } from '@m-cafe-app/models';
+import type { IngredientDT, IngredientDTN } from '@m-market-app/models';
 import type { IIngredientRepo, IIngredientService } from '../interfaces';
 import type { ILocStringRepo } from '../../LocString';
 import type { ITransactionHandler } from '../../../utils';

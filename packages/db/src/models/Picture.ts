@@ -13,8 +13,8 @@ import {
   TagParentType,
   ViewParentType,
   isPictureParentType
-} from '@m-cafe-app/shared-constants';
-import { DatabaseError } from '@m-cafe-app/utils';
+} from '@m-market-app/shared-constants';
+import { DatabaseError } from '@m-market-app/utils';
 import { Loc } from './Loc.js';
 import { Ingredient } from './Ingredient.js';
 import { Facility } from './Facility.js';

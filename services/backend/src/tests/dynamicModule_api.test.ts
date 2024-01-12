@@ -1,5 +1,5 @@
-import type { EditDynamicModuleBody, NewDynamicModuleBody } from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/shared-constants';
+import type { EditDynamicModuleBody, NewDynamicModuleBody } from '@m-market-app/utils';
+import { timestampsKeys } from '@m-market-app/shared-constants';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -10,7 +10,7 @@ import {
   LocString,
   Picture,
   User
-} from '@m-cafe-app/db';
+} from '@m-market-app/db';
 import config from '../utils/config';
 import { validAdminInDB } from './admin_api_helper';
 import { Op } from 'sequelize';

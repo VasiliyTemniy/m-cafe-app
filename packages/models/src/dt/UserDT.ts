@@ -1,4 +1,4 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils';
 import type { AddressDT } from './AddressDT.js';
 import type { User } from '../domain';
 import {
@@ -8,7 +8,7 @@ import {
   isEntity,
   isUnknownObject,
   isBoolean
-} from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
 import { idRequired, passwordRequired } from './validationHelpers.js';
 
 

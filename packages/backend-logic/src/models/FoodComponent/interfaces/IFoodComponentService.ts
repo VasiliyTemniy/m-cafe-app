@@ -1,4 +1,4 @@
-import type { FoodComponentDT, FoodComponentDTN } from '@m-cafe-app/models';
+import type { FoodComponentDT, FoodComponentDTN } from '@m-market-app/models';
 import type { ICRUDService } from '../../../utils';
 
 export interface IFoodComponentService extends Omit<ICRUDService<FoodComponentDT, FoodComponentDTN>, 'createMany' | 'update' | 'updateMany'> {

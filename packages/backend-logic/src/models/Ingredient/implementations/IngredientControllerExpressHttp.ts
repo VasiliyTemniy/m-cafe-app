@@ -1,8 +1,8 @@
-import type { IngredientDT } from '@m-cafe-app/models';
+import type { IngredientDT } from '@m-market-app/models';
 import type { IIngredientControllerHttp, IIngredientService } from '../interfaces';
 import type { Request, Response } from 'express';
-import { isIngredientDTN, isIngredientDT } from '@m-cafe-app/models';
-import { RequestBodyError } from '@m-cafe-app/utils';
+import { isIngredientDTN, isIngredientDT } from '@m-market-app/models';
+import { RequestBodyError } from '@m-market-app/utils';
 
 export class IngredientControllerExpressHttp implements IIngredientControllerHttp {
   constructor( readonly service: IIngredientService ) {}

@@ -1,4 +1,4 @@
-import type { LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import type { LocParentType, LocType } from '@m-market-app/shared-constants';
 
 /**
  * Contains languageId, parentId, parentType, locType, translation text and timestamps

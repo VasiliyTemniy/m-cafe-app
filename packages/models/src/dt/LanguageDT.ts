@@ -1,6 +1,6 @@
 import type { Language } from '../domain';
-import type { PropertyGroup, MapToDT, MapToDTN } from '@m-cafe-app/utils';
-import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
+import type { PropertyGroup, MapToDT, MapToDTN } from '@m-market-app/utils';
+import { isEntity, isNumber, isString } from '@m-market-app/utils';
 
 
 export type LanguageDT = MapToDT<Language>;

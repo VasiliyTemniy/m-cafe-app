@@ -1,6 +1,6 @@
-import type { OrderDT, OrderDTN, OrderDTU } from '@m-cafe-app/models';
+import type { OrderDT, OrderDTN, OrderDTU } from '@m-market-app/models';
 import type { ICRUDService } from '../../../utils';
-import type { OrderPaymentMethod, OrderPaymentStatus, OrderStatus } from '@m-cafe-app/shared-constants';
+import type { OrderPaymentMethod, OrderPaymentStatus, OrderStatus } from '@m-market-app/shared-constants';
 
 export interface IOrderService extends Omit<ICRUDService<OrderDT, OrderDTN>, 'update'> {
   /**

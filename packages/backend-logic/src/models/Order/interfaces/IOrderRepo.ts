@@ -1,6 +1,6 @@
-import type { OrderPaymentMethod, OrderPaymentStatus, OrderStatus } from '@m-cafe-app/shared-constants';
+import type { OrderPaymentMethod, OrderPaymentStatus, OrderStatus } from '@m-market-app/shared-constants';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
-import type { Address, FacilityS, Order, OrderDTN, OrderFood, User } from '@m-cafe-app/models';
+import type { Address, FacilityS, Order, OrderDTN, OrderFood, User } from '@m-market-app/models';
 
 
 /**

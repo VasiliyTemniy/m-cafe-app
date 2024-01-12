@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 import { dbHandler } from '../db';
-import { FacilityType, MassMeasure, OrderStatus, SizingMeasure } from '@m-cafe-app/shared-constants';
+import { FacilityType, MassMeasure, OrderStatus, SizingMeasure } from '@m-market-app/shared-constants';
 import { createAddress, createCustomer, createOrgAdminManager, randomEnumValue } from './db_test_helper';
 
 

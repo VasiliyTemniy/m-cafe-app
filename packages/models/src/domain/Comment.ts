@@ -1,4 +1,4 @@
-import type { CommentParentType } from '@m-cafe-app/shared-constants';
+import type { CommentParentType } from '@m-market-app/shared-constants';
 import type { User } from './User';
 
 

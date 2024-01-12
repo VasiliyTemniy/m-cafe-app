@@ -2,7 +2,7 @@
 
 Backend service package with REST api architecture.
 
-Uses database from @m-cafe-app/db package
+Uses database from @m-market-app/db package
 
 ## TODO
 

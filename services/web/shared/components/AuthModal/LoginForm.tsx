@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik';
-import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { FormikPersist } from '@m-cafe-app/frontend-logic/shared/components';
+import { useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
+import { FormikPersist } from '@m-market-app/frontend-logic/shared/components';
 import { loginValidationSchema } from './validationSchemas';
 import { ButtonGroup, Button, FormikTextField, Scrollable } from '../basic';
 

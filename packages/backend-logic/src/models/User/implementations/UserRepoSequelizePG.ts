@@ -1,10 +1,10 @@
-import type { User, UserDTN, UserUniqueProperties } from '@m-cafe-app/models';
+import type { User, UserDTN, UserUniqueProperties } from '@m-market-app/models';
 import type { IUserRepo } from '../interfaces';
 import type { Transaction } from 'sequelize';
 import { Op } from 'sequelize';
-import { ApplicationError, DatabaseError, ProhibitedError, toOptionalDate } from '@m-cafe-app/utils';
+import { ApplicationError, DatabaseError, ProhibitedError, toOptionalDate } from '@m-market-app/utils';
 import { UserMapper } from '../infrastructure';
-import { User as UserPG } from '@m-cafe-app/db';
+import { User as UserPG } from '@m-market-app/db';
 import sha1 from 'sha1';
 import config from '../../../config';
 

@@ -1,8 +1,8 @@
-import type { FoodComponentDT } from '@m-cafe-app/models';
+import type { FoodComponentDT } from '@m-market-app/models';
 import type { IFoodComponentControllerHttp, IFoodComponentService } from '../interfaces';
 import type { Request, Response } from 'express';
-import { isFoodComponentDTN, isFoodComponentDT, isFoodComponentDTNMany, isRewriteAllForOneFoodBody } from '@m-cafe-app/models';
-import { RequestBodyError } from '@m-cafe-app/utils';
+import { isFoodComponentDTN, isFoodComponentDT, isFoodComponentDTNMany, isRewriteAllForOneFoodBody } from '@m-market-app/models';
+import { RequestBodyError } from '@m-market-app/utils';
 
 
 export class FoodComponentControllerExpressHttp implements IFoodComponentControllerHttp {

@@ -1,5 +1,5 @@
-import type { CommonProps } from '@m-cafe-app/frontend-logic/types';
-import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
+import type { CommonProps } from '@m-market-app/frontend-logic/types';
+import { useInitLC } from '@m-market-app/frontend-logic/shared/hooks';
   
 interface TextCompProps extends CommonProps {
   text?: string;

@@ -1,4 +1,4 @@
-import type { FixedLoc, FixedLocDT, FixedLocDTN, FixedLocDTS } from '@m-cafe-app/models';
+import type { FixedLoc, FixedLocDT, FixedLocDTN, FixedLocDTS } from '@m-market-app/models';
 import type { ICRUDService, IHasInmemRepoService } from '../../../utils';
 
 export interface IFixedLocService extends Omit<ICRUDService<FixedLocDT, FixedLocDTN>, 'create'>, IHasInmemRepoService {

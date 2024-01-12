@@ -1,4 +1,4 @@
-import type { FoodPicture, FoodPictureDTNU } from '@m-cafe-app/models';
+import type { FoodPicture, FoodPictureDTNU } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 export interface IFoodPictureRepo extends Omit<ICRUDRepo<FoodPicture, FoodPictureDTNU>, 'getAll' | 'getById' | 'update'> {

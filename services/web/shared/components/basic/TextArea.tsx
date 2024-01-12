@@ -1,6 +1,6 @@
 import type { CSSProperties, ChangeEventHandler, FocusEventHandler } from 'react';
-import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
-import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
+import type { CommonFieldProps } from '@m-market-app/frontend-logic/types';
+import { useInitLC } from '@m-market-app/frontend-logic/shared/hooks';
 import { useEffect, useRef } from 'react';
 
 export interface TextAreaProps extends CommonFieldProps {

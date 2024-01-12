@@ -1,4 +1,4 @@
-import type { LocString, LocStringDTN, PictureDT } from '@m-cafe-app/models';
+import type { LocString, LocStringDTN, PictureDT } from '@m-market-app/models';
 import type { IPictureRepo, IPictureService } from '../interfaces';
 import type { GenericTransaction, ITransactionHandler } from '../../../utils';
 import type { ILocStringRepo } from '../../LocString';
@@ -6,7 +6,7 @@ import { PictureMapper } from '../infrastructure';
 import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
-import { ApplicationError, UploadFileError, logger } from '@m-cafe-app/utils';
+import { ApplicationError, UploadFileError, logger } from '@m-market-app/utils';
 
 export class PictureService implements IPictureService {
 

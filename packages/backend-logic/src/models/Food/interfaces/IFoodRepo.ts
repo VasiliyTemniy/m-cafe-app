@@ -1,4 +1,4 @@
-import type { Food, FoodDTN, FoodType, LocString } from '@m-cafe-app/models';
+import type { Food, FoodDTN, FoodType, LocString } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo } from '../../../utils';
 
 

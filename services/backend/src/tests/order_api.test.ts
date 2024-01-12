@@ -6,7 +6,7 @@ import type {
   EditOrderStatusBody,
   OrderDTS,
   OrderDT
-} from '@m-cafe-app/utils';
+} from '@m-market-app/utils';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
@@ -21,7 +21,7 @@ import {
   Order,
   OrderFood,
   FacilityManager
-} from '@m-cafe-app/db';
+} from '@m-market-app/db';
 import config from '../utils/config';
 import { validAdminInDB, validManagerInDB } from './admin_api_helper';
 import { Op } from 'sequelize';

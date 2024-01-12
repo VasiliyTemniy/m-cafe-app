@@ -1,4 +1,4 @@
-import type { OrderTrackingStatus } from '@m-cafe-app/shared-constants';
+import type { OrderTrackingStatus } from '@m-market-app/shared-constants';
 import type { Carrier } from './Carrier';
 
 

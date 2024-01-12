@@ -1,4 +1,4 @@
-import type { DynamicModuleDT, DynamicModuleDTN, LocStringDTN, PictureForDynamicModuleDTN } from '@m-cafe-app/models';
+import type { DynamicModuleDT, DynamicModuleDTN, LocStringDTN, PictureForDynamicModuleDTN } from '@m-market-app/models';
 import type { ICRUDService } from '../../../utils';
 
 export interface IDynamicModuleService extends ICRUDService<DynamicModuleDT, DynamicModuleDTN> {

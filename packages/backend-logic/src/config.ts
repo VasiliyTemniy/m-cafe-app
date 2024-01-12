@@ -1,6 +1,6 @@
 import type { RedisClientOptions, RedisFunctions, RedisModules, RedisScripts } from '@redis/client';
 import type { CookieOptions } from 'express';
-import { ApplicationError } from '@m-cafe-app/utils';
+import { ApplicationError } from '@m-market-app/utils';
 import * as dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 import { createClient } from 'redis';

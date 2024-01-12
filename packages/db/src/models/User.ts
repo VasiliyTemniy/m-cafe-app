@@ -26,7 +26,7 @@ import {
   nameRegExp,
   phonenumberRegExp,
   usernameRegExp
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { UserAddress } from './UserAddress.js';
 import { Address } from './Address.js';
 import { Order } from './Order.js';

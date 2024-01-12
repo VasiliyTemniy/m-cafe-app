@@ -1,4 +1,4 @@
-import type { FoodDT, FoodDTN, FoodPictureDTNU, PictureDT, PictureForFoodDTN } from '@m-cafe-app/models';
+import type { FoodDT, FoodDTN, FoodPictureDTNU, PictureDT, PictureForFoodDTN } from '@m-market-app/models';
 import type { ICRUDService } from '../../../utils';
 import type { FoodInclude } from './IFoodRepo';
 

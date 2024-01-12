@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { isCoverageEntityType, isCoverageParentType } from '@m-cafe-app/shared-constants';
+import { isCoverageEntityType, isCoverageParentType } from '@m-market-app/shared-constants';
 import { DataTypes, QueryTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {

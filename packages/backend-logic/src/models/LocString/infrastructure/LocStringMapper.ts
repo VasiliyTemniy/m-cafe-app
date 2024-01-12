@@ -1,8 +1,8 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { LocStringDT } from '@m-cafe-app/models';
-import { LocString } from '@m-cafe-app/models';
-import { LocString as LocStringPG } from '@m-cafe-app/db';
-import { toOptionalISOString } from '@m-cafe-app/utils';
+import type { LocStringDT } from '@m-market-app/models';
+import { LocString } from '@m-market-app/models';
+import { LocString as LocStringPG } from '@m-market-app/db';
+import { toOptionalISOString } from '@m-market-app/utils';
 
 
 export class LocStringMapper implements EntityDBMapper<LocString, LocStringPG>, EntityDTMapper<LocString, LocStringDT> {

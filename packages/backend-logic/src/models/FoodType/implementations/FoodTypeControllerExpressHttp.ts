@@ -1,8 +1,8 @@
-import type { FoodTypeDT } from '@m-cafe-app/models';
+import type { FoodTypeDT } from '@m-market-app/models';
 import type { IFoodTypeControllerHttp, IFoodTypeService } from '../interfaces';
 import type { Request, Response } from 'express';
-import { isFoodTypeDT, isFoodTypeDTN } from '@m-cafe-app/models';
-import { RequestBodyError } from '@m-cafe-app/utils';
+import { isFoodTypeDT, isFoodTypeDTN } from '@m-market-app/models';
+import { RequestBodyError } from '@m-market-app/utils';
 
 export class FoodTypeControllerExpressHttp implements IFoodTypeControllerHttp {
   constructor( readonly service: IFoodTypeService ) {}

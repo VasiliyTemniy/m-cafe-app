@@ -23,7 +23,7 @@ import {
   orgDefaultMaxProducts,
   orgDefaultMaxRoles,
   orgDefaultMaxTags
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { Loc } from './Loc.js';
 import { User } from './User.js';
 import { Contact } from './Contact.js';

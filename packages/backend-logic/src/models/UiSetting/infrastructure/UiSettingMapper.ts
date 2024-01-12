@@ -1,7 +1,7 @@
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import type { UiSettingDT } from '@m-cafe-app/models';
-import { UiSetting } from '@m-cafe-app/models';
-import { UiSetting as UiSettingPG } from '@m-cafe-app/db';
+import type { UiSettingDT } from '@m-market-app/models';
+import { UiSetting } from '@m-market-app/models';
+import { UiSetting as UiSettingPG } from '@m-market-app/db';
 
 
 export class UiSettingMapper implements EntityDBMapper<UiSetting, UiSettingPG>, EntityDTMapper<UiSetting, UiSettingDT> {

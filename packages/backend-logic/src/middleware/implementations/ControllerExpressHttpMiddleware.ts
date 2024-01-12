@@ -4,7 +4,7 @@ import type { RequestMiddle } from '../../utils';
 import type { IAuthController } from '../../models/Auth';
 import type { IUserRepo } from '../../models/User';
 import type { ISessionService } from '../../models/Session';
-import { ApplicationError, AuthorizationError, BannedError, ProhibitedError, RequestQueryError, SessionError, logger } from '@m-cafe-app/utils';
+import { ApplicationError, AuthorizationError, BannedError, ProhibitedError, RequestQueryError, SessionError, logger } from '@m-market-app/utils';
 import config from '../../config';
 
 

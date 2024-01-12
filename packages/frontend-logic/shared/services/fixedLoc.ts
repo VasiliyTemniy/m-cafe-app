@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 
 
 const getLocs = async () => {

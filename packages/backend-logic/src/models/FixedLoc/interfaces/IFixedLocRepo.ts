@@ -1,4 +1,4 @@
-import type { FixedLoc, FixedLocDTN, FixedLocS, FixedLocUniquePropertiesGroup, LocString } from '@m-cafe-app/models';
+import type { FixedLoc, FixedLocDTN, FixedLocS, FixedLocUniquePropertiesGroup, LocString } from '@m-market-app/models';
 import type { GenericTransaction, ICRUDRepo, IInmemRepo } from '../../../utils';
 
 export interface IFixedLocRepo extends Omit<ICRUDRepo<FixedLoc, FixedLocDTN>, 'create' | 'update' | 'updateMany'> {

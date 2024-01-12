@@ -1,10 +1,10 @@
 import type { AppDispatch } from '../store';
 import type { TFunction } from '../hooks';
-import type { LoginUserBody, NewUserBody, UserDT, EditUserBody } from '@m-cafe-app/utils';
+import type { LoginUserBody, NewUserBody, UserDT, EditUserBody } from '@m-market-app/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import userService from '../services/user';
 // import { showNotification } from './notificationsReducer';
-import { ApplicationError, isUserDT, } from '@m-cafe-app/utils';
+import { ApplicationError, isUserDT, } from '@m-market-app/utils';
 import { handleAxiosError } from '../../utils/errorHandler';
 
 type SetUserAction = 
@@ -74,7 +74,7 @@ export const sendLogin = (credentials: LoginUserBody, t: TFunction) => {
     try {
       const user = await userService.login(credentials);
       if (!isUserDT(user)) throw new ApplicationError('Server has sent wrong data', { current: user });
-      window.localStorage.setItem('CafeAppUserRegistered', JSON.stringify('true'));
+      window.localStorage.setItem('marketAppUserRegistered', JSON.stringify('true'));
       dispatch(setUser(user));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
@@ -86,7 +86,7 @@ export const sendLogout = (t: TFunction) => {
   return async (dispatch: AppDispatch) => {
     try {
       await userService.logout();
-      window.localStorage.setItem('CafeAppUserRegistered', JSON.stringify('false'));
+      window.localStorage.setItem('marketAppUserRegistered', JSON.stringify('false'));
       dispatch(logout);
       window.location.reload();
     } catch (e: unknown) {

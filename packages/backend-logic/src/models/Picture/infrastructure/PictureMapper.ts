@@ -1,9 +1,9 @@
-import type { Picture as PicturePG } from '@m-cafe-app/db';
-import type { PictureDT } from '@m-cafe-app/models';
+import type { Picture as PicturePG } from '@m-market-app/db';
+import type { PictureDT } from '@m-market-app/models';
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import { Picture } from '@m-cafe-app/models';
+import { Picture } from '@m-market-app/models';
 import { LocStringMapper } from '../../LocString';
-import { ApplicationError, toOptionalISOString } from '@m-cafe-app/utils';
+import { ApplicationError, toOptionalISOString } from '@m-market-app/utils';
 
 export class PictureMapper implements EntityDBMapper<Picture, PicturePG>, EntityDTMapper<Picture, PictureDT> {
   public static dbToDomain(dbPicture: PicturePG): Picture {

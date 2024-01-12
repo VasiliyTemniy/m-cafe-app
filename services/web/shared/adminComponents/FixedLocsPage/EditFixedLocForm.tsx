@@ -1,8 +1,8 @@
 import { Formik, Form } from 'formik';
-import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
+import { useTranslation } from '@m-market-app/frontend-logic/shared/hooks';
 import { fixedLocValidationSchema } from './validationSchemas';
 import { ButtonGroup, Button, Scrollable, FormikTextAreaField } from 'shared/components';
-import type { FixedLocDT } from '@m-cafe-app/utils';
+import type { FixedLocDT } from '@m-market-app/utils';
 
 
 export type EditFixedLocFormValues = {

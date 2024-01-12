@@ -1,8 +1,8 @@
-import type { AddressDT } from '@m-cafe-app/models';
-import type { Address as AddressPG } from '@m-cafe-app/db';
+import type { AddressDT } from '@m-market-app/models';
+import type { Address as AddressPG } from '@m-market-app/db';
 import type { EntityDBMapper, EntityDTMapper } from '../../../utils';
-import { Address } from '@m-cafe-app/models';
-import { toOptionalISOString } from '@m-cafe-app/utils';
+import { Address } from '@m-market-app/models';
+import { toOptionalISOString } from '@m-market-app/utils';
 
 export class AddressMapper implements
   EntityDBMapper<Address, AddressPG>,

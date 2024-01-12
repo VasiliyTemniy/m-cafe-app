@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import 'mocha';
-import { dbHandler } from '@m-cafe-app/db';
+import { dbHandler } from '@m-market-app/db';
 import { FoodComponentRepoSequelizePG, FoodComponentService } from '../models/FoodComponent';
 import { FoodRepoSequelizePG, FoodService } from '../models/Food';
 import { LocStringRepoSequelizePG } from '../models/LocString';
 import { FoodTypeRepoSequelizePG, FoodTypeService } from '../models/FoodType';
 import { IngredientRepoSequelizePG, IngredientService } from '../models/Ingredient';
-import { logger } from '@m-cafe-app/utils';
+import { logger } from '@m-market-app/utils';
 import { TransactionHandlerSequelizePG } from '../utils';
 import { FoodPictureRepoSequelizePG } from '../models/FoodPicture';
 import { PictureRepoSequelizePG, PictureService } from '../models/Picture';

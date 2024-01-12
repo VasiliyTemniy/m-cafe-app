@@ -1,7 +1,7 @@
-import type { MapToDT, MapToDTN, PropertyGroup } from '@m-cafe-app/utils'; 
+import type { MapToDT, MapToDTN, PropertyGroup } from '@m-market-app/utils'; 
 import type { FixedLoc, FixedLocS } from '../domain';
 import type { LocDTS } from './LocDT.js';
-import { isEntity, isNumber, isString } from '@m-cafe-app/utils';
+import { isEntity, isNumber, isString } from '@m-market-app/utils';
 import { isLocDTS } from './LocDT.js';
 
 

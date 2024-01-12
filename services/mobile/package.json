@@ -1,8 +1,8 @@
 {
-  "name": "m-cafe-mobile",
-  "productName": "Modular cafe app",
+  "name": "m-market-mobile",
+  "productName": "Modular market app",
   "version": "0.1.0",
-  "description": "DIY cafe app mobile frontend",
+  "description": "DIY market app mobile frontend",
   "main": "./index.js",
   "scripts": {
     "start": "expo start",
@@ -13,10 +13,10 @@
   "dependencies": {
     "@expo/metro-config": "^0.10.7",
     "@expo/webpack-config": "^18.1.2",
-    "@m-cafe-app/frontend-logic": "workspace:^",
-    "@m-cafe-app/shared-constants": "workspace:^",
-    "@m-cafe-app/shared-frontend-deps": "workspace:^",
-    "@m-cafe-app/utils": "workspace:^",
+    "@m-market-app/frontend-logic": "workspace:^",
+    "@m-market-app/shared-constants": "workspace:^",
+    "@m-market-app/shared-frontend-deps": "workspace:^",
+    "@m-market-app/utils": "workspace:^",
     "@react-native-async-storage/async-storage": "1.17.11",
     "expo": "^48.0.17",
     "expo-linking": "~4.0.1",
@@ -26,7 +26,7 @@
     "use-debounce": "^9.0.4"
   },
   "devDependencies": {
-    "@m-cafe-app/shared-dev-deps": "workspace:^"
+    "@m-market-app/shared-dev-deps": "workspace:^"
   },
   "peerDependencies": {
     "@babel/core": "^7.20.0",

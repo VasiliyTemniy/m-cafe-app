@@ -1,8 +1,8 @@
 import type { IDynamicModuleControllerExpressHttp, IDynamicModuleService } from '../interfaces';
 import type { Request, Response } from 'express';
-import type { DynamicModuleDT } from '@m-cafe-app/models';
-import { isDynamicModuleDTN, isDynamicModuleDT, isLocStringDTN, isPictureForDynamicModuleDTN } from '@m-cafe-app/models';
-import { RequestBodyError, UploadFileError } from '@m-cafe-app/utils';
+import type { DynamicModuleDT } from '@m-market-app/models';
+import { isDynamicModuleDTN, isDynamicModuleDT, isLocStringDTN, isPictureForDynamicModuleDTN } from '@m-market-app/models';
+import { RequestBodyError, UploadFileError } from '@m-market-app/utils';
 
 export class DynamicModuleControllerExpressHttp implements IDynamicModuleControllerExpressHttp {
   constructor (readonly service: IDynamicModuleService) {}

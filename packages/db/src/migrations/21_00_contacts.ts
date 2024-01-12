@@ -3,7 +3,7 @@ import {
   isContactParentType,
   isContactTarget,
   isContactType
-} from '@m-cafe-app/shared-constants';
+} from '@m-market-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {

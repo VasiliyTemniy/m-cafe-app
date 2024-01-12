@@ -1,5 +1,5 @@
 import 'mocha';
-import { dbHandler } from '@m-cafe-app/db';
+import { dbHandler } from '@m-market-app/db';
 import supertest from 'supertest';
 import app from '../app';
 import { apiBaseUrl } from './test_helper';

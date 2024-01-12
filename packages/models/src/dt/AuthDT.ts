@@ -1,6 +1,6 @@
-import type { MapToDT, PropertyGroup } from '@m-cafe-app/utils';
+import type { MapToDT, PropertyGroup } from '@m-market-app/utils';
 import type { AuthRequest, AuthResponse, VerifyResponse } from '../domain';
-import { isEntity, isString, isBoolean, isNumber } from '@m-cafe-app/utils';
+import { isEntity, isString, isBoolean, isNumber } from '@m-market-app/utils';
 
 
 export type AuthDTRequest = Omit<MapToDT<AuthRequest>, 'newPassword' | 'oldPassword'> & {

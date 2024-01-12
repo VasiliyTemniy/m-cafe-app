@@ -1,4 +1,4 @@
-import type { UserDTN } from '@m-cafe-app/models';
+import type { UserDTN } from '@m-market-app/models';
 
 export const newUserInfo: UserDTN = {
   phonenumber: '8988123456',

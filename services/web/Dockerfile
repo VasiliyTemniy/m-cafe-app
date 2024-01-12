@@ -29,17 +29,17 @@ FROM copy-package-files-stage-web as install-stage-web
 
 ENV NODE_ENV development
 
-RUN yarn workspaces focus @m-cafe-app/shared-dev-deps
-RUN yarn workspaces focus @m-cafe-app/shared-backend-deps
-RUN yarn workspaces focus @m-cafe-app/shared-constants
-RUN yarn workspaces focus @m-cafe-app/db
-RUN yarn workspaces focus @m-cafe-app/utils
-RUN yarn workspaces focus @m-cafe-app/shared-frontend-deps
-RUN yarn workspaces focus @m-cafe-app/frontend-logic
+RUN yarn workspaces focus @m-market-app/shared-dev-deps
+RUN yarn workspaces focus @m-market-app/shared-backend-deps
+RUN yarn workspaces focus @m-market-app/shared-constants
+RUN yarn workspaces focus @m-market-app/db
+RUN yarn workspaces focus @m-market-app/utils
+RUN yarn workspaces focus @m-market-app/shared-frontend-deps
+RUN yarn workspaces focus @m-market-app/frontend-logic
 
-RUN yarn workspaces focus m-cafe-app
+RUN yarn workspaces focus m-market-app
 
-RUN yarn workspaces focus m-cafe-web
+RUN yarn workspaces focus m-market-web
 
 
 FROM install-stage-web as copy-stage-web

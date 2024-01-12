@@ -1,8 +1,8 @@
 import { assert, expect } from 'chai';
 import 'mocha';
 import { dbHandler } from '../db';
-import { logger } from '@m-cafe-app/utils';
-import { LocType } from '@m-cafe-app/shared-constants';
+import { logger } from '@m-market-app/utils';
+import { LocType } from '@m-market-app/shared-constants';
 
 describe('Database Handler tests', () => {
 

@@ -1,6 +1,6 @@
-import type { NewFixedLocBody, EditFixedLocBody, FixedLocDT, EditManyFixedLocBody } from '@m-cafe-app/utils';
+import type { NewFixedLocBody, EditFixedLocBody, FixedLocDT, EditManyFixedLocBody } from '@m-market-app/utils';
 import axios from 'axios';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
+import { apiBaseUrl } from '@m-market-app/shared-constants';
 import sharedFixedLocService from '../../shared/services/fixedLoc';
 
 /**

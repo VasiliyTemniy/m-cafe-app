@@ -1,4 +1,4 @@
-import type { FacilityDT, FacilityDTN, StockDT, StockDTN } from '@m-cafe-app/models';
+import type { FacilityDT, FacilityDTN, StockDT, StockDTN } from '@m-market-app/models';
 import type { IFacilityRepo, IFacilityService } from '../interfaces';
 import type { IUserRepo } from '../../User';
 import type { IStockRepo } from '../../Stock';

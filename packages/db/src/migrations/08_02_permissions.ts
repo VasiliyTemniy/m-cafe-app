@@ -1,5 +1,5 @@
 import type { MigrationContext } from '../types/Migrations.js';
-import { isPermissionAccess, isPermissionAction, isPermissionTarget } from '@m-cafe-app/shared-constants';
+import { isPermissionAccess, isPermissionAction, isPermissionTarget } from '@m-market-app/shared-constants';
 import { DataTypes } from 'sequelize';
 
 export const up = async ({ context: queryInterface }: MigrationContext) => {
