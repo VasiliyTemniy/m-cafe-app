@@ -12,8 +12,8 @@ import {
   PictureParentType,
   ReviewParentType,
   isReviewParentType,
-  productRatingHighest,
-  productRatingLowest
+  ratingHighestLimit,
+  ratingLowestLimit
 } from '@m-cafe-app/shared-constants';
 import { DatabaseError } from '@m-cafe-app/utils';
 import { User } from './User.js';
@@ -86,8 +86,8 @@ export const initReviewModel = async (dbInstance: Sequelize) => {
           type: DataTypes.INTEGER,
           allowNull: true,
           validate: {
-            min: productRatingLowest,
-            max: productRatingHighest
+            min: ratingLowestLimit,
+            max: ratingHighestLimit
           }
         },
         blockedReason: {
