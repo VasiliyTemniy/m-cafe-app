@@ -1,90 +1,94 @@
+import type { LocString } from '../models';
 import { expect } from 'chai';
 import 'mocha';
-import { Language, Loc } from '../models';
 import { dbHandler } from '../db';
-import { LocParentType, LocType } from '@m-cafe-app/shared-constants';
+import { randomEnumValue } from './db_test_helper';
 
 
 
 describe('Database Loc model tests', () => {
 
-  let language: Language;
+  let locString: LocString;
+
+  const pickedLanguageCode = randomEnumValue('LanguageCode');
+  const pickedLocType = randomEnumValue('LocType');
+  const pickedLocParentType = randomEnumValue('LocParentType');
 
   before(async () => {
     await dbHandler.pingDb();
 
-    language = await Language.create({
-      name: 'тест',
-      code: 'тест'
+    locString = await dbHandler.models.LocString.create({
+      text: 'тест'
     });
   });
 
   beforeEach(async () => {
-    await Loc.destroy({ force: true, where: {} });
+    await dbHandler.models.Loc.destroy({ force: true, where: {} });
   });
 
   after(async () => {
-    await Loc.destroy({ force: true, where: {} });
-    await Language.destroy({ force: true, where: {} });
+    await dbHandler.models.Loc.destroy({ force: true, where: {} });
   });
 
   it('Loc creation test', async () => {
 
-    const loc = await Loc.create({
-      languageId: language.id,
-      locType: LocType.Description,
-      parentType: LocParentType.Language,
-      parentId: language.id,
-      text: 'тест'
+    const loc = await dbHandler.models.Loc.create({
+      locStringId: locString.id,
+      languageCode: pickedLanguageCode,
+      locType: pickedLocType,
+      parentType: pickedLocParentType,
+      parentId: 0, // does not exist
     });
 
     expect(loc).to.exist;
 
   });
 
-  it('Loc update test', async () => {
+  // All model fields are parts of a primary key, so update cannot happen
+  // it('Loc update test', async () => {
     
-    const loc = await Loc.create({
-      languageId: language.id,
-      locType: LocType.Description,
-      parentType: LocParentType.Language,
-      parentId: language.id,
-      text: 'тест'
-    });
+  //   const loc = await dbHandler.models.Loc.create({
+  //     locStringId: locString.id,
+  //     languageCode: pickedLanguageCode,
+  //     locType: pickedLocType,
+  //     parentType: pickedLocParentType,
+  //     parentId: 0, // does not exist
+  //   });
 
-    loc.text = 'тест2';
+  //   loc.parentId = 100;
 
-    await loc.save();
+  //   await loc.save();
 
-    const locInDB = await Loc.findOne({ where: {
-      languageId: language.id,
-      locType: LocType.Description,
-      parentType: LocParentType.Language,
-      parentId: language.id,
-    } });
+  //   const locInDB = await dbHandler.models.Loc.findOne({ where: {
+  //     locStringId: locString.id,
+  //     languageCode: pickedLanguageCode,
+  //     locType: pickedLocType,
+  //     parentType: pickedLocParentType,
+  //   } });
 
-    expect(locInDB).to.exist;
-    expect(locInDB?.text).to.equal('тест2');
+  //   expect(locInDB).to.exist;
+  //   expect(locInDB?.parentId).to.equal(100);
 
-  });
+  // });
 
   it('Loc delete test', async () => {
     
-    const loc = await Loc.create({
-      languageId: language.id,
-      locType: LocType.Description,
-      parentType: LocParentType.Language,
-      parentId: language.id,
-      text: 'тест'
+    const loc = await dbHandler.models.Loc.create({
+      locStringId: locString.id,
+      languageCode: pickedLanguageCode,
+      locType: pickedLocType,
+      parentType: pickedLocParentType,
+      parentId: 0, // does not exist
     });
 
     await loc.destroy();
 
-    const locInDB = await Loc.findOne({ where: {
-      languageId: language.id,
-      locType: LocType.Description,
-      parentType: LocParentType.Language,
-      parentId: language.id,
+    const locInDB = await dbHandler.models.Loc.findOne({ where: {
+      locStringId: locString.id,
+      languageCode: pickedLanguageCode,
+      locType: pickedLocType,
+      parentType: pickedLocParentType,
+      parentId: 0,
     } });
 
     expect(locInDB).to.not.exist;
@@ -93,19 +97,20 @@ describe('Database Loc model tests', () => {
 
   it('Loc default scope test: does not include timestamps', async () => {
     
-    await Loc.create({
-      languageId: language.id,
-      locType: LocType.Description,
-      parentType: LocParentType.Language,
-      parentId: language.id,
-      text: 'тест'
+    await dbHandler.models.Loc.create({
+      locStringId: locString.id,
+      languageCode: pickedLanguageCode,
+      locType: pickedLocType,
+      parentType: pickedLocParentType,
+      parentId: 0, // does not exist
     });
 
-    const locInDB = await Loc.findOne({ where: {
-      languageId: language.id,
-      locType: LocType.Description,
-      parentType: LocParentType.Language,
-      parentId: language.id,
+    const locInDB = await dbHandler.models.Loc.findOne({ where: {
+      locStringId: locString.id,
+      languageCode: pickedLanguageCode,
+      locType: pickedLocType,
+      parentType: pickedLocParentType,
+      parentId: 0,
     } });
 
     expect(locInDB?.createdAt).to.not.exist;

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
-import { User } from '../models';
 import { dbHandler } from '../db';
+import { UserRights } from '@m-cafe-app/shared-constants';
 
 
 
@@ -12,22 +12,23 @@ describe('Database User model tests', () => {
   });
 
   beforeEach(async () => {
-    await User.scope('all').destroy({ force: true, where: {} });
+    await dbHandler.models.User.scope('all').destroy({ force: true, where: {} });
   });
 
   after(async () => {
-    await User.scope('all').destroy({ force: true, where: {} });
+    await dbHandler.models.User.scope('all').destroy({ force: true, where: {} });
   });
 
   it('User сreation test', async () => {
 
-    const user = await User.create({
+    const user = await dbHandler.models.User.create({
       username: 'test',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer',
-      lookupHash: 'testlonger'
+      rights: UserRights.Customer,
+      lookupHash: 'testlonger',
+      lookupNoise: 1
     });
 
     expect(user).to.exist;
@@ -36,20 +37,21 @@ describe('Database User model tests', () => {
 
   it('User update test', async () => {
     
-    const user = await User.create({
+    const user = await dbHandler.models.User.create({
       username: 'test',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer',
-      lookupHash: 'testlonger'
+      rights: UserRights.Customer,
+      lookupHash: 'testlonger',
+      lookupNoise: 1
     });
 
     user.username = 'test2';
 
     await user.save();
 
-    const userInDB = await User.findByPk(user.id);
+    const userInDB = await dbHandler.models.User.findByPk(user.id);
 
     expect(userInDB).to.exist;
     expect(userInDB?.username).to.equal('test2');
@@ -58,18 +60,19 @@ describe('Database User model tests', () => {
 
   it('User deletion test', async () => {
     
-    const user = await User.create({
+    const user = await dbHandler.models.User.create({
       username: 'test',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer',
-      lookupHash: 'testlonger'
+      rights: UserRights.Customer,
+      lookupHash: 'testlonger',
+      lookupNoise: 1
     });
 
     await user.destroy();
 
-    const userInDB = await User.findByPk(user.id);
+    const userInDB = await dbHandler.models.User.findByPk(user.id);
 
     expect(userInDB).to.not.exist;
 
@@ -77,65 +80,84 @@ describe('Database User model tests', () => {
 
   it('User scopes test', async () => {
     
-    const customer = await User.create({
+    const customer = await dbHandler.models.User.create({
       username: 'test',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer',
-      lookupHash: 'testlonger'
+      rights: UserRights.Customer,
+      lookupHash: 'testlonger',
+      lookupNoise: 1
     });
 
-    const admin = await User.create({
+    const appAdmin = await dbHandler.models.User.create({
       username: 'testAdmin',
       phonenumber: '1231231231',
       email: 'test@testAdmin.com',
       birthdate: new Date(),
-      rights: 'admin',
-      lookupHash: 'testlonger1'
+      rights: UserRights.AppAdmin,
+      lookupHash: 'testlonger1',
+      lookupNoise: 2
     });
 
-    const manager = await User.create({
+    const orgAdmin = await dbHandler.models.User.create({
+      username: 'testOrgAdmin',
+      phonenumber: '12312312329',
+      email: 'test@testOrgAdmin.com',
+      birthdate: new Date(),
+      rights: UserRights.OrgAdmin,
+      lookupHash: 'testlonger2',
+      lookupNoise: 3
+    });
+
+    const manager = await dbHandler.models.User.create({
       username: 'testManager',
       phonenumber: '1231231232',
       email: 'test@testManager.com',
       birthdate: new Date(),
-      rights: 'manager',
-      lookupHash: 'testlonger2'
+      rights: UserRights.Manager,
+      lookupHash: 'testlonger29',
+      lookupNoise: 3
     });
 
-    const disabled = await User.create({
+    const disabled = await dbHandler.models.User.create({
       username: 'testDisabled',
       phonenumber: '1231231233',
       email: 'test@testDisabled.com',
       birthdate: new Date(),
-      rights: 'disabled',
-      lookupHash: 'testlonger3'
+      rights: UserRights.Disabled,
+      lookupHash: 'testlonger3',
+      lookupNoise: 4
     });
 
-    const userToDelete = await User.create({
+    const userToDelete = await dbHandler.models.User.create({
       username: 'testDeletedAt',
       phonenumber: '1231231234',
       email: 'test@testDeletedAt.com',
       birthdate: new Date(),
-      rights: 'customer',
-      lookupHash: 'testlonger4'
+      rights: UserRights.Customer,
+      lookupHash: 'testlonger4',
+      lookupNoise: 5
     });
 
     await userToDelete.destroy();
 
-    const customerInDB = await User.scope('customer').findAll({});
-    const adminInDB = await User.scope('admin').findAll({});
-    const managerInDB = await User.scope('manager').findAll({});
-    const disabledInDB = await User.scope('disabled').findAll({});
-    const deletedInDB = await User.scope('deleted').findAll({});
-    const allUsersInDB = await User.scope('all').findAll({});
+    const customerInDB = await dbHandler.models.User.scope('customer').findAll({});
+    const appAdminInDB = await dbHandler.models.User.scope('appAdmin').findAll({});
+    const orgAdminInDB = await dbHandler.models.User.scope('orgAdmin').findAll({});
+    const managerInDB = await dbHandler.models.User.scope('manager').findAll({});
+    const disabledInDB = await dbHandler.models.User.scope('disabled').findAll({});
+    const deletedInDB = await dbHandler.models.User.scope('deleted').findAll({});
+    const allUsersInDB = await dbHandler.models.User.scope('all').findAll({});
 
     expect(customerInDB).to.have.lengthOf(1);
     expect(customerInDB[0].id).to.equal(customer.id);
 
-    expect(adminInDB).to.have.lengthOf(1);
-    expect(adminInDB[0].id).to.equal(admin.id);
+    expect(appAdminInDB).to.have.lengthOf(1);
+    expect(appAdminInDB[0].id).to.equal(appAdmin.id);
+
+    expect(orgAdminInDB).to.have.lengthOf(1);
+    expect(orgAdminInDB[0].id).to.equal(orgAdmin.id);
 
     expect(managerInDB).to.have.lengthOf(1);
     expect(managerInDB[0].id).to.equal(manager.id);
@@ -146,22 +168,23 @@ describe('Database User model tests', () => {
     expect(deletedInDB).to.have.lengthOf(1);
     expect(deletedInDB[0].id).to.equal(userToDelete.id);
 
-    expect(allUsersInDB).to.have.lengthOf(5);
+    expect(allUsersInDB).to.have.lengthOf(6);
 
   });
 
   it('User default scope test: does not include timestamps', async () => {
     
-    const user = await User.create({
+    const user = await dbHandler.models.User.create({
       username: 'test',
       phonenumber: '123123123',
       email: 'test@test.com',
       birthdate: new Date(),
-      rights: 'customer',
-      lookupHash: 'testlonger'
+      rights: UserRights.Customer,
+      lookupHash: 'testlonger',
+      lookupNoise: 1
     });
 
-    const userInDB = await User.scope('all').findByPk(user.id);
+    const userInDB = await dbHandler.models.User.scope('all').findByPk(user.id);
 
     expect(userInDB?.createdAt).to.not.exist;
     expect(userInDB?.updatedAt).to.not.exist;

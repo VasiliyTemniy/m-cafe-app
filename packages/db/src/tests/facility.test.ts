@@ -1,41 +1,44 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Address, Facility } from '../models';
 import { dbHandler } from '../db';
-import { NumericToFacilityTypeMapping } from '@m-cafe-app/shared-constants';
+import { createAddress, createOrgAdminManager, randomEnumValue } from './db_test_helper';
 
 
 
 describe('Database Facility model tests', () => {
 
-  let facilityAddress: Address;
+  let facilityAddress: InstanceType<typeof dbHandler.models.Address>;
+  let organization: InstanceType<typeof dbHandler.models.Organization>;
+  let creator: InstanceType<typeof dbHandler.models.User>;
+
+  const pickedFacilityType = randomEnumValue('FacilityType');
 
   before(async () => {
     await dbHandler.pingDb();
 
-    facilityAddress = await Address.create({
-      city: 'тест',
-      street: 'тест'
-    });
+    ({ address: facilityAddress } = await createAddress(dbHandler));
+
+    ({ creator, organization } = await createOrgAdminManager(dbHandler));
   });
 
   beforeEach(async () => {
-    await Facility.destroy({ force: true, where: {} });
+    await dbHandler.models.Facility.destroy({ force: true, where: {} });
   });
 
   after(async () => {
-    await Facility.destroy({ force: true, where: {} });
-    await Address.destroy({ force: true, where: {} });
+    await dbHandler.models.Facility.destroy({ force: true, where: {} });
+    await dbHandler.models.Organization.destroy({ force: true, where: {} });
+    await dbHandler.models.User.destroy({ force: true, where: {} });
   });
 
   it('Facility creation test', async () => {
 
-    const randomFacilityType =
-      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
-
-    const facility = await Facility.create({
+    const facility = await dbHandler.models.Facility.create({
+      organizationId: organization.id,
+      createdBy: creator.id,
+      updatedBy: creator.id,
       addressId: facilityAddress.id,
-      facilityType: randomFacilityType
+      facilityType: pickedFacilityType
     });
 
     expect(facility).to.exist;
@@ -43,16 +46,16 @@ describe('Database Facility model tests', () => {
   });
 
   it('Facility update test', async () => {
-
-    const randomFacilityType =
-      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
     
-    const facility = await Facility.create({
+    const facility = await dbHandler.models.Facility.create({
+      organizationId: organization.id,
+      createdBy: creator.id,
+      updatedBy: creator.id,
       addressId: facilityAddress.id,
-      facilityType: randomFacilityType
+      facilityType: pickedFacilityType
     });
 
-    const newFacilityAddress = await Address.create({
+    const newFacilityAddress = await dbHandler.models.Address.create({
       city: 'тест2',
       street: 'тест2'
     });
@@ -61,7 +64,7 @@ describe('Database Facility model tests', () => {
 
     await facility.save();
 
-    const facilityInDB = await Facility.findOne({ where: { id: facility.id } });
+    const facilityInDB = await dbHandler.models.Facility.findOne({ where: { id: facility.id } });
 
     expect(facilityInDB?.addressId).to.equal(newFacilityAddress.id);
 
@@ -69,33 +72,33 @@ describe('Database Facility model tests', () => {
 
   it('Facility delete test', async () => {
 
-    const randomFacilityType =
-      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
-
-    const facility = await Facility.create({
+    const facility = await dbHandler.models.Facility.create({
+      organizationId: organization.id,
+      createdBy: creator.id,
+      updatedBy: creator.id,
       addressId: facilityAddress.id,
-      facilityType: randomFacilityType
+      facilityType: pickedFacilityType
     });
 
     await facility.destroy();
 
-    const facilityInDB = await Facility.findOne({ where: { id: facility.id } });
+    const facilityInDB = await dbHandler.models.Facility.findOne({ where: { id: facility.id } });
 
     expect(facilityInDB).to.not.exist;
 
   });
 
   it('Facility default scope test: does not include timestamps', async () => {
-    
-    const randomFacilityType =
-      NumericToFacilityTypeMapping[Math.floor(Math.random() * Object.keys(NumericToFacilityTypeMapping).length)];
 
-    const facility = await Facility.create({
+    const facility = await dbHandler.models.Facility.create({
+      organizationId: organization.id,
+      createdBy: creator.id,
+      updatedBy: creator.id,
       addressId: facilityAddress.id,
-      facilityType: randomFacilityType
+      facilityType: pickedFacilityType
     });
 
-    const facilityInDB = await Facility.findOne({ where: { id: facility.id } });
+    const facilityInDB = await dbHandler.models.Facility.findOne({ where: { id: facility.id } });
 
     expect(facilityInDB?.createdAt).to.not.exist;
     expect(facilityInDB?.updatedAt).to.not.exist;
