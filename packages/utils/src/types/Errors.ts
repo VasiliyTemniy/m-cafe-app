@@ -113,6 +113,13 @@ export class AuthServiceError extends Error {
   }
 }
 
+export class DatabaseEnumError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'DatabaseEnumError';
+  }
+}
+
 export type SafeyAny = object | string | number | Array<object> | Array<string> | Array<number> | null | undefined;
 
 interface ApplicationErrorMeta {
