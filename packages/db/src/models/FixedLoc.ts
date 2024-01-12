@@ -66,8 +66,8 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
           where: {
             scope: {
               [Op.or]: [
-                'shared',
-                'customer',
+                FixedLocScope.Shared,
+                FixedLocScope.Customer,
               ]
             }
           },
@@ -80,8 +80,8 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
             where: {
               scope: {
                 [Op.or]: [
-                  'shared',
-                  'customer',
+                  FixedLocScope.Shared,
+                  FixedLocScope.Customer,
                 ]
               }
             },
@@ -95,7 +95,7 @@ export const initFixedLocModel = async (dbInstance: Sequelize) => {
           manager: {
             where: {
               scope: {
-                [Op.ne]: 'admin'
+                [Op.ne]: FixedLocScope.Admin
               }
             },
             attributes: {
