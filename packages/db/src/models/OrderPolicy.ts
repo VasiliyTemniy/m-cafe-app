@@ -33,7 +33,7 @@ export class OrderPolicy extends Model<InferAttributes<OrderPolicy>, InferCreati
   declare distanceAvailability: OrderDistanceAvailability | null;
   declare startsAt: Date | null;
   declare endsAt: Date | null;
-  declare isActive: boolean;
+  declare isActive: CreationOptional<boolean>;
   declare organization?: NonAttribute<Organization>;
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;

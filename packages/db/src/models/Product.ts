@@ -53,11 +53,11 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
   declare currencyCode: CurrencyCode;
   declare priceCutPermissions: PriceCutPermission;
   declare displayPriority: number;
-  declare isFeatured: boolean;
-  declare isAvailable: boolean;
-  declare isActive: boolean;
-  declare showComponents: boolean;
-  declare totalDownloads: number;
+  declare isFeatured: CreationOptional<boolean>;
+  declare isAvailable: CreationOptional<boolean>;
+  declare isActive: CreationOptional<boolean>;
+  declare showComponents: CreationOptional<boolean>;
+  declare totalDownloads: CreationOptional<number>;
   declare pricePrefix: string | null;
   declare pricePostfix: string | null;
   declare bonusGainRate: number | null;

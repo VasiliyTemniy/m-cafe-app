@@ -47,7 +47,7 @@ export class OfferPolicy extends Model<InferAttributes<OfferPolicy>, InferCreati
   declare setOfferCurrencyCode: CurrencyCode | null;
   declare setOfferAvailableAtDelayMs: number | null;
   declare setBonusAvailableAtDelayMs: number | null;
-  declare isActive: boolean;
+  declare isActive: CreationOptional<boolean>;
   declare startsAt: Date | null;
   declare endsAt: Date | null;
   declare organization?: NonAttribute<Organization>;

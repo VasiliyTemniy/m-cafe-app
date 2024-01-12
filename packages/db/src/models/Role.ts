@@ -20,7 +20,7 @@ export class Role extends Model<InferAttributes<Role>, InferCreationAttributes<R
   declare updatedBy: ForeignKey<User['id']>;
   declare name: string;
   declare description: string;
-  declare isActive: boolean;
+  declare isActive: CreationOptional<boolean>;
   declare startsAt: Date | null;
   declare endsAt: Date | null;
   declare permissions?: NonAttribute<Permission[]>;

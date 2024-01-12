@@ -43,7 +43,7 @@ export class DeliveryPolicy extends Model<InferAttributes<DeliveryPolicy>, Infer
   declare volumeStepMeasure: VolumeMeasure | null;
   declare startsAt: Date | null;
   declare endsAt: Date | null;
-  declare isActive: boolean;
+  declare isActive: CreationOptional<boolean>;
   declare organization?: NonAttribute<Organization>;
   declare createdByAuthor?: NonAttribute<User>;
   declare updatedByAuthor?: NonAttribute<User>;
