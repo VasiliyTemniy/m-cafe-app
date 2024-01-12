@@ -11,4 +11,5 @@ export interface IDBHandler {
   runMigrations(): Promise<void>;
   rollbackMigration(): Promise<void>;
   initFixedEnums(): Promise<void>;
+  wipeDb(): Promise<void>;
 }
