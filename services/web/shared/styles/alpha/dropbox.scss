@@ -24,6 +24,7 @@
       font-size: v-v.$input-font-size;
       font-weight: v-v.$input-font-weight;
       padding: 0 0 v-v.$input-border-thickness-highlight v-v.$input-padding-left;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       border: none;
@@ -54,7 +55,7 @@
 
     .bar {
       position: absolute;
-      width: calc(100% + v-v.$input-padding-left);
+      width: 100%;
       bottom: 0;
       height: v-v.$input-border-thickness;
       transition:
@@ -67,7 +68,7 @@
       height: v-v.$input-svg-scale;
       width: v-v.$input-svg-scale;
       top: 50%;
-      right: 2px;
+      right: v-v.$input-svg-right;
       transform: translateY(-50%) rotate(-90deg);
       transition: transform v-v.$input-animation-speed ease-in-out;
       pointer-events: none;
@@ -77,7 +78,7 @@
 
   .dropdown-wrapper {
     position: absolute;
-    width: calc(100% + v-v.$input-padding-left);
+    width: 100%;
 
     .scrollable-wrapper {
       &::before {

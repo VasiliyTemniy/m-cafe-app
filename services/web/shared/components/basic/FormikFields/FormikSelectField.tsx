@@ -1,24 +1,33 @@
 import type { CommonFieldProps } from '@m-cafe-app/frontend-logic/types';
 import type { FieldHookConfig } from 'formik';
 import type { MouseEvent } from 'react';
-import { useMemo } from 'react';
 import { useField } from 'formik';
-import { useInitLC, useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { autoCompleteArray } from '@m-cafe-app/frontend-logic/utils';
-import { Image } from '../Image';
 import { Tooltip } from '../Tooltip';
-import { apiBaseUrl } from '@m-cafe-app/shared-constants';
-import { Scrollable } from '../Scrollable';
+import { SelectInput } from '../SelectInput';
 
 
 type FormikSelectFieldProps = FieldHookConfig<string> & CommonFieldProps & {
   options: string[],
   tNode?: string,
+  spellCheck?: 'true' | 'false'
 };
 
-export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFieldProps) => {
-  
-  const { t } = useTranslation();
+export const FormikSelectField = ({
+  disabled = false,
+  classNameOverride,
+  classNameAddon,
+  placeholder,
+  label,
+  style,
+  autoComplete,
+  autoCorrect,
+  autoCapitalize,
+  spellCheck,
+  tooltip,
+  tNode,
+  options,
+  ...props
+}: FormikSelectFieldProps) => {
 
   const [field, meta, helpers] = useField(props);
 
@@ -26,77 +35,39 @@ export const FormikSelectField = ({ disabled = false, ...props }: FormikSelectFi
     ? meta.error
     : '';
 
-  const { className, style, specific, baseVariant, baseColorVariant } = useInitLC({
-    componentType: 'input',
-    componentName: 'input-select',
-    classNameAddon: props.classNameAddon,
-    classNameOverride: props.classNameOverride,
-    errorMessage,
-    placeholder: props.placeholder,
-    label: props.label,
-  });
-
-  const inputPlaceholder = specific?.labelAsPlaceholder
-    ? undefined
-    : props.placeholder;
-
-  const labelText = specific?.labelAsPlaceholder
-    ? errorMessage
-      ? errorMessage
-      : props.placeholder
-    : props.label;
-
   const handleChooseOption = (e: MouseEvent<HTMLDivElement>) => {
     void helpers.setValue(e.currentTarget.innerText, false);
   };
 
-  const displayedOptions = useMemo(
-    () => autoCompleteArray(props.options, field.value, t, props.tNode),
-    [props.options, field.value]
-  );
-
   return(
-    <div className={`input-wrapper select ${baseVariant} ${baseColorVariant}`}>
-      <input
-        type='text'
-        id={field.name}
-        name={field.name}
-        className={className}
-        value={field.value}
-        onChange={field.onChange}
-        onBlur={field.onBlur}
-        disabled={disabled}
-        autoComplete='off'
-        autoCorrect='off'
-        autoCapitalize='off'
-        spellCheck='false'
-        style={style}
-        placeholder={inputPlaceholder}
-      />
-      <label htmlFor={field.name}>{labelText}</label>
-      <Image src={`${apiBaseUrl}/public/pictures/svg/arrow.svg`} classNameAddon='svg'/>
+    <SelectInput
+      classNameOverride={classNameOverride}
+      classNameAddon={classNameAddon}
+      errorMessage={errorMessage}
+      type='text'
+      internalType='select'
+      id={field.name}
+      name={field.name}
+      value={field.value}
+      onChange={field.onChange}
+      onBlur={field.onBlur}
+      disabled={disabled}
+      style={style}
+      autoComplete={autoComplete}
+      autoCorrect={autoCorrect}
+      autoCapitalize={autoCapitalize}
+      spellCheck={spellCheck}
+      placeholder={placeholder}
+      label={label}
+      options={options}
+      tNode={tNode}
+      handleChooseOption={handleChooseOption}
+    >
       <>
-        {specific?.useBarBelow &&
-          <div className='bar'/>
+        {tooltip &&
+          <Tooltip text={tooltip}/>
         }
       </>
-      <div className='dropdown-wrapper'>
-        <Scrollable classNameAddon='options-wrapper' heightTweak={4} highlightScrollbarOnContentHover={false}>
-          {displayedOptions.map(option => 
-            <div key={option} onMouseDown={handleChooseOption} id={option}>
-              { props.tNode ? t(`${props.tNode}.${option}`) : option }
-            </div>)
-          }
-        </Scrollable>
-        <>
-          {displayedOptions.length > 0 && specific?.useBarBelow &&
-            <div className='bar-after'/>
-          }
-          {props.tooltip &&
-            <Tooltip text={props.tooltip}/>
-          }
-        </>
-      </div>
-    </div>
+    </SelectInput>
   );
 };

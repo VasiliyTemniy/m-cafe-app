@@ -1,6 +1,6 @@
 import type { TFunction } from '../shared/hooks';
 import { isAxiosError } from 'axios';
-import { showNotification } from '../shared/reducers/notificationsReducer';
+import { notify } from '../shared/reducers/notificationsReducer';
 
 export const handleAxiosError = (
   e: unknown,
@@ -17,7 +17,7 @@ export const handleAxiosError = (
     // const config = e?.config;
 
     if (message === 'Network Error') {
-      return showNotification(t('dummy'), 'error');
+      return notify(t('dummy'), 'error');
     }
 
     if (!response) throw new Error('Unknown error');
@@ -25,12 +25,12 @@ export const handleAxiosError = (
     switch (response.data.message) {
 
       case 'You are not logged in.':
-        return showNotification(t('dummy'), 'neutral');
+        return notify(t('dummy'), 'neutral');
 
       default:
-        return showNotification(t('dummy'), 'error');
+        return notify(t('dummy'), 'error');
     }
   } else {
-    return showNotification(t('dummy'), 'error');
+    return notify(t('dummy'), 'error');
   }
 };

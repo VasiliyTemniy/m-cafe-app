@@ -20,8 +20,4 @@
 .alpha.alpha-color.text {
   @include theme(color, AlphaText);
   @include theme(-webkit-text-fill-color, AlphaText);
-
-  .bold {
-    font-weight: bold;
-  }
 }

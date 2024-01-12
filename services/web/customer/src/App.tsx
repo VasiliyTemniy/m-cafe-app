@@ -1,6 +1,6 @@
 import { useInitAppCustomer } from '@m-cafe-app/frontend-logic/customer/hooks';
 import { AppRoutes } from './AppRoutes';
-import { AppContent, Wrapper, Header } from 'shared/components';
+import { AppContent, Header, Container } from 'shared/components';
 import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
 
 
@@ -13,13 +13,13 @@ export const App = () => {
 
   return (
     <>
-      <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
+      <Container id='app-wrapper' onClick={() => collapseExpanded()} type='wrapper'>
         <Header />
         <AppContent>
           {/* <Notification/> */}
           <AppRoutes/>
         </AppContent>
-      </Wrapper>
+      </Container>
     </>
   );
 };

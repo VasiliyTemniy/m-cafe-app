@@ -1,0 +1,42 @@
+@use '../colors' as *;
+@use '../vars' as g-v; // global-vars
+@use '../common' as *;
+@use '../theming' as *;
+@use './alpha_vars' as v-v;
+
+
+.alpha.notification {
+  @extend %glass;
+  position: absolute;
+  padding: v-v.$notification-padding;
+  top: v-v.$notification-top;
+  height: fit-content;
+  left: v-v.$notification-left;
+  width: calc(100vw - v-v.$notification-left * 2);
+  font-size: v-v.$notification-font-size;
+  border-radius: v-v.$notification-border-radius;
+  z-index: g-v.$notification-z-index;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+}
+
+@keyframes toggle-visibility-notificaion {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.alpha.alpha-color.notification {
+  @include theme(background-color, AlphaPrimaryTransparent);
+  @include theme(color, AlphaText);
+  @include theme(-webkit-text-fill-color, AlphaText);
+}

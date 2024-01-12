@@ -8,7 +8,7 @@ import { Scrollable } from './Scrollable';
 
 interface ModalProps extends CommonProps {
   children: JSX.Element[] | JSX.Element;
-  title: string;
+  title?: string;
   subtitle?: string;
   active: boolean;
   withBlur?: boolean;
@@ -16,6 +16,7 @@ interface ModalProps extends CommonProps {
   wrapperExcludeRight?: number;
   wrapperExcludeBottom?: number;
   wrapperExcludeLeft?: number;
+  zIndexOverride?: number;
 }
 
 export const Modal = ({
@@ -30,7 +31,8 @@ export const Modal = ({
   wrapperExcludeTop = 0,
   wrapperExcludeRight = 0,
   wrapperExcludeBottom = 0,
-  wrapperExcludeLeft = 0
+  wrapperExcludeLeft = 0,
+  zIndexOverride
 }: ModalProps) => {
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,8 @@ export const Modal = ({
           height: `${wrapperHeight}px`,
           top: `${wrapperTop}px`,
           width: `${wrapperWidth}px`,
-          left: `${wrapperLeft}px`
+          left: `${wrapperLeft}px`,
+          zIndex: zIndexOverride
         }}
         highlightScrollbarOnContentHover={false}
       >
@@ -96,10 +99,12 @@ export const Modal = ({
           style={{ ...style, top: `${modalTop}px` }}
           id={id}
         >
-          <div className='modal-title'>
-            <TextComp text={title} classNameAddon='title' htmlEl='h3'/>
-            <TextComp text={subtitle} classNameAddon='subtitle' htmlEl='h4'/>
-          </div>
+          {(title || subtitle) &&
+            <div className='modal-title'>
+              <TextComp text={title} classNameAddon='title' htmlEl='h3'/>
+              <TextComp text={subtitle} classNameAddon='subtitle' htmlEl='h4'/>
+            </div>
+          }
           <div className='modal-main'>
             {children}
           </div>

@@ -15,14 +15,15 @@
     "start": "cross-env NODE_ENV=development nodemon ./src/index.ts",
     "start:prod": "cross-env NODE_ENV=production node ./build/index.js",
     "test": "cross-env NODE_ENV=test mocha --exit",
-    "eslint": "eslint ./src/**/*.{ts,tsx}"
+    "eslint": "eslint \"./src/**/*.{ts,tsx}\""
   },
   "dependencies": {
+    "@m-cafe-app/backend-logic": "workspace:^",
     "@m-cafe-app/db": "workspace:^",
+    "@m-cafe-app/models": "workspace:^",
     "@m-cafe-app/shared-backend-deps": "workspace:^",
     "@m-cafe-app/shared-constants": "workspace:^",
     "@m-cafe-app/utils": "workspace:^",
-    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.18.2",

@@ -1,0 +1,94 @@
+$fixed-locs-tools-input-width: 12rem;
+$fixed-locs-table-name-column-width: 25rem;
+
+.container {
+  .fixed-locs-header {
+    .text.title {
+      padding-bottom: 1rem;
+    }
+
+    &-tools {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+      align-items: end;
+      padding: 1rem;
+
+      .inputs {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+
+        #namespaces-box {
+          width: $fixed-locs-tools-input-width;
+        }
+  
+        #fixed-locs-filter-box {
+          width: $fixed-locs-tools-input-width;
+        }
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+
+        button {
+          height: fit-content;
+        }
+      }
+    }
+  }
+
+  table#fixed-locs {
+    tr {
+      th:nth-child(2),
+      td:nth-child(2) {
+        div {
+          max-width: $fixed-locs-table-name-column-width;
+        }
+      }
+
+      th:nth-child(n + 3),
+      td:nth-child(n + 3) {
+        div {
+          max-width: calc((100vw - $fixed-locs-table-name-column-width - 6rem) / 3);
+        }
+      }
+    }
+
+    &.no-pointer {
+      tbody tr {
+        cursor: default;
+      }
+    }
+  }
+}
+
+
+$modal-edit-fixed-loc-min-width: 60rem;
+$modal-edit-fixed-loc-form-min-height: 16rem;
+
+.modal#edit-fixed-loc {
+  min-width: $modal-edit-fixed-loc-min-width;
+
+  .modal-title {
+    .text {
+      padding: 1rem 0;
+    }
+  }
+
+  .item-info {
+    align-self: flex-start;
+    padding-left: 2rem;
+    display: grid;
+    grid-template-columns: 7rem 40rem;
+    grid-template-rows: 1.6rem 1.6rem;
+  }
+  
+  .form {
+    min-height: $modal-edit-fixed-loc-form-min-height;
+    .form-inputs {
+      min-width: calc($modal-edit-fixed-loc-min-width - 4rem);
+    }
+  }
+}

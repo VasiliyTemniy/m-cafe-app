@@ -1,5 +1,5 @@
 import { hasOwnProperty } from './helpers.js';
-import { isString } from './typeParsers.js';
+import { isString } from './typeValidators.js';
 
 export class SessionError extends Error {
   constructor(message: string) {
@@ -96,6 +96,27 @@ export class RedisError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'RedisError';
+  }
+}
+
+export class GrpcClientError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'GrpcClientError';
+  }
+}
+
+export class AuthServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'AuthServiceError';
+  }
+}
+
+export class DatabaseEnumError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'DatabaseEnumError';
   }
 }
 

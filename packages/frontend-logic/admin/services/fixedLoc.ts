@@ -54,17 +54,27 @@ const updateManyLocs = async (updLocs: FixedLocDT[]) => {
   return fixedLocs;
 };
 
-/**
- * Should not ever be used? Delete this?
- */
-const deleteLoc = async (locId: number) => {
+const resetLocs = async () => {
 
   const config = { withCredentials: true };
-  await axios.delete<JSON>(
-    `${apiBaseUrl}/fixed-loc/${locId}`,
+  const { data: fixedLocs } = await axios.get<JSON>(
+    `${apiBaseUrl}/admin/fixed-loc/reset`,
     config
   );
 
+  return fixedLocs;
 };
 
-export default { createLoc, updateLoc, updateManyLocs, deleteLoc, ...sharedFixedLocService };
+const reserveLoc = async (id: number) => {
+  
+  const config = { withCredentials: true };
+  const { data: fixedLoc } = await axios.put<JSON>(
+    `${apiBaseUrl}/fixed-loc/reserve/${id}`,
+    JSON.stringify({}),
+    config
+  );
+
+  return fixedLoc;
+};
+
+export default { createLoc, updateLoc, updateManyLocs, resetLocs, reserveLoc, ...sharedFixedLocService };

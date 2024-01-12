@@ -1,54 +1,61 @@
-import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { PropertiesCreationOptional } from '../types/helpers.js';
+import type {
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  NonAttribute
+} from 'sequelize';
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db.js';
+import { Loc } from './Loc';
 
 
 export class LocString extends Model<InferAttributes<LocString>, InferCreationAttributes<LocString>> {
   declare id: CreationOptional<number>;
-  declare mainStr: string;
-  declare secStr?: string;
-  declare altStr?: string;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
+  declare text: string;
+  declare locs?: NonAttribute<Loc[]>;
 }
 
 
-export type LocStringData = Omit<InferAttributes<LocString>, PropertiesCreationOptional>
-  & { id: number; };
+export const initLocStringModel = async (dbInstance: Sequelize) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      LocString.init({
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        text: {
+          type: DataTypes.STRING(5000),
+          allowNull: false
+        }
+      }, {
+        sequelize: dbInstance,
+        underscored: true,
+        timestamps: false,
+        modelName: 'loc_string'
+      });
 
-  
-LocString.init({
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  mainStr: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  secStr: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  altStr: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-}, {
-  sequelize,
-  underscored: true,
-  timestamps: true,
-  modelName: 'loc_string'
-});
-  
-export default LocString;
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+
+export const initLocStringAssociations = async () => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+
+      LocString.hasMany(Loc, {
+        foreignKey: 'locStringId',
+        as: 'locs',
+      });
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

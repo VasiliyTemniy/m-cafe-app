@@ -1,6 +1,6 @@
 import { useAppSelector } from '@m-cafe-app/frontend-logic/admin/hooks';
 import { useTranslation } from '@m-cafe-app/frontend-logic/shared/hooks';
-import { AppContent, Wrapper, Header, NavItem } from 'shared/components';
+import { AppContent, Header, NavItem, Notification, Container } from 'shared/components';
 import { collapseExpanded } from '@m-cafe-app/frontend-logic/utils';
 import { StaffSidebar } from 'shared/staffComponents';
 import { Outlet } from 'react-router-dom';
@@ -16,33 +16,29 @@ export const AppLayout = () => {
 
   if (!user.phonenumber) {
     return (
-      <>
-        {/* <Notification/> */}
-        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
-          <Header loginNecessary={true}/>
-          <AppContent />
-        </Wrapper>
-      </>
+      <Container id='app-wrapper' onClick={() => collapseExpanded()} type='wrapper'>
+        <Notification />
+        <Header loginNecessary={true}/>
+        <AppContent />
+      </Container>
     );
   } else {
     return (
-      <>
-        <Wrapper id='app-wrapper' onClick={() => collapseExpanded()}>
-          <Header loginNecessary={true}/>
-          <AppContent>
-            {/* <Notification/> */}
-            <Outlet />
-          </AppContent>
-          <StaffSidebar>
-            <NavItem path='/' label={t(`${sidebarTNode}.customerView`)}/>
-            <NavItem path='/fixed-locs' label={t(`${sidebarTNode}.fixedLocs`)}/>
-            <NavItem path='/ui-settings' label={t(`${sidebarTNode}.uiSettings`)}/>
-            {/* <NavItem path='/' label='SECOND NAV YAY'/>
+      <Container id='app-wrapper' onClick={() => collapseExpanded()} type='wrapper'>
+        <Notification />
+        <Header loginNecessary={true}/>
+        <AppContent>
+          <Outlet />
+        </AppContent>
+        <StaffSidebar>
+          <NavItem path='/' label={t(`${sidebarTNode}.customerView`)}/>
+          <NavItem path='/fixed-locs' label={t(`${sidebarTNode}.fixedLocs`)}/>
+          <NavItem path='/ui-settings' label={t(`${sidebarTNode}.uiSettings`)}/>
+          {/* <NavItem path='/' label='SECOND NAV YAY'/>
             <NavItem path='/' label='SECOND NAV YAY'/>
             <NavItem path='/' label='SECOND NAV YAY'/> */}
-          </StaffSidebar>
-        </Wrapper>
-      </>
+        </StaffSidebar>
+      </Container>
     );
   }
 };

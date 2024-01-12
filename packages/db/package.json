@@ -1,20 +1,25 @@
 {
   "name": "@m-cafe-app/db",
   "productName": "Modular cafe app",
-  "version": "1.0.0",
-  "description": "This package contains db model definitions",
+  "version": "2.0.0",
+  "description": "This package contains db model definitions. Suitable for a marketplace app, food service app as a subtype of a marketplace app",
   "main": "build/index.js",
   "type": "module",
   "private": true,
   "scripts": {
     "build": "tsc --build",
-    "eslint": "eslint ./src/**/*.{ts,tsx}"
+    "test": "cross-env NODE_ENV=test TEST_MODE=self mocha --exit",
+    "eslint": "eslint \"./src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@m-cafe-app/shared-backend-deps": "workspace:^",
-    "@m-cafe-app/shared-constants": "workspace:^"
+    "@m-cafe-app/shared-constants": "workspace:^",
+    "@m-cafe-app/utils": "workspace:^"
   },
   "devDependencies": {
+    "chai": "^4.3.7",
+    "cross-env": "^7.0.3",
+    "mocha": "^10.2.0",
     "typescript": "~5.1.6"
   }
 }

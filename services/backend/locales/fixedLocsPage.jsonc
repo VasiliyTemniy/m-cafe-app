@@ -1,41 +1,57 @@
 // You can edit your locales here or via admin ui; All changes are kept in DB, these files innards are used only if no DB entry found for tNodePath
 {
-  "fixedLocsPage": {
+  "ns": "fixedLocsPage",
+  "sc": "admin",
+  "title": {
+    "mainStr": "Фиксированные переводы. Переводы текста, не зависящего от продуктов и заведений, представленных в приложении. Для редактирования, сначала выберите область имён. После редактирования, нажмите кнопку 'Применить изменения' для отправки изменений в базу данных",
+    "secStr": "Fixed locs. Localizations for text that does not relate to product or facility data. To edit, first select namespace. After editing, click 'Apply changes' to send changes to database"
+  },
+  "namespacesBox": {
+    "mainStr": "Область имён переводов",
+    "secStr": "Localizations namespace"
+  },
+  "namespace": {
+    "mainStr": "Область имён",
+    "secStr": "Namespace"
+  },
+  "name": {
+    "mainStr": "Имя",
+    "secStr": "Name"
+  },
+  "main": {
+    "mainStr": "Основной",
+    "secStr": "Main"
+  },
+  "sec": {
+    "mainStr": "Дополнительный",
+    "secStr": "Secondary"
+  },
+  "alt": {
+    "mainStr": "Альтернативный",
+    "secStr": "Alternative"
+  },
+  "placeholder": {
+    "filter": {
+      "mainStr": "Фильтр по имени",
+      "secStr": "Filter by name"
+    }
+  },
+  "label": {
+    "filter": {
+      "mainStr": "Фильтр по имени",
+      "secStr": "Filter by name"
+    }
+  },
+  "editFixedLocModal": {
     "title": {
-      "mainStr": "Фиксированные переводы. Переводы текста, не зависящего от продуктов и заведений, представленных в приложении",
-      "secStr": "Fixed locs. Localizations for text that does not relate to product or facility data"
+      "mainStr": "Редактирование фиксированного перевода",
+      "secStr": "Edit fixed loc"
     },
-    "namespacesBox": {
-      "mainStr": "Область имён переводов",
-      "secStr": "Localizations namespace"
-    },
-    "name": {
-      "mainStr": "Имя",
-      "secStr": "Name"
-    },
-    "main": {
-      "mainStr": "Основной",
-      "secStr": "Main"
-    },
-    "sec": {
-      "mainStr": "Дополнительный",
-      "secStr": "Secondary"
-    },
-    "alt": {
-      "mainStr": "Альтернативный",
-      "secStr": "Alternative"
-    },
-    "editFixedLocModal": {
-      "title": {
-        "mainStr": "Редактирование фиксированного перевода",
-        "secStr": "Edit fixed loc"
-      },
-      "validationErrors": {
-        "required": {
-          "main": {
-            "mainStr": "Требуется основной перевод",
-            "secStr": "Main loc string required"
-          }
+    "validationErrors": {
+      "required": {
+        "main": {
+          "mainStr": "Требуется основной перевод",
+          "secStr": "Main loc string required"
         }
       }
     }

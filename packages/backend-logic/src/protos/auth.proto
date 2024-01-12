@@ -1,0 +1,94 @@
+syntax = "proto3";
+package auth;
+
+service AuthService {
+  rpc CreateAuth (AuthRequest) returns (AuthResponse);
+  rpc UpdateAuth (UpdateAuthRequest) returns (AuthResponse);
+  rpc DeleteAuth (DeleteAuthRequest) returns (DeleteAuthResponse);
+  rpc GrantAuth (AuthRequest) returns (AuthResponse);
+  rpc VerifyCredentials (CredentialsRequest) returns (VerifyResponse);
+  rpc VerifyToken (VerifyTokenRequest) returns (AuthResponse);
+  rpc RefreshToken (RefreshTokenRequest) returns (AuthResponse);
+  rpc GetPublicKey (PublicKeyRequest) returns (PublicKeyResponse);
+  rpc FlushDB (FlushDBRequest) returns (FlushDBResponse);
+  rpc Ping (PingRequest) returns (PingResponse);
+}
+
+
+// Requests
+
+message AuthRequest {
+  int64 id = 1;
+  string lookupHash = 2;
+  string password = 3;
+  string ttl = 4;
+}
+
+message UpdateAuthRequest {
+  int64 id = 1;
+  string lookupHash = 2;
+  string oldPassword = 3;
+  string newPassword = 4;
+  string ttl = 5;
+}
+
+message CredentialsRequest {
+  string lookupHash = 1;
+  string password = 2;
+}
+
+message DeleteAuthRequest {
+  string lookupHash = 1;
+}
+
+message VerifyTokenRequest {
+  string token = 1;
+}
+
+message RefreshTokenRequest {
+  string token = 1;
+  string ttl = 2;
+}
+
+message PublicKeyRequest {
+  string target = 1;
+}
+
+message FlushDBRequest {
+  string reason = 1;
+}
+
+message PingRequest {
+  string message = 1;
+}
+
+
+// Responses
+
+message AuthResponse {
+  int64 id = 1;
+  string token = 2;
+  string error = 3;
+}
+
+message VerifyResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+message DeleteAuthResponse {
+  string error = 1;
+}
+
+message PublicKeyResponse {
+  bytes publicKey = 1;
+  string error = 2;
+}
+
+message FlushDBResponse {
+  string error = 1;
+}
+
+message PingResponse {
+  string message = 1;
+}

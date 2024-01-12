@@ -1,25 +1,24 @@
-import config, { isDockerized } from './utils/config.js';
-import express from 'express';
+import { isDockerized, ALLOWED_ORIGIN } from './utils/config.js';
+import express, { type ErrorRequestHandler } from 'express';
 import 'express-async-errors';
 const app = express();
 import cors from 'cors';
-import userRouter from './controllers/user.js';
-import sessionRouter from './controllers/session.js';
-import adminRouter from './controllers/admin.js';
-import foodRouter from './controllers/food.js';
-import foodComponentRouter from './controllers/foodComponent.js';
-import foodTypeRouter from './controllers/foodType.js';
-import ingredientRouter from './controllers/ingredient.js';
-import facilityRouter from './controllers/facility.js';
-import orderRouter from './controllers/order.js';
-import pictureRouter from './controllers/picture.js';
-import dynamicModuleRouter from './controllers/dynamicModule.js';
-import uiSettingRouter from './controllers/uiSetting.js';
-import fixedLocRouter from './controllers/fixedLoc.js';
-import middleware from './utils/middleware.js';
+import userRouter from './routes/user.js';
+import sessionRouter from './routes/session.js';
+import adminRouter from './routes/admin.js';
+import foodRouter from './routes/food.js';
+import foodComponentRouter from './routes/foodComponent.js';
+import foodTypeRouter from './routes/foodType.js';
+import ingredientRouter from './routes/ingredient.js';
+import facilityRouter from './routes/facility.js';
+import orderRouter from './routes/order.js';
+import pictureRouter from './routes/picture.js';
+import dynamicModuleRouter from './routes/dynamicModule.js';
+import uiSettingRouter from './routes/uiSetting.js';
+import fixedLocRouter from './routes/fixedLoc.js';
+import { middleware } from './utils/middleware.js';
 import { errorHandler } from './utils/errorHandler.js';
 import helmet from 'helmet';
-import { connectToRedisSessionDB } from './redis/Session.js';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
@@ -31,7 +30,7 @@ app.use(helmet());
 
 if (!isDockerized)
   app.use(cors({
-    origin: config.ALLOWED_ORIGIN,
+    origin: ALLOWED_ORIGIN,
     credentials: true
   }));
 
@@ -40,7 +39,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-app.use(middleware.requestLogger);
+app.use(middleware.requestLogger.bind(middleware));
 
 app.use('/session', sessionRouter);
 app.use('/user', userRouter);
@@ -59,17 +58,14 @@ app.use('/fixed-loc', fixedLocRouter);
 
 const initTestingHelper = async () => {
   if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-    const testingRouter = await import('./controllers/testing.js');
+    const testingRouter = await import('./routes/testing.js');
     app.use('/testing', testingRouter.default);
-  }
-  if (process.env.NODE_ENV === 'test') {
-    await connectToRedisSessionDB();
   }
 };
 
 await initTestingHelper();
 
-app.use(errorHandler);
-app.use(middleware.unknownEndpoint);
+app.use(errorHandler.handleError.bind(errorHandler) as ErrorRequestHandler);
+app.use(middleware.unknownEndpoint.bind(middleware));
 
 export default app;

@@ -1,5 +1,4 @@
-import type { NewAddressBody, NewUserBody } from '@m-cafe-app/utils';
-import type { UserData } from '@m-cafe-app/db';
+import { userService } from '../controllers';
 import {
   alphabetAll,
   alphabetEn,
@@ -9,70 +8,69 @@ import {
   possibleChars,
   usernameChars
 } from './test_helper';
+import type { AddressDTN, UserDT, UserDTN } from '@m-cafe-app/models';
 
-export const initialUsersPassword = 'iwannabeahero';
-
-export const initialUsers: Omit<UserData, 'id' | 'rights'>[] = [
+export const initialUsers: UserDTN[] = [
   {
     username: 'Vasisualiy',
     name: 'Mikhail Dyachenko',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561256'
   },
   {
     username: 'flash_us',
     name: 'Ilja Dyachenko',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561277'
   },
   {
     username: 'StevieDoesntKnow',
     name: 'Steve Miller',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561288',
-    birthdate: new Date('2001-07-23T07:31:03.242Z')
+    birthdate: '2001-07-23T07:31:03.242Z'
   },
   {
     username: 'Poperdopeler',
     name: 'Vasisualiy Edipstein',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561294',
     email: 'my-emah@jjjjppp.com'
   },
   {
     username: 'FanstasmagoR',
     name: 'Hren Petrovich',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561227'
   },
   {
     username: 'utopia_Forever',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561211'
   },
   {
     username: 'gollum',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561226',
-    birthdate: new Date('2001-07-23T07:31:03.242Z')
+    birthdate: '2001-07-23T07:31:03.242Z'
   },
   {
     username: 'OW_YEAH',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561236',
     email: 'my-email@jjjjppp.com',
   },
   {
     username: 'fantasy',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
     phonenumber: '88003561293'
   }
 ];
 
-export const validNewUser: NewUserBody = {
+export const validNewUser: UserDTN = {
   username: 'Petro',
   name: 'Vasilenko Pyotr Ivanovich',
-  password: 'iwannabeahero',
+  password: 'iwannabeahero123',
   phonenumber: '89354652288',
   email: 'my-email.vah@jjjjppp.com',
   birthdate: '2001-07-23T07:31:03.242Z',
@@ -80,20 +78,42 @@ export const validNewUser: NewUserBody = {
 
 export const validUserInDB: {
   password: string;
-  dbEntry: Omit<UserData, 'id' | 'rights'>;
+  dtn: UserDTN;
 } = {
-  password: 'iwannabeahero',
-  dbEntry: {
+  password: 'iwannabeahero123',
+  dtn: {
     username: 'Petro',
     name: 'Vasilenko Pyotr Ivanovich',
-    passwordHash: '$2a$10$jmSlEtYWy9Ff35qxusd2LOjSpHtisKH.cDfZeg4jdYOIZ7nfnYXFm',
+    password: 'iwannabeahero123',
     phonenumber: '89354652288',
     email: 'my-email.vah@jjjjppp.com',
-    birthdate: new Date('2001-07-23T07:31:03.242Z'),
+    birthdate: '2001-07-23T07:31:03.242Z',
   }
 };
 
-export const validAddresses: NewAddressBody[] = [
+/**
+ * Use only for testing purposes
+ */
+export const createUser = async (user: UserDTN): Promise<UserDT> => {
+  const { user: createdUser, auth: _auth } = await userService.create(user, 'SUPERTEST');
+
+  return createdUser;
+};
+
+/**
+ * Use only for testing purposes
+ */
+export const createInitialUsers = async (): Promise<UserDT[]> => {
+  const users: UserDT[] = [];
+
+  for (const user of initialUsers) {
+    users.push(await createUser(user));
+  }
+
+  return users;
+};
+
+export const validAddresses: AddressDTN[] = [
   {
     city: 'Горький-17',
     street: 'Ленина'

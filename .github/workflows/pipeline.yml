@@ -67,36 +67,71 @@ jobs:
       - name: Yarn install
         run: yarn install
 
-      - name: Build packages + create simlinks for packages
-        run: yarn prepare
+      # Enable after finishing refactoring backend
+      # - name: Build packages + create simlinks for packages
+      #   run: yarn prepare
 
-      - name: Lint
-        run: yarn run eslint
+      # Temporary build
+      - name: Temporary Build - shared-constants
+        run: yarn run build:shared-constants
 
-      - name: Build
-        run: yarn run build
+      # Temporary build
+      - name: Temporary Build - utils
+        run: yarn run build:utils
+
+      # Temporary build
+      - name: Temporary Build - db
+        run: yarn run build:db
+
+      # Enable after finishing refactoring backend
+      # - name: Lint
+      #   run: yarn run eslint
+
+      # Temporary lint
+      - name: Temporary Lint - shared-constants
+        run: yarn run eslint:shared-constants
+
+      # Temporary lint
+      - name: Temporary Lint - utils
+        run: yarn run eslint:utils
+
+      # Temporary lint
+      - name: Temporary Lint - db
+        run: yarn run eslint:db
+
+      # Enable after finishing refactoring backend
+      # - name: Build
+      #   run: yarn run build
+      #   env:
+      #     FRONTEND_PORT: ${{ vars.FRONTEND_PORT }}
+      #     BACKEND_URL: ${{ vars.BACKEND_URL }}
+
+      # Enable after finishing refactoring backend
+      # - name: Backend test
+      #   run: yarn run test:backend
+      #   env:
+      #     BACKEND_PORT: ${{ vars.BACKEND_PORT }}
+      #     DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
+      #     TEST_DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
+      #     SECRET: ${{ secrets.SECRET }}
+      #     RUN_COMPARISON_TEST: ${{ vars.RUN_COMPARISON_TEST }}
+      #     ALLOWED_ORIGIN: ${{ vars.ALLOWED_ORIGIN }}
+      #     TOKEN_TTL: ${{ vars.TOKEN_TTL }}
+      #     PG_DB_USE_SSL: ${{ vars.PG_DB_USE_SSL }}
+      #     SUPERADMIN_USERNAME: ${{ secrets.SUPERADMIN_USERNAME }}
+      #     SUPERADMIN_PHONENUMBER: ${{ secrets.SUPERADMIN_PHONENUMBER }}
+      #     SUPERADMIN_PASSWORD: ${{ secrets.SUPERADMIN_PASSWORD }}
+      #     REDIS_HOST: 127.0.0.1
+      #     REDIS_PORT: 6379
+
+      - name: DB test
+        run: yarn run test:db
         env:
-          FRONTEND_PORT: ${{ vars.FRONTEND_PORT }}
-          BACKEND_URL: ${{ vars.BACKEND_URL }}
-
-      - name: Test
-        # run: yarn run test
-        run: yarn run test:backend
-        env:
-          BACKEND_PORT: ${{ vars.BACKEND_PORT }}
           DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
           TEST_DATABASE_URL: postgres://postgres_user:postgres_password@127.0.0.1:5432/postgres_db
-          SECRET: ${{ secrets.SECRET }}
-          RUN_COMPARISON_TEST: ${{ vars.RUN_COMPARISON_TEST }}
-          ALLOWED_ORIGIN: ${{ vars.ALLOWED_ORIGIN }}
-          TOKEN_TTL: ${{ vars.TOKEN_TTL }}
-          PG_DB_USE_SSL: ${{ vars.PG_DB_USE_SSL }}
-          SUPERADMIN_USERNAME: ${{ secrets.SUPERADMIN_USERNAME }}
-          SUPERADMIN_PHONENUMBER: ${{ secrets.SUPERADMIN_PHONENUMBER }}
-          SUPERADMIN_PASSWORD: ${{ secrets.SUPERADMIN_PASSWORD }}
-          REDIS_HOST: 127.0.0.1
-          REDIS_PORT: 6379
 
+      - name: Utils test
+        run: yarn run test:utils
 
       # - name: e2e tests
       #   uses: cypress-io/github-action@v2

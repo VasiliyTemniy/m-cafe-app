@@ -17,7 +17,7 @@
 /**
  * Properties for 'alpha' basevariant class inputs
  */
-.alpha.input-wrapper {
+.alpha.input {
   position: relative;
   width: 100%;
 
@@ -71,7 +71,7 @@
 
   .bar {
     position: absolute;
-    width: calc(100% + v-v.$input-padding-left);
+    width: 100%;
     bottom: 0;
     height: v-v.$input-border-thickness;
     transition:
@@ -80,7 +80,7 @@
   }
 }
 
-.alpha.select.input-wrapper {
+.alpha.select.input {
 
   .dropdown-wrapper {
     position: absolute;
@@ -120,7 +120,7 @@
     height: v-v.$input-svg-scale;
     width: v-v.$input-svg-scale;
     top: 50%;
-    right: 0.3rem;
+    right: v-v.$input-svg-right;
     transform: translateY(-50%) rotate(-90deg);
     transition: transform v-v.$input-animation-speed ease-in-out;
     pointer-events: none;
@@ -142,7 +142,7 @@
   }
 }
 
-.alpha.textarea.input-wrapper {
+.alpha.textarea.input {
 
   textarea {
     @extend %scrollbar-custom;
@@ -196,8 +196,8 @@
 }
 
 
-.alpha.date.input-wrapper,
-.alpha.time.input-wrapper {
+.alpha.date.input,
+.alpha.time.input {
 
   input[value=""]:not(:focus)::-webkit-datetime-edit {
     color: transparent;
@@ -223,19 +223,16 @@
     height: v-v.$input-datetime-svg-scale;
     width: v-v.$input-datetime-svg-scale;
     top: 45%;
-    right: 0.3rem;
+    right: v-v.$input-svg-right;
     transform: translateY(-50%);
     pointer-events: none;
   }
 }
 
-.alpha.date.input-wrapper.firefox-fix,
-.alpha.time.input-wrapper.firefox-fix {
+.alpha.date.input.firefox-fix,
+.alpha.time.input.firefox-fix {
   input[value=""]:not(:focus) {
     color: transparent;
-  }
-  .image.svg {
-    right: 0;
   }
 }
 
@@ -251,21 +248,10 @@
   }
 }
 
-.alpha.alpha-color.input-wrapper {
+.alpha.alpha-color.input {
       
   input {
     @include theme(color, AlphaText);
-
-    &.error {
-      ~ .bar {
-        @include theme(background-color, RejectHighlight);
-        @include theme(box-shadow, Reject, 0 0 4px);
-      }
-      ~ label {
-        @include theme(color, RejectHighlight);
-        @include theme(-webkit-text-fill-color, RejectHighlight);
-      }
-    }
 
     &:hover, &:focus-visible,
     &:focus, &:active {
@@ -283,8 +269,20 @@
         @include theme(box-shadow, Shadow, 0 0 4px);
       }
     }
-
   };
+
+  &.error {
+    input {
+      ~ .bar {
+        @include theme(background-color, RejectHighlight);
+        @include theme(box-shadow, Reject, 0 0 4px);
+      }
+      ~ label {
+        @include theme(color, RejectHighlight);
+        @include theme(-webkit-text-fill-color, RejectHighlight);
+      }
+    }
+  }
 
 
   input+label {
@@ -296,7 +294,7 @@
   }
 }
 
-.alpha.alpha-color.select.input-wrapper {
+.alpha.alpha-color.select.input {
 
   .dropdown-wrapper {
 
@@ -331,22 +329,11 @@
 
 }
 
-.alpha.alpha-color.textarea.input-wrapper {
+.alpha.alpha-color.textarea.input {
 
   textarea {
     @include theme(color, AlphaText);
     @include theme(-webkit-text-fill-color, AlphaText);
-
-    &.error {
-      ~ .bar {
-        @include theme(background-color, RejectHighlight);
-        @include theme(box-shadow, Reject, 0 0 4px);
-      }
-      ~ label {
-        @include theme(color, RejectHighlight);
-        @include theme(-webkit-text-fill-color, RejectHighlight);
-      }
-    }
 
     &:hover, &:focus-visible,
     &:focus, &:active:not(:disabled) {
@@ -366,6 +353,18 @@
     }
   };
 
+  &.error {
+    textarea {
+      ~ .bar {
+        @include theme(background-color, RejectHighlight);
+        @include theme(box-shadow, Reject, 0 0 4px);
+      }
+      ~ label {
+        @include theme(color, RejectHighlight);
+        @include theme(-webkit-text-fill-color, RejectHighlight);
+      }
+    }
+  }
      
   textarea+label {
     @include theme(color, AlphaText);
@@ -389,7 +388,7 @@
   }
 }
 
-.alpha.alpha-color.date.input-wrapper,
-.alpha.alpha-color.time.input-wrapper {
+.alpha.alpha-color.date.input,
+.alpha.alpha-color.time.input {
   @extend %alpha-alpha-color-date-time-common;
 }

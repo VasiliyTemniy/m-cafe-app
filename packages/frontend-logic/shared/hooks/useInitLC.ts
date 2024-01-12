@@ -1,5 +1,6 @@
-import type { CommonProps, LCSpecificValue } from '../../types';
+import type { CommonProps } from '../../types';
 import type { CSSProperties } from 'react';
+import type { ComponentType, LCSpecificValue } from '@m-cafe-app/shared-constants';
 import { useMemo } from 'react';
 import { ApplicationError } from '@m-cafe-app/utils';
 import { useUiSettings } from './useUiSettings';
@@ -7,32 +8,11 @@ import { isCSSPropertyKey } from '@m-cafe-app/shared-constants';
 import { useAppSelector } from './reduxHooks';
 
 interface UseInitLCProps extends CommonProps {
-  componentType:
-    'input' |
-    'container' |
-    'wrapper' |
-    'tooltip' |
-    'text' |
-    'button' |
-    'button-group' |
-    'nav-item' |
-    'modal' |
-    'svg-image' |
-    'svg-button' |
-    'switch' |
-    'dropbox' |
-    'table' |
-    'image' |
-    'scrollbar' |
-    'layout',
+  componentType: ComponentType,
   componentName: string,
   errorMessage?: string,
-  placeholder?: string,
-  label?: string,
   variant?: string
 }
-
-
 
 export const useInitLC = ({
   componentType,
@@ -40,8 +20,6 @@ export const useInitLC = ({
   classNameAddon,
   classNameOverride,
   errorMessage,
-  placeholder,
-  label,
   variant
 }: UseInitLCProps) => {
 
@@ -73,8 +51,8 @@ export const useInitLC = ({
 
   const uiSettingsInlineCSS = ui(`${lookup}-${theme}-inlineCSS`);
 
-  const specialUiSettingsSet = new Set(
-    ui(`${lookup}-${theme}-special`).map(uiSetting => uiSetting.name)
+  const specificUiSettingsSet = new Set(
+    ui(`${lookup}-${theme}-specific`).map(uiSetting => uiSetting.name)
   );
 
   return useMemo(() => {
@@ -131,12 +109,19 @@ export const useInitLC = ({
         const firefoxVersion = match ? Number(match[1]) : null;
         const firefoxFix = firefoxVersion
           ? firefoxVersion > 108
-          : false;
+          : componentName === 'input time' || componentName === 'input date';
 
         specific = {
-          labelAsPlaceholder: specialUiSettingsSet.has('labelAsPlaceholder'),
-          useBarBelow: specialUiSettingsSet.has('useBarBelow'),
+          labelAsPlaceholder: specificUiSettingsSet.has('labelAsPlaceholder'),
+          useBarBelow: specificUiSettingsSet.has('useBarBelow'),
           firefoxFix
+        };
+        break;
+
+      case 'notification':
+        specific = {
+          hidden: specificUiSettingsSet.has('hidden'),
+          animate: specificUiSettingsSet.has('animate')
         };
         break;
 
@@ -174,8 +159,6 @@ export const useInitLC = ({
     classNameAddon,
     classNameOverride,
     errorMessage,
-    placeholder,
-    label,
     variant,
     uiSettingsHash
   ]);

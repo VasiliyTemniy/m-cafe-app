@@ -24,7 +24,7 @@ $dropbox-options-max-height: 50vh;
 // INPUTS
 $input-font-size: 1rem;
 $input-font-weight: 500;
-$input-height: 1.6rem;
+$input-height: 1.8rem;
 $input-padding-left: 0.3rem;
 $input-border-thickness: 1px;
 $input-border-thickness-highlight: 3px;
@@ -35,6 +35,7 @@ $input-label-lifted-font-size: 0.8rem;
 $input-animation-speed: 200ms;
 $input-datetime-svg-scale: 1rem;
 $input-svg-scale: 0.7rem;
+$input-svg-right: 0.3rem;
 // INPUTS
 
 
@@ -84,3 +85,13 @@ $table-row-height: 1.8rem;
 $table-cell-padding: 0 0.2rem;
 $table-border-radius: 6px;
 // TABLES
+
+
+// NOTIFICATIONS
+$notification-top: 4rem;
+$notification-padding: 1rem;
+$notification-left: 1rem;
+$notification-border-radius: 0.5rem;
+$notification-border-thickness: 1px;
+$notification-font-size: 1.2rem;
+// NOTIFICATIONS

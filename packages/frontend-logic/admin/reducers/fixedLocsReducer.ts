@@ -6,7 +6,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { handleAxiosError } from '../../utils/errorHandler';
 import fixedLocService from '../services/fixedLoc';
 import { ApplicationError, isFixedLocDT } from '@m-cafe-app/utils';
-import { sharedFixedLocSliceBase } from '../../shared/reducers';
+import { notify, sharedFixedLocSliceBase } from '../../shared/reducers';
 import { Md5 } from 'ts-md5';
 
 type SetDbFixedLocsAction = {
@@ -15,7 +15,13 @@ type SetDbFixedLocsAction = {
   };
 };
 
-type UpdFixedLocAction = {
+type UpdDbFixedLocAction = {
+  payload: {
+    fixedLoc: FixedLocDT
+  };
+};
+
+type UpdParsedFixedLocAction = {
   payload: {
     fixedLoc: FixedLocDT,
     namespace: string
@@ -34,10 +40,20 @@ const fixedLocSlice = createSlice({
       return { ...state, dbFixedLocs: action.payload.fixedLocs };
     },
     /**
+     * Updates `db` fixedLocs state, does not send anything to backend,
+     * does not update parsedFixedLocs state
+     */
+    updDbFixedLoc(state: FixedLocState, action: UpdDbFixedLocAction) {
+      const updDbFixedLocs = state.dbFixedLocs.map(
+        fixedLoc => fixedLoc.id === action.payload.fixedLoc.id ? action.payload.fixedLoc : fixedLoc
+      );
+      return { ...state, dbFixedLocs: updDbFixedLocs };
+    },
+    /**
      * Updates `parsed` fixedLocs state, does not send anything to backend,
      * does not update dbFixedLocs state
      */
-    updFixedLoc(state: FixedLocState, action: UpdFixedLocAction) {
+    updParsedFixedLoc(state: FixedLocState, action: UpdParsedFixedLocAction) {
       const namespace = action.payload.namespace;
       const newFixedLocsNamespaceState = state.parsedFixedLocs[namespace].map(
         fixedLoc => fixedLoc.id === action.payload.fixedLoc.id ? action.payload.fixedLoc : fixedLoc
@@ -53,7 +69,7 @@ const fixedLocSlice = createSlice({
   }
 });
 
-export const { setDbFixedLocs, parseFixedLocs, updFixedLoc } = fixedLocSlice.actions;
+export const { setDbFixedLocs, parseFixedLocs, updDbFixedLoc, updParsedFixedLoc } = fixedLocSlice.actions;
 
 /**
  * Updates many fixed locs in DB
@@ -77,6 +93,45 @@ export const sendUpdFixedLocs = (parsedFixedLocs: ParsedFixedLocs, t: TFunction)
       }
       dispatch(setDbFixedLocs({ fixedLocs }));
       dispatch(parseFixedLocs({ fixedLocs }));
+      dispatch(notify(t('alert.fixedLocSuccess'), 'success'));
+    } catch (e: unknown) {
+      dispatch(handleAxiosError(e, t));
+    }
+  };
+};
+
+/**
+ * Sends a request to reset the fixed localizations.
+ */
+export const sendResetFixedLocs = (t: TFunction) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const fixedLocs = await fixedLocService.resetLocs();
+      if (!Array.isArray(fixedLocs)) throw new ApplicationError('Server has sent wrong data', { current: fixedLocs });
+      for (const fixedLoc of fixedLocs) {
+        if (!isFixedLocDT(fixedLoc)) throw new ApplicationError('Server has sent wrong data', { all: fixedLocs, current: fixedLoc as SafeyAny });
+      }
+      dispatch(setDbFixedLocs({ fixedLocs }));
+      dispatch(parseFixedLocs({ fixedLocs }));
+      dispatch(notify(t('alert.fixedLocSuccess'), 'success'));
+    } catch (e: unknown) {
+      dispatch(handleAxiosError(e, t));
+    }
+  };
+};
+
+export const sendReserveFixedLoc = (id: number, t: TFunction) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const fixedLoc = await fixedLocService.reserveLoc(id);
+      if (!isFixedLocDT(fixedLoc)) throw new ApplicationError('Server has sent wrong data', { current: fixedLoc });
+      dispatch(updDbFixedLoc({ fixedLoc }));
+      const firstDotIndex = fixedLoc.name.indexOf('.');
+      const namespace = fixedLoc.name.slice(0, firstDotIndex);
+      const shortLocName = fixedLoc.name.slice(firstDotIndex + 1);
+      const parsedFixedLoc = { ...fixedLoc, name: shortLocName };
+      dispatch(updParsedFixedLoc({ fixedLoc: parsedFixedLoc, namespace }));
+      dispatch(notify(t('alert.fixedLocSuccess'), 'success'));
     } catch (e: unknown) {
       dispatch(handleAxiosError(e, t));
     }

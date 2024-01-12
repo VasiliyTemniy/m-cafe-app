@@ -1,4 +1,4 @@
-import type { WrapperProps } from './Wrapper';
+import type { ContainerProps } from './Container';
 import type { MouseEvent as ReactMouseEvent, RefObject, CSSProperties } from 'react';
 import {
   useState,
@@ -9,7 +9,7 @@ import {
 import { useInitLC } from '@m-cafe-app/frontend-logic/shared/hooks';
 import { debounceResizeObserver } from '@m-cafe-app/frontend-logic/utils';
 
-interface ScrollableProps extends WrapperProps {
+interface ScrollableProps extends ContainerProps {
   wrapperClassNameAddon?: string;
   wrapperId?: string;
   wrapperRef?: RefObject<HTMLDivElement>;

@@ -44,7 +44,7 @@ export const loginValidationSchema = (t: TFunction) => {
 
 export const signupValidationSchema = (t: TFunction) => {
 
-  const tNode = 'loginPage.validationErrors';
+  const tNode = 'authModal.validationErrors';
 
   return yup.object().shape({
     username: yup

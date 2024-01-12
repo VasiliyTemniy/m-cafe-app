@@ -16,6 +16,7 @@ nav#staff-sidebar {
   padding: $staff-sidebar-padding;
   width: fit-content;
   border-radius: 0;
+  z-index: g-v.$header-z-index - 1;
 
   &.collapsed {
     width: 0;

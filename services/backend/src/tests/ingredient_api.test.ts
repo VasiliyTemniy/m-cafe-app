@@ -1,5 +1,5 @@
 import type { EditIngredientBody, NewIngredientBody } from '@m-cafe-app/utils';
-import { timestampsKeys } from '@m-cafe-app/utils';
+import { timestampsKeys } from '@m-cafe-app/shared-constants';
 import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';

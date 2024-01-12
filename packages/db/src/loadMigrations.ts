@@ -2,11 +2,10 @@
 // umzug did not work with .ts import export "type": "module" system and so on
 // workaround with custom file imports
 
-import type { MigrationContext } from './types/MigrationContext.js';
+import type { MigrationFn } from './types/Migrations.js';
 import { glob } from 'glob';
-import logger from './logger.js';
-
-type MigrationFn = ({ context }: MigrationContext) => Promise<void>;
+import { logger } from '@m-cafe-app/utils';
+import path from 'path';
 
 export const loadMigrations = async () => {
 
@@ -16,26 +15,36 @@ export const loadMigrations = async () => {
 
     const prodMigrationsGlobPath = 'packages/db/build/migrations/';
     const devMigrationsRelativePath = '../../packages/db/build/migrations/';
-    const devMigrationsRelativePathWin32 = '..\\..\\packages\\db\\build\\migrations\\';
+    const testMigrationsSelfPath = 'src/migrations/';
 
     /*
     / in production, all files are .js and served from ./build folder
     */
     const res = process.env.NODE_ENV === 'production'
       ? await glob(`${prodMigrationsGlobPath}*.js`)
-      : await glob(`${devMigrationsRelativePath}*.js`);
+      : (process.env.NODE_ENV === 'test' && process.env.TEST_MODE === 'self')
+        ? await glob(`${testMigrationsSelfPath}*.ts`)
+        : await glob(`${devMigrationsRelativePath}*.js`);
 
     const migrationsPromise = res.map(async (file) => {
+
+      // replace file path from win32 to linux
+      const filePath = process.platform === 'win32'
+        ? file.split(path.sep).join(path.posix.sep)
+        : file;
 
       /*
       / replace path is different for windows and in production src -> build
       */
-      const replacePath = process.platform === 'win32' ? devMigrationsRelativePathWin32 :
-        process.env.NODE_ENV === 'production' ? prodMigrationsGlobPath : devMigrationsRelativePath;
+      const replacePath = process.env.NODE_ENV === 'production'
+        ? prodMigrationsGlobPath
+        : process.env.TEST_MODE === 'self'
+          ? testMigrationsSelfPath
+          : devMigrationsRelativePath;
 
-      const { up, down } = await import(file.replace(replacePath, './migrations/'));
+      const { up, down } = await import(filePath.replace(replacePath, './migrations/'));
       return {
-        name: file.replace(replacePath, '').replace('.ts', '').replace('.js', ''),
+        name: filePath.replace(replacePath, '').replace('.ts', '').replace('.js', ''),
         up,
         down
       };
@@ -44,7 +53,7 @@ export const loadMigrations = async () => {
     migrations = await Promise.all(migrationsPromise);
 
   } catch (error) {
-    logger.shout(error);
+    logger.error(error);
     throw new Error('Migrations failed to load!');
   }
 

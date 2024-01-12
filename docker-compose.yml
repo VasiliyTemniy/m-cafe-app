@@ -10,6 +10,8 @@ services:
       args:
         - BACKEND_URL=http://localhost:8080/api
         - DOMAIN_URL=http://localhost:8080
+        - NOTIFICATION_ARRAY_LENGTH=100
+        - NOTIFICATION_TIMEOUT=4000
     container_name: m-cafe-web
     env_file:
       - ./docker-envs/.docker.validation-overrides.env

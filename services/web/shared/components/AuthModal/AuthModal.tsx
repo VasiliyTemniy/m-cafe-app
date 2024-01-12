@@ -82,6 +82,7 @@ export const AuthModal = ({
       subtitle={t(`${tNode}.loginForm.welcome`)}
       withBlur={modalWithBlur}
       wrapperExcludeTop={modalWrapperExcludeTop}
+      zIndexOverride={500}
     >
       <LoginForm
         onSubmit={handleLogin}
@@ -99,6 +100,7 @@ export const AuthModal = ({
       subtitle={t(`${tNode}.signupForm.welcome`)}
       withBlur={modalWithBlur}
       wrapperExcludeTop={modalWrapperExcludeTop}
+      zIndexOverride={500}
     >
       <SignupForm
         onSubmit={handleSignup}

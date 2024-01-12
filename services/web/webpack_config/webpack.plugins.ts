@@ -24,6 +24,8 @@ export const plugins = [
     FRONTEND_MODULE_MANAGER: frontendModule === 'manager',
     FRONTEND_MODULE_CUSTOMER: frontendModule === 'customer',
     FRONTEND_TARGET_WEB: true,
+    NOTIFICATION_ARRAY_LENGTH: 100,
+    NOTIFICATION_TIMEOUT: 4000,
     FIXED_LOC_FILTER: '',
     USERNAME_REGEXP: '',
     USERNAME_MINLEN: '',
