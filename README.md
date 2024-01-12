@@ -29,7 +29,8 @@ Written in typescript almost without 'any', but with few type assertions
 - Make all functional React components with Redux + toolkit in separate package common for web and mobile frontend;
 - ~~Make frontend ui visuals initialized by admins;~~
 - ~~Make frontend content as mostly as possible initializable by admins. I wouldn't say this is server-side page generation... Who knows. Maybe it would be better to use nextJs;~~
-- Make standard fixed ui for frontend app root, while particular organization's pages ui will be customizable by organization administrators;
+- Make standard fixed ui for frontend app root;
+- Make particular organization's pages ui customizable by organization administrators;
 - ~~Make kind of localization support for 3 languages (I think this app will never be in position that needs more than 1). Why not N instead of 3? It would be just a little more complicated, but not necessary at all;~~
 - Make total localization support for any preferred number of languages;
 - Test everything with something - backend api tests mocha + chai, frontend tests mostly e2e via cypress
