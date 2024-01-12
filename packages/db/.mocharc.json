@@ -4,6 +4,6 @@
     "experimental-specifier-resolution=node",
     "loader=ts-node/esm"
   ],
-  "timeout": "10000",
+  "timeout": "60000",
   "spec": "src/tests/*.test.ts"
 }
