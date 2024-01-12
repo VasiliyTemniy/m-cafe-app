@@ -215,6 +215,7 @@ export class DBHandler implements IDBHandler {
     await this.models.initOrderPolicyAssociations();
     await this.models.initDeliveryPolicyAssociations();
     await this.models.initRoleAssociations();
+    await this.models.initUserRoleAssociations();
     await this.models.initPermissionAssociations();
     await this.models.initProductTypeAssociations();
     await this.models.initProductCategoryAssociations();
@@ -262,87 +263,102 @@ export class DBHandler implements IDBHandler {
     await this.models.initUserScopes();
   }
 
-  async initFixedEnums(): Promise<void> {
+  private async checkEnum(name: keyof typeof constants) {
+    const constant = constants[name];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const key in constant as { [key: string]: any }) {
+
+      const foundEnum = await this.models.FixedEnum.findOne({
+        where: {
+          name,
+          key: String(key)
+        }
+      });
     
-    const checkEnum = async (name: keyof typeof constants) => {
-      const constant = constants[name];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      for (const key in constant as { [key: string]: any }) {
-
-        const foundEnum = await this.models.FixedEnum.findOne({
-          where: {
-            name,
-            key: String(key)
-          }
+      if (!foundEnum) {
+        await this.models.FixedEnum.create({
+          name,
+          key: String(key),
+          value: String(constant[key as keyof typeof constant])
         });
-      
-        if (!foundEnum) {
-          await this.models.FixedEnum.create({
-            name,
-            key: String(key),
-            value: String(constant[key as keyof typeof constant])
-          });
-          return;
-        }
-
-        if (foundEnum.value !== String(constant[key as keyof typeof constant])) {
-          throw new Error(`${name} enum value mismatch: ${foundEnum?.value} !== ${constant[key as keyof typeof constant]}`);
-        }
+        return;
       }
-    };
 
-    await checkEnum('LanguageCode');
-    await checkEnum('CurrencyCode');
+      if (foundEnum.value !== String(constant[key as keyof typeof constant])) {
+        throw new Error(`${name} enum value mismatch: ${foundEnum?.value} !== ${constant[key as keyof typeof constant]}`);
+      }
+    }
+  }
+
+  async initFixedEnums(): Promise<void> {
+
+    await this.checkEnum('LanguageCode');
+    await this.checkEnum('CurrencyCode');
     // Currency decimal multiplier is not an actual ts enum, but a special case
-    await checkEnum('CurrencyDecimalMultiplier');
-    await checkEnum('LocType');
-    await checkEnum('LocParentType');
-    await checkEnum('FixedLocScope');
-    await checkEnum('PictureParentType');
-    await checkEnum('UserRights');
-    await checkEnum('CoverageParentType');
-    await checkEnum('CoverageEntityType');
-    await checkEnum('OfferType');
-    await checkEnum('OfferGrantMethod');
-    await checkEnum('OfferCodeGenerationMethod');
-    await checkEnum('OrderStatus');
-    await checkEnum('OrderPaymentMethod');
-    await checkEnum('OrderPaymentStatus');
-    await checkEnum('OrderDeliveryType');
-    await checkEnum('OrderDistanceAvailability');
-    await checkEnum('OrderConfirmationMethod');
-    await checkEnum('DeliveryCostCalculationType');
-    await checkEnum('MassMeasure');
-    await checkEnum('SizingMeasure');
-    await checkEnum('VolumeMeasure');
-    await checkEnum('PermissionTarget');
-    await checkEnum('PermissionAccess');
-    await checkEnum('PermissionAction');
-    await checkEnum('PriceCutPermission');
-    await checkEnum('FacilityType');
-    await checkEnum('StockEntityType');
-    await checkEnum('StockStatus');
-    await checkEnum('CommentParentType');
-    await checkEnum('OrderTrackingStatus');
-    await checkEnum('DynamicModuleType');
-    await checkEnum('DynamicModulePreset');
-    await checkEnum('DynamicModulePlacementType');
-    await checkEnum('DynamicModulePageType');
-    await checkEnum('UiSettingComponentGroup');
-    await checkEnum('UiSettingTheme');
-    await checkEnum('ReviewParentType');
-    await checkEnum('ApiRequestReason');
-    await checkEnum('ApiRequestMethod');
-    await checkEnum('ApiRequestExpectedResponseDataPlacementKey');
-    await checkEnum('ApiRequestExpectedResponseDataType');
-    await checkEnum('ApiRequestProtocol');
-    await checkEnum('ApiRequestTokenPlacement');
-    await checkEnum('ContactType');
-    await checkEnum('ContactTarget');
-    await checkEnum('ContactParentType');
-    await checkEnum('DetailGroupParentType');
-    await checkEnum('ViewParentType');
-    await checkEnum('TagParentType');
+    await this.checkEnum('CurrencyDecimalMultiplier');
+    await this.checkEnum('LocType');
+    await this.checkEnum('LocParentType');
+    await this.checkEnum('FixedLocScope');
+    await this.checkEnum('PictureParentType');
+    await this.checkEnum('UserRights');
+    await this.checkEnum('CoverageParentType');
+    await this.checkEnum('CoverageEntityType');
+    await this.checkEnum('OfferType');
+    await this.checkEnum('OfferGrantMethod');
+    await this.checkEnum('OfferCodeGenerationMethod');
+    await this.checkEnum('OrderStatus');
+    await this.checkEnum('OrderPaymentMethod');
+    await this.checkEnum('OrderPaymentStatus');
+    await this.checkEnum('OrderDeliveryType');
+    await this.checkEnum('OrderDistanceAvailability');
+    await this.checkEnum('OrderConfirmationMethod');
+    await this.checkEnum('DeliveryCostCalculationType');
+    await this.checkEnum('MassMeasure');
+    await this.checkEnum('SizingMeasure');
+    await this.checkEnum('VolumeMeasure');
+    await this.checkEnum('PermissionTarget');
+    await this.checkEnum('PermissionAccess');
+    await this.checkEnum('PermissionAction');
+    await this.checkEnum('PriceCutPermission');
+    await this.checkEnum('FacilityType');
+    await this.checkEnum('StockEntityType');
+    await this.checkEnum('StockStatus');
+    await this.checkEnum('CommentParentType');
+    await this.checkEnum('OrderTrackingStatus');
+    await this.checkEnum('DynamicModuleType');
+    await this.checkEnum('DynamicModulePreset');
+    await this.checkEnum('DynamicModulePlacementType');
+    await this.checkEnum('DynamicModulePageType');
+    await this.checkEnum('UiSettingComponentGroup');
+    await this.checkEnum('UiSettingTheme');
+    await this.checkEnum('ReviewParentType');
+    await this.checkEnum('ApiRequestReason');
+    await this.checkEnum('ApiRequestMethod');
+    await this.checkEnum('ApiRequestExpectedResponseDataPlacementKey');
+    await this.checkEnum('ApiRequestExpectedResponseDataType');
+    await this.checkEnum('ApiRequestProtocol');
+    await this.checkEnum('ApiRequestTokenPlacement');
+    await this.checkEnum('ContactType');
+    await this.checkEnum('ContactTarget');
+    await this.checkEnum('ContactParentType');
+    await this.checkEnum('DetailGroupParentType');
+    await this.checkEnum('ViewParentType');
+    await this.checkEnum('TagParentType');
 
   }
+
+  async wipeDb(): Promise<void> {
+
+    if (process.env.NODE_ENV !== 'test') {
+      return;
+    }
+
+    if (!this.dbInstance) {
+      await this.connect();
+      return this.wipeDb();
+    }
+
+    await this.dbInstance.truncate({ cascade: true, force: true });
+  }
+  
 }
