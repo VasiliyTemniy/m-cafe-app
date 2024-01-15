@@ -12,15 +12,15 @@ describe('Type validators tests: checkProperties', () => {
       hobbies: ['reading', 'running']
     };
 
-    const result1 = checkProperties({ obj, properties: [
+    const { result: result1 } = checkProperties({ obj, properties: [
       'name'
     ], required: true, validator: isString });
 
-    const result2 = checkProperties({ obj, properties: [
+    const { result: result2 } = checkProperties({ obj, properties: [
       'age'
     ], required: true, validator: isNumber });
 
-    const result3 = checkProperties({ obj, properties: [
+    const { result: result3 } = checkProperties({ obj, properties: [
       'hobbies'
     ], required: true, validator: isString, isArray: true });
 
@@ -35,7 +35,7 @@ describe('Type validators tests: checkProperties', () => {
       age: '25'
     };
 
-    const result = checkProperties({ obj, properties: [
+    const { result } = checkProperties({ obj, properties: [
       'name', 'age', 'hobbies'
     ], required: true, validator: isString });
 
@@ -49,11 +49,11 @@ describe('Type validators tests: checkProperties', () => {
       hobbies: ['reading', 'running']
     };
 
-    const result1 = checkProperties({ obj, properties: [
+    const { result: result1 } = checkProperties({ obj, properties: [
       'name', 'age'
     ], required: true, validator: isString });
 
-    const result2 = checkProperties({ obj, properties: [
+    const { result: result2 } = checkProperties({ obj, properties: [
       'hobbies'
     ], required: true, validator: isNumber, isArray: true });
 
@@ -69,7 +69,7 @@ describe('Type validators tests: checkProperties', () => {
       weight: '80'
     };
 
-    const result = checkProperties({ obj, properties: [
+    const { result } = checkProperties({ obj, properties: [
       'name', 'age', 'height', 'weight', 'hobbies', 'hobby', 'hobby2'
     ], required: false, validator: isString });
 
@@ -83,7 +83,7 @@ describe('Type validators tests: checkProperties', () => {
       hobbies: ['reading', 'running', 30]
     };
 
-    const result = checkProperties({ obj, properties: [
+    const { result } = checkProperties({ obj, properties: [
       'hobbies'
     ], required: true, validator: isNumber, isArray: true });
 
@@ -97,7 +97,7 @@ describe('Type validators tests: checkProperties', () => {
       hobbies: ['reading', 'running']
     };
     
-    const result = checkProperties({ obj, properties: [
+    const { result } = checkProperties({ obj, properties: [
       'hobbies'
     ], required: true, validator: isString, isArray: true });
 
@@ -464,6 +464,71 @@ describe('Type validators tests: isEntity', () => {
 
     const result = isEntity(obj, nestedObjectPropertiesGroups);
     expect(result).to.equal(true);
+
+  });
+
+  it('should return false if object has any more properties than expected', () => {
+
+    // Will help to omit precautious destructuring of incoming trasnit data in controllers - less boilerplate code
+    
+    const propertiesGroups: PropertyGroup[] = [
+      {
+        properties: ['name'],
+        validator: isString
+      },
+      {
+        properties: ['id'],
+        validator: isNumber
+      },
+      {
+        properties: ['hobbies'],
+        validator: isString,
+        isArray: true
+      },
+      {
+        properties: ['married'],
+        validator: isBoolean,
+        required: false
+      },
+      {
+        properties: ['address'],
+        validator: isString,
+        required: false
+      }
+    ];
+
+    const objWithoutOptionalsWithUnexpected = {
+      name: 'John',
+      age: 25,
+      hobbies: ['reading', 'running'],
+      license: '123456' // Has nothing to do with optionals or specified properties
+    };
+
+    const objWithOneOutOfTwoOptionalWithUnexpected = {
+      name: 'John',
+      age: 25,
+      hobbies: ['reading', 'running'],
+      married: true, // optional
+      children: '123456', // Has nothing to do with optionals or specified properties
+    };
+
+    const objWithAllOptionalsWithUnexpected = {
+      name: 'John',
+      age: 25,
+      hobbies: ['reading', 'running'],
+      married: true, // optional
+      address: 'Lenina st. 1', // optional
+      children: '123456', // Has nothing to do with optionals or specified properties
+    };
+
+    const result1 = isEntity(objWithoutOptionalsWithUnexpected, propertiesGroups);
+    expect(result1).to.equal(false);
+
+    const result2 = isEntity(objWithOneOutOfTwoOptionalWithUnexpected, propertiesGroups);
+    expect(result2).to.equal(false);
+
+    const result3 = isEntity(objWithAllOptionalsWithUnexpected, propertiesGroups);
+    expect(result3).to.equal(false);
 
   });
 
