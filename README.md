@@ -17,7 +17,7 @@ Written in typescript almost without 'any', but with few type assertions
 | CI / (no CD atm) | Github actions |
 
 ### Side projects and dependencies
-- [simple-micro-auth](https://github.com/VasiliyTemniy/simple-micro-auth): simple 0Auth analogue microservice written in Go
+- [simple-micro-auth](https://github.com/VasiliyTemniy/simple-micro-auth): simple authorization microservice written in Go
 #### planned
 - Delivery cost calculator written in Kotlin
 
