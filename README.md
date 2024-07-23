@@ -1,4 +1,6 @@
 # m-market-app
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVasiliyTemniy%2Fm-market-app.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FVasiliyTemniy%2Fm-market-app?ref=badge_shield)
+
 
 ## modular marketplace app
 
@@ -42,3 +44,7 @@ Written in typescript almost without 'any', but with few type assertions
 
 
 All dependencies licences will be included at last with first release of v 1.0.0, maybe earlier
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVasiliyTemniy%2Fm-market-app.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FVasiliyTemniy%2Fm-market-app?ref=badge_large)
